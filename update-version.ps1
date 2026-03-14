@@ -36,8 +36,8 @@ else {
 # Read the file content
 $content = Get-Content $indexFile -Raw
 
-# Replace the version placeholder
-$newContent = $content -replace '<!--VERSION_PLACEHOLDER-->', $version
+# Replace the entire version div content
+$newContent = $content -replace 'id="version">[^<]*</div>', "id=`"version`">$version</div>"
 
 # Write back only if changed
 if ($content -ne $newContent) {
