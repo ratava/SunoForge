@@ -739,6 +739,18 @@
                 display: flex;
                 flex-direction: column;
             }
+            .action-panel {
+                display: flex;
+                gap: 8px;
+                padding: 12px 16px;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+            }
+            .action-panel .btn-gen {
+                flex: 1;
+                max-width: 200px;
+            }
             .right-tabs {
                 display: flex;
                 border-bottom: 1px solid var(--border);
@@ -1361,6 +1373,38 @@
                 font-weight: 700;
                 cursor: pointer;
             }
+            .btn-export-green {
+                padding: 8px 18px;
+                background: linear-gradient(135deg, var(--accent2), #5a7e50);
+                border: none;
+                border-radius: 7px;
+                color: #0e0c0a;
+                font-family: "Syne", sans-serif;
+                font-size: 12px;
+                font-weight: 800;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .btn-export-green:hover {
+                filter: brightness(1.1);
+                transform: translateY(-1px);
+            }
+            .btn-export-orange {
+                padding: 8px 18px;
+                background: linear-gradient(135deg, #d97706, #ea580c);
+                border: none;
+                border-radius: 7px;
+                color: #ffffff;
+                font-family: "Syne", sans-serif;
+                font-size: 12px;
+                font-weight: 800;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .btn-export-orange:hover {
+                filter: brightness(1.1);
+                transform: translateY(-1px);
+            }
 
             .lyrics-mode-toggle {
                 display: flex;
@@ -1491,7 +1535,7 @@
                 <div class="logo-icon">&#127932;</div>
                 SunoForge
             </div>
-            <div class="version" id="version">c5ca675</div>
+            <div class="version" id="version">86694d2</div>
         </header>
 
         <div class="api-bar">
@@ -1718,7 +1762,6 @@
                             <option value="32 Bars">32 Bars</option>
                         </select>
                     </div>
-                    <button class="btn-gen" id="gen-btn" onclick="generateSong()">&#9834; Write My Song</button>
                 </div>
 
                 <!-- VOCAL TAB -->
@@ -1790,7 +1833,6 @@
                         <label class="field-label">Structure for: <span id="struct-genre-label" style="color: var(--accent); font-weight: 700"></span></label>
                         <div class="structure-list" id="structure-list"></div>
                     </div>
-                    <button class="btn-gen" onclick="generateSong()">&#9834; Write My Song</button>
                 </div>
 
                 <!-- SOUND TAB -->
@@ -1905,7 +1947,6 @@
                         <div class="influence-chips" id="influence-chips"></div>
                         <div class="tag-row" style="margin-top: 6px" id="inf-suggest-tags"></div>
                     </div>
-                    <button class="btn-gen" onclick="generateSong()">&#9834; Write My Song</button>
                 </div>
 
                 <!-- LYRICS TAB -->
@@ -1942,7 +1983,6 @@
                     </div>
                     <button class="btn-style-apply" id="lyrics-analyze-btn" onclick="applyLyricsAnalysis()">&#128269; Analyze Lyrics to Settings</button>
                     <div id="lyrics-analysis-result" style="display: none; margin-top: 4px"></div>
-                    <button class="btn-gen" id="gen-btn-lyrics" onclick="generateSong()">&#9834; Write My Song</button>
                     <div class="section-divider" style="margin: 4px 0"></div>
                     <div class="field-group">
                         <label class="field-label" style="color: var(--accent2); font-size: 12px">&#127911; Style Analyzer</label>
@@ -1956,6 +1996,12 @@
 
             <!-- RIGHT PANEL -->
             <div class="panel-right">
+                <!-- ACTION PANEL -->
+                <div class="action-panel">
+                    <button class="btn-gen" id="gen-btn" onclick="generateSong()">&#9834; Write My Song</button>
+                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none">&#128229; Export</button>
+                </div>
+
                 <div class="right-tabs">
                     <button class="rtab active" id="rtab-output" onclick="switchRTab('output')">Output</button>
                     <button class="rtab" id="rtab-chords" onclick="switchRTab('chords')">Chords</button>
@@ -1999,12 +2045,11 @@
                 <div class="modal-title">Export Song</div>
                 <div class="modal-preview" id="export-preview"></div>
                 <div class="modal-actions">
-                    <button class="btn-secondary" onclick="closeModal()">Close</button>
-                    <button class="btn-secondary" id="copy-title-btn" onclick="copySongTitleExport()">Copy Song Title</button>
-                    <button class="btn-secondary" id="copy-style-btn" onclick="copyStylePromptExport()">Copy Style Prompt</button>
-                    <button class="btn-secondary" id="copy-lyrics-btn" onclick="copyLyricsExport()">Copy Lyrics</button>
+                    <button class="btn-export-green" id="copy-title-btn" onclick="copySongTitleExport()">Copy Song Title</button>
+                    <button class="btn-export-green" id="copy-style-btn" onclick="copyStylePromptExport()">Copy Style Prompt</button>
+                    <button class="btn-export-green" id="copy-lyrics-btn" onclick="copyLyricsExport()">Copy Lyrics</button>
                     <button class="btn-primary" onclick="downloadTxt()">Download .txt</button>
-                    <button class="btn-primary" id="copy-export-btn" onclick="copyExport()">Copy</button>
+                    <button class="btn-export-orange" onclick="closeModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -4784,7 +4829,7 @@ If the style description does not strongly imply a different key, keep the curre
 
                 const exportLyricsMetaTag = styleDetailsLines.length ? normalizeStyleMetaTag(styleDetailsLines.join("\n")) : "";
                 exportStylePromptText = song.suno_style_prompt || "--";
-                exportLyricsText = removeDoubleBrackets([exportLyricsMetaTag || "", ...song.sections.map((s) => `\n[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripLeadingSectionTag(s.lines)}`)].join("\n"));
+                exportLyricsText = removeDoubleBrackets([exportLyricsMetaTag || "", ...song.sections.map((s) => `\n[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripAllLeadingMetaTags(s.lines)}`)].join("\n"));
                 const spLines = sp
                     ? [
                           ``,
@@ -4950,7 +4995,7 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                         return `<div class="lyric-section"><div class="lyric-label ${cls}"><span>${sec.type}${userBadge}</span>${regenBtn}</div><div class="lyric-line" id="lyric-line-${i}">${sec.lines}</div><div class="lyric-direction" id="lyric-dir-${i}">${sec.direction || ""}</div></div>`;
                     })
                     .join('<div class="sec-div"></div>');
-                const allLyrics = song.sections.map((s) => `[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${s.lines}`).join("\n\n");
+                const allLyrics = song.sections.map((s) => `[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripAllLeadingMetaTags(s.lines)}`).join("\n\n");
                 const sunoStylePrompt = song.suno_style_prompt || "--";
                 const card = document.createElement("div");
                 card.className = "output-card";
@@ -4963,7 +5008,7 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
       ${song.structureName ? `<div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;margin-top:3px;">Structure: ${song.structureName}</div>` : ""}
       ${spHtml}
       <div class="card-meta" style="margin-top:4px;">${ts}</div>
-    </div><div class="card-actions"><button class="btn-sm" onclick="exportSong(null)">Export</button></div></div></div>
+    </div></div></div>
         <div class="block">
             <div class="block-header"><div class="section-header">Suno Style Prompt</div><button class="btn-copy" onclick="copyText(this,\`${sunoStylePrompt.replace(/`/g, "\\`")}\`)">Copy</button></div>
             <div class="prod-body">${sunoStylePrompt}</div><div class="char-count">${sunoStylePrompt === "--" ? 0 : sunoStylePrompt.length} / 1000 chars</div>
@@ -4978,6 +5023,10 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
     </div>`;
                 panel.insertBefore(card, panel.firstChild);
                 switchRTab("output");
+
+                // Show export button when song is rendered
+                const exportBtn = document.getElementById("export-btn");
+                if (exportBtn) exportBtn.style.display = "block";
             }
 
             function renderChordsCard(song) {
@@ -5023,13 +5072,11 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                 const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
                 if (!confirmed) return;
 
-                ["gen-btn", "gen-btn-lyrics"].forEach((id) => {
-                    const b = document.getElementById(id);
-                    if (b) {
-                        b.disabled = true;
-                        b.innerHTML = '<span class="spin">♪</span> Writing...';
-                    }
-                });
+                const genBtn = document.getElementById("gen-btn");
+                if (genBtn) {
+                    genBtn.disabled = true;
+                    genBtn.innerHTML = '<span class="spin">♪</span> Writing...';
+                }
 
                 const panel = document.getElementById("tab-output");
                 document.getElementById("empty-state").style.display = "none";
@@ -5200,13 +5247,10 @@ Respond ONLY with JSON (no markdown, no backticks):
                     panel.insertBefore(errCard, panel.firstChild);
                 }
 
-                ["gen-btn", "gen-btn-lyrics"].forEach((id) => {
-                    const b = document.getElementById(id);
-                    if (b) {
-                        b.disabled = false;
-                        b.innerHTML = "♪ Write My Song";
-                    }
-                });
+                if (genBtn) {
+                    genBtn.disabled = false;
+                    genBtn.innerHTML = "♪ Write My Song";
+                }
             }
 
             // ── Expose functions to global scope for inline onclick handlers ─────────────
