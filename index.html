@@ -3899,10 +3899,29 @@ If the style description does not strongly imply a different key, keep the curre
                 if (lines[0] && /^\[style:/i.test(lines[0].trim())) lines.shift();
                 return lines.join("\n").trim();
             }
+            function stripAllLeadingMetaTags(text) {
+                // Strip ALL leading bracketed tags (section tags, direction tags, etc.)
+                // This prevents duplicates when direction tags are stored separately and re-added during export
+                const lines = String(text || "").split("\n");
+                while (lines.length && !lines[0].trim()) lines.shift();
+
+                // Keep removing leading bracketed lines
+                while (lines.length && lines[0]) {
+                    const trimmed = lines[0].trim();
+                    // Check if the line is a bracketed tag
+                    if (/^\[([^\]]+)\]$/.test(trimmed)) {
+                        lines.shift();
+                        // Remove any blank lines after the tag
+                        while (lines.length && !lines[0].trim()) lines.shift();
+                    } else {
+                        break;
+                    }
+                }
+
+                return lines.join("\n").trim();
+            }
             function normalizeStyleMetaTag(tag) {
-                let cleaned = String(tag || "")
-                    .trim()
-                    .replace(/\r?\n+/g, " ");
+                let cleaned = String(tag || "").trim();
                 if (!cleaned) return "";
                 cleaned = cleaned
                     .replace(/^\[style:\s*/i, "")
@@ -4722,22 +4741,48 @@ If the style description does not strongly imply a different key, keep the curre
                 const sp = song.soundProfile;
                 const tempoPreference = formatTempoPreference(song.tempoPreference || song.settings?.tempo || "AI Choose");
                 const vocalConfig = song.vocalProfiles ? formatVocalProfilesForPrompt(song.vocalProfiles) : song.vocalGender ? formatVocalGenderValue(song.vocalGender) : "Not specified";
-                const exportStyleDetails = [
-                    song.suno_style_prompt || "",
-                    vocalConfig !== "Not specified" ? `Vocal: ${vocalConfig}` : "",
-                    tempoPreference ? `Tempo Preference: ${tempoPreference}` : "",
-                    `Verse Length: ${formatLengthPreference(song.verseLength)}`,
-                    `Chorus Length: ${formatLengthPreference(song.chorusLength)}`,
-                    sp?.eras?.length ? `Era: ${sp.eras.join(", ")}` : "",
-                    sp?.styles?.length ? `Production style: ${sp.styles.join(", ")}` : "",
-                    sp?.insts?.length ? `Instrumentation: ${sp.insts.join(", ")}` : "",
-                    sp?.mixes?.length ? `Mix: ${sp.mixes.join(", ")}` : "",
-                    // Note: Influences are converted to descriptions within suno_style_prompt, not listed separately
-                    song.production ? `Production notes: ${song.production}` : "",
-                    song.chords?.progression ? `Chord progression: ${song.chords.progression}` : "",
-                    song.instrumentExclusions ? `Instrument Exclusions: ${song.instrumentExclusions}` : "",
-                ].filter(Boolean);
-                const exportLyricsMetaTag = exportStyleDetails.length ? normalizeStyleMetaTag(exportStyleDetails.join(" | ")) : "";
+                const verseLength = formatLengthPreference(song.verseLength);
+                const chorusLength = formatLengthPreference(song.chorusLength);
+
+                // Build style details with proper formatting
+                const styleDetailsLines = [];
+
+                // First line: suno_style_prompt
+                if (song.suno_style_prompt) {
+                    styleDetailsLines.push(song.suno_style_prompt);
+                    styleDetailsLines.push(""); // blank line after
+                }
+
+                // Main details section
+                if (vocalConfig !== "Not specified") styleDetailsLines.push(`Vocal: ${vocalConfig}`);
+                if (tempoPreference) styleDetailsLines.push(`Tempo Preference: ${tempoPreference}`);
+                // Only include verse/chorus length if not "Follow Structure"
+                if (verseLength !== "Follow Structure") styleDetailsLines.push(`Verse Length: ${verseLength}`);
+                if (chorusLength !== "Follow Structure") styleDetailsLines.push(`Chorus Length: ${chorusLength}`);
+                if (sp?.eras?.length) styleDetailsLines.push(`Era: ${sp.eras.join(", ")}`);
+                if (sp?.styles?.length) styleDetailsLines.push(`Production style: ${sp.styles.join(", ")}`);
+                if (sp?.insts?.length) styleDetailsLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
+                if (song.instrumentExclusions) styleDetailsLines.push(`Instrument Exclusions: ${song.instrumentExclusions}`);
+
+                // Mix section with blank line before it
+                if (sp?.mixes?.length) {
+                    styleDetailsLines.push("");
+                    styleDetailsLines.push(`Mix: ${sp.mixes.join(", ")}`);
+                }
+
+                // Production notes with blank line before it
+                if (song.production) {
+                    styleDetailsLines.push("");
+                    styleDetailsLines.push(`Production notes: ${song.production}`);
+                }
+
+                // Chord progression with blank line before it
+                if (song.chords?.progression) {
+                    styleDetailsLines.push("");
+                    styleDetailsLines.push(`Chord progression: ${song.chords.progression}`);
+                }
+
+                const exportLyricsMetaTag = styleDetailsLines.length ? normalizeStyleMetaTag(styleDetailsLines.join("\n")) : "";
                 exportStylePromptText = song.suno_style_prompt || "--";
                 exportLyricsText = removeDoubleBrackets([exportLyricsMetaTag || "", ...song.sections.map((s) => `\n[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripLeadingSectionTag(s.lines)}`)].join("\n"));
                 const spLines = sp
@@ -4859,7 +4904,7 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                     if (!aiClient) throw new Error("Google AI key not set — enter your key in the API Key bar.");
                     const response = await aiClient.models.generateContent({ model: "gemini-3.1-flash-lite-preview", contents: prompt });
                     const parsed = JSON.parse(response.text.replace(/```json|```/g, "").trim());
-                    currentSong.sections[idx].lines = stripLeadingSectionTag(stripLeadingStyleMetaTag(parsed.lines));
+                    currentSong.sections[idx].lines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(parsed.lines));
                     currentSong.sections[idx].direction = parsed.direction;
                     if (parsed.suno_style_prompt) currentSong.suno_style_prompt = parsed.suno_style_prompt;
                     currentSong.style_meta_tag = parsed.style_meta_tag || currentSong.style_meta_tag || "";
@@ -5130,11 +5175,12 @@ Respond ONLY with JSON (no markdown, no backticks):
                     song.verseLength = verseLength;
                     song.chorusLength = chorusLength;
                     song.instrumentExclusions = getInstrumentExclusions();
-                    // Clean up any section tags that AI may have included in the lines
+                    // Clean up any section tags and direction tags that AI may have included in the lines
+                    // These will be re-added during export from the type and direction fields
                     if (Array.isArray(song.sections)) {
                         song.sections.forEach((section) => {
                             if (section.lines) {
-                                section.lines = stripLeadingSectionTag(section.lines);
+                                section.lines = stripAllLeadingMetaTags(section.lines);
                             }
                         });
                     }
