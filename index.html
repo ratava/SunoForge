@@ -48,6 +48,7 @@
                 border-bottom: 1px solid var(--border);
                 background: var(--surface);
                 gap: 12px;
+                justify-content: space-between;
             }
             .logo {
                 display: flex;
@@ -65,6 +66,13 @@
                 align-items: center;
                 justify-content: center;
                 font-size: 14px;
+            }
+            .version {
+                font-size: 10px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                user-select: all;
+                cursor: text;
             }
 
             .main {
@@ -1483,6 +1491,7 @@
                 <div class="logo-icon">&#127932;</div>
                 SunoForge
             </div>
+            <div class="version" id="version">ve32dce1</div>
         </header>
 
         <div class="api-bar">
@@ -1588,7 +1597,7 @@
                             <option value="ai" selected>AI Choose</option>
                             <option value="custom">Specific BPM / Range</option>
                         </select>
-                        <div class="range-slider-container" id="tempo-custom-row" style="display: none;">
+                        <div class="range-slider-container" id="tempo-custom-row" style="display: none">
                             <div class="range-slider-row">
                                 <span class="range-slider-label">Min</span>
                                 <input type="range" id="tempo-min" min="40" max="200" value="90" step="1" oninput="updateTempoRange()" />
@@ -1606,7 +1615,7 @@
                             <option value="none" selected>No Constraint</option>
                             <option value="custom">Specific Duration</option>
                         </select>
-                        <div class="range-slider-container" id="duration-custom-row" style="display: none;">
+                        <div class="range-slider-container" id="duration-custom-row" style="display: none">
                             <div class="range-slider-row">
                                 <span class="range-slider-label">Min</span>
                                 <input type="range" id="duration-min" min="60" max="480" value="180" step="30" oninput="updateDurationRange()" />
@@ -1674,8 +1683,8 @@
                             <option value="12/8">12/8</option>
                             <option value="Custom">Custom</option>
                         </select>
-                        <div id="time-signature-custom-row" style="display: none; margin-top: 8px;">
-                            <input type="text" id="time-signature-custom" placeholder="e.g., 7/8, 13/16, 5/8" style="width: 100%;" />
+                        <div id="time-signature-custom-row" style="display: none; margin-top: 8px">
+                            <input type="text" id="time-signature-custom" placeholder="e.g., 7/8, 13/16, 5/8" style="width: 100%" />
                         </div>
                     </div>
                     <div class="field-group">
@@ -1727,7 +1736,7 @@
                     </div>
 
                     <div class="info-box" id="vocal-config-info" style="margin-top: 8px">Configure vocal characteristics. Unspecified fields will be chosen automatically by the song engine.</div>
-                    <div class="info-box" id="instrumental-info" style="margin-top: 8px; display: none;">Instrumental track with no vocals. Section labels and performance directions will be provided instead of lyrics.</div>
+                    <div class="info-box" id="instrumental-info" style="margin-top: 8px; display: none">Instrumental track with no vocals. Section labels and performance directions will be provided instead of lyrics.</div>
 
                     <div id="vocal-profiles-container" class="vocal-builder" style="margin-top: 12px">
                         <!-- Vocal profiles will be dynamically inserted here -->
@@ -1969,8 +1978,12 @@
                 <div class="right-content" id="tab-history" style="display: none">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px">
                         <div class="section-header">Saved Songs</div>
-                        <button class="btn-sm danger" onclick="clearHistory()">Clear All</button>
+                        <div style="display: flex; gap: 6px">
+                            <button class="btn-sm" onclick="importFromFile()">Import</button>
+                            <button class="btn-sm danger" onclick="clearHistory()">Clear All</button>
+                        </div>
                     </div>
+                    <input type="file" id="import-file-input" accept=".txt" style="display: none" onchange="handleImportFile(event)" />
                     <div class="history-list" id="history-list">
                         <div class="output-empty" style="padding: 30px 0">
                             <div class="empty-icon" style="font-size: 28px">&#128194;</div>
@@ -2347,16 +2360,16 @@
                 const maxInput = document.getElementById("tempo-max");
                 const display = document.getElementById("tempo-range-display");
                 if (!minInput || !maxInput || !display) return;
-                
+
                 let min = parseInt(minInput.value);
                 let max = parseInt(maxInput.value);
-                
+
                 // Ensure min doesn't exceed max
                 if (min > max) {
                     max = min;
                     maxInput.value = min;
                 }
-                
+
                 if (min === max) {
                     display.textContent = `${min} BPM`;
                 } else {
@@ -2368,22 +2381,22 @@
                 const maxInput = document.getElementById("duration-max");
                 const display = document.getElementById("duration-range-display");
                 if (!minInput || !maxInput || !display) return;
-                
+
                 let min = parseInt(minInput.value);
                 let max = parseInt(maxInput.value);
-                
+
                 // Ensure min doesn't exceed max
                 if (min > max) {
                     max = min;
                     maxInput.value = min;
                 }
-                
+
                 const formatTime = (seconds) => {
                     const mins = Math.floor(seconds / 60);
                     const secs = seconds % 60;
-                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                    return `${mins}:${secs.toString().padStart(2, "0")}`;
                 };
-                
+
                 if (min === max) {
                     display.textContent = formatTime(min);
                 } else {
@@ -2393,10 +2406,10 @@
             function getTempoPreference() {
                 const mode = document.getElementById("tempo-mode")?.value || "ai";
                 if (mode !== "custom") return "";
-                
+
                 const min = parseInt(document.getElementById("tempo-min")?.value || "90");
                 const max = parseInt(document.getElementById("tempo-max")?.value || "90");
-                
+
                 if (min === max) {
                     return `${min} BPM`;
                 } else {
@@ -2406,16 +2419,16 @@
             function getDurationPreference() {
                 const mode = document.getElementById("duration-mode")?.value || "none";
                 if (mode !== "custom") return null;
-                
+
                 const min = parseInt(document.getElementById("duration-min")?.value || "180");
                 const max = parseInt(document.getElementById("duration-max")?.value || "180");
-                
+
                 const formatTime = (seconds) => {
                     const mins = Math.floor(seconds / 60);
                     const secs = seconds % 60;
-                    return secs > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : `${mins} minutes`;
+                    return secs > 0 ? `${mins}:${secs.toString().padStart(2, "0")}` : `${mins} minutes`;
                 };
-                
+
                 if (min === max) {
                     return formatTime(min);
                 } else {
@@ -2440,7 +2453,7 @@
                 const minInput = document.getElementById("tempo-min");
                 const maxInput = document.getElementById("tempo-max");
                 if (!mode || !minInput || !maxInput) return;
-                
+
                 if (normalized === "AI Choose") {
                     mode.value = "ai";
                     minInput.value = "90";
@@ -3051,38 +3064,38 @@
             // ── Vocal Configuration Application ───────────────────────────────────────────
             function applyVocalConfiguration(vocalConfig) {
                 if (!vocalConfig || !vocalConfig.type) return;
-                
+
                 // Select the vocal type
                 const vocalTypeTags = document.querySelectorAll("#vocal-type-tags .tag");
-                vocalTypeTags.forEach(tag => {
+                vocalTypeTags.forEach((tag) => {
                     tag.classList.remove("active");
                     if (tag.dataset.val === vocalConfig.type) {
                         tag.classList.add("active");
                         selectVocalType(tag);
                     }
                 });
-                
+
                 // If instrumental, we're done
                 if (vocalConfig.type === "Instrumental") return;
-                
+
                 // Apply profiles if provided
                 if (vocalConfig.profiles && vocalConfig.profiles.length > 0) {
                     // Wait for vocal profiles to build
                     setTimeout(() => {
                         const profileBuilders = document.querySelectorAll(".vocal-profile-builder");
-                        
+
                         vocalConfig.profiles.forEach((profile, idx) => {
                             if (idx >= profileBuilders.length) return;
                             const builder = profileBuilders[idx];
-                            
+
                             // Set gender
                             const genderSelect = builder.querySelector(`.vp-gender[data-idx="${idx}"]`);
                             if (genderSelect && profile.gender) {
                                 genderSelect.value = profile.gender;
                                 // Trigger change to update range options
-                                genderSelect.dispatchEvent(new Event('change'));
+                                genderSelect.dispatchEvent(new Event("change"));
                             }
-                            
+
                             // Set range after gender change has time to update options
                             setTimeout(() => {
                                 const rangeSelect = builder.querySelector(`.vp-range[data-idx="${idx}"]`);
@@ -3090,15 +3103,15 @@
                                     rangeSelect.value = profile.range;
                                 }
                             }, 50);
-                            
+
                             // Set accents
                             if (profile.accents && profile.accents.length > 0) {
                                 const accentContainer = builder.querySelector(`#vp-accent-${idx}`);
                                 if (accentContainer) {
                                     // Clear existing custom accents
-                                    accentContainer.querySelectorAll(".tag-custom").forEach(el => el.remove());
-                                    
-                                    profile.accents.forEach(accent => {
+                                    accentContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+
+                                    profile.accents.forEach((accent) => {
                                         // Try to match preset
                                         const presetTag = accentContainer.querySelector(`.tag[data-val="${accent}"]`);
                                         if (presetTag) {
@@ -3110,15 +3123,15 @@
                                     });
                                 }
                             }
-                            
+
                             // Set styles
                             if (profile.styles && profile.styles.length > 0) {
                                 const styleContainer = builder.querySelector(`#vp-style-${idx}`);
                                 if (styleContainer) {
                                     // Clear existing custom styles
-                                    styleContainer.querySelectorAll(".tag-custom").forEach(el => el.remove());
-                                    
-                                    profile.styles.forEach(style => {
+                                    styleContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+
+                                    profile.styles.forEach((style) => {
                                         // Try to match preset
                                         const styleTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
                                         if (styleTag) {
@@ -3133,40 +3146,40 @@
                         });
                     }, 100);
                 }
-                
+
                 // Apply choir configuration if provided
                 if (vocalConfig.choir && vocalConfig.choir.enabled) {
                     const choirCheckbox = document.getElementById("choir-enabled");
                     if (choirCheckbox) {
                         choirCheckbox.checked = true;
                         toggleChoir(true);
-                        
+
                         setTimeout(() => {
                             if (vocalConfig.choir.gender) {
                                 const genderSelect = document.getElementById("choir-gender");
                                 if (genderSelect) genderSelect.value = vocalConfig.choir.gender;
                             }
-                            
+
                             if (vocalConfig.choir.size) {
                                 const sizeSelect = document.getElementById("choir-size");
                                 if (sizeSelect) sizeSelect.value = vocalConfig.choir.size;
                             }
-                            
+
                             if (vocalConfig.choir.ranges && vocalConfig.choir.ranges.length > 0) {
                                 const rangeContainer = document.getElementById("choir-range-tags");
                                 if (rangeContainer) {
-                                    vocalConfig.choir.ranges.forEach(range => {
+                                    vocalConfig.choir.ranges.forEach((range) => {
                                         const rangeTag = rangeContainer.querySelector(`.tag[data-val="${range}"]`);
                                         if (rangeTag) rangeTag.classList.add("active");
                                     });
                                 }
                             }
-                            
+
                             if (vocalConfig.choir.accents && vocalConfig.choir.accents.length > 0) {
                                 const accentContainer = document.getElementById("choir-accent-tags");
                                 if (accentContainer) {
-                                    accentContainer.querySelectorAll(".tag-custom").forEach(el => el.remove());
-                                    vocalConfig.choir.accents.forEach(accent => {
+                                    accentContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+                                    vocalConfig.choir.accents.forEach((accent) => {
                                         const presetTag = accentContainer.querySelector(`.tag[data-val="${accent}"]`);
                                         if (presetTag) {
                                             presetTag.classList.add("active");
@@ -3176,12 +3189,12 @@
                                     });
                                 }
                             }
-                            
+
                             if (vocalConfig.choir.styles && vocalConfig.choir.styles.length > 0) {
                                 const styleContainer = document.getElementById("choir-style-tags");
                                 if (styleContainer) {
-                                    styleContainer.querySelectorAll(".tag-custom").forEach(el => el.remove());
-                                    vocalConfig.choir.styles.forEach(style => {
+                                    styleContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+                                    vocalConfig.choir.styles.forEach((style) => {
                                         const presetTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
                                         if (presetTag) {
                                             presetTag.classList.add("active");
@@ -3234,7 +3247,7 @@
             function structureFlowFromSequence(sequence) {
                 return (sequence || [])
                     .map((step) => {
-                        if (typeof step === 'object' && step.name) {
+                        if (typeof step === "object" && step.name) {
                             return step.chords ? `${step.name} (${step.chords})` : step.name;
                         }
                         return String(step || "").trim();
@@ -3252,12 +3265,12 @@
                         if (match) {
                             return { name: match[1].trim(), chords: match[2].trim() };
                         }
-                        return { name: step, chords: '' };
+                        return { name: step, chords: "" };
                     })
                     .filter(Boolean);
             }
             function suggestCustomStructureDescription(sequence) {
-                const steps = (sequence || []).map(s => typeof s === 'object' ? s.name : s).filter(Boolean);
+                const steps = (sequence || []).map((s) => (typeof s === "object" ? s.name : s)).filter(Boolean);
                 if (!steps.length) return "Built from scratch in the custom structure builder.";
                 if (steps.length === 1) return `Single-section form centered on ${steps[0]}.`;
                 return `Custom-built form that moves through ${steps.slice(0, -1).join(", ")}, and resolves with ${steps[steps.length - 1]}.`;
@@ -3321,11 +3334,10 @@
                 }
                 flowEl.textContent = structureFlowFromSequence(customStructureDraft);
                 sequenceEl.innerHTML = customStructureDraft
-                    .map(
-                        (step, idx) => {
-                            const stepName = typeof step === 'object' ? step.name : step;
-                            const stepChords = typeof step === 'object' ? (step.chords || '') : '';
-                            return `<div class="custom-structure-step">
+                    .map((step, idx) => {
+                        const stepName = typeof step === "object" ? step.name : step;
+                        const stepChords = typeof step === "object" ? step.chords || "" : "";
+                        return `<div class="custom-structure-step">
                                 <div class="custom-structure-step-header">
                                     <span class="custom-structure-step-label">${idx + 1}.</span>
                                     <span style="flex:1">${stepName}</span>
@@ -3339,20 +3351,19 @@
                                            onclick="event.stopPropagation()" />
                                 </div>
                             </div>`;
-                        }
-                    )
+                    })
                     .join("");
             }
             function addStructurePoint(step) {
                 const value = String(step || "").trim();
                 if (!value) return;
-                customStructureDraft.push({ name: value, chords: '' });
+                customStructureDraft.push({ name: value, chords: "" });
                 renderCustomStructureDraft();
             }
             function updateStructureStepChords(idx, chords) {
                 if (idx < 0 || idx >= customStructureDraft.length) return;
                 const step = customStructureDraft[idx];
-                if (typeof step === 'object') {
+                if (typeof step === "object") {
                     step.chords = chords.trim();
                 } else {
                     customStructureDraft[idx] = { name: step, chords: chords.trim() };
@@ -3796,12 +3807,12 @@ If the style description does not strongly imply a different key, keep the curre
                     }
 
                     if (s.pov) applySingleTagOrCustom("pov-tags", s.pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
-                    
+
                     // Apply vocal configuration
                     if (s.vocal_config && s.vocal_config.type) {
                         applyVocalConfiguration(s.vocal_config);
                     }
-                    
+
                     if (s.instrument_exclusions) document.getElementById("instrument-exclude").value = String(s.instrument_exclusions || "");
 
                     if (s.era_keys && s.era_keys.length) applyMultiTagValues("era-tags", s.era_keys);
@@ -3812,11 +3823,9 @@ If the style description does not strongly imply a different key, keep the curre
 
                     const resultEl = document.getElementById("style-result");
                     resultEl.style.display = "block";
-                    
-                    const vocalConfigDisplay = s.vocal_config && s.vocal_config.type 
-                        ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>`
-                        : "";
-                    
+
+                    const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>` : "";
+
                     resultEl.innerHTML = `<div class="style-result-box">
       <span class="style-result-title">✓ Style Applied to All Settings</span>
             <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
@@ -4317,7 +4326,7 @@ If the style description does not strongly imply a different key, keep the curre
                 applyTempoPreference(settings.tempo || song.tempoPreference || song.key_info?.tempo || "AI Choose");
 
                 document.getElementById("musical-key").value = normalizeMusicalKey(settings.musicalKey || song.key_info?.key || "Auto");
-                
+
                 // Restore time signature
                 const timeSignatureValue = settings.timeSignature || song.key_info?.time_sig || "4/4";
                 const timeSignatureSelect = document.getElementById("time-signature");
@@ -4330,7 +4339,7 @@ If the style description does not strongly imply a different key, keep the curre
                     timeSignatureCustom.value = timeSignatureValue;
                 }
                 toggleTimeSignatureMode();
-                
+
                 applySingleTagOrCustom("pov-tags", settings.pov || "first person (I/me)", "pov-custom-row", "pov-custom-tag", "Custom perspective");
 
                 // Restore vocal profiles
@@ -4452,6 +4461,255 @@ If the style description does not strongly imply a different key, keep the curre
                 renderHistory();
             }
 
+            function importFromFile() {
+                document.getElementById("import-file-input").click();
+            }
+
+            function handleImportFile(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const content = e.target.result;
+                        const song = parseImportedSong(content);
+                        if (song) {
+                            // Add to history
+                            history.unshift({ ...song, savedAt: new Date().toISOString(), id: Date.now() });
+                            if (history.length > 20) history.pop();
+                            persistHistory();
+                            renderHistory();
+
+                            // Load the imported song
+                            currentSong = song;
+                            applyHistorySettings(song);
+                            renderSongCard(song);
+                            renderChordsCard(song);
+                            switchRTab("output");
+                        }
+                    } catch (err) {
+                        console.error("Import error:", err);
+                        alert("Failed to import file. Please make sure it's a valid SunoForge export file.");
+                    }
+                };
+                reader.readAsText(file);
+                // Reset the input so the same file can be imported again
+                event.target.value = "";
+            }
+
+            function parseImportedSong(text) {
+                const lines = text.split("\n");
+                const song = {
+                    sections: [],
+                    soundProfile: {},
+                    key_info: {},
+                    settings: {},
+                };
+
+                let currentSection = null;
+                let inLyrics = false;
+                let inProduction = false;
+                let inChords = false;
+                let inSoundProfile = false;
+                let currentLyricSection = null;
+
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+
+                    // Parse header fields
+                    if (line.startsWith("SONG: ")) {
+                        song.title = line.substring(6).trim();
+                    } else if (line.startsWith("Genre: ")) {
+                        song.genre = line.substring(7).trim();
+                    } else if (line.startsWith("Vocal Configuration: ")) {
+                        const vocalText = line.substring(21).trim();
+                        song.vocalProfiles = parseVocalConfiguration(vocalText);
+                    } else if (line.startsWith("Tempo Preference: ")) {
+                        song.tempoPreference = line.substring(18).trim();
+                    } else if (line.startsWith("Verse Length: ")) {
+                        song.verseLength = line.substring(14).trim();
+                    } else if (line.startsWith("Chorus Length: ")) {
+                        song.chorusLength = line.substring(15).trim();
+                    } else if (line.startsWith("Instrument Exclusions: ")) {
+                        const exclusions = line.substring(23).trim();
+                        song.instrumentExclusions = exclusions === "--" ? "" : exclusions;
+                    } else if (line.startsWith("Structure: ")) {
+                        song.structureName = line.substring(11).trim();
+                    } else if (line.startsWith("Key: ")) {
+                        const keyInfo = line.substring(5).trim();
+                        const parts = keyInfo.split(" · ");
+                        if (parts.length >= 4) {
+                            song.key_info.key = parts[0] !== "--" ? parts[0] : null;
+                            song.key_info.time_sig = parts[1] !== "--" ? parts[1] : null;
+                            song.key_info.tempo = parts[2] !== "--" ? parts[2] : null;
+                            song.key_info.feel = parts[3] !== "--" ? parts[3] : null;
+                        }
+                    } else if (line.startsWith("Suno Style Prompt: ")) {
+                        const stylePrompt = line.substring(19).trim();
+                        song.suno_style_prompt = stylePrompt === "--" ? "" : stylePrompt;
+                    } else if (line === "--- SOUND PROFILE ---") {
+                        inSoundProfile = true;
+                        inProduction = false;
+                        inChords = false;
+                        inLyrics = false;
+                    } else if (line === "--- PRODUCTION NOTES ---") {
+                        inProduction = true;
+                        inSoundProfile = false;
+                        inChords = false;
+                        inLyrics = false;
+                        song.production = "";
+                    } else if (line === "--- CHORD PROGRESSION ---") {
+                        inChords = true;
+                        inProduction = false;
+                        inSoundProfile = false;
+                        inLyrics = false;
+                        song.chords = { progression: "" };
+                    } else if (line === "--- LYRICS ---") {
+                        inLyrics = true;
+                        inProduction = false;
+                        inChords = false;
+                        inSoundProfile = false;
+                    } else if (inSoundProfile && line) {
+                        // Parse sound profile fields
+                        if (line.startsWith("Era: ")) {
+                            song.soundProfile.eras = line
+                                .substring(5)
+                                .split(",")
+                                .map((s) => s.trim());
+                        } else if (line.startsWith("Style: ")) {
+                            song.soundProfile.styles = line
+                                .substring(7)
+                                .split(",")
+                                .map((s) => s.trim());
+                        } else if (line.startsWith("Instrumentation: ")) {
+                            song.soundProfile.insts = line
+                                .substring(17)
+                                .split(",")
+                                .map((s) => s.trim());
+                        } else if (line.startsWith("Mix: ")) {
+                            song.soundProfile.mixes = line
+                                .substring(5)
+                                .split(",")
+                                .map((s) => s.trim());
+                        } else if (line.startsWith("Influences: ")) {
+                            song.soundProfile.infs = line
+                                .substring(12)
+                                .split(",")
+                                .map((s) => s.trim());
+                        }
+                    } else if (inProduction && line && !line.startsWith("---")) {
+                        song.production += (song.production ? "\n" : "") + line;
+                    } else if (inChords && line && !line.startsWith("---")) {
+                        if (line !== "--") {
+                            song.chords.progression += (song.chords.progression ? "\n" : "") + line;
+                        }
+                    } else if (inLyrics && line) {
+                        // Parse lyrics sections
+                        const sectionMatch = line.match(/^\[(.+?)\]$/);
+                        if (sectionMatch) {
+                            const sectionType = sectionMatch[1].toLowerCase();
+                            // Check if it's a direction tag or section type
+                            if (currentLyricSection && (sectionType.includes("whispered") || sectionType.includes("shouted") || sectionType.includes("spoken") || sectionType.includes("backing") || sectionType.includes("ad-lib"))) {
+                                currentLyricSection.direction = sectionMatch[1];
+                            } else {
+                                currentLyricSection = {
+                                    type: sectionMatch[1],
+                                    lines: "",
+                                    direction: null,
+                                };
+                                song.sections.push(currentLyricSection);
+                            }
+                        } else if (currentLyricSection && line && !line.startsWith("---")) {
+                            currentLyricSection.lines += (currentLyricSection.lines ? "\n" : "") + line;
+                        }
+                    } else if (!song.logline && i > 0 && i < 10 && line && !line.startsWith("Genre:") && !line.startsWith("SONG:")) {
+                        // Try to capture logline from early lines
+                        if (!song.logline) song.logline = line;
+                    }
+                }
+
+                // Fill in settings from parsed data
+                song.settings = {
+                    title: song.title,
+                    concept: song.logline || "",
+                    genreKey: currentGenreKey,
+                    genreLabel: song.genre,
+                    mood: null,
+                    rhyme: null,
+                    tempo: song.tempoPreference,
+                    musicalKey: song.key_info?.key || "Auto",
+                    timeSignature: song.key_info?.time_sig || "4/4",
+                    pov: null,
+                    vocalProfiles: song.vocalProfiles,
+                    verseLength: song.verseLength,
+                    chorusLength: song.chorusLength,
+                    structure: song.structureName ? { name: song.structureName } : null,
+                    soundProfile: song.soundProfile,
+                    lyricsMode: "single",
+                    aiMode: "complete",
+                    userLyrics: null,
+                    instrumentExclusions: song.instrumentExclusions,
+                };
+
+                return song;
+            }
+
+            function parseVocalConfiguration(vocalText) {
+                if (!vocalText || vocalText === "Not specified") return null;
+
+                // Parse formats like:
+                // "Single: Male, baritone, American"
+                // "Duet: Female (soprano, British) + Male (tenor, American)"
+                // "Group: 3 voices"
+
+                const result = { type: "single", profiles: [] };
+
+                if (vocalText.startsWith("Single:")) {
+                    result.type = "single";
+                    const config = vocalText.substring(7).trim();
+                    const parts = config.split(",").map((s) => s.trim());
+                    result.profiles = [
+                        {
+                            gender: parts[0] || "Male",
+                            range: parts[1] || null,
+                            accents: parts.slice(2).filter((a) => a),
+                        },
+                    ];
+                } else if (vocalText.startsWith("Duet:")) {
+                    result.type = "duet";
+                    const config = vocalText.substring(5).trim();
+                    // Parse "Female (soprano, British) + Male (tenor, American)"
+                    const vocalists = config.split("+").map((s) => s.trim());
+                    result.profiles = vocalists.map((v) => {
+                        const match = v.match(/(\w+)\s*\(([^)]+)\)/);
+                        if (match) {
+                            const gender = match[1];
+                            const details = match[2].split(",").map((s) => s.trim());
+                            return {
+                                gender: gender,
+                                range: details[0] || null,
+                                accents: details.slice(1).filter((a) => a),
+                            };
+                        }
+                        return { gender: v, range: null, accents: [] };
+                    });
+                } else if (vocalText.startsWith("Group:")) {
+                    result.type = "group";
+                    const match = vocalText.match(/(\d+)\s*voices/);
+                    const count = match ? parseInt(match[1]) : 3;
+                    result.profiles = Array(count)
+                        .fill(null)
+                        .map(() => ({
+                            gender: "Mixed",
+                            range: null,
+                            accents: [],
+                        }));
+                }
+
+                return result;
+            }
+
             // ── Export ────────────────────────────────────────────────────────────────────
             let exportText = "";
             let exportLyricsText = "";
@@ -4547,8 +4805,8 @@ If the style description does not strongly imply a different key, keep the curre
                 });
             }
             function removeDoubleBrackets(text) {
-                // Remove double round brackets (()) and double square brackets [[]] 
-                return text.replace(/\(\(/g, '(').replace(/\)\)/g, ')').replace(/\[\[/g, '[').replace(/\]\]/g, ']');
+                // Remove double round brackets (()) and double square brackets [[]]
+                return text.replace(/\(\(/g, "(").replace(/\)\)/g, ")").replace(/\[\[/g, "[").replace(/\]\]/g, "]");
             }
             function copyLyricsExport() {
                 const cleanedLyrics = removeDoubleBrackets(exportLyricsText);
@@ -4746,13 +5004,13 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                         keep: "Keep my current lyrics exactly as provided",
                     };
                     const modeDesc = modeLabels[aiMode] || "Use these as a foundation";
-                    
+
                     // Modes that preserve user lyrics should keep meta tags
                     const preservesLyrics = ["keep", "complete", "fit"].includes(aiMode);
-                    const metaTagInstruction = preservesLyrics 
+                    const metaTagInstruction = preservesLyrics
                         ? ` IMPORTANT: Preserve ALL meta tags and bracketed instructions exactly as written. This includes square brackets [] and parentheses () that contain performance directions, vocal effects, or any other production notes. Do not strip, remove, or modify these tags - they are intentional parts of the lyrics.`
                         : "";
-                    
+
                     if (userLyrics.mode === "bulk") {
                         lyricsInstruction = `\n\nUSER LYRICS (${modeDesc}):\n"""\n${userLyrics.content}\n"""\nMark sections using user lyrics with "userProvided":true.${metaTagInstruction}`;
                         if (aiMode === "keep") {
@@ -4771,9 +5029,10 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
 
                 const soundInstruction = soundProfile ? `\n\nSOUND PROFILE:\n${soundProfilePromptText(soundProfile)}` : "";
 
-                const influenceInstruction = soundProfile && soundProfile.infs && soundProfile.infs.length 
-                    ? `\n\nCRITICAL - KEY INFLUENCES: The user has specified these influences: ${soundProfile.infs.join(", ")}. For each artist name provided, you MUST convert it to a Suno-safe 4-6 word descriptive phrase that captures that artist's signature sound. DO NOT USE THE ARTIST NAME IN ANY FORM - not with "-esque", "-style", "-inspired", "-like" or any other suffix. ONLY use the descriptive sound characteristics. Examples: "Florence and the Machine" → "orchestral indie pop, ethereal soprano" (NOT "Florence and the Machine-inspired") | "Radiohead" → "experimental alt-rock, atmospheric electronics" (NOT "Radiohead-esque") | "Billie Eilish" → "whispered vocals, dark pop minimalism" (NOT "Billie Eilish-style"). In the suno_style_prompt field, use ONLY the converted descriptive phrases without artist names.`
-                    : "";
+                const influenceInstruction =
+                    soundProfile && soundProfile.infs && soundProfile.infs.length
+                        ? `\n\nCRITICAL - KEY INFLUENCES: The user has specified these influences: ${soundProfile.infs.join(", ")}. For each artist name provided, you MUST convert it to a Suno-safe 4-6 word descriptive phrase that captures that artist's signature sound. DO NOT USE THE ARTIST NAME IN ANY FORM - not with "-esque", "-style", "-inspired", "-like" or any other suffix. ONLY use the descriptive sound characteristics. Examples: "Florence and the Machine" → "orchestral indie pop, ethereal soprano" (NOT "Florence and the Machine-inspired") | "Radiohead" → "experimental alt-rock, atmospheric electronics" (NOT "Radiohead-esque") | "Billie Eilish" → "whispered vocals, dark pop minimalism" (NOT "Billie Eilish-style"). In the suno_style_prompt field, use ONLY the converted descriptive phrases without artist names.`
+                        : "";
 
                 const tempoForPrompt = formatTempoPreference(tempo);
                 const keyForPrompt = selectedMusicalKey;
@@ -4785,19 +5044,21 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                 let sectionChordsInstruction = "";
                 if (struct.sequence && Array.isArray(struct.sequence)) {
                     const sectionChords = struct.sequence
-                        .filter(step => typeof step === 'object' && step.chords)
-                        .map(step => `${step.name}: ${step.chords}`)
+                        .filter((step) => typeof step === "object" && step.chords)
+                        .map((step) => `${step.name}: ${step.chords}`)
                         .join(" | ");
                     if (sectionChords) {
                         sectionChordsInstruction = `\n\nSECTION-SPECIFIC CHORDS:\n${sectionChords}\nIncorporate these chord progressions into the corresponding sections. Include these chords in your production notes and chord progression response.`;
                     }
                 }
 
-                const structureInstruction = isInstrumental 
+                const structureInstruction = isInstrumental
                     ? " This is an INSTRUMENTAL track with NO VOCALS and NO LYRICS. For each section, provide only the section name and a brief performance/arrangement direction. Use placeholder text like '[Musical performance]' or '[Instrumental]' for the lines field."
-                    : (verseLength || chorusLength ? ` Where specified, write verse sections to approximately ${formatLengthPreference(verseLength)} and chorus sections to approximately ${formatLengthPreference(chorusLength)}, unless user-provided lyrics require otherwise.` : " Let verse and chorus lengths follow the selected structure naturally, unless user-provided lyrics require otherwise.");
+                    : verseLength || chorusLength
+                      ? ` Where specified, write verse sections to approximately ${formatLengthPreference(verseLength)} and chorus sections to approximately ${formatLengthPreference(chorusLength)}, unless user-provided lyrics require otherwise.`
+                      : " Let verse and chorus lengths follow the selected structure naturally, unless user-provided lyrics require otherwise.";
 
-                const titleInstruction = title 
+                const titleInstruction = title
                     ? `Use the provided title exactly as given: ${title}.`
                     : `Because no title was provided, you must create a compelling song title derived primarily from the ${isInstrumental ? "concept and musical style" : "lyrics and hook, and secondarily from the concept if needed"}. Do not return generic placeholders like Untitled, Song Title, or Title.`;
 
@@ -4947,6 +5208,8 @@ Respond ONLY with JSON (no markdown, no backticks):
             window.copyText = copyText;
             window.loadFromHistory = loadFromHistory;
             window.clearHistory = clearHistory;
+            window.importFromFile = importFromFile;
+            window.handleImportFile = handleImportFile;
             window.resolveSubmitConfirm = resolveSubmitConfirm;
             window.closeSubmitConfirm = closeSubmitConfirm;
 
