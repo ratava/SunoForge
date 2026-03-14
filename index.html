@@ -1535,7 +1535,7 @@
                 <div class="logo-icon">&#127932;</div>
                 SunoForge
             </div>
-            <div class="version" id="version">20260315-001</div>
+            <div class="version" id="version">20260315-002</div>
         </header>
 
         <div class="api-bar">
@@ -2048,6 +2048,7 @@
                     <button class="btn-export-green" id="copy-title-btn" onclick="copySongTitleExport()">Copy Song Title</button>
                     <button class="btn-export-green" id="copy-style-btn" onclick="copyStylePromptExport()">Copy Style Prompt</button>
                     <button class="btn-export-green" id="copy-lyrics-btn" onclick="copyLyricsExport()">Copy Lyrics</button>
+                    <button class="btn-export-green" id="copy-exclusions-btn" onclick="copyExclusionsExport()" style="display: none">Copy Exclusions</button>
                     <button class="btn-primary" onclick="downloadTxt()">Download .txt</button>
                     <button class="btn-export-orange" onclick="closeModal()">Close</button>
                 </div>
@@ -4550,6 +4551,12 @@ If the style description does not strongly imply a different key, keep the curre
                             applyHistorySettings(song);
                             renderSongCard(song);
                             renderChordsCard(song);
+
+                            // If lyrics were imported, switch to lyrics tab to show them
+                            if (song.settings?.userLyrics?.content) {
+                                switchLTab("lyrics");
+                            }
+
                             switchRTab("output");
                         }
                     } catch (err) {
@@ -4563,6 +4570,56 @@ If the style description does not strongly imply a different key, keep the curre
             }
 
             function parseImportedSong(text) {
+                // Check for JSON data block first
+                const jsonMarker = "--- SUNOFORGE JSON DATA ---";
+                const jsonIndex = text.indexOf(jsonMarker);
+
+                if (jsonIndex !== -1) {
+                    // Extract and parse JSON data
+                    try {
+                        const jsonText = text.substring(jsonIndex + jsonMarker.length).trim();
+                        const jsonData = JSON.parse(jsonText);
+
+                        if (jsonData.version && jsonData.song) {
+                            // Use JSON data directly
+                            const song = jsonData.song;
+
+                            // Ensure settings exist and populate userLyrics if sections exist
+                            if (!song.settings) {
+                                song.settings = {};
+                            }
+
+                            // Convert sections to bulk lyrics format if not already in settings
+                            if (!song.settings.userLyrics && song.sections && song.sections.length > 0) {
+                                const bulkLyrics = song.sections
+                                    .map((section) => {
+                                        let sectionText = `[${section.type}]`;
+                                        if (section.direction) {
+                                            sectionText += `\n[${section.direction}]`;
+                                        }
+                                        if (section.lines) {
+                                            sectionText += `\n${section.lines}`;
+                                        }
+                                        return sectionText;
+                                    })
+                                    .join("\n\n")
+                                    .trim();
+
+                                if (bulkLyrics) {
+                                    song.settings.userLyrics = { mode: "bulk", content: bulkLyrics };
+                                    song.settings.aiMode = song.settings.aiMode || "keep";
+                                }
+                            }
+
+                            return song;
+                        }
+                    } catch (err) {
+                        console.warn("Failed to parse JSON data, falling back to text parsing:", err);
+                        // Fall through to legacy text parsing
+                    }
+                }
+
+                // Legacy text parsing (fallback)
                 const lines = text.split("\n");
                 const song = {
                     sections: [],
@@ -4580,6 +4637,11 @@ If the style description does not strongly imply a different key, keep the curre
 
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i].trim();
+
+                    // Stop parsing if we hit the JSON data block
+                    if (line === "--- SUNOFORGE JSON DATA ---") {
+                        break;
+                    }
 
                     // Parse header fields
                     if (line.startsWith("SONG: ")) {
@@ -4672,13 +4734,24 @@ If the style description does not strongly imply a different key, keep the curre
                         // Parse lyrics sections
                         const sectionMatch = line.match(/^\[(.+?)\]$/);
                         if (sectionMatch) {
-                            const sectionType = sectionMatch[1].toLowerCase();
-                            // Check if it's a direction tag or section type
-                            if (currentLyricSection && (sectionType.includes("whispered") || sectionType.includes("shouted") || sectionType.includes("spoken") || sectionType.includes("backing") || sectionType.includes("ad-lib"))) {
-                                currentLyricSection.direction = sectionMatch[1];
-                            } else {
+                            const sectionContent = sectionMatch[1];
+                            const sectionType = sectionContent.toLowerCase();
+
+                            // Skip [Style: ...] opening tag and closing ]
+                            if (sectionType.startsWith("style:") || sectionType === "]") {
+                                continue;
+                            }
+
+                            // Check if this is a known section type (with optional numbers like "Verse 1")
+                            const isKnownSection = /^(intro|verse|pre-?chorus|chorus|post-?chorus|bridge|outro|hook|refrain|interlude|instrumental|solo|breakdown|drop|build|coda|tag|ending)(\s+\d+)?$/i.test(sectionType);
+
+                            // If we have a current section and this looks like a direction tag (not a known section type)
+                            if (currentLyricSection && !isKnownSection) {
+                                currentLyricSection.direction = sectionContent;
+                            } else if (isKnownSection) {
+                                // This is a new section
                                 currentLyricSection = {
-                                    type: sectionMatch[1],
+                                    type: sectionContent,
                                     lines: "",
                                     direction: null,
                                 };
@@ -4691,6 +4764,24 @@ If the style description does not strongly imply a different key, keep the curre
                         // Try to capture logline from early lines
                         if (!song.logline) song.logline = line;
                     }
+                }
+
+                // Convert sections to bulk lyrics format
+                let bulkLyrics = "";
+                if (song.sections && song.sections.length > 0) {
+                    bulkLyrics = song.sections
+                        .map((section) => {
+                            let sectionText = `[${section.type}]`;
+                            if (section.direction) {
+                                sectionText += `\n[${section.direction}]`;
+                            }
+                            if (section.lines) {
+                                sectionText += `\n${section.lines}`;
+                            }
+                            return sectionText;
+                        })
+                        .join("\n\n")
+                        .trim();
                 }
 
                 // Fill in settings from parsed data
@@ -4711,8 +4802,8 @@ If the style description does not strongly imply a different key, keep the curre
                     structure: song.structureName ? { name: song.structureName } : null,
                     soundProfile: song.soundProfile,
                     lyricsMode: "single",
-                    aiMode: "complete",
-                    userLyrics: null,
+                    aiMode: bulkLyrics ? "keep" : "complete",
+                    userLyrics: bulkLyrics ? { mode: "bulk", content: bulkLyrics } : null,
                     instrumentExclusions: song.instrumentExclusions,
                 };
 
@@ -4779,10 +4870,12 @@ If the style description does not strongly imply a different key, keep the curre
             let exportLyricsText = "";
             let exportStylePromptText = "";
             let exportSongTitleText = "";
+            let exportExclusionsText = "";
             function exportSong(id) {
                 const song = id ? history.find((s) => s.id === id) : currentSong;
                 if (!song) return;
                 exportSongTitleText = song.title || "Untitled";
+                exportExclusionsText = song.instrumentExclusions || "";
                 const sp = song.soundProfile;
                 const tempoPreference = formatTempoPreference(song.tempoPreference || song.settings?.tempo || "AI Choose");
                 const vocalConfig = song.vocalProfiles ? formatVocalProfilesForPrompt(song.vocalProfiles) : song.vocalGender ? formatVocalGenderValue(song.vocalGender) : "Not specified";
@@ -4807,7 +4900,7 @@ If the style description does not strongly imply a different key, keep the curre
                 if (sp?.eras?.length) styleDetailsLines.push(`Era: ${sp.eras.join(", ")}`);
                 if (sp?.styles?.length) styleDetailsLines.push(`Production style: ${sp.styles.join(", ")}`);
                 if (sp?.insts?.length) styleDetailsLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
-                if (song.instrumentExclusions) styleDetailsLines.push(`Instrument Exclusions: ${song.instrumentExclusions}`);
+                // Instrument exclusions removed from style prompt - now has dedicated button
 
                 // Mix section with blank line before it
                 if (sp?.mixes?.length) {
@@ -4841,6 +4934,33 @@ If the style description does not strongly imply a different key, keep the curre
                           sp.infs?.length ? `Influences: ${sp.infs.join(", ")}` : "",
                       ].filter((x) => x !== undefined && x !== null)
                     : "";
+                // Create JSON export data for reliable import
+                const jsonExportData = {
+                    version: "1.0",
+                    song: {
+                        title: song.title,
+                        logline: song.logline,
+                        genre: song.genre,
+                        mood: song.mood,
+                        rhyme: song.rhyme,
+                        concept: song.concept,
+                        structureName: song.structureName,
+                        production: song.production,
+                        suno_style_prompt: song.suno_style_prompt,
+                        style_meta_tag: song.style_meta_tag,
+                        instrumentExclusions: song.instrumentExclusions,
+                        tempoPreference: song.tempoPreference,
+                        verseLength: song.verseLength,
+                        chorusLength: song.chorusLength,
+                        vocalProfiles: song.vocalProfiles,
+                        soundProfile: song.soundProfile,
+                        key_info: song.key_info,
+                        chords: song.chords,
+                        sections: song.sections,
+                        settings: song.settings,
+                    },
+                };
+
                 exportText = [
                     `SONG: ${song.title}`,
                     `${song.logline}`,
@@ -4864,8 +4984,19 @@ If the style description does not strongly imply a different key, keep the curre
                     ``,
                     `--- LYRICS ---`,
                     exportLyricsText,
+                    ``,
+                    ``,
+                    `--- SUNOFORGE JSON DATA ---`,
+                    JSON.stringify(jsonExportData, null, 2),
                 ].join("\n");
                 document.getElementById("export-preview").textContent = exportText;
+
+                // Show/hide exclusions button based on whether there are exclusions
+                const exclusionsBtn = document.getElementById("copy-exclusions-btn");
+                if (exclusionsBtn) {
+                    exclusionsBtn.style.display = exportExclusionsText ? "inline-block" : "none";
+                }
+
                 document.getElementById("export-modal").style.display = "flex";
             }
             function closeExport(e) {
@@ -4911,6 +5042,13 @@ If the style description does not strongly imply a different key, keep the curre
                     const btn = document.getElementById("copy-title-btn");
                     btn.textContent = "Copied!";
                     setTimeout(() => (btn.textContent = "Copy Song Title"), 2000);
+                });
+            }
+            function copyExclusionsExport() {
+                navigator.clipboard.writeText(exportExclusionsText).then(() => {
+                    const btn = document.getElementById("copy-exclusions-btn");
+                    btn.textContent = "Copied!";
+                    setTimeout(() => (btn.textContent = "Copy Exclusions"), 2000);
                 });
             }
 
@@ -5295,6 +5433,7 @@ Respond ONLY with JSON (no markdown, no backticks):
             window.copySongTitleExport = copySongTitleExport;
             window.copyStylePromptExport = copyStylePromptExport;
             window.copyLyricsExport = copyLyricsExport;
+            window.copyExclusionsExport = copyExclusionsExport;
             window.copyText = copyText;
             window.loadFromHistory = loadFromHistory;
             window.clearHistory = clearHistory;
