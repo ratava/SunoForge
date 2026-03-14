@@ -1,5 +1,6 @@
 # Update version in index.html based on git commit
-# Run this script before committing or set it as a pre-commit hook
+# This should be run as a pre-commit hook
+# The version will show the previous commit hash (the base you're building on)
 
 $indexFile = Join-Path $PSScriptRoot "index.html"
 
@@ -42,6 +43,10 @@ $newContent = $content -replace 'id="version">[^<]*</div>', "id=`"version`">$ver
 # Write back only if changed
 if ($content -ne $newContent) {
     $newContent | Set-Content $indexFile -NoNewline
+    
+    # Stage the file for commit
+    git add $indexFile 2>$null
+    
     Write-Host "Version updated to: $version" -ForegroundColor Green
 }
 else {

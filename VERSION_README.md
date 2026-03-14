@@ -1,67 +1,78 @@
 # SunoForge Version System
 
-The version number in the top right corner of the application is automatically based on the current git commit hash.
+The version number in the top right corner of the application is automatically based on the git commit hash.
 
 ## How It Works
 
-- The version is displayed in the header as a short git commit hash (e.g., `ve32dce1`)
+- The version is displayed in the header as a short git commit hash (e.g., `v86694d2`)
 - If you're on a branch other than `main` or `master`, it shows as `hash@branchname`
-- The version in the file always matches the commit hash it's contained in
+- **The version shows the parent commit hash** - the base commit your changes are built on
+- This is normal: a new commit's hash cannot be known before the commit is created
+
+## Why Version is One Commit Behind
+
+When you make a commit:
+1. Pre-commit hook runs and sees current HEAD is `abc1234`
+2. Updates `index.html` to show version `abc1234`
+3. Commit is created with your changes + the version update
+4. New commit gets hash `def5678`
+
+So commit `def5678` contains version `abc1234`. This tells you what base version the code was built from.
 
 ## Automatic Updates
 
-A post-commit hook automatically updates the version after each commit:
+A pre-commit hook automatically updates the version before each commit:
 
 1. You make changes to the code
 2. You run `git commit`
-3. The commit is created
-4. The post-commit hook runs `post-commit-version.ps1`
-5. The version in `index.html` is updated with the actual commit hash
-6. The commit is automatically amended to include the correct version
+3. The pre-commit hook runs `update-version.ps1`
+4. The version in `index.html` is updated with current HEAD hash
+5. The updated file is added to your commit
+6. The commit completes with the new hash
 
-This ensures the version displayed always matches the commit hash of the code.
-
-## Setup Post-Commit Hook
+## Setup Pre-Commit Hook
 
 To enable automatic version updates:
 
-**PowerShell (Windows):**
+**Quick Setup:**
 ```powershell
-# Create the post-commit hook
+.\setup-version-hook.ps1
+```
+
+**Manual Setup (PowerShell):**
+```powershell
+# Create the pre-commit hook
 @'
 #!/bin/sh
-powershell.exe -ExecutionPolicy Bypass -File "./post-commit-version.ps1"
-'@ | Out-File -FilePath .git/hooks/post-commit -Encoding ASCII
-
-# Make it executable (Git Bash)
-git update-index --chmod=+x .git/hooks/post-commit
+powershell.exe -ExecutionPolicy Bypass -File "./update-version.ps1"
+'@ | Out-File -FilePath .git/hooks/pre-commit -Encoding ASCII
 ```
 
 **Git Bash (Windows/Mac/Linux):**
 ```bash
-# Create the post-commit hook
-cat > .git/hooks/post-commit << 'EOF'
+# Create the pre-commit hook
+cat > .git/hooks/pre-commit << 'EOF'
 #!/bin/sh
-powershell.exe -ExecutionPolicy Bypass -File "./post-commit-version.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "./update-version.ps1"
 EOF
 
 # Make it executable
-chmod +x .git/hooks/post-commit
+chmod +x .git/hooks/pre-commit
 ```
 
 ## Manual Updates
 
-If you need to manually update the version, run:
+If you need to manually update the version:
 
 ```powershell
-.\post-commit-version.ps1
+.\update-version.ps1
 ```
 
 ## How It's Implemented
 
 - **CSS**: `.version` class in the header styles the version display
 - **HTML**: Version in the header: `<div class="version" id="version">dev</div>`
-- **Script**: `post-commit-version.ps1` updates the version with the git commit hash using `--amend`
-- **Hook**: `.git/hooks/post-commit` runs the script automatically after each commit
+- **Script**: `update-version.ps1` updates the version with the git commit hash
+- **Hook**: `.git/hooks/pre-commit` runs the script automatically before each commit
 
 The version is user-selectable (can be copied) and appears in a monospace font in the top right corner.
