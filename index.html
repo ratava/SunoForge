@@ -3,6 +3,10 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh; img-src 'self' data:; base-uri 'self'; form-action 'self';"
+        />
         <title>SunoForge</title>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
         <script type="importmap">
@@ -579,7 +583,8 @@
                 gap: 4px;
                 margin-top: 2px;
             }
-            .custom-structure-step-chords input {
+            .custom-structure-step-chords input,
+            .custom-structure-step-instructions input {
                 flex: 1;
                 padding: 3px 6px;
                 font-size: 9px;
@@ -589,8 +594,14 @@
                 color: var(--text);
                 font-family: "Space Mono", monospace;
             }
-            .custom-structure-step-chords input::placeholder {
+            .custom-structure-step-chords input::placeholder,
+            .custom-structure-step-instructions input::placeholder {
                 color: var(--text-muted);
+            }
+            .custom-structure-step-instructions {
+                display: flex;
+                gap: 4px;
+                margin-top: 2px;
             }
             .custom-structure-step-label {
                 color: var(--accent);
@@ -1306,7 +1317,9 @@
                 max-width: 90vw;
             }
             .modal.export-modal {
-                width: min(820px, 96vw);
+                width: 70vw;
+                height: 70vh;
+                max-width: 90vw;
                 max-height: 90vh;
                 display: flex;
                 flex-direction: column;
@@ -1334,6 +1347,10 @@
             }
             .modal.export-modal .modal-preview {
                 max-height: 58vh;
+                flex: 1;
+            }
+            .modal.confirm-modal .modal-preview {
+                max-height: none;
                 flex: 1;
             }
             .modal-actions {
@@ -1531,11 +1548,12 @@
     </head>
     <body>
         <header class="header">
-            <div class="logo">
+            <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
                 <div class="logo-icon">&#127932;</div>
                 SunoForge
             </div>
-            <div class="version" id="version">20260315-002</div>
+            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
+            <div class="version" id="version">20260315-005</div>
         </header>
 
         <div class="api-bar">
@@ -1803,7 +1821,10 @@
                     <div class="field-group">
                         <label class="field-label">Build a custom structure from scratch</label>
                         <div class="custom-structure-builder">
-                            <div class="info-box green">Click any structure block to append it to your custom flow. Re-click blocks to repeat sections. Use the step controls to move, remove, undo, or clear. Add chord progressions for each section using the chord input fields.</div>
+                            <div class="info-box green">
+                                Click any structure block to append it to your custom flow. Re-click blocks to repeat sections. Use the step controls to move, remove, undo, or clear. Add chord progressions and section-specific instructions (e.g., whispered, building intensity) using the input
+                                fields.
+                            </div>
                             <div class="custom-structure-grid">
                                 <input type="text" id="custom-structure-name" placeholder="Custom structure name (e.g. Cinematic Slow Burn)" />
                                 <input type="text" id="custom-structure-tag" placeholder="Short tag (e.g. Builder)" />
@@ -1939,7 +1960,11 @@
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label">Key Influences / Sounds Like <br />(Must be Suno compatible)</label>
+                        <label class="field-label" style="display: flex; align-items: flex-start; gap: 4px; justify-content: flex-start; align-self: flex-start; padding-bottom: 4px">
+                            <input type="checkbox" id="enable-influences-checkbox" style="flex-shrink: 0" />
+                            <span>Suggest Influences</span>
+                        </label>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px">Key Influences / Sounds Like (Must be Suno compatible)</div>
                         <div class="influence-input-row">
                             <input type="text" id="influence-input" placeholder="e.g. Hendrix, Coltrane..." onkeydown="if (event.key === 'Enter') addInfluence();" />
                             <button class="btn-add-inf" onclick="addInfluence()">+ Add</button>
@@ -1951,7 +1976,7 @@
 
                 <!-- LYRICS TAB -->
                 <div class="left-panel-content" id="lpanel-lyrics" style="display: none">
-                    <div class="info-box">Provide your own lyrics and/or describe a style to auto-configure all settings.</div>
+                    <div class="info-box">Provide your own lyrics for the AI to work with.</div>
                     <div class="field-group">
                         <label class="field-label">What should the AI do with your lyrics?</label>
                         <div class="tag-row" id="aimode-tags">
@@ -1962,35 +1987,10 @@
                             <div class="tag" data-val="keep">Keep my current lyrics</div>
                         </div>
                     </div>
-                    <div class="field-group">
-                        <label class="field-label">Input mode</label>
-                        <div class="lyrics-mode-toggle">
-                            <button class="lmode-btn active" id="lmode-single" onclick="setLyricsMode('single')">All at once</button>
-                            <button class="lmode-btn" id="lmode-sections" onclick="setLyricsMode('sections')">By section</button>
-                        </div>
+                    <div class="field-group" style="flex: 1; display: flex; flex-direction: column">
+                        <label class="field-label">Your Lyrics</label>
+                        <textarea id="lyrics-input" style="flex: 1; min-height: 0" placeholder="Paste or type your lyrics here...&#10;&#10;Label sections like:&#10;[Verse]&#10;Your verse here...&#10;&#10;[Chorus]&#10;Your chorus..."></textarea>
                     </div>
-                    <div id="lyrics-single-input">
-                        <div class="field-group">
-                            <label class="field-label">Your Lyrics</label>
-                            <textarea id="lyrics-bulk" rows="8" placeholder="Paste or type your full or partial lyrics here...&#10;&#10;Label sections like:&#10;[Verse]&#10;Your verse here...&#10;&#10;[Chorus]&#10;Your chorus..."></textarea>
-                        </div>
-                    </div>
-                    <div id="lyrics-section-input" style="display: none">
-                        <div class="field-group" style="gap: 8px">
-                            <label class="field-label">Your Lyrics by Section <span style="color: var(--text-muted); font-weight: 400">(leave blank = AI writes)</span></label>
-                            <div id="section-rows"></div>
-                        </div>
-                    </div>
-                    <button class="btn-style-apply" id="lyrics-analyze-btn" onclick="applyLyricsAnalysis()">&#128269; Analyze Lyrics to Settings</button>
-                    <div id="lyrics-analysis-result" style="display: none; margin-top: 4px"></div>
-                    <div class="section-divider" style="margin: 4px 0"></div>
-                    <div class="field-group">
-                        <label class="field-label" style="color: var(--accent2); font-size: 12px">&#127911; Style Analyzer</label>
-                        <div class="info-box green">Describe an artist, era, or sound. Click <strong>Apply to Settings</strong> to automatically update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix & Influences across all tabs.</div>
-                        <textarea id="style-input" rows="4" placeholder="Examples:&#10;&#10;Sound like early Tom Waits meets Nick Cave, dark cabaret, upright bass, 1970s lo-fi...&#10;&#10;Artist: Radiohead OK Computer era"></textarea>
-                    </div>
-                    <button class="btn-style-apply" id="style-apply-btn" onclick="applyStyle()">&#10024; Apply Style to Settings</button>
-                    <div id="style-result" style="display: none; margin-top: 4px"></div>
                 </div>
             </div>
 
@@ -1998,6 +1998,7 @@
             <div class="panel-right">
                 <!-- ACTION PANEL -->
                 <div class="action-panel">
+                    <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">&#128269; Analyze</button>
                     <button class="btn-gen" id="gen-btn" onclick="generateSong()">&#9834; Write My Song</button>
                     <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none">&#128229; Export</button>
                 </div>
@@ -2056,13 +2057,33 @@
         </div>
 
         <div class="modal-overlay" id="submit-confirm-modal" style="display: none" onclick="closeSubmitConfirm(event, false)">
-            <div class="modal confirm-modal">
+            <div class="modal confirm-modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
                 <div class="modal-title">Confirm Song Request</div>
                 <div class="modal-subtitle">Review the settings below before sending them to the AI.</div>
-                <div class="modal-preview" id="submit-confirm-preview"></div>
+                <div class="modal-preview" id="submit-confirm-preview" style="flex: 1; overflow-y: auto; min-height: 0; padding: 0 24px 24px 24px"></div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="resolveSubmitConfirm(false)">Cancel</button>
                     <button class="btn-primary" onclick="resolveSubmitConfirm(true)">Write My Song</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="analyzer-modal" style="display: none" onclick="closeAnalyzerModal(event)">
+            <div class="modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title">&#127911; Style & Lyrics Analyzer</div>
+                <div class="modal-subtitle">Enter lyrics (with or without structure), a style description, or both to auto-configure settings.</div>
+                <div style="padding: 0 24px 24px 24px; flex: 1; display: flex; flex-direction: column; min-height: 0">
+                    <div class="info-box green" style="margin-bottom: 12px; flex-shrink: 0">This analyzer will automatically extract song structure, update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix & Influences across all tabs.</div>
+                    <textarea
+                        id="analysis-input"
+                        style="width: 100%; flex: 1; min-height: 0; font-family: &quot;Space Mono&quot;, monospace; font-size: 11px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text); padding: 12px; border-radius: 6px"
+                        placeholder="Examples:&#10;&#10;Option 1 - Just lyrics:&#10;[Verse]&#10;Your lyrics here...&#10;&#10;Option 2 - Just style:&#10;Sound like early Tom Waits meets Nick Cave, dark cabaret, upright bass, 1970s lo-fi&#10;&#10;Option 3 - Both lyrics and style:&#10;Style: Radiohead OK Computer era&#10;&#10;[Verse]&#10;Your verse...&#10;[Chorus]&#10;Your chorus..."
+                    ></textarea>
+                    <div id="unified-analysis-result" style="display: none; margin-top: 12px; flex-shrink: 0"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeAnalyzerModal()">Close</button>
+                    <button class="btn-primary" id="unified-analyze-btn" onclick="applyUnifiedAnalysis()">&#128269; Analyze</button>
                 </div>
             </div>
         </div>
@@ -2072,12 +2093,33 @@
 
             let aiClient = null;
 
+            // Security: HTML escape utility to prevent XSS attacks
+            // Converts dangerous characters to HTML entities
+            function escapeHtml(unsafe) {
+                if (unsafe === null || unsafe === undefined) return "";
+                return String(unsafe).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            // Security: Sanitize for attribute values
+            function escapeAttr(unsafe) {
+                if (unsafe === null || unsafe === undefined) return "";
+                return String(unsafe).replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            // Security: Validate and limit input length
+            function validateInput(input, maxLength = 10000) {
+                if (typeof input !== "string") return "";
+                return input.slice(0, maxLength);
+            }
+
             function saveApiKey() {
                 const key = document.getElementById("api-key-input").value.trim();
                 if (!key) {
                     alert("Please enter a Google AI Studio API key.");
                     return;
                 }
+                // Security: Warn about localStorage
+                console.warn("WARNING: API key is stored in browser localStorage (not encrypted). Only use this application on trusted devices.");
                 localStorage.setItem("gemini_api_key", key);
                 aiClient = new GoogleGenAI({ apiKey: key });
                 const st = document.getElementById("api-status");
@@ -2085,7 +2127,8 @@
                 st.className = "api-status ok";
             }
 
-            // Auto-load saved key on startup
+            // Auto-load saved API key on startup
+            // Security warning: API keys in localStorage are not encrypted
             (function () {
                 const saved = localStorage.getItem("gemini_api_key");
                 if (saved) {
@@ -2097,7 +2140,11 @@
                 }
             })();
 
-            // ── Custom Tag System ─────────────────────────────────────────────────────────
+            // ========================================================================
+            // Custom Tag System
+            // Handles dynamic tag creation and management for multi-select fields
+            // ========================================================================
+            // Show custom input field for manual entry
             function showCustomInput(tagRowId, inputRowId) {
                 document.getElementById(inputRowId).style.display = "flex";
                 const inputId = inputRowId.replace("-row", "-input");
@@ -2107,10 +2154,12 @@
                     inp.focus();
                 }
             }
+            // Hide custom input field and clear its value
             function hideCustomInput(inputRowId, inputId) {
                 document.getElementById(inputRowId).style.display = "none";
                 if (inputId) document.getElementById(inputId).value = "";
             }
+            // Confirm and add custom tag value to tag row
             function confirmCustomTag(tagRowId, inputId, inputRowId) {
                 const inp = document.getElementById(inputId);
                 const val = inp.value.trim();
@@ -2144,11 +2193,13 @@
                 setCustomSingleValue(rowId, tagId, prefix, val);
                 hideCustomInput(inputRowId, inputId);
             }
+            // Clear all custom tags from specified tag row
             function clearCustomTagsInRow(tagRowId) {
                 const row = document.getElementById(tagRowId);
                 if (!row) return;
                 row.querySelectorAll(".tag-custom").forEach((el) => el.remove());
             }
+            // Remove custom tag when user clicks the X button
             function removeCustomTag(xEl) {
                 const chip = xEl.parentElement;
                 const row = chip?.parentElement;
@@ -2160,7 +2211,10 @@
                 }
             }
 
-            // ── Genre Structures ──────────────────────────────────────────────────────────
+            // ========================================================================
+            // Genre Structures
+            // Defines preset structures for different musical genres
+            // ========================================================================
             const GENRE_STRUCTURES = {
                 rock: [
                     { name: "Standard Rock", tag: "Classic", flow: "Intro -> V -> Ch -> V -> Ch -> Bridge -> Ch -> Outro", desc: "Two verses build tension before the bridge breaks it open." },
@@ -2295,7 +2349,10 @@
 
             const DEFAULT_STRUCTURES = [{ name: "Verse-Chorus", tag: "Universal", flow: "Intro -> V -> Ch -> V -> Ch -> Bridge -> Ch -> Outro", desc: "The most versatile song form across all popular genres." }];
 
-            // ── State ─────────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // State
+            // Global application state variables
+            // ========================================================================
             let history = [],
                 currentSong = null,
                 lyricsMode = "single",
@@ -2307,9 +2364,123 @@
                 customStructureDraft = [],
                 customStructurePoints = [];
 
+            // Debug mode state
+            let debugMode = false;
+            let debugLogs = [];
+
+            function debugLog(category, message, data = null) {
+                const timestamp = new Date().toISOString();
+                const logEntry = {
+                    timestamp,
+                    category,
+                    message,
+                    data: data ? (typeof data === "object" ? JSON.stringify(data, null, 2) : String(data)) : null,
+                };
+
+                if (debugMode) {
+                    debugLogs.push(logEntry);
+                    console.log(`[${category}] ${message}`, data || "");
+                }
+            }
+
+            function toggleDebugMode() {
+                debugMode = !debugMode;
+                const indicator = document.getElementById("debug-indicator");
+
+                if (debugMode) {
+                    // Enable debug mode
+                    indicator.style.display = "block";
+                    debugLogs = [];
+                    debugLog("SYSTEM", "Debug mode ENABLED");
+                    debugLog("STATE", "Current Genre", currentGenreKey);
+                    debugLog("STATE", "Current Structure", selectedStructure?.name || "None");
+                    debugLog("STATE", "Active Tab", activeLeftTab);
+                } else {
+                    // Disable debug mode - export logs
+                    debugLog("SYSTEM", "Debug mode DISABLED");
+                    indicator.style.display = "none";
+                    downloadDebugLogs();
+                }
+            }
+
+            function downloadDebugLogs() {
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, "0");
+                const mm = String(now.getMonth() + 1).padStart(2, "0");
+                const yy = String(now.getFullYear()).slice(-2);
+                const hh = String(now.getHours()).padStart(2, "0");
+                const min = String(now.getMinutes()).padStart(2, "0");
+                const filename = `sunoforge_debug-${dd}${mm}${yy}_${hh}${min}.txt`;
+
+                const version = document.getElementById("version")?.textContent || "Unknown";
+
+                let content = `SunoForge Debug Log\n`;
+                content += `Version: ${version}\n`;
+                content += `Generated: ${now.toISOString()}\n`;
+                content += `Session Duration: ${debugLogs.length > 0 ? "Active" : "N/A"}\n`;
+                content += `Total Log Entries: ${debugLogs.length}\n`;
+                content += `=`.repeat(80) + `\n\n`;
+
+                // Add all debug logs
+                debugLogs.forEach((log, idx) => {
+                    content += `[${idx + 1}] ${log.timestamp}\n`;
+                    content += `Category: ${log.category}\n`;
+                    content += `Message: ${log.message}\n`;
+                    if (log.data) {
+                        content += `Data:\n${log.data}\n`;
+                    }
+                    content += `-`.repeat(80) + `\n\n`;
+                });
+
+                // Add current song export if available
+                if (currentSong) {
+                    content += `\n` + `=`.repeat(80) + `\n`;
+                    content += `CURRENT SONG EXPORT\n`;
+                    content += `=`.repeat(80) + `\n\n`;
+
+                    content += `Title: ${currentSong.title || "Untitled"}\n`;
+                    content += `Genre: ${currentSong.genre || "N/A"}\n`;
+                    content += `Structure: ${currentSong.structureName || "N/A"}\n\n`;
+
+                    if (currentSong.suno_style_prompt) {
+                        content += `--- SUNO STYLE PROMPT ---\n${currentSong.suno_style_prompt}\n\n`;
+                    }
+
+                    if (currentSong.sections && currentSong.sections.length > 0) {
+                        content += `--- LYRICS ---\n`;
+                        currentSong.sections.forEach((s) => {
+                            const strippedLines = stripAllLeadingMetaTags(s.lines || "");
+                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+
+                            content += `\n[${s.type}]`;
+                            if (s.direction) content += `\n[${s.direction}]`;
+                            // Only output instructions if different from direction (avoid duplication)
+                            if (cleanedInstructions && cleanedInstructions !== s.direction) {
+                                content += `\n[${cleanedInstructions}]`;
+                            }
+                            content += `\n${strippedLines}\n`;
+                        });
+                    }
+                }
+
+                // Create download
+                const blob = new Blob([content], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                // Clear logs
+                debugLogs = [];
+            }
+
             const CUSTOM_STRUCTURE_POINTS = ["Intro", "Vamp", "Verse 1", "Verse 2", "Verse 3", "Verse 4", "Pre-Chorus", "Chorus", "Post-Chorus", "Hook", "Refrain", "Bridge", "Solo", "Instrumental Break", "Breakdown", "Interlude", "Build", "Drop", "Final Chorus", "Tag", "Coda", "Outro", "End"];
 
-            // ── Tag Setup ─────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Tag Setup
+            // ========================================================================
             function setupSingleTags(id) {
                 const g = document.getElementById(id);
                 g.querySelectorAll(".tag").forEach((t) => {
@@ -2560,7 +2731,7 @@
                 if (tagId === "pov-custom-tag") groupId = "pov-tags";
                 if (tagId === "vocalgender-custom-tag") groupId = "vocalgender-tags";
                 if (tagId === "rhyme-custom-tag") groupId = "rhyme-tags";
-                tag.innerHTML = `${prefix}: ${value}<span class="tag-custom-x" onclick="removeCustomSingleValue('${rowId}','${tagId}','${groupId}')">✕</span>`;
+                tag.innerHTML = `${escapeHtml(prefix)}: ${escapeHtml(value)}<span class="tag-custom-x" onclick="removeCustomSingleValue('${escapeAttr(rowId)}','${escapeAttr(tagId)}','${escapeAttr(groupId)}')">✕</span>`;
                 row.style.display = "flex";
             }
             function applySingleTagOrCustom(id, value, rowId, tagId, prefix) {
@@ -2595,7 +2766,10 @@
             function getSelectedPov() {
                 return getCustomTagValue("pov-custom-tag") || getActive("pov-tags");
             }
-            // ── Vocal Profile Builder ─────────────────────────────────────────────────────
+            // ========================================================================
+            // Vocal Profile Builder
+            // Handles vocal type selection, profile creation, and choir configuration
+            // ========================================================================
             function selectVocalType(el) {
                 document.querySelectorAll("#vocal-type-tags .tag").forEach((t) => t.classList.remove("active"));
                 el.classList.add("active");
@@ -2620,76 +2794,76 @@
             function buildChoirBuilder() {
                 const container = document.getElementById("choir-builder-container");
                 container.innerHTML = `
-                    <div class="choir-builder">
-                        <div class="choir-header">🎶 Choir/Backing Vocals</div>
-                        <div class="vocal-profile-row">
-                            <div class="vocal-profile-field">
-                                <label>Gender</label>
-                                <select id="choir-gender">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Both" selected>Both</option>
-                                </select>
-                            </div>
-                            <div class="vocal-profile-field">
-                                <label>Size</label>
-                                <select id="choir-size">
-                                    <option value="Small (Vocal Ensemble)">Small (Vocal Ensemble)</option>
-                                    <option value="Medium (Chamber)" selected>Medium (Chamber)</option>
-                                    <option value="Large (Chorus)">Large (Chorus)</option>
-                                    <option value="Extra Large (Massed)">Extra Large (Massed)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="vocal-profile-field">
-                            <label>Vocal Range (optional)</label>
-                            <div class="vocal-style-tags" id="choir-range-tags">
-                                <div class="tag multi" data-val="Bass">Bass</div>
-                                <div class="tag multi" data-val="Baritone">Baritone</div>
-                                <div class="tag multi" data-val="Tenor">Tenor</div>
-                                <div class="tag multi" data-val="Countertenor">Countertenor</div>
-                                <div class="tag multi" data-val="Contralto">Contralto</div>
-                                <div class="tag multi" data-val="Mezzo-Soprano">Mezzo-Soprano</div>
-                                <div class="tag multi" data-val="Soprano">Soprano</div>
-                            </div>
-                        </div>
-                        <div class="vocal-profile-field">
-                            <label>Accent (optional)</label>
-                            <div class="accent-chips" id="choir-accent-tags">
-                                <div class="tag multi" data-val="American">American</div>
-                                <div class="tag multi" data-val="Australian">Australian</div>
-                                <div class="tag multi" data-val="British">British</div>
-                                <div class="tag multi" data-val="New Zealand">New Zealand</div>
-                                <div class="tag multi" data-val="African">African</div>
-                                <div class="tag multi" data-val="Jamaican">Jamaican</div>
-                                <button class="tag-add-btn" onclick="showCustomInput('choir-accent-tags', 'choir-accent-custom-input-row')">+ Custom</button>
-                            </div>
-                            <div class="custom-input-row" id="choir-accent-custom-input-row" style="display: none; margin-top: 4px">
-                                <input type="text" id="choir-accent-custom-input" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row');" />
-                                <button class="custom-input-confirm" onclick="confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row')">Add</button>
-                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-accent-custom-input-row', 'choir-accent-custom-input')">&#10005;</button>
-                            </div>
-                        </div>
-                        <div class="vocal-profile-field">
-                            <label>Style (optional)</label>
-                            <div class="vocal-style-tags" id="choir-style-tags">
-                                <div class="tag multi" data-val="Clean">Clean</div>
-                                <div class="tag multi" data-val="Gritty">Gritty</div>
-                                <div class="tag multi" data-val="Breathy">Breathy</div>
-                                <div class="tag multi" data-val="Airy">Airy</div>
-                                <div class="tag multi" data-val="Restrained">Restrained</div>
-                                <div class="tag multi" data-val="Dynamic">Dynamic</div>
-                                <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
-                                <button class="tag-add-btn" onclick="showCustomInput('choir-style-tags', 'choir-style-custom-input-row')">+ Custom</button>
-                            </div>
-                            <div class="custom-input-row" id="choir-style-custom-input-row" style="display: none; margin-top: 4px">
-                                <input type="text" id="choir-style-custom-input" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row');" />
-                                <button class="custom-input-confirm" onclick="confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row')">Add</button>
-                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-style-custom-input-row', 'choir-style-custom-input')">&#10005;</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                                <div class="choir-builder">
+                                    <div class="choir-header">🎶 Choir/Backing Vocals</div>
+                                    <div class="vocal-profile-row">
+                                        <div class="vocal-profile-field">
+                                            <label>Gender</label>
+                                            <select id="choir-gender">
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Both" selected>Both</option>
+                                            </select>
+                                        </div>
+                                        <div class="vocal-profile-field">
+                                            <label>Size</label>
+                                            <select id="choir-size">
+                                                <option value="Small (Vocal Ensemble)">Small (Vocal Ensemble)</option>
+                                                <option value="Medium (Chamber)" selected>Medium (Chamber)</option>
+                                                <option value="Large (Chorus)">Large (Chorus)</option>
+                                                <option value="Extra Large (Massed)">Extra Large (Massed)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="vocal-profile-field">
+                                        <label>Vocal Range (optional)</label>
+                                        <div class="vocal-style-tags" id="choir-range-tags">
+                                            <div class="tag multi" data-val="Bass">Bass</div>
+                                            <div class="tag multi" data-val="Baritone">Baritone</div>
+                                            <div class="tag multi" data-val="Tenor">Tenor</div>
+                                            <div class="tag multi" data-val="Countertenor">Countertenor</div>
+                                            <div class="tag multi" data-val="Contralto">Contralto</div>
+                                            <div class="tag multi" data-val="Mezzo-Soprano">Mezzo-Soprano</div>
+                                            <div class="tag multi" data-val="Soprano">Soprano</div>
+                                        </div>
+                                    </div>
+                                    <div class="vocal-profile-field">
+                                        <label>Accent (optional)</label>
+                                        <div class="accent-chips" id="choir-accent-tags">
+                                            <div class="tag multi" data-val="American">American</div>
+                                            <div class="tag multi" data-val="Australian">Australian</div>
+                                            <div class="tag multi" data-val="British">British</div>
+                                            <div class="tag multi" data-val="New Zealand">New Zealand</div>
+                                            <div class="tag multi" data-val="African">African</div>
+                                            <div class="tag multi" data-val="Jamaican">Jamaican</div>
+                                            <button class="tag-add-btn" onclick="showCustomInput('choir-accent-tags', 'choir-accent-custom-input-row')">+ Custom</button>
+                                        </div>
+                                        <div class="custom-input-row" id="choir-accent-custom-input-row" style="display: none; margin-top: 4px">
+                                            <input type="text" id="choir-accent-custom-input" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row');" />
+                                            <button class="custom-input-confirm" onclick="confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row')">Add</button>
+                                            <button class="custom-input-cancel" onclick="hideCustomInput('choir-accent-custom-input-row', 'choir-accent-custom-input')">&#10005;</button>
+                                        </div>
+                                    </div>
+                                    <div class="vocal-profile-field">
+                                        <label>Style (optional)</label>
+                                        <div class="vocal-style-tags" id="choir-style-tags">
+                                            <div class="tag multi" data-val="Clean">Clean</div>
+                                            <div class="tag multi" data-val="Gritty">Gritty</div>
+                                            <div class="tag multi" data-val="Breathy">Breathy</div>
+                                            <div class="tag multi" data-val="Airy">Airy</div>
+                                            <div class="tag multi" data-val="Restrained">Restrained</div>
+                                            <div class="tag multi" data-val="Dynamic">Dynamic</div>
+                                            <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
+                                            <button class="tag-add-btn" onclick="showCustomInput('choir-style-tags', 'choir-style-custom-input-row')">+ Custom</button>
+                                        </div>
+                                        <div class="custom-input-row" id="choir-style-custom-input-row" style="display: none; margin-top: 4px">
+                                            <input type="text" id="choir-style-custom-input" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row');" />
+                                            <button class="custom-input-confirm" onclick="confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row')">Add</button>
+                                            <button class="custom-input-cancel" onclick="hideCustomInput('choir-style-custom-input-row', 'choir-style-custom-input')">&#10005;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
 
                 // Setup click handlers for choir tags
                 container.querySelectorAll(".tag.multi").forEach((tag) => {
@@ -2757,77 +2931,77 @@
                     const profileDiv = document.createElement("div");
                     profileDiv.className = "vocal-profile-builder";
                     profileDiv.innerHTML = `
-                        <div class="vocal-profile-header">${profile.label}</div>
-                        <div class="vocal-profile-row">
-                            <div class="vocal-profile-field">
-                                <label>Gender</label>
-                                <select class="vp-gender" data-idx="${idx}">
-                                    <option value="Male" ${profile.gender === "Male" ? "selected" : ""}>Male</option>
-                                    <option value="Female" ${profile.gender === "Female" ? "selected" : ""}>Female</option>
-                                </select>
-                            </div>
-                            <div class="vocal-profile-field">
-                                <label>Range</label>
-                                <select class="vp-range" data-idx="${idx}">
-                                    <option value="">Not specified</option>
-                                    ${
-                                        profile.gender === "Male"
-                                            ? `
-                                    <option value="Bass">Bass</option>
-                                    <option value="Baritone">Baritone</option>
-                                    <option value="Tenor">Tenor</option>
-                                    <option value="Countertenor">Countertenor</option>
-                                    `
-                                            : ""
-                                    }
-                                    ${
-                                        profile.gender === "Female"
-                                            ? `
-                                    <option value="Contralto">Contralto</option>
-                                    <option value="Mezzo-Soprano">Mezzo-Soprano</option>
-                                    <option value="Soprano">Soprano</option>
-                                    `
-                                            : ""
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="vocal-profile-field">
-                            <label>Accent (optional)</label>
-                            <div class="accent-chips" id="vp-accent-${idx}">
-                                <div class="tag multi" data-val="American">American</div>
-                                <div class="tag multi" data-val="Australian">Australian</div>
-                                <div class="tag multi" data-val="British">British</div>
-                                <div class="tag multi" data-val="New Zealand">New Zealand</div>
-                                <div class="tag multi" data-val="African">African</div>
-                                <div class="tag multi" data-val="Jamaican">Jamaican</div>
-                                <button class="tag-add-btn" onclick="showCustomInput('vp-accent-${idx}', 'vp-accent-custom-input-row-${idx}')">+ Custom</button>
-                            </div>
-                            <div class="custom-input-row" id="vp-accent-custom-input-row-${idx}" style="display: none; margin-top: 4px">
-                                <input type="text" id="vp-accent-custom-input-${idx}" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}');" />
-                                <button class="custom-input-confirm" onclick="confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}')">Add</button>
-                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-accent-custom-input-row-${idx}', 'vp-accent-custom-input-${idx}')">&#10005;</button>
-                            </div>
-                        </div>
-                        <div class="vocal-profile-field">
-                            <label>Style (optional)</label>
-                            <div class="vocal-style-tags" id="vp-style-${idx}">
-                                <div class="tag multi" data-val="Clean">Clean</div>
-                                <div class="tag multi" data-val="Gritty">Gritty</div>
-                                <div class="tag multi" data-val="Breathy">Breathy</div>
-                                <div class="tag multi" data-val="Airy">Airy</div>
-                                <div class="tag multi" data-val="Restrained">Restrained</div>
-                                <div class="tag multi" data-val="Dynamic">Dynamic</div>
-                                <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
-                                <button class="tag-add-btn" onclick="showCustomInput('vp-style-${idx}', 'vp-style-custom-input-row-${idx}')">+ Custom</button>
-                            </div>
-                            <div class="custom-input-row" id="vp-style-custom-input-row-${idx}" style="display: none; margin-top: 4px">
-                                <input type="text" id="vp-style-custom-input-${idx}" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}');" />
-                                <button class="custom-input-confirm" onclick="confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}')">Add</button>
-                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-style-custom-input-row-${idx}', 'vp-style-custom-input-${idx}')">&#10005;</button>
-                            </div>
-                        </div>
-                    `;
+                                    <div class="vocal-profile-header">${profile.label}</div>
+                                    <div class="vocal-profile-row">
+                                        <div class="vocal-profile-field">
+                                            <label>Gender</label>
+                                            <select class="vp-gender" data-idx="${idx}">
+                                                <option value="Male" ${profile.gender === "Male" ? "selected" : ""}>Male</option>
+                                                <option value="Female" ${profile.gender === "Female" ? "selected" : ""}>Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="vocal-profile-field">
+                                            <label>Range</label>
+                                            <select class="vp-range" data-idx="${idx}">
+                                                <option value="">Not specified</option>
+                                                ${
+                                                    profile.gender === "Male"
+                                                        ? `
+                                                <option value="Bass">Bass</option>
+                                                <option value="Baritone">Baritone</option>
+                                                <option value="Tenor">Tenor</option>
+                                                <option value="Countertenor">Countertenor</option>
+                                                `
+                                                        : ""
+                                                }
+                                                ${
+                                                    profile.gender === "Female"
+                                                        ? `
+                                                <option value="Contralto">Contralto</option>
+                                                <option value="Mezzo-Soprano">Mezzo-Soprano</option>
+                                                <option value="Soprano">Soprano</option>
+                                                `
+                                                        : ""
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="vocal-profile-field">
+                                        <label>Accent (optional)</label>
+                                        <div class="accent-chips" id="vp-accent-${idx}">
+                                            <div class="tag multi" data-val="American">American</div>
+                                            <div class="tag multi" data-val="Australian">Australian</div>
+                                            <div class="tag multi" data-val="British">British</div>
+                                            <div class="tag multi" data-val="New Zealand">New Zealand</div>
+                                            <div class="tag multi" data-val="African">African</div>
+                                            <div class="tag multi" data-val="Jamaican">Jamaican</div>
+                                            <button class="tag-add-btn" onclick="showCustomInput('vp-accent-${idx}', 'vp-accent-custom-input-row-${idx}')">+ Custom</button>
+                                        </div>
+                                        <div class="custom-input-row" id="vp-accent-custom-input-row-${idx}" style="display: none; margin-top: 4px">
+                                            <input type="text" id="vp-accent-custom-input-${idx}" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}');" />
+                                            <button class="custom-input-confirm" onclick="confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}')">Add</button>
+                                            <button class="custom-input-cancel" onclick="hideCustomInput('vp-accent-custom-input-row-${idx}', 'vp-accent-custom-input-${idx}')">&#10005;</button>
+                                        </div>
+                                    </div>
+                                    <div class="vocal-profile-field">
+                                        <label>Style (optional)</label>
+                                        <div class="vocal-style-tags" id="vp-style-${idx}">
+                                            <div class="tag multi" data-val="Clean">Clean</div>
+                                            <div class="tag multi" data-val="Gritty">Gritty</div>
+                                            <div class="tag multi" data-val="Breathy">Breathy</div>
+                                            <div class="tag multi" data-val="Airy">Airy</div>
+                                            <div class="tag multi" data-val="Restrained">Restrained</div>
+                                            <div class="tag multi" data-val="Dynamic">Dynamic</div>
+                                            <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
+                                            <button class="tag-add-btn" onclick="showCustomInput('vp-style-${idx}', 'vp-style-custom-input-row-${idx}')">+ Custom</button>
+                                        </div>
+                                        <div class="custom-input-row" id="vp-style-custom-input-row-${idx}" style="display: none; margin-top: 4px">
+                                            <input type="text" id="vp-style-custom-input-${idx}" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}');" />
+                                            <button class="custom-input-confirm" onclick="confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}')">Add</button>
+                                            <button class="custom-input-cancel" onclick="hideCustomInput('vp-style-custom-input-row-${idx}', 'vp-style-custom-input-${idx}')">&#10005;</button>
+                                        </div>
+                                    </div>
+                                `;
                     container.appendChild(profileDiv);
                 });
 
@@ -2845,18 +3019,18 @@
                         let options = '<option value="">Not specified</option>';
                         if (gender === "Male") {
                             options += `
-                                <option value="Bass">Bass</option>
-                                <option value="Baritone">Baritone</option>
-                                <option value="Tenor">Tenor</option>
-                                <option value="Countertenor">Countertenor</option>
-                            `;
+                                            <option value="Bass">Bass</option>
+                                            <option value="Baritone">Baritone</option>
+                                            <option value="Tenor">Tenor</option>
+                                            <option value="Countertenor">Countertenor</option>
+                                        `;
                         }
                         if (gender === "Female") {
                             options += `
-                                <option value="Contralto">Contralto</option>
-                                <option value="Mezzo-Soprano">Mezzo-Soprano</option>
-                                <option value="Soprano">Soprano</option>
-                            `;
+                                            <option value="Contralto">Contralto</option>
+                                            <option value="Mezzo-Soprano">Mezzo-Soprano</option>
+                                            <option value="Soprano">Soprano</option>
+                                        `;
                         }
                         rangeSelect.innerHTML = options;
                     });
@@ -3031,7 +3205,7 @@
                 chip.dataset.val = trimmed;
                 chip.dataset.custom = "true";
                 if (options.analyzerCustom) chip.dataset.analyzerCustom = "true";
-                chip.innerHTML = trimmed + '<span class="tag-custom-x" onclick="removeCustomTag(this)">✕</span>';
+                chip.innerHTML = escapeHtml(trimmed) + '<span class="tag-custom-x" onclick="removeCustomTag(this)">✕</span>';
                 const addBtn = tagRow.querySelector(".tag-add-btn");
                 if (addBtn) tagRow.insertBefore(chip, addBtn);
                 else tagRow.appendChild(chip);
@@ -3091,13 +3265,15 @@
                     clearCustomSingleValue("genre-custom-row", "genre-custom-tag");
                 }
 
-                if (customStructureOption && ["lyrics", "builder"].includes(customStructureOption.source)) {
+                // Update custom structure genreKey and preserve selection for lyrics, builder, and history sources
+                if (customStructureOption && ["lyrics", "builder", "history"].includes(customStructureOption.source)) {
                     customStructureOption.genreKey = currentGenreKey;
                 }
 
                 buildStructureList(currentGenreKey);
 
-                if (customStructureOption && ["lyrics", "builder"].includes(customStructureOption.source)) {
+                // Re-select custom structure after rebuilding list
+                if (customStructureOption && ["lyrics", "builder", "history"].includes(customStructureOption.source)) {
                     const firstOption = document.querySelector(".struct-opt");
                     if (firstOption) {
                         document.querySelectorAll(".struct-opt").forEach((x) => x.classList.remove("active"));
@@ -3107,7 +3283,9 @@
                 }
             }
 
-            // ── Vocal Configuration Application ───────────────────────────────────────────
+            // ========================================================================
+            // Vocal Configuration Application
+            // ========================================================================
             function applyVocalConfiguration(vocalConfig) {
                 if (!vocalConfig || !vocalConfig.type) return;
 
@@ -3255,7 +3433,10 @@
                 }
             }
 
-            // ── Influences ────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Influences
+            // Manages artist influences and musical reference points
+            // ========================================================================
             function addInfluence() {
                 const inp = document.getElementById("influence-input");
                 const val = inp.value.trim();
@@ -3267,6 +3448,11 @@
                 if (influences.includes(val)) return;
                 influences.push(val);
                 renderInfluenceChips();
+                // Auto-check the influences checkbox when user adds an influence
+                const checkbox = document.getElementById("enable-influences-checkbox");
+                if (checkbox && !checkbox.checked) {
+                    checkbox.checked = true;
+                }
             }
             function removeInfluence(val) {
                 influences = influences.filter((x) => x !== val);
@@ -3279,10 +3465,13 @@
                 renderInfluenceChips();
             }
             function renderInfluenceChips() {
-                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${v}</span><span class="inf-chip-x" onclick="removeInfluence('${v.replace(/'/g, "\\'")}')">✕</span></div>`).join("");
+                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${escapeHtml(v)}</span><span class="inf-chip-x" onclick="removeInfluence('${escapeAttr(v).replace(/'/g, "\\'")}')">✕</span></div>`).join("");
             }
 
-            // ── Structure ─────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Structure
+            // Manages song structure definitions, custom sequences, and chord progressions
+            // ========================================================================
             function getStructuresForGenre(genreKey) {
                 const presets = GENRE_STRUCTURES[genreKey] || DEFAULT_STRUCTURES;
                 if (customStructureOption && customStructureOption.genreKey === genreKey) {
@@ -3309,9 +3498,9 @@
                         // Parse "SectionName (Chords)" format
                         const match = step.match(/^(.+?)\s*\(([^)]+)\)$/);
                         if (match) {
-                            return { name: match[1].trim(), chords: match[2].trim() };
+                            return { name: match[1].trim(), chords: match[2].trim(), instructions: "" };
                         }
-                        return { name: step, chords: "" };
+                        return { name: step, chords: "", instructions: "" };
                     })
                     .filter(Boolean);
             }
@@ -3355,7 +3544,7 @@
                 const palette = document.getElementById("structure-builder-palette");
                 if (!palette) return;
                 const allPoints = [...CUSTOM_STRUCTURE_POINTS, ...customStructurePoints];
-                palette.innerHTML = allPoints.map((step) => `<button class="struct-builder-tag" type="button" onclick="addStructurePoint('${step.replace(/'/g, "\\'")}')">+ ${step}</button>`).join("");
+                palette.innerHTML = allPoints.map((step) => `<button class="struct-builder-tag" type="button" onclick="addStructurePoint('${escapeAttr(step).replace(/'/g, "\\'")}')">+ ${escapeHtml(step)}</button>`).join("");
             }
             function addCustomStructureBlock() {
                 const input = document.getElementById("custom-structure-point-input");
@@ -3383,27 +3572,33 @@
                     .map((step, idx) => {
                         const stepName = typeof step === "object" ? step.name : step;
                         const stepChords = typeof step === "object" ? step.chords || "" : "";
+                        const stepInstructions = typeof step === "object" ? step.instructions || "" : "";
                         return `<div class="custom-structure-step">
-                                <div class="custom-structure-step-header">
-                                    <span class="custom-structure-step-label">${idx + 1}.</span>
-                                    <span style="flex:1">${stepName}</span>
-                                    <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},-1)">←</button>
-                                    <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},1)">→</button>
-                                    <button class="custom-structure-step-btn" type="button" onclick="removeCustomStructurePoint(${idx})">✕</button>
-                                </div>
-                                <div class="custom-structure-step-chords">
-                                    <input type="text" placeholder="Chords (e.g., Em-C-G-D)" value="${stepChords}" 
-                                           onchange="updateStructureStepChords(${idx}, this.value)" 
-                                           onclick="event.stopPropagation()" />
-                                </div>
-                            </div>`;
+                                            <div class="custom-structure-step-header">
+                                                <span class="custom-structure-step-label">${idx + 1}.</span>
+                                                <span style="flex:1">${escapeHtml(stepName)}</span>
+                                                <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},-1)">←</button>
+                                                <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},1)">→</button>
+                                                <button class="custom-structure-step-btn" type="button" onclick="removeCustomStructurePoint(${idx})">✕</button>
+                                            </div>
+                                            <div class="custom-structure-step-chords">
+                                                <input type="text" placeholder="Chords (e.g., Em-C-G-D)" value="${escapeAttr(stepChords)}"
+                                                       onchange="updateStructureStepChords(${idx}, this.value)"
+                                                       onclick="event.stopPropagation()" />
+                                            </div>
+                                            <div class="custom-structure-step-instructions">
+                                                <input type="text" placeholder="Section instructions (e.g., whispered, building intensity)" value="${escapeAttr(stepInstructions)}"
+                                                       onchange="updateStructureStepInstructions(${idx}, this.value)"
+                                                       onclick="event.stopPropagation()" />
+                                            </div>
+                                        </div>`;
                     })
                     .join("");
             }
             function addStructurePoint(step) {
                 const value = String(step || "").trim();
                 if (!value) return;
-                customStructureDraft.push({ name: value, chords: "" });
+                customStructureDraft.push({ name: value, chords: "", instructions: "" });
                 renderCustomStructureDraft();
             }
             function updateStructureStepChords(idx, chords) {
@@ -3412,7 +3607,17 @@
                 if (typeof step === "object") {
                     step.chords = chords.trim();
                 } else {
-                    customStructureDraft[idx] = { name: step, chords: chords.trim() };
+                    customStructureDraft[idx] = { name: step, chords: chords.trim(), instructions: "" };
+                }
+                renderCustomStructureDraft();
+            }
+            function updateStructureStepInstructions(idx, instructions) {
+                if (idx < 0 || idx >= customStructureDraft.length) return;
+                const step = customStructureDraft[idx];
+                if (typeof step === "object") {
+                    step.instructions = instructions.trim();
+                } else {
+                    customStructureDraft[idx] = { name: step, chords: "", instructions: instructions.trim() };
                 }
                 renderCustomStructureDraft();
             }
@@ -3441,7 +3646,7 @@
                     buildStructureList(currentGenreKey);
                 }
             }
-            function applyCustomStructureBuilder() {
+            function applyCustomStructureBuilder(sourceOverride = null) {
                 if (!customStructureDraft.length) {
                     alert("Add at least one structure point first.");
                     return;
@@ -3451,7 +3656,7 @@
                 const desc = document.getElementById("custom-structure-desc").value.trim() || suggestCustomStructureDescription(customStructureDraft);
                 customStructureOption = {
                     genreKey: currentGenreKey,
-                    source: "builder",
+                    source: sourceOverride || "builder",
                     name,
                     tag,
                     flow: structureFlowFromSequence(customStructureDraft),
@@ -3469,12 +3674,12 @@
                 list.innerHTML = structs
                     .map(
                         (s, i) => `
-    <div class="struct-opt${i === 0 ? " active" : ""}" onclick="selectStructure(this,${i},'${genreKey}')">
-      <div class="struct-tag">${s.tag}</div>
-      <div class="struct-name">${s.name}</div>
-      <div class="struct-flow">${s.flow}</div>
-      <div class="struct-desc">${s.desc}</div>
-    </div>`,
+                <div class="struct-opt${i === 0 ? " active" : ""}" onclick="selectStructure(this,${i},'${escapeAttr(genreKey)}')">
+                  <div class="struct-tag">${escapeHtml(s.tag)}</div>
+                  <div class="struct-name">${escapeHtml(s.name)}</div>
+                  <div class="struct-flow">${escapeHtml(s.flow)}</div>
+                  <div class="struct-desc">${escapeHtml(s.desc)}</div>
+                </div>`,
                     )
                     .join("");
                 selectedStructure = structs[0];
@@ -3521,7 +3726,7 @@
                     return;
                 }
 
-                customStructureOption = {
+                const structDataForSync = {
                     genreKey,
                     source: "lyrics",
                     name: name || "Custom Structure",
@@ -3529,21 +3734,25 @@
                     flow: flow || "Custom flow",
                     desc: desc || "Detected from supplied lyrics.",
                 };
-                syncCustomStructureBuilderFields(customStructureOption);
-                buildStructureList(genreKey);
-                activateStructureIndex(genreKey, 0);
+
+                // Sync fields and apply the custom structure
+                syncCustomStructureBuilderFields(structDataForSync);
+                applyCustomStructureBuilder("lyrics");
             }
 
-            // ── Tabs ──────────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Tabs
+            // ========================================================================
             function switchLTab(tab) {
+                debugLog("TAB_CHANGE", `Left tab switched: ${activeLeftTab} -> ${tab}`);
                 activeLeftTab = tab;
                 ["settings", "vocal", "structure", "sound", "lyrics"].forEach((t) => {
                     document.getElementById("ltab-" + t).classList.toggle("active", t === tab);
                     document.getElementById("lpanel-" + t).style.display = t === tab ? "flex" : "none";
                 });
-                if (tab === "lyrics") buildSectionRows();
             }
             function switchRTab(tab) {
+                debugLog("TAB_CHANGE", `Right tab switched to: ${tab}`);
                 ["output", "chords", "history"].forEach((t) => {
                     const el = document.getElementById("tab-" + t);
                     el.style.display = t === tab ? "flex" : "none";
@@ -3552,14 +3761,12 @@
                 });
             }
 
-            // ── Lyrics Mode ───────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Lyrics Mode
+            // ========================================================================
             function setLyricsMode(mode) {
-                lyricsMode = mode;
-                document.getElementById("lmode-single").classList.toggle("active", mode === "single");
-                document.getElementById("lmode-sections").classList.toggle("active", mode === "sections");
-                document.getElementById("lyrics-single-input").style.display = mode === "single" ? "block" : "none";
-                document.getElementById("lyrics-section-input").style.display = mode === "sections" ? "block" : "none";
-                if (mode === "sections") buildSectionRows();
+                // Simplified - no longer needed since we only have one input mode
+                lyricsMode = "single";
             }
             const SECTION_LABELS = ["Intro", "Verse 1", "Pre-Chorus", "Chorus", "Verse 2", "Bridge", "Outro"];
             const MUSICAL_KEYS = [
@@ -3642,6 +3849,7 @@
                 return value;
             }
 
+            // Normalize musical key input - handles various formats and aliases
             function normalizeMusicalKey(value) {
                 if (!value) return "Auto";
                 const cleaned = String(value).trim().replace(/♯/g, "#").replace(/♭/g, "b").replace(/\s+/g, " ");
@@ -3651,18 +3859,21 @@
                 return MUSICAL_KEY_ALIASES[lower] || "Auto";
             }
 
+            // Build section input rows dynamically for structured lyric entry
+            // Only creates rows if they don't already exist
             function buildSectionRows() {
                 const c = document.getElementById("section-rows");
-                if (c.children.length > 0) return;
+                if (!c || c.children.length > 0) return;
                 c.innerHTML = SECTION_LABELS.map(
                     (l) => `
-    <div class="section-lyric-row">
-      <div class="section-lyric-label">${l}<span>optional</span></div>
-      <textarea rows="3" placeholder="Leave blank for AI..." data-section="${l}"></textarea>
-    </div>`,
+                <div class="section-lyric-row">
+                  <div class="section-lyric-label">${l}<span>optional</span></div>
+                  <textarea rows="3" placeholder="Leave blank for AI..." data-section="${l}"></textarea>
+                </div>`,
                 ).join("");
             }
 
+            // Format lyrics data for AI analysis - converts various formats to plain text
             function formatLyricsForAnalysis(lyricsData) {
                 if (!lyricsData) return "";
                 if (lyricsData.mode === "bulk") return lyricsData.content;
@@ -3671,86 +3882,238 @@
                     .join("\n\n");
             }
 
-            async function applyLyricsAnalysis() {
-                const lyricsData = getUserLyrics();
-                if (!lyricsData) {
-                    alert("Please enter lyrics first.");
+            // Unified Style & Lyrics Analysis
+            async function applyUnifiedAnalysis() {
+                const analysisInput = document.getElementById("analysis-input").value.trim();
+                const selectedMusicalKey = getSelectedMusicalKey();
+                const btn = document.getElementById("unified-analyze-btn");
+                const resultEl = document.getElementById("unified-analysis-result");
+
+                if (!analysisInput) {
+                    alert("Please enter lyrics, style description, or both.");
                     return;
                 }
 
-                const lyricsText = formatLyricsForAnalysis(lyricsData);
-                const btn = document.getElementById("lyrics-analyze-btn");
-                const resultEl = document.getElementById("lyrics-analysis-result");
+                // Populate lyrics-input field with the analyzed content (strip [Style] meta tag)
+                document.getElementById("lyrics-input").value = stripLeadingStyleMetaTag(analysisInput);
+
+                const lyricsText = analysisInput;
                 btn.disabled = true;
-                btn.innerHTML = '<span class="spin">♪</span> Analyzing Lyrics...';
+                btn.innerHTML = '<span class="spin">♪</span> Analyzing...';
                 resultEl.style.display = "none";
 
-                const prompt = `You are a music expert. Analyze these liyrics description and extract settings for a song generator.
+                const prompt = `You are a music expert. Analyze this input and extract comprehensive settings for a song generator.
 
-Lyrics:
-"""
-${lyricsText}
-"""
+            Input:
+            """
+            ${lyricsText}
+            """
 
-Current genre context: ${getSelectedGenreLabel()}
+            Current genre context: ${getSelectedGenreLabel()}
+            Current musical key preference: "${selectedMusicalKey}"
 
-Return ONLY valid JSON (no markdown, no backticks):
-{
-  "rhyme": "detected rhyme scheme or rhyme style from the lyrics; do not limit this to preset UI choices",
-  "mood": "if strongly implied, use one of exactly: Gritty, defiant, cathartic | Melancholic, longing, introspective | Triumphant, soaring, anthemic | Dark, brooding, tense | Warm, soulful, intimate | Joyful, uplifting, celebratory | Playful, swinging, loose; otherwise return empty string",
-  "pov": "if strongly implied, use one of exactly: first person (I/me) | second person (you) | third person narrative | collective (we/us); otherwise return empty string",
-    "structure_name": "detected song structure name if identifiable; otherwise empty string",
-    "structure_flow": "detected section flow like Verse -> Chorus -> Verse -> Chorus -> Bridge -> Chorus if identifiable; otherwise empty string",
-    "structure_desc": "short explanation of the detected structure; otherwise empty string",
-    "structure_tag": "short label for the structure such as Ballad, Verse-Heavy, Hook-Driven, etc.; otherwise empty string",
-  "summary": "One short sentence describing the lyrical structure and rhyme feel"
-}
+            IMPORTANT: The input may contain:
+            - Lyrics with section markers like [Verse 1], [Chorus], [Bridge]
+            - Chord progressions in brackets like [Am - F - C - G] or [C#m – A – E]
+            - Performance/production instructions in brackets like [Driving bass, Clean guitar]
+            - Style descriptions like "Sound like Radiohead" or "1970s lo-fi production"
+            - Or a combination of any of the above
 
-Do not limit the rhyme value to the existing preset rhyme options. If the lyrics clearly use a custom rhyme approach, return that exact rhyme description.
-If no structure can be identified from the lyrics, return empty strings for the structure fields.`;
+            Parse all elements carefully and extract both lyrical structure details AND style/production details.
+
+            Return ONLY valid JSON (no markdown, no backticks):
+            {
+              "genre_key": "one of: rock|metal|folk|country|jazz|blues|rnb|hiphop|gospel|reggae|ska|latin|cumbia; empty string if not strongly implied",
+              "genre_label": "specific genre or subgenre label; not limited to preset UI options; empty string if not applicable",
+              "mood": "specific mood description; not limited to preset UI options; empty string if not strongly implied",
+              "rhyme": "detected rhyme scheme or rhyme style; do not limit this to preset UI choices; empty string if not applicable",
+              "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM; empty string if not strongly implied",
+              "pov": "perspective description; can match presets or be custom; empty string if not strongly implied",
+              "musical_key": "one of exactly: Auto | C major | C minor | C#/Db major | C#/Db minor | D major | D minor | D#/Eb major | D#/Eb minor | E major | E minor | F major | F minor | F#/Gb major | F#/Gb minor | G major | G minor | G#/Ab major | G#/Ab minor | A major | A minor | A#/Bb major | A#/Bb minor | B major | B minor; empty string to keep current",
+              "time_signature": "one of: Auto | 4/4 | 3/4 | 2/4 | 6/8 | 5/4 | 7/4 | 9/8 | 12/8 | or custom like 7/8; empty string if not applicable",
+              "era_keys": ["era/decade labels if detected; preset or custom"],
+              "prodstyle_keys": ["production style labels if detected; preset or custom"],
+              "inst_keys": ["instrumentation labels if detected; preset or custom"],
+              "mix_keys": ["mix-character labels if detected; preset or custom"],
+              "influences": ["up to 3 artist names if style references are detected"],
+              "vocal_config": {
+                "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Instrumental; omit if not detected",
+                "profiles": [{"gender": "Male or Female", "range": "Bass, Baritone, Tenor, Countertenor, Contralto, Mezzo-Soprano, Soprano", "accents": [], "styles": []}]
+              },
+              "structure_name": "detected song structure name if identifiable from lyrics; otherwise empty string",
+              "structure_flow": "detected section flow like Verse -> Chorus -> Verse -> Chorus -> Bridge -> Chorus if identifiable from lyrics; otherwise empty string",
+              "structure_desc": "short explanation of the detected structure; otherwise empty string",
+              "structure_tag": "short label for the structure such as Ballad, Verse-Heavy, Hook-Driven, etc.; otherwise empty string",
+              "structure_sequence": [
+                {
+                  "name": "Section name like Verse 1, Chorus, Bridge",
+                  "chords": "chord progression if found in brackets (e.g., 'C#m - A - E' or 'Am - F - C - G'), otherwise empty string",
+                  "instructions": "performance/production instructions if found in brackets, otherwise empty string"
+                }
+              ],
+              "summary": "One short sentence describing what was detected and applied"
+            }
+
+            For structure_sequence, create one entry for each section found in the lyrics. Extract chords and instructions from the bracketed meta tags.
+            If the input appears to be primarily a style description (not lyrics), focus on extracting genre, mood, tempo, era, production, instrumentation, and influences.
+            If the input contains lyrics, extract structure details AND any implied style elements.
+            If the input contains both explicit style description and lyrics, extract both comprehensively.
+            If no musical key is strongly implied by the input, return empty string to keep the current preference.`;
 
                 try {
                     if (!aiClient) throw new Error("Google AI key not set — enter your key in the API Key bar.");
+                    debugLog("ANALYZER_REQUEST", "Sending analysis request to AI", {
+                        inputLength: analysisInput.length,
+                        input: analysisInput,
+                        promptLength: prompt.length,
+                        prompt: prompt,
+                    });
                     const response = await aiClient.models.generateContent({
                         model: "gemini-3.1-flash-lite-preview",
                         contents: prompt,
                     });
                     const raw = response.text.replace(/```json|```/g, "").trim();
+                    debugLog("ANALYZER_RESPONSE", "Received analysis from AI", {
+                        responseLength: raw.length,
+                        rawResponse: raw,
+                    });
                     const analysis = JSON.parse(raw);
+                    debugLog("ANALYZER_PARSED", "Parsed analysis result", analysis);
+                    // This ensures customStructureOption gets the correct genreKey
+                    if (analysis.genre_key || analysis.genre_label) {
+                        applyGenreSetting(analysis.genre_key || currentGenreKey || "rock", analysis.genre_label || "");
+                    }
 
                     if (analysis.rhyme) applyRhymeSetting(analysis.rhyme);
                     if (analysis.mood) applySingleTagOrCustom("mood-tags", analysis.mood, "mood-custom-row", "mood-custom-tag", "Custom mood");
                     if (analysis.pov) applySingleTagOrCustom("pov-tags", analysis.pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
-                    applyAnalyzedStructure(
-                        {
-                            name: analysis.structure_name,
-                            flow: analysis.structure_flow,
-                            desc: analysis.structure_desc,
-                            tag: analysis.structure_tag,
-                        },
-                        currentGenreKey,
-                    );
+
+                    // Build custom structure with chords and instructions if provided
+                    if (analysis.structure_sequence && Array.isArray(analysis.structure_sequence) && analysis.structure_sequence.length > 0) {
+                        // Clear and rebuild custom structure draft
+                        customStructureDraft = [];
+                        analysis.structure_sequence.forEach((section) => {
+                            customStructureDraft.push({
+                                name: section.name || "Section",
+                                chords: section.chords || "",
+                                instructions: section.instructions || "",
+                            });
+                        });
+
+                        // Populate the custom structure builder fields
+                        const name = analysis.structure_name || "Analyzed Structure";
+                        const tag = analysis.structure_tag || "Analyzed";
+                        const desc = analysis.structure_desc || "Detected from supplied lyrics.";
+                        const flow = analysis.structure_flow || structureFlowFromSequence(customStructureDraft);
+
+                        const structureData = {
+                            genreKey: currentGenreKey,
+                            source: "lyrics",
+                            name: name,
+                            tag: tag,
+                            flow: flow,
+                            desc: desc,
+                            sequence: customStructureDraft,
+                        };
+
+                        // Sync fields and apply the custom structure
+                        syncCustomStructureBuilderFields(structureData);
+                        applyCustomStructureBuilder("lyrics");
+
+                        // Switch to Structure tab to show the analyzed structure
+                        switchLTab("structure");
+                    } else {
+                        // Fallback to basic structure without chords/instructions
+                        applyAnalyzedStructure(
+                            {
+                                name: analysis.structure_name,
+                                flow: analysis.structure_flow,
+                                desc: analysis.structure_desc,
+                                tag: analysis.structure_tag,
+                            },
+                            currentGenreKey,
+                        );
+
+                        // Switch to Structure tab if a structure was identified, otherwise Lyrics tab
+                        if (analysis.structure_name || analysis.structure_flow) {
+                            switchLTab("structure");
+                        } else {
+                            switchLTab("lyrics");
+                        }
+                    }
+
+                    const sectionsWithChords = (analysis.structure_sequence || []).filter((s) => s.chords).length;
+                    const sectionsWithInstructions = (analysis.structure_sequence || []).filter((s) => s.instructions).length;
+
+                    // Apply remaining style-related settings (genre was already applied above)
+                    if (analysis.tempo) applyTempoPreference(analysis.tempo);
+                    if (analysis.musical_key) {
+                        document.getElementById("musical-key").value = normalizeMusicalKey(analysis.musical_key);
+                    }
+                    if (analysis.time_signature) {
+                        const timeSignatureSelect = document.getElementById("time-signature");
+                        const timeSignatureCustom = document.getElementById("time-signature-custom");
+                        const presetOptions = ["Auto", "4/4", "3/4", "2/4", "6/8", "5/4", "7/4", "9/8", "12/8"];
+                        if (presetOptions.includes(analysis.time_signature)) {
+                            timeSignatureSelect.value = analysis.time_signature;
+                        } else {
+                            timeSignatureSelect.value = "Custom";
+                            timeSignatureCustom.value = analysis.time_signature;
+                        }
+                        toggleTimeSignatureMode();
+                    }
+                    if (analysis.vocal_config && analysis.vocal_config.type) {
+                        applyVocalConfiguration(analysis.vocal_config);
+                    }
+                    if (analysis.instrument_exclusions) document.getElementById("instrument-exclude").value = String(analysis.instrument_exclusions || "");
+                    if (analysis.era_keys && analysis.era_keys.length) applyMultiTagValues("era-tags", analysis.era_keys);
+                    if (analysis.prodstyle_keys && analysis.prodstyle_keys.length) applyMultiTagValues("prodstyle-tags", analysis.prodstyle_keys);
+                    if (analysis.inst_keys && analysis.inst_keys.length) applyMultiTagValues("inst-tags", analysis.inst_keys);
+                    if (analysis.mix_keys && analysis.mix_keys.length) applyMultiTagValues("mix-tags", analysis.mix_keys);
+                    if (analysis.influences && analysis.influences.length) analysis.influences.forEach((inf) => addInfluenceVal(inf));
+
+                    const vocalConfigDisplay = analysis.vocal_config && analysis.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${escapeHtml(analysis.vocal_config.type)}</span></div>` : "";
 
                     resultEl.style.display = "block";
                     resultEl.innerHTML = `<div class="style-result-box">
-      <span class="style-result-title">✓ Lyrics Analysis Applied</span>
-      <div class="style-applied-row"><span class="style-applied-key">Rhyme:</span><span class="style-applied-val">${analysis.rhyme || "—"}</span></div>
-      ${analysis.mood ? `<div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${analysis.mood}</span></div>` : ""}
-      ${analysis.pov ? `<div class="style-applied-row"><span class="style-applied-key">Perspective:</span><span class="style-applied-val">${analysis.pov}</span></div>` : ""}
-      <div class="style-applied-row"><span class="style-applied-key">Structure:</span><span class="style-applied-val">${analysis.structure_name || selectedStructure?.name || "Preset fallback"}</span></div>
-      ${analysis.structure_flow || selectedStructure?.flow ? `<div class="style-applied-row"><span class="style-applied-key">Flow:</span><span class="style-applied-val">${analysis.structure_flow || selectedStructure?.flow}</span></div>` : ""}
-      <div class="style-summary">${analysis.summary || ""}</div>
-    </div>`;
+                  <span class="style-result-title">✓ Analysis Applied</span>
+                  ${analysis.genre_key || analysis.genre_label ? `<div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${escapeHtml(getSelectedGenreLabel() || analysis.genre_label || analysis.genre_key || "—")}</span></div>` : ""}
+                  ${analysis.mood ? `<div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${escapeHtml(analysis.mood)}</span></div>` : ""}
+                  ${analysis.rhyme ? `<div class="style-applied-row"><span class="style-applied-key">Rhyme:</span><span class="style-applied-val">${escapeHtml(analysis.rhyme)}</span></div>` : ""}
+                  ${analysis.pov ? `<div class="style-applied-row"><span class="style-applied-key">Perspective:</span><span class="style-applied-val">${escapeHtml(analysis.pov)}</span></div>` : ""}
+                  ${analysis.tempo ? `<div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${escapeHtml(formatTempoPreference(analysis.tempo))}</span></div>` : ""}
+                  ${analysis.musical_key ? `<div class="style-applied-row"><span class="style-applied-key">Key:</span><span class="style-applied-val">${escapeHtml(normalizeMusicalKey(analysis.musical_key))}</span></div>` : ""}
+                  ${analysis.time_signature ? `<div class="style-applied-row"><span class="style-applied-key">Time Sig:</span><span class="style-applied-val">${escapeHtml(analysis.time_signature)}</span></div>` : ""}
+                  ${analysis.structure_name || selectedStructure ? `<div class="style-applied-row"><span class="style-applied-key">Structure:</span><span class="style-applied-val">${escapeHtml(analysis.structure_name || selectedStructure?.name || "—")}</span></div>` : ""}
+                  ${analysis.structure_flow || selectedStructure?.flow ? `<div class="style-applied-row"><span class="style-applied-key">Flow:</span><span class="style-applied-val">${escapeHtml(analysis.structure_flow || selectedStructure?.flow)}</span></div>` : ""}
+                  ${sectionsWithChords > 0 ? `<div class="style-applied-row"><span class="style-applied-key">Chords:</span><span class="style-applied-val">${sectionsWithChords} section(s) with progressions</span></div>` : ""}
+                  ${sectionsWithInstructions > 0 ? `<div class="style-applied-row"><span class="style-applied-key">Instructions:</span><span class="style-applied-val">${sectionsWithInstructions} section(s) with performance notes</span></div>` : ""}
+                  ${analysis.era_keys && analysis.era_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${escapeHtml((analysis.era_keys || []).join(", "))}</span></div>` : ""}
+                  ${analysis.prodstyle_keys && analysis.prodstyle_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Production:</span><span class="style-applied-val">${escapeHtml((analysis.prodstyle_keys || []).join(", "))}</span></div>` : ""}
+                  ${analysis.inst_keys && analysis.inst_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${escapeHtml((analysis.inst_keys || []).join(", "))}</span></div>` : ""}
+                  ${analysis.mix_keys && analysis.mix_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Mix:</span><span class="style-applied-val">${escapeHtml((analysis.mix_keys || []).join(", "))}</span></div>` : ""}
+                  ${vocalConfigDisplay}
+                  ${analysis.influences && analysis.influences.length ? `<div class="style-applied-row"><span class="style-applied-key">Influences:</span><span class="style-applied-val">${escapeHtml(analysis.influences.join(", "))}</span></div>` : ""}
+                  <div class="style-summary">${escapeHtml(analysis.summary || "")}</div>
+                </div>`;
+
+                    // Set AI mode to "Keep my current lyrics" after successful analysis
+                    const aimodeContainer = document.getElementById("aimode-tags");
+                    aimodeContainer.querySelectorAll(".tag").forEach((t) => t.classList.remove("active"));
+                    const keepTag = aimodeContainer.querySelector('.tag[data-val="keep"]');
+                    if (keepTag) keepTag.classList.add("active");
                 } catch (err) {
                     resultEl.style.display = "block";
-                    resultEl.innerHTML = `<div class="error-box">Lyrics analysis failed: ${err.message}</div>`;
+                    resultEl.innerHTML = `<div class="error-box">Analysis failed: ${escapeHtml(err.message)}</div>`;
                 }
 
                 btn.disabled = false;
-                btn.innerHTML = "🔍 Analyze Lyrics to Settings";
+                btn.innerHTML = "🔍 Analyze for Style and Lyrics";
             }
 
-            // ── Style Analyzer ────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Style Analyzer - Unified lyrics and style analysis
+            // ========================================================================
             async function applyStyle() {
                 const styleInput = document.getElementById("style-input").value.trim();
                 const selectedMusicalKey = getSelectedMusicalKey();
@@ -3765,57 +4128,57 @@ If no structure can be identified from the lyrics, return empty strings for the 
 
                 const prompt = `You are a music expert. Analyze this style description and extract settings for a song generator.
 
-Style: "${styleInput}"
-Current musical key preference: "${selectedMusicalKey}"
+            Style: "${styleInput}"
+            Current musical key preference: "${selectedMusicalKey}"
 
-Return ONLY valid JSON (no markdown, no backticks):
-{
-  "genre_key": "one of: rock|metal|folk|country|jazz|blues|rnb|hiphop|gospel|reggae|ska|latin|cumbia",
-    "genre_label": "specific genre or subgenre label; not limited to preset UI options",
-    "mood": "specific mood description; not limited to preset UI options",
-        "rhyme": "specific rhyme scheme or rhyme style; not limited to preset UI options",
-    "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM",
-    "pov": "perspective description; can match presets or be a more specific custom perspective",
-    "musical_key": "one of exactly: Auto | C major | C minor | C#/Db major | C#/Db minor | D major | D minor | D#/Eb major | D#/Eb minor | E major | E minor | F major | F minor | F#/Gb major | F#/Gb minor | G major | G minor | G#/Ab major | G#/Ab minor | A major | A minor | A#/Bb major | A#/Bb minor | B major | B minor",
-    "time_signature": "one of: Auto | 4/4 | 3/4 | 2/4 | 6/8 | 5/4 | 7/4 | 9/8 | 12/8 | or a custom time signature like 7/8 or 13/16",
-    "era_keys": ["one or more era/decade labels; preset or custom"],
-    "prodstyle_keys": ["one or more production style labels; preset or custom"],
-    "inst_keys": ["one or more instrumentation labels; preset or custom"],
-    "mix_keys": ["one or more mix-character labels; preset or custom"],
-    "influences": ["up to 3 artist names"],
-    "vocal_config": {
-        "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Instrumental",
-        "profiles": [
+            Return ONLY valid JSON (no markdown, no backticks):
             {
-                "gender": "Male or Female",
-                "range": "For Male: Bass, Baritone, Tenor, or Countertenor. For Female: Contralto, Mezzo-Soprano, or Soprano. Optional.",
-                "accents": ["Only specify if NOT American. Options: Australian, British, New Zealand, African, Jamaican, or custom accent names"],
-                "styles": ["Optional. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
+              "genre_key": "one of: rock|metal|folk|country|jazz|blues|rnb|hiphop|gospel|reggae|ska|latin|cumbia",
+                "genre_label": "specific genre or subgenre label; not limited to preset UI options",
+                "mood": "specific mood description; not limited to preset UI options",
+                    "rhyme": "specific rhyme scheme or rhyme style; not limited to preset UI options",
+                "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM",
+                "pov": "perspective description; can match presets or be a more specific custom perspective",
+                "musical_key": "one of exactly: Auto | C major | C minor | C#/Db major | C#/Db minor | D major | D minor | D#/Eb major | D#/Eb minor | E major | E minor | F major | F minor | F#/Gb major | F#/Gb minor | G major | G minor | G#/Ab major | G#/Ab minor | A major | A minor | A#/Bb major | A#/Bb minor | B major | B minor",
+                "time_signature": "one of: Auto | 4/4 | 3/4 | 2/4 | 6/8 | 5/4 | 7/4 | 9/8 | 12/8 | or a custom time signature like 7/8 or 13/16",
+                "era_keys": ["one or more era/decade labels; preset or custom"],
+                "prodstyle_keys": ["one or more production style labels; preset or custom"],
+                "inst_keys": ["one or more instrumentation labels; preset or custom"],
+                "mix_keys": ["one or more mix-character labels; preset or custom"],
+                "influences": ["up to 3 artist names"],
+                "vocal_config": {
+                    "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Instrumental",
+                    "profiles": [
+                        {
+                            "gender": "Male or Female",
+                            "range": "For Male: Bass, Baritone, Tenor, or Countertenor. For Female: Contralto, Mezzo-Soprano, or Soprano. Optional.",
+                            "accents": ["Only specify if NOT American. Options: Australian, British, New Zealand, African, Jamaican, or custom accent names"],
+                            "styles": ["Optional. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
+                        }
+                    ],
+                    "choir": {
+                        "enabled": false,
+                        "gender": "Male, Female, or Both",
+                        "size": "Small (Vocal Ensemble), Medium (Chamber), Large (Chorus), or Extra Large (Massed)",
+                        "ranges": ["Optional array of ranges"],
+                        "accents": ["Optional array of accents"],
+                        "styles": ["Optional array of vocal styles. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
+                    }
+                },
+              "summary": "One sentence describing what was applied"
             }
-        ],
-        "choir": {
-            "enabled": false,
-            "gender": "Male, Female, or Both",
-            "size": "Small (Vocal Ensemble), Medium (Chamber), Large (Chorus), or Extra Large (Massed)",
-            "ranges": ["Optional array of ranges"],
-            "accents": ["Optional array of accents"],
-            "styles": ["Optional array of vocal styles. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
-        }
-    },
-  "summary": "One sentence describing what was applied"
-}
 
-VOCAL CONFIG INSTRUCTIONS:
-- For "Single Male" or "Single Female", provide ONE profile with matching gender
-- For "Male Duo", provide TWO profiles both with gender: "Male"
-- For "Female Duo", provide TWO profiles both with gender: "Female"  
-- For "Male & Female Duo", provide TWO profiles, one Male and one Female
-- For "Instrumental", set type: "Instrumental" and omit profiles
-- Only include accents array if the accent is NOT American
-- Choir is optional - only include if the style description suggests backing vocals or choir
-- You can use preset options OR create custom values for range, accents, and styles
+            VOCAL CONFIG INSTRUCTIONS:
+            - For "Single Male" or "Single Female", provide ONE profile with matching gender
+            - For "Male Duo", provide TWO profiles both with gender: "Male"
+            - For "Female Duo", provide TWO profiles both with gender: "Female"
+            - For "Male & Female Duo", provide TWO profiles, one Male and one Female
+            - For "Instrumental", set type: "Instrumental" and omit profiles
+            - Only include accents array if the accent is NOT American
+            - Choir is optional - only include if the style description suggests backing vocals or choir
+            - You can use preset options OR create custom values for range, accents, and styles
 
-If the style description does not strongly imply a different key, keep the current musical key preference.`;
+            If the style description does not strongly imply a different key, keep the current musical key preference.`;
 
                 try {
                     if (!aiClient) throw new Error("Google AI key not set — enter your key in the API Key bar.");
@@ -3873,31 +4236,33 @@ If the style description does not strongly imply a different key, keep the curre
                     const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>` : "";
 
                     resultEl.innerHTML = `<div class="style-result-box">
-      <span class="style-result-title">✓ Style Applied to All Settings</span>
-            <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
-            <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${getSelectedMood() || s.mood || "—"}</span></div>
-    <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${formatTempoPreference(s.tempo) || "—"}</span></div>
-    <div class="style-applied-row"><span class="style-applied-key">Key:</span><span class="style-applied-val">${normalizeMusicalKey(s.musical_key) || "—"}</span></div>
-    <div class="style-applied-row"><span class="style-applied-key">Time Sig:</span><span class="style-applied-val">${s.time_signature || "—"}</span></div>
-      <div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${(s.era_keys || []).join(", ") || "—"}</span></div>
-      <div class="style-applied-row"><span class="style-applied-key">Production:</span><span class="style-applied-val">${(s.prodstyle_keys || []).join(", ") || "—"}</span></div>
-      <div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${(s.inst_keys || []).join(", ") || "—"}</span></div>
-      <div class="style-applied-row"><span class="style-applied-key">Mix:</span><span class="style-applied-val">${(s.mix_keys || []).join(", ") || "—"}</span></div>
-            <div class="style-applied-row"><span class="style-applied-key">Perspective:</span><span class="style-applied-val">${getSelectedPov() || s.pov || "—"}</span></div>
-      ${vocalConfigDisplay}
-      ${s.influences && s.influences.length ? `<div class="style-applied-row"><span class="style-applied-key">Influences:</span><span class="style-applied-val">${s.influences.join(", ")}</span></div>` : ""}
-      <div class="style-summary">${s.summary || ""}</div>
-    </div>`;
+                  <span class="style-result-title">✓ Style Applied to All Settings</span>
+                        <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
+                        <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${getSelectedMood() || s.mood || "—"}</span></div>
+                <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${formatTempoPreference(s.tempo) || "—"}</span></div>
+                <div class="style-applied-row"><span class="style-applied-key">Key:</span><span class="style-applied-val">${normalizeMusicalKey(s.musical_key) || "—"}</span></div>
+                <div class="style-applied-row"><span class="style-applied-key">Time Sig:</span><span class="style-applied-val">${s.time_signature || "—"}</span></div>
+                  <div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${(s.era_keys || []).join(", ") || "—"}</span></div>
+                  <div class="style-applied-row"><span class="style-applied-key">Production:</span><span class="style-applied-val">${(s.prodstyle_keys || []).join(", ") || "—"}</span></div>
+                  <div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${(s.inst_keys || []).join(", ") || "—"}</span></div>
+                  <div class="style-applied-row"><span class="style-applied-key">Mix:</span><span class="style-applied-val">${(s.mix_keys || []).join(", ") || "—"}</span></div>
+                        <div class="style-applied-row"><span class="style-applied-key">Perspective:</span><span class="style-applied-val">${getSelectedPov() || s.pov || "—"}</span></div>
+                  ${vocalConfigDisplay}
+                  ${s.influences && s.influences.length ? `<div class="style-applied-row"><span class="style-applied-key">Influences:</span><span class="style-applied-val">${s.influences.join(", ")}</span></div>` : ""}
+                  <div class="style-summary">${s.summary || ""}</div>
+                </div>`;
                 } catch (err) {
                     const resultEl = document.getElementById("style-result");
                     resultEl.style.display = "block";
-                    resultEl.innerHTML = `<div class="error-box">Style analysis failed: ${err.message}</div>`;
+                    resultEl.innerHTML = `<div class="error-box">Style analysis failed: ${escapeHtml(err.message)}</div>`;
                 }
                 btn.disabled = false;
                 btn.innerHTML = "✨ Apply Style to Settings";
             }
 
-            // ── Helpers ───────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Helper Functions
+            // ========================================================================
             function badgeClass(genre) {
                 const g = genre.toLowerCase();
                 if (g.includes("rock") || g.includes("metal") || g.includes("blues")) return "b-rock";
@@ -3942,20 +4307,42 @@ If the style description does not strongly imply a different key, keep the curre
             function stripLeadingStyleMetaTag(text) {
                 const lines = String(text || "").split("\n");
                 while (lines.length && !lines[0].trim()) lines.shift();
-                if (lines[0] && /^\[style:/i.test(lines[0].trim())) lines.shift();
+
+                // If first line starts with [Style:, keep removing until we find the closing ]
+                if (lines[0] && /^\[style:/i.test(lines[0].trim())) {
+                    // Check if the style tag closes on the same line
+                    if (lines[0].trim().endsWith("]")) {
+                        lines.shift();
+                    } else {
+                        // Multi-line style tag - keep removing until we find the closing ]
+                        lines.shift();
+                        while (lines.length && !lines[0].trim().endsWith("]")) {
+                            lines.shift();
+                        }
+                        // Remove the line with the closing ]
+                        if (lines.length && lines[0].trim().endsWith("]")) {
+                            lines.shift();
+                        }
+                    }
+                    // Remove any blank lines after the style tag
+                    while (lines.length && !lines[0].trim()) lines.shift();
+                }
+
                 return lines.join("\n").trim();
             }
             function stripAllLeadingMetaTags(text) {
                 // Strip ALL leading bracketed tags (section tags, direction tags, etc.)
                 // This prevents duplicates when direction tags are stored separately and re-added during export
                 const lines = String(text || "").split("\n");
+
+                // Remove leading empty lines
                 while (lines.length && !lines[0].trim()) lines.shift();
 
                 // Keep removing leading bracketed lines
                 while (lines.length && lines[0]) {
                     const trimmed = lines[0].trim();
-                    // Check if the line is a bracketed tag
-                    if (/^\[([^\]]+)\]$/.test(trimmed)) {
+                    // Check if the line is a bracketed tag (handles any bracket content)
+                    if (/^\[.+\]$/.test(trimmed)) {
                         lines.shift();
                         // Remove any blank lines after the tag
                         while (lines.length && !lines[0].trim()) lines.shift();
@@ -3997,7 +4384,9 @@ If the style description does not strongly imply a different key, keep the curre
                 }
             }
 
-            // ── Sound Profile ─────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Sound Profile
+            // ========================================================================
             function buildSoundProfile() {
                 const eras = getActiveMulti("era-tags"),
                     styles = getActiveMulti("prodstyle-tags"),
@@ -4062,20 +4451,14 @@ If the style description does not strongly imply a different key, keep the curre
                 if (event.target.id === "submit-confirm-modal") resolveSubmitConfirm(accepted);
             }
 
-            // ── User Lyrics ───────────────────────────────────────────────────────────────
+            // ========================================================================
+            // User Lyrics
+            // Handles user-provided lyrics and section parsing
+            // ========================================================================
             function getUserLyrics() {
                 if (activeLeftTab !== "lyrics") return null;
-                if (lyricsMode === "single") {
-                    const bulk = document.getElementById("lyrics-bulk").value.trim();
-                    return bulk ? { mode: "bulk", content: bulk } : null;
-                } else {
-                    const rows = document.querySelectorAll("#section-rows textarea");
-                    const sections = {};
-                    rows.forEach((ta) => {
-                        if (ta.value.trim()) sections[ta.dataset.section] = ta.value.trim();
-                    });
-                    return Object.keys(sections).length ? { mode: "sections", content: sections } : null;
-                }
+                const lyricsInput = document.getElementById("lyrics-input").value.trim();
+                return lyricsInput ? { mode: "bulk", content: lyricsInput } : null;
             }
             function normalizeSectionTypeForMatch(value) {
                 return String(value || "")
@@ -4093,6 +4476,8 @@ If the style description does not strongly imply a different key, keep the curre
                 if (/^(style|mood|prompt|voice|vocal|singer|male vocal|female vocal|duet|harmonies|adlibs?)$/.test(cleaned)) return false;
                 return /(intro|verse|pre-chorus|pre chorus|chorus|hook|post-chorus|post chorus|refrain|bridge|outro|interlude|instrumental|solo|breakdown|drop|build|coda|tag|turnaround)/i.test(cleaned);
             }
+            // Parse bulk lyrics text into structured sections
+            // Handles section tags like [Verse], [Chorus], chord progressions, and instructions
             function parsePreservedBulkLyricsSections(text) {
                 const lines = String(text || "")
                     .replace(/\r/g, "")
@@ -4206,16 +4591,21 @@ If the style description does not strongly imply a different key, keep the curre
                 return merged;
             }
             function setSectionLyricsInputs(sectionContent = {}) {
+                const sectionRows = document.getElementById("section-rows");
+                if (!sectionRows) return;
                 buildSectionRows();
                 document.querySelectorAll("#section-rows textarea").forEach((ta) => {
                     ta.value = sectionContent[ta.dataset.section] || "";
                 });
             }
+            // Restore saved structure from history or import
+            // Handles both preset structures and custom sequences with chords/instructions
             function applySavedStructure(structureData, genreKey = currentGenreKey) {
                 const name = structureData?.name?.trim();
                 const flow = structureData?.flow?.trim();
                 const desc = structureData?.desc?.trim();
                 const tag = structureData?.tag?.trim() || "Saved";
+                const sequence = structureData?.sequence; // Extract sequence if present
 
                 if (!name && !flow) {
                     clearCustomStructure(genreKey);
@@ -4232,47 +4622,83 @@ If the style description does not strongly imply a different key, keep the curre
                     return;
                 }
 
-                customStructureOption = {
+                // If sequence exists, populate customStructureDraft
+                // Sequence contains section names with optional chord progressions and instructions
+                if (sequence && Array.isArray(sequence) && sequence.length > 0) {
+                    customStructureDraft = sequence.map((step) => ({
+                        name: step.name || "Section",
+                        chords: step.chords || "",
+                        instructions: step.instructions || "",
+                    }));
+                } else {
+                    customStructureDraft = [];
+                }
+
+                const structDataForSync = {
                     genreKey,
                     source: "history",
                     name: name || "Saved Structure",
                     tag,
-                    flow: flow || "Custom flow",
+                    flow: flow || (customStructureDraft.length > 0 ? structureFlowFromSequence(customStructureDraft) : "Custom flow"),
                     desc: desc || "Restored from saved song history.",
+                    sequence: customStructureDraft.length > 0 ? [...customStructureDraft] : undefined,
                 };
-                syncCustomStructureBuilderFields(customStructureOption);
-                buildStructureList(genreKey);
-                activateStructureIndex(genreKey, 0);
+
+                // Sync fields and apply the custom structure
+                syncCustomStructureBuilderFields(structDataForSync);
+                applyCustomStructureBuilder("history");
             }
+            // Capture complete snapshot of all current settings for history storage
             function captureCurrentSettingsSnapshot() {
+                // Capture lyrics from input field if available, or reconstruct from current song sections
+                let lyricsInput = document.getElementById("lyrics-input").value.trim();
+
+                // If lyrics input is empty but we have a current song with sections, capture those lyrics
+                if (!lyricsInput && currentSong && Array.isArray(currentSong.sections) && currentSong.sections.length > 0) {
+                    lyricsInput = currentSong.sections
+                        .map((s) => {
+                            const sectionHeader = `[${s.type}]`;
+                            const sectionLines = stripAllLeadingMetaTags(s.lines || "").trim();
+                            return sectionLines ? `${sectionHeader}\n${sectionLines}` : "";
+                        })
+                        .filter(Boolean)
+                        .join("\n\n");
+                }
+
+                const userLyricsForHistory = lyricsInput ? { mode: "bulk", content: lyricsInput } : null;
+
                 return {
-                    title: document.getElementById("title").value,
-                    concept: document.getElementById("concept").value,
+                    title: document.getElementById("title").value.trim(),
+                    concept: document.getElementById("concept").value.trim(),
                     genreKey: currentGenreKey,
                     genreLabel: getSelectedGenreLabel(),
-                    mood: getSelectedMood(),
-                    rhyme: getSelectedRhymeScheme(),
-                    tempo: getSelectedTempoPreference(),
+                    mood: getActive("mood-tags") || getCustomTagValue("mood-custom-tag"),
+                    rhyme: getActive("rhyme-tags"),
+                    tempo: formatTempoPreference(getTempoPreference()),
                     musicalKey: getSelectedMusicalKey(),
-                    pov: getSelectedPov(),
+                    timeSignature: getSelectedTimeSignature(),
+                    pov: getActive("pov-tags") || getCustomTagValue("pov-custom-tag"),
                     vocalProfiles: getVocalProfiles(),
-                    verseLength: getSelectedVerseLength(),
-                    chorusLength: getSelectedChorusLength(),
+                    verseLength: document.getElementById("verse-length-select").value,
+                    chorusLength: document.getElementById("chorus-length-select").value,
                     structure: selectedStructure
                         ? {
                               name: selectedStructure.name,
                               flow: selectedStructure.flow,
                               desc: selectedStructure.desc,
                               tag: selectedStructure.tag,
+                              sequence: selectedStructure.sequence,
                           }
                         : null,
                     soundProfile: buildSoundProfile(),
-                    lyricsMode,
+                    lyricsMode: "single",
                     aiMode: getActive("aimode-tags"),
-                    userLyrics: getUserLyrics(),
+                    userLyrics: userLyricsForHistory,
                     instrumentExclusions: getInstrumentExclusions(),
                 };
             }
+            // Restore vocal profiles from saved settings
+            // Rebuilds vocal configuration UI with saved gender, range, accents, and styles
             function restoreVocalProfiles(vocalProfilesData) {
                 if (!vocalProfilesData || !vocalProfilesData.type) {
                     // Default to Single Male
@@ -4444,21 +4870,23 @@ If the style description does not strongly imply a different key, keep the curre
                     if (defaultAiMode) defaultAiMode.classList.add("active");
                 }
 
-                setLyricsMode(settings.lyricsMode || (settings.userLyrics?.mode === "sections" ? "sections" : "single"));
-                if (settings.userLyrics?.mode === "bulk") {
-                    document.getElementById("lyrics-bulk").value = settings.userLyrics.content || "";
-                } else if (settings.userLyrics?.mode === "sections") {
-                    setSectionLyricsInputs(settings.userLyrics.content || {});
-                    document.getElementById("lyrics-bulk").value = "";
-                } else {
-                    document.getElementById("lyrics-bulk").value = "";
-                    setSectionLyricsInputs({});
+                // Restore lyrics to lyrics input
+                const lyricsInputElement = document.getElementById("lyrics-input");
+                if (lyricsInputElement) {
+                    if (settings.userLyrics?.content) {
+                        lyricsInputElement.value = settings.userLyrics.content;
+                    } else {
+                        lyricsInputElement.value = "";
+                    }
                 }
                 // restore instrument exclusions
                 document.getElementById("instrument-exclude").value = settings.instrumentExclusions || song.instrumentExclusions || "";
             }
 
-            // ── History ───────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // History Management
+            // Saves and restores song configurations to/from localStorage
+            // ========================================================================
             const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
 
             function persistHistory() {
@@ -4485,7 +4913,11 @@ If the style description does not strongly imply a different key, keep the curre
             }
 
             function saveToHistory(song) {
-                history.unshift({ ...song, settings: captureCurrentSettingsSnapshot(), savedAt: new Date().toISOString(), id: Date.now() });
+                const snapshot = captureCurrentSettingsSnapshot();
+                console.log("saveToHistory - captured snapshot:", snapshot);
+                console.log("saveToHistory - userLyrics in snapshot:", snapshot.userLyrics);
+
+                history.unshift({ ...song, settings: snapshot, savedAt: new Date().toISOString(), id: Date.now() });
                 if (history.length > 20) history.pop();
                 persistHistory();
                 renderHistory();
@@ -4501,7 +4933,7 @@ If the style description does not strongly imply a different key, keep the curre
                     .map((s) => {
                         const d = new Date(s.savedAt);
                         const ts = d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                        return `<div class="hist-item"><div><div class="hist-title">${s.title}</div><div class="hist-meta">${s.genre} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">Load</button><button class="btn-sm" onclick="exportSong(${s.id})">Export</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">✕</button></div></div>`;
+                        return `<div class="hist-item"><div><div class="hist-title">${escapeHtml(s.title)}</div><div class="hist-meta">${escapeHtml(s.genre)} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">Load</button><button class="btn-sm" onclick="exportSong(${s.id})">Export</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">✕</button></div></div>`;
                     })
                     .join("");
             }
@@ -4512,6 +4944,12 @@ If the style description does not strongly imply a different key, keep the curre
                 applyHistorySettings(song);
                 renderSongCard(song);
                 renderChordsCard(song);
+
+                // If lyrics were in the history, switch to lyrics tab to show them
+                if (song.settings?.userLyrics?.content) {
+                    switchLTab("lyrics");
+                }
+
                 switchRTab("output");
             }
             function deleteFromHistory(id) {
@@ -4596,6 +5034,9 @@ If the style description does not strongly imply a different key, keep the curre
                                         let sectionText = `[${section.type}]`;
                                         if (section.direction) {
                                             sectionText += `\n[${section.direction}]`;
+                                        }
+                                        if (section.instructions) {
+                                            sectionText += `\n[${section.instructions}]`;
                                         }
                                         if (section.lines) {
                                             sectionText += `\n${section.lines}`;
@@ -4745,15 +5186,22 @@ If the style description does not strongly imply a different key, keep the curre
                             // Check if this is a known section type (with optional numbers like "Verse 1")
                             const isKnownSection = /^(intro|verse|pre-?chorus|chorus|post-?chorus|bridge|outro|hook|refrain|interlude|instrumental|solo|breakdown|drop|build|coda|tag|ending)(\s+\d+)?$/i.test(sectionType);
 
-                            // If we have a current section and this looks like a direction tag (not a known section type)
+                            // If we have a current section and this looks like a meta tag (not a known section type)
                             if (currentLyricSection && !isKnownSection) {
-                                currentLyricSection.direction = sectionContent;
+                                // If we haven't set direction yet, this is the direction tag
+                                if (!currentLyricSection.direction) {
+                                    currentLyricSection.direction = sectionContent;
+                                } else if (!currentLyricSection.instructions) {
+                                    // If direction is set but instructions is not, this is instructions
+                                    currentLyricSection.instructions = sectionContent;
+                                }
                             } else if (isKnownSection) {
                                 // This is a new section
                                 currentLyricSection = {
                                     type: sectionContent,
                                     lines: "",
                                     direction: null,
+                                    instructions: null,
                                 };
                                 song.sections.push(currentLyricSection);
                             }
@@ -4774,6 +5222,9 @@ If the style description does not strongly imply a different key, keep the curre
                             let sectionText = `[${section.type}]`;
                             if (section.direction) {
                                 sectionText += `\n[${section.direction}]`;
+                            }
+                            if (section.instructions) {
+                                sectionText += `\n[${section.instructions}]`;
                             }
                             if (section.lines) {
                                 sectionText += `\n${section.lines}`;
@@ -4865,7 +5316,10 @@ If the style description does not strongly imply a different key, keep the curre
                 return result;
             }
 
-            // ── Export ────────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Export Functions
+            // Generates and exports song data in various formats
+            // ========================================================================
             let exportText = "";
             let exportLyricsText = "";
             let exportStylePromptText = "";
@@ -4922,7 +5376,34 @@ If the style description does not strongly imply a different key, keep the curre
 
                 const exportLyricsMetaTag = styleDetailsLines.length ? normalizeStyleMetaTag(styleDetailsLines.join("\n")) : "";
                 exportStylePromptText = song.suno_style_prompt || "--";
-                exportLyricsText = removeDoubleBrackets([exportLyricsMetaTag || "", ...song.sections.map((s) => `\n[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripAllLeadingMetaTags(s.lines)}`)].join("\n"));
+
+                const exportSections = song.sections.map((s, idx) => {
+                    const originalLines = s.lines || "";
+                    const strippedLines = stripAllLeadingMetaTags(originalLines);
+
+                    // Strip meta tags from instructions field (AI sometimes puts full meta block here)
+                    const rawInstructions = s.instructions || "";
+                    const cleanedInstructions = stripAllLeadingMetaTags(rawInstructions).trim();
+
+                    debugLog("EXPORT_SECTION", `Building export for section ${idx} (${s.type})`, {
+                        originalLines: originalLines,
+                        strippedLines: strippedLines,
+                        direction: s.direction,
+                        rawInstructions: rawInstructions,
+                        cleanedInstructions: cleanedInstructions,
+                        charsStripped: originalLines.length - strippedLines.length,
+                    });
+
+                    // Only output cleaned instructions if it has content and differs from direction
+                    const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
+                    return `\n[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}${instructionsLine}\n${strippedLines}`;
+                });
+
+                exportLyricsText = removeDoubleBrackets([exportLyricsMetaTag || "", ...exportSections].join("\n"));
+                debugLog("EXPORT_COMPLETE", "Export lyrics built", {
+                    totalLength: exportLyricsText.length,
+                    preview: exportLyricsText.substring(0, 500),
+                });
                 const spLines = sp
                     ? [
                           ``,
@@ -5005,6 +5486,14 @@ If the style description does not strongly imply a different key, keep the curre
             function closeModal() {
                 document.getElementById("export-modal").style.display = "none";
             }
+            function openAnalyzerModal() {
+                document.getElementById("analyzer-modal").style.display = "flex";
+            }
+            function closeAnalyzerModal(e) {
+                if (!e || e.target.id === "analyzer-modal") {
+                    document.getElementById("analyzer-modal").style.display = "none";
+                }
+            }
             function downloadTxt() {
                 const a = document.createElement("a");
                 a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(exportText);
@@ -5052,7 +5541,10 @@ If the style description does not strongly imply a different key, keep the curre
                 });
             }
 
-            // ── Regen Section ─────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Regenerate Section
+            // Allows regenerating individual song sections with AI
+            // ========================================================================
             async function regenSection(idx, btn) {
                 if (!currentSong) return;
                 btn.textContent = "...";
@@ -5070,23 +5562,35 @@ If the style description does not strongly imply a different key, keep the curre
                 const instrumentExclusions = currentSong.instrumentExclusions || getInstrumentExclusions();
 
                 const prompt = `You are a professional songwriter. Rewrite ONLY this section with fresh, original lyrics.
-Song: ${currentSong.title} | Genre: ${currentSong.genre} | Rhyme: ${currentSong.rhyme || "AABB"}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${currentTempoPreference !== "AI Choose" ? `\nTempo Preference: ${currentTempoPreference}` : ""}
-Verse Length Preference: ${currentVerseLength}
-Chorus Length Preference: ${currentChorusLength}${instrumentExclusions ? `\nInstrument Exclusions: ${instrumentExclusions}` : ""}
-Section: ${sec.type}
-Current:\n${sec.lines}
-Structure: ${currentSong.structureName || "Unknown"}${currentKey !== "Unknown" && currentKey !== "Auto" ? `\nKey: ${currentKey}` : ""}
-Sound Profile:\n${currentSoundProfile}
-Production Notes:\n${currentProductionNotes}
-Chord Progression:\n${currentChordProgression}
-Also return a Suno-compatible style prompt for the overall song. The "suno_style_prompt" must be 1000 characters or less total. If the full style prompt would exceed that limit, put the overflow or extra detail into "style_meta_tag" so it can be inserted at the start of the returned lyrics.
-The returned Suno style prompt must incorporate all current settings and song-defining details: Genre, Structure, Key, full Sound Profile, Production Notes, and Chord Progression.
-If verse or chorus length preference is set to Follow Structure, keep the natural section length implied by the selected structure and song style.
-Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short direction","suno_style_prompt":"max 1000 chars","style_meta_tag":"optional [Style: ...]"}`;
+            Song: ${currentSong.title} | Genre: ${currentSong.genre} | Rhyme: ${currentSong.rhyme || "AABB"}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${currentTempoPreference !== "AI Choose" ? `\nTempo Preference: ${currentTempoPreference}` : ""}
+            Verse Length Preference: ${currentVerseLength}
+            Chorus Length Preference: ${currentChorusLength}${instrumentExclusions ? `\nInstrument Exclusions: ${instrumentExclusions}` : ""}
+            Section: ${sec.type}
+            Current:\n${sec.lines}
+            Structure: ${currentSong.structureName || "Unknown"}${currentKey !== "Unknown" && currentKey !== "Auto" ? `\nKey: ${currentKey}` : ""}
+            Sound Profile:\n${currentSoundProfile}
+            Production Notes:\n${currentProductionNotes}
+            Chord Progression:\n${currentChordProgression}
+            Also return a Suno-compatible style prompt for the overall song. The "suno_style_prompt" must be 1000 characters or less total. If the full style prompt would exceed that limit, put the overflow or extra detail into "style_meta_tag" so it can be inserted at the start of the returned lyrics.
+            The returned Suno style prompt must incorporate all current settings and song-defining details: Genre, Structure, Key, full Sound Profile, Production Notes, and Chord Progression.
+            If verse or chorus length preference is set to Follow Structure, keep the natural section length implied by the selected structure and song style.
+            Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short direction","suno_style_prompt":"max 1000 chars","style_meta_tag":"optional [Style: ...]"}`;
                 try {
                     if (!aiClient) throw new Error("Google AI key not set — enter your key in the API Key bar.");
+                    debugLog("SECTION_REGEN_REQUEST", `Regenerating section: ${sec.type}`, {
+                        promptLength: prompt.length,
+                        prompt: prompt,
+                        sectionType: sec.type,
+                        currentLines: sec.lines,
+                    });
                     const response = await aiClient.models.generateContent({ model: "gemini-3.1-flash-lite-preview", contents: prompt });
-                    const parsed = JSON.parse(response.text.replace(/```json|```/g, "").trim());
+                    const raw = response.text.replace(/```json|```/g, "").trim();
+                    debugLog("SECTION_REGEN_RESPONSE", `Received regenerated section: ${sec.type}`, {
+                        responseLength: raw.length,
+                        rawResponse: raw,
+                    });
+                    const parsed = JSON.parse(raw);
+                    debugLog("SECTION_REGEN_PARSED", `Parsed regenerated section: ${sec.type}`, parsed);
                     currentSong.sections[idx].lines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(parsed.lines));
                     currentSong.sections[idx].direction = parsed.direction;
                     if (parsed.suno_style_prompt) currentSong.suno_style_prompt = parsed.suno_style_prompt;
@@ -5101,7 +5605,10 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                 btn.disabled = false;
             }
 
-            // ── Render Cards ──────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Render Output Cards
+            // Creates HTML card displays for song output, chords, and metadata
+            // ========================================================================
             function renderSongCard(song) {
                 const panel = document.getElementById("tab-output");
                 document.getElementById("empty-state").style.display = "none";
@@ -5110,18 +5617,18 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                 const ts = new Date().toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) + " · " + new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
                 const kiRows = song.key_info
                     ? Object.entries(song.key_info)
-                          .map(([k, v]) => `<div class="key-item"><span class="key-k">${k.replace(/_/g, " ")}:</span><span class="key-v">${v}</span></div>`)
+                          .map(([k, v]) => `<div class="key-item"><span class="key-k">${escapeHtml(k.replace(/_/g, " "))}:</span><span class="key-v">${escapeHtml(v)}</span></div>`)
                           .join("")
                     : "";
                 const sp = song.soundProfile;
                 let spHtml = "";
                 if (sp && (sp.eras?.length || sp.styles?.length || sp.insts?.length || sp.mixes?.length || sp.infs?.length)) {
                     const pills = [
-                        ...(sp.eras || []).map((v) => `<span class="sound-pill sp-era">${v.split("(")[0].trim()}</span>`),
-                        ...(sp.styles || []).map((v) => `<span class="sound-pill sp-style">${v.split("-")[0].trim()}</span>`),
-                        ...(sp.insts || []).map((v) => `<span class="sound-pill sp-inst">${v.split("-")[0].trim()}</span>`),
-                        ...(sp.mixes || []).map((v) => `<span class="sound-pill sp-mix">${v.split("-")[0].trim()}</span>`),
-                        ...(sp.infs || []).map((v) => `<span class="sound-pill sp-inf">~ ${v}</span>`),
+                        ...(sp.eras || []).map((v) => `<span class="sound-pill sp-era">${escapeHtml(v.split("(")[0].trim())}</span>`),
+                        ...(sp.styles || []).map((v) => `<span class="sound-pill sp-style">${escapeHtml(v.split("-")[0].trim())}</span>`),
+                        ...(sp.insts || []).map((v) => `<span class="sound-pill sp-inst">${escapeHtml(v.split("-")[0].trim())}</span>`),
+                        ...(sp.mixes || []).map((v) => `<span class="sound-pill sp-mix">${escapeHtml(v.split("-")[0].trim())}</span>`),
+                        ...(sp.infs || []).map((v) => `<span class="sound-pill sp-inf">~ ${escapeHtml(v)}</span>`),
                     ].join("");
                     spHtml = `<div class="sound-pills">${pills}</div>`;
                 }
@@ -5130,35 +5637,42 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                         const cls = sectionClass(sec.type, sec.userProvided);
                         const userBadge = sec.userProvided ? `<span class="user-badge">yours</span>` : "";
                         const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">↻ Regen</button>`;
-                        return `<div class="lyric-section"><div class="lyric-label ${cls}"><span>${sec.type}${userBadge}</span>${regenBtn}</div><div class="lyric-line" id="lyric-line-${i}">${sec.lines}</div><div class="lyric-direction" id="lyric-dir-${i}">${sec.direction || ""}</div></div>`;
+                        return `<div class="lyric-section"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${regenBtn}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(sec.lines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
                     })
                     .join('<div class="sec-div"></div>');
-                const allLyrics = song.sections.map((s) => `[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}\n${stripAllLeadingMetaTags(s.lines)}`).join("\n\n");
+                // Only output instructions if different from direction to avoid duplication
+                const allLyrics = song.sections
+                    .map((s) => {
+                        const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+                        const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
+                        return `[${s.type}]${s.direction ? "\n[" + s.direction + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
+                    })
+                    .join("\n\n");
                 const sunoStylePrompt = song.suno_style_prompt || "--";
                 const card = document.createElement("div");
                 card.className = "output-card";
                 card.id = "main-song-card";
                 card.innerHTML = `
-    <div class="card-header"><div class="card-header-row"><div>
-      <div class="card-title">${song.title}</div>
-      <div class="card-subtitle">${song.logline}</div>
-      <div class="genre-badge ${badgeClass(song.genre)}">${song.genre}</div>
-      ${song.structureName ? `<div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;margin-top:3px;">Structure: ${song.structureName}</div>` : ""}
-      ${spHtml}
-      <div class="card-meta" style="margin-top:4px;">${ts}</div>
-    </div></div></div>
-        <div class="block">
-            <div class="block-header"><div class="section-header">Suno Style Prompt</div><button class="btn-copy" onclick="copyText(this,\`${sunoStylePrompt.replace(/`/g, "\\`")}\`)">Copy</button></div>
-            <div class="prod-body">${sunoStylePrompt}</div><div class="char-count">${sunoStylePrompt === "--" ? 0 : sunoStylePrompt.length} / 1000 chars</div>
-        </div>
-    <div class="block">
-      <div class="block-header"><div class="section-header">Production Notes</div><button class="btn-copy" onclick="copyText(this,\`${song.production.replace(/`/g, "\\`")}\`)">Copy</button></div>
-      <div class="prod-grid"><div><div class="prod-body">${song.production}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
-    </div>
-    <div class="block">
-      <div class="block-header"><div class="section-header">Lyrics</div><button class="btn-copy" onclick="copyText(this,\`${allLyrics.replace(/`/g, "\\`")}\`)">Copy All</button></div>
-      <div class="lyrics-content">${lyricsHtml}</div>
-    </div>`;
+                <div class="card-header"><div class="card-header-row"><div>
+                  <div class="card-title">${escapeHtml(song.title)}</div>
+                  <div class="card-subtitle">${escapeHtml(song.logline)}</div>
+                  <div class="genre-badge ${badgeClass(song.genre)}">${escapeHtml(song.genre)}</div>
+                  ${song.structureName ? `<div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;margin-top:3px;">Structure: ${escapeHtml(song.structureName)}</div>` : ""}
+                  ${spHtml}
+                  <div class="card-meta" style="margin-top:4px;">${ts}</div>
+                </div></div></div>
+                    <div class="block">
+                        <div class="block-header"><div class="section-header">Suno Style Prompt</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(sunoStylePrompt).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                        <div class="prod-body">${escapeHtml(sunoStylePrompt)}</div><div class="char-count">${sunoStylePrompt === "--" ? 0 : sunoStylePrompt.length} / 1000 chars</div>
+                    </div>
+                <div class="block">
+                  <div class="block-header"><div class="section-header">Production Notes</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(song.production).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                  <div class="prod-grid"><div><div class="prod-body">${escapeHtml(song.production)}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
+                </div>
+                <div class="block">
+                  <div class="block-header"><div class="section-header">Lyrics</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
+                  <div class="lyrics-content">${lyricsHtml}</div>
+                </div>`;
                 panel.insertBefore(card, panel.firstChild);
                 switchRTab("output");
 
@@ -5174,19 +5688,21 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                 if (old) old.remove();
                 if (!song.chords) return;
                 const c = song.chords;
-                const chordCardsHtml = (c.chords || []).map((ch) => `<div class="chord-card"><div class="chord-name">${ch.name}</div><div class="chord-role">${ch.role}</div></div>`).join("");
+                const chordCardsHtml = (c.chords || []).map((ch) => `<div class="chord-card"><div class="chord-name">${escapeHtml(ch.name)}</div><div class="chord-role">${escapeHtml(ch.role)}</div></div>`).join("");
                 const card = document.createElement("div");
                 card.className = "output-card";
                 card.id = "chords-card";
                 card.innerHTML = `
-    <div class="card-header"><div class="card-title" style="font-size:16px;">${song.title} — Chord Chart</div><div class="card-meta" style="margin-top:5px;">Key of ${song.key_info?.key || "?"} · ${song.key_info?.feel || ""}</div></div>
-    <div class="block"><div class="section-header" style="margin-bottom:8px;">Core Chords</div><div class="chord-grid">${chordCardsHtml}</div></div>
-    <div class="block"><div class="block-header"><div class="section-header">Progression</div><button class="btn-copy" onclick="copyText(this,\`${(c.progression || "").replace(/`/g, "\\`")}\`)">Copy</button></div><div class="chord-prog">${c.progression || ""}</div></div>
-    ${c.notes ? `<div class="block"><div class="section-header" style="margin-bottom:6px;">Harmonic Notes</div><div class="prod-body">${c.notes}</div></div>` : ""}`;
+                <div class="card-header"><div class="card-title" style="font-size:16px;">${escapeHtml(song.title)} — Chord Chart</div><div class="card-meta" style="margin-top:5px;">Key of ${escapeHtml(song.key_info?.key || "?")} · ${escapeHtml(song.key_info?.feel || "")}</div></div>
+                <div class="block"><div class="section-header" style="margin-bottom:8px;">Core Chords</div><div class="chord-grid">${chordCardsHtml}</div></div>
+                <div class="block"><div class="block-header"><div class="section-header">Progression</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(c.progression || "").replace(/`/g, "\\`")}\`)">Copy</button></div><div class="chord-prog">${escapeHtml(c.progression || "")}</div></div>
+                ${c.notes ? `<div class="block"><div class="section-header" style="margin-bottom:6px;">Harmonic Notes</div><div class="prod-body">${escapeHtml(c.notes)}</div></div>` : ""}`;
                 panel.insertBefore(card, panel.firstChild);
             }
 
-            // ── Generate ──────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Generate Song - Main AI generation function
+            // ========================================================================
             async function generateSong() {
                 const titleInput = document.getElementById("title").value.trim();
                 const title = titleInput || "";
@@ -5259,10 +5775,23 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
 
                 const soundInstruction = soundProfile ? `\n\nSOUND PROFILE:\n${soundProfilePromptText(soundProfile)}` : "";
 
-                const influenceInstruction =
-                    soundProfile && soundProfile.infs && soundProfile.infs.length
-                        ? `\n\nCRITICAL - KEY INFLUENCES: The user has specified these influences: ${soundProfile.infs.join(", ")}. For each artist name provided, you MUST convert it to a Suno-safe 4-6 word descriptive phrase that captures that artist's signature sound. DO NOT USE THE ARTIST NAME IN ANY FORM - not with "-esque", "-style", "-inspired", "-like" or any other suffix. ONLY use the descriptive sound characteristics. Examples: "Florence and the Machine" → "orchestral indie pop, ethereal soprano" (NOT "Florence and the Machine-inspired") | "Radiohead" → "experimental alt-rock, atmospheric electronics" (NOT "Radiohead-esque") | "Billie Eilish" → "whispered vocals, dark pop minimalism" (NOT "Billie Eilish-style"). In the suno_style_prompt field, use ONLY the converted descriptive phrases without artist names.`
-                        : "";
+                // Check if influences are enabled (checkbox ticked or influences already specified)
+                // Only generate influence descriptions if user wants them
+                const influencesCheckbox = document.getElementById("enable-influences-checkbox");
+                const influencesEnabled = influencesCheckbox?.checked || false;
+                const hasSpecifiedInfluences = soundProfile && soundProfile.infs && soundProfile.infs.length > 0;
+
+                let influenceInstruction = "";
+                let expectSuggestedInfluences = false;
+                if (hasSpecifiedInfluences) {
+                    // User has specified influences - tell AI to convert them to Suno-safe descriptions
+                    influenceInstruction = `\n\nCRITICAL - KEY INFLUENCES: The user has specified these influences: ${soundProfile.infs.join(", ")}. For each artist name provided, you MUST convert it to a Suno-safe 4-6 word descriptive phrase that captures that artist's signature sound. DO NOT USE THE ARTIST NAME IN ANY FORM - not with "-esque", "-style", "-inspired", "-like" or any other suffix. ONLY use the descriptive sound characteristics. Examples: "Florence and the Machine" → "orchestral indie pop, ethereal soprano" (NOT "Florence and the Machine-inspired") | "Radiohead" → "experimental alt-rock, atmospheric electronics" (NOT "Radiohead-esque") | "Billie Eilish" → "whispered vocals, dark pop minimalism" (NOT "Billie Eilish-style"). In the suno_style_prompt field, use ONLY the converted descriptive phrases without artist names.`;
+                } else if (influencesEnabled) {
+                    // Checkbox is ticked but no influences specified - ask AI to suggest some
+                    expectSuggestedInfluences = true;
+                    influenceInstruction = `\n\nKEY INFLUENCES: Please suggest 3 key musical influences or "sounds like" artist references that would fit this song's genre and style. Return these artist names in a "suggested_influences" array field in the JSON response (e.g., ["Artist Name 1", "Artist Name 2", "Artist Name 3"]). Then, for each artist, convert their style to a Suno-safe 4-6 word descriptive phrase that captures their signature sound characteristics. DO NOT use artist names in the suno_style_prompt - only use the descriptive sound characteristics. Examples: "Florence and the Machine" → "orchestral indie pop, ethereal soprano" | "Radiohead" → "experimental alt-rock, atmospheric electronics" | "Billie Eilish" → "whispered vocals, dark pop minimalism". Include these descriptive phrases in the suno_style_prompt field.`;
+                }
+                // If neither checkbox is ticked nor influences specified, influenceInstruction remains empty
 
                 const tempoForPrompt = formatTempoPreference(tempo);
                 const keyForPrompt = selectedMusicalKey;
@@ -5272,6 +5801,7 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
 
                 // Extract chord information from custom structure sequence if available
                 let sectionChordsInstruction = "";
+                let sectionInstructionsData = "";
                 if (struct.sequence && Array.isArray(struct.sequence)) {
                     const sectionChords = struct.sequence
                         .filter((step) => typeof step === "object" && step.chords)
@@ -5279,6 +5809,14 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
                         .join(" | ");
                     if (sectionChords) {
                         sectionChordsInstruction = `\n\nSECTION-SPECIFIC CHORDS:\n${sectionChords}\nIncorporate these chord progressions into the corresponding sections. Include these chords in your production notes and chord progression response.`;
+                    }
+
+                    const sectionInstructions = struct.sequence
+                        .filter((step) => typeof step === "object" && step.instructions)
+                        .map((step) => `${step.name}: ${step.instructions}`)
+                        .join(" | ");
+                    if (sectionInstructions) {
+                        sectionInstructionsData = `\n\nSECTION-SPECIFIC INSTRUCTIONS:\n${sectionInstructions}\nThese are performance/production instructions for specific sections. Include them as meta tags in the lyrics for those sections.`;
                     }
                 }
 
@@ -5294,55 +5832,128 @@ Respond ONLY with JSON (no backticks): {"lines":"new lyrics","direction":"short 
 
                 const prompt = `You are a professional songwriter and producer with deep expertise in all genres.
 
-SONG SPECS:
-Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
-Concept: ${concept}
-Genre: ${genre}
-Mood: ${mood}
-Rhyme Scheme: ${rhyme}${tempoForPrompt !== "AI Choose" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}
-Perspective: ${pov}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}
-Verse Length Preference: ${formatLengthPreference(verseLength)}
-Chorus Length Preference: ${formatLengthPreference(chorusLength)}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
-Structure: ${struct.name} -- ${struct.flow}
-Structure description: ${struct.desc}${sectionChordsInstruction}${soundInstruction}${influenceInstruction}${lyricsInstruction}
+            SONG SPECS:
+            Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
+            Concept: ${concept}
+            Genre: ${genre}
+            Mood: ${mood}
+            Rhyme Scheme: ${rhyme}${tempoForPrompt !== "AI Choose" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}
+            Perspective: ${pov}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}
+            Verse Length Preference: ${formatLengthPreference(verseLength)}
+            Chorus Length Preference: ${formatLengthPreference(chorusLength)}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
+            Structure: ${struct.name} -- ${struct.flow}
+            Structure description: ${struct.desc}${sectionChordsInstruction}${sectionInstructionsData}${soundInstruction}${influenceInstruction}${lyricsInstruction}
 
-Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested tempo preference: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
+            Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested tempo preference: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
 
-LYRICAL PHRASING TECHNIQUES:
-When generating lyrics, use appropriate phrasing techniques to enhance vocal delivery and expression:
-- Commas within lines create pauses (multiple commas create longer pauses; typically use 1-5 commas where appropriate)
-- The [Pause] meta tag can be placed between lines within a section for dramatic effect
-- Capitalizing the first letter of a word adds emphasis when sung (e.g., "I Never wanted this")
-- ALL CAPITALS forces a word or phrase to be yelled (e.g., "STOP right there")
-Only use these techniques where appropriate to the genre, style, dynamic, and emotional content of the lyrics. Rock, metal, and intense genres may use more emphasis and pauses, while softer genres should use them sparingly for maximum impact.
+            LYRICAL PHRASING TECHNIQUES:
+            When generating lyrics, use appropriate phrasing techniques to enhance vocal delivery and expression:
+            - Commas within lines create pauses (multiple commas create longer pauses; typically use 1-5 commas where appropriate)
+            - The [Pause] meta tag can be placed between lines within a section for dramatic effect
+            - Capitalizing the first letter of a word adds emphasis when sung (e.g., "I Never wanted this")
+            - ALL CAPITALS forces a word or phrase to be yelled (e.g., "STOP right there")
+            Only use these techniques where appropriate to the genre, style, dynamic, and emotional content of the lyrics. Rock, metal, and intense genres may use more emphasis and pauses, while softer genres should use them sparingly for maximum impact.
 
-${titleInstruction}
-Also return a Suno-compatible style prompt in "suno_style_prompt". That field must be 1000 characters or less total. If it would exceed 1000 characters, keep "suno_style_prompt" concise and put the overflow or extra style detail in "style_meta_tag", which should be a one-line style meta tag intended for insertion at the start of the returned lyrics.
-The returned Suno style prompt must incorporate every currently selected setting: Genre, Structure, Key, the full Sound Profile, and it must also reflect the Production Notes and Chord Progression that you return in the same JSON response.
-Respond ONLY with JSON (no markdown, no backticks):
-{
-  "title":"Song title",
-  "logline":"One evocative sentence (20-30 words)",
-  "genre":"${genre}",
-  "structureName":"${struct.name}",
-  "concept":"${concept}",
-  "mood":"${mood}",
-  "rhyme":"${rhyme}",
-    "suno_style_prompt":"Suno-compatible style prompt, max 1000 chars",
-    "vocal_gender":"optional e.g. Male Duo, Female, Choir",
-    "vocal_range":"optional e.g. Tenor, Soprano, Baritone, Contralto",
-    "instrument_exclusions":"optional comma-separated list of instruments to exclude from instrumentation",
-    "key_info":{"key":"${keyForPrompt !== "Auto" ? keyForPrompt : "e.g. E minor"}","time_sig":"${timeSignatureForPrompt !== "Auto" ? timeSignatureForPrompt : "e.g. 4/4"}","tempo":"${tempoForPrompt !== "AI Choose" ? tempoForPrompt : "e.g. 90-110 BPM or 102 BPM"}","feel":"e.g. Straight 8ths"},
-  "production":"400-500 char production description referencing sound profile choices.",
-  "chords":{"chords":[{"name":"Em","role":"Tonic"}],"progression":"Verse: Em-C-G-D | Chorus: C-G-D-Em","notes":"2-3 sentences on harmonic approach."},
-  "sections":[{"type":"Section name","direction":"Performance direction","lines":"Lyrics\nLine 2","userProvided":false}]
-}`;
+            ${titleInstruction}
+            Also return a Suno-compatible style prompt in "suno_style_prompt". That field must be 1000 characters or less total. If it would exceed 1000 characters, keep "suno_style_prompt" concise and put the overflow or extra style detail in "style_meta_tag", which should be a one-line style meta tag intended for insertion at the start of the returned lyrics.
+            The returned Suno style prompt must incorporate every currently selected setting: Genre, Structure, Key, the full Sound Profile, and it must also reflect the Production Notes and Chord Progression that you return in the same JSON response.
+            Respond ONLY with JSON (no markdown, no backticks):
+            {
+              "title":"Song title",
+              "logline":"One evocative sentence (20-30 words)",
+              "genre":"${genre}",
+              "structureName":"${struct.name}",
+              "concept":"${concept}",
+              "mood":"${mood}",
+              "rhyme":"${rhyme}",
+                "suno_style_prompt":"Suno-compatible style prompt, max 1000 chars",
+                "vocal_gender":"optional e.g. Male Duo, Female, Choir",
+                "vocal_range":"optional e.g. Tenor, Soprano, Baritone, Contralto",
+                "instrument_exclusions":"optional comma-separated list of instruments to exclude from instrumentation",
+                "suggested_influences":"optional array of 3 artist names if influences were requested, e.g. [\"Artist 1\", \"Artist 2\", \"Artist 3\"]",
+                "key_info":{"key":"${keyForPrompt !== "Auto" ? keyForPrompt : "e.g. E minor"}","time_sig":"${timeSignatureForPrompt !== "Auto" ? timeSignatureForPrompt : "e.g. 4/4"}","tempo":"${tempoForPrompt !== "AI Choose" ? tempoForPrompt : "e.g. 90-110 BPM or 102 BPM"}","feel":"e.g. Straight 8ths"},
+              "production":"400-500 char production description referencing sound profile choices.",
+              "chords":{"chords":[{"name":"Em","role":"Tonic"}],"progression":"Verse: Em-C-G-D | Chorus: C-G-D-Em","notes":"2-3 sentences on harmonic approach."},
+              "sections":[{"type":"Section name","direction":"Performance direction","instructions":"Section-specific instruction","lines":"Lyrics\nLine 2","userProvided":false}]
+            }`;
 
                 try {
                     if (!aiClient) throw new Error("Google AI key not set — enter your key in the API Key bar.");
+
+                    // Log what we're sending to the AI
+                    debugLog("SONG_GENERATION_REQUEST", "Sending song generation request to AI", {
+                        promptLength: prompt.length,
+                        prompt: prompt,
+                        title: title || "[Not provided]",
+                        concept: concept,
+                        genre: genre,
+                        structure: struct.name,
+                    });
+                    console.log("=== SENDING TO AI ===");
+                    console.log("Prompt length:", prompt.length, "characters");
+                    console.log("Full prompt:", prompt);
+                    console.log("====================");
+
                     const response = await aiClient.models.generateContent({ model: "gemini-3.1-flash-lite-preview", contents: prompt });
                     const raw = response.text.replace(/```json|```/g, "").trim();
+
+                    // Log what we received from the AI
+                    debugLog("SONG_GENERATION_RESPONSE", "Received song from AI", {
+                        responseLength: raw.length,
+                        rawResponse: raw,
+                    });
+                    console.log("=== RECEIVED FROM AI ===");
+                    console.log("Raw response length:", raw.length, "characters");
+                    console.log("Raw response:", raw);
+                    console.log("=======================");
+
                     const song = JSON.parse(raw);
+
+                    // Log what we parsed from the AI response
+                    debugLog("SONG_GENERATION_PARSED", "Parsed song response", {
+                        song: song,
+                        sectionsCount: song.sections?.length || 0,
+                        sections: song.sections?.map((s) => ({
+                            type: s.type,
+                            direction: s.direction,
+                            instructions: s.instructions,
+                            linesLength: s.lines?.length,
+                            lines: s.lines,
+                            userProvided: s.userProvided,
+                        })),
+                    });
+                    console.log("=== PARSED AI RESPONSE ===");
+                    console.log("Parsed song object:", JSON.stringify(song, null, 2));
+                    console.log("Sections count:", song.sections?.length || 0);
+                    if (song.sections) {
+                        song.sections.forEach((section, idx) => {
+                            console.log(`Section ${idx}:`, {
+                                type: section.type,
+                                direction: section.direction,
+                                instructions: section.instructions,
+                                linesPreview: section.lines?.substring(0, 200) + (section.lines?.length > 200 ? "..." : ""),
+                                userProvided: section.userProvided,
+                            });
+                        });
+                    }
+                    console.log("=========================");
+
+                    // Clean up section lines to remove any meta tags that will be re-added during export
+                    // This prevents duplication when the AI preserves user-provided lyrics with meta tags
+                    if (song.sections && Array.isArray(song.sections)) {
+                        song.sections.forEach((section, idx) => {
+                            if (section.lines) {
+                                const originalLines = section.lines;
+                                section.lines = stripAllLeadingMetaTags(section.lines);
+                                debugLog("SECTION_CLEANUP", `Stripped meta tags from section ${idx} (${section.type})`, {
+                                    original: originalLines,
+                                    stripped: section.lines,
+                                    removedChars: originalLines.length - section.lines.length,
+                                });
+                            }
+                        });
+                    }
+
                     if (!titleInput && (!song.title || /^(untitled|song title|title)$/i.test(String(song.title).trim()))) {
                         const fallbackSource = [...(song.sections || [])].map((section) => String(section?.lines || "").trim()).find(Boolean);
                         const fallbackLine = fallbackSource
@@ -5360,6 +5971,17 @@ Respond ONLY with JSON (no markdown, no backticks):
                     song.verseLength = verseLength;
                     song.chorusLength = chorusLength;
                     song.instrumentExclusions = getInstrumentExclusions();
+
+                    // Handle suggested influences from AI
+                    if (expectSuggestedInfluences && song.suggested_influences && Array.isArray(song.suggested_influences)) {
+                        song.suggested_influences.forEach((artistName) => {
+                            const trimmedName = String(artistName || "").trim();
+                            if (trimmedName && !influences.includes(trimmedName)) {
+                                addInfluenceVal(trimmedName);
+                            }
+                        });
+                    }
+
                     // Clean up any section tags and direction tags that AI may have included in the lines
                     // These will be re-added during export from the type and direction fields
                     if (Array.isArray(song.sections)) {
@@ -5368,6 +5990,27 @@ Respond ONLY with JSON (no markdown, no backticks):
                                 section.lines = stripAllLeadingMetaTags(section.lines);
                             }
                         });
+
+                        // Map instructions from custom structure to sections
+                        if (struct.sequence && Array.isArray(struct.sequence)) {
+                            song.sections.forEach((section) => {
+                                // Find matching structure step by name
+                                const matchingStep = struct.sequence.find((step) => {
+                                    if (typeof step === "object" && step.name && section.type) {
+                                        // Normalize both names for comparison
+                                        const stepName = step.name.toLowerCase().trim();
+                                        const sectionType = section.type.toLowerCase().trim();
+                                        return stepName === sectionType || stepName.startsWith(sectionType) || sectionType.startsWith(stepName);
+                                    }
+                                    return false;
+                                });
+
+                                // Apply instructions from structure if found and not already set by AI
+                                if (matchingStep && matchingStep.instructions && !section.instructions) {
+                                    section.instructions = matchingStep.instructions;
+                                }
+                            });
+                        }
                     }
                     song.sections = mergePreservedLyricsSections(song.sections, userLyrics, aiMode);
                     song.soundProfile = soundProfile;
@@ -5381,7 +6024,7 @@ Respond ONLY with JSON (no markdown, no backticks):
                     loadCard.remove();
                     const errCard = document.createElement("div");
                     errCard.className = "output-card";
-                    errCard.innerHTML = `<div style="padding:18px;"><div class="section-header" style="margin-bottom:6px;">Error</div><div class="error-box">${err.message}</div></div>`;
+                    errCard.innerHTML = `<div style="padding:18px;"><div class="section-header" style="margin-bottom:6px;">Error</div><div class="error-box">${escapeHtml(err.message)}</div></div>`;
                     panel.insertBefore(errCard, panel.firstChild);
                 }
 
@@ -5391,13 +6034,19 @@ Respond ONLY with JSON (no markdown, no backticks):
                 }
             }
 
-            // ── Expose functions to global scope for inline onclick handlers ─────────────
+            // ========================================================================
+            // Global Scope Exposure
+            // Expose functions to global scope for inline onclick handlers
+            // ========================================================================
             window.saveApiKey = saveApiKey;
+            window.toggleDebugMode = toggleDebugMode;
             window.switchLTab = switchLTab;
             window.switchRTab = switchRTab;
             window.generateSong = generateSong;
             window.applyStyle = applyStyle;
-            window.applyLyricsAnalysis = applyLyricsAnalysis;
+            window.applyUnifiedAnalysis = applyUnifiedAnalysis;
+            window.openAnalyzerModal = openAnalyzerModal;
+            window.closeAnalyzerModal = closeAnalyzerModal;
             window.addInfluence = addInfluence;
             window.removeInfluence = removeInfluence;
             window.setLyricsMode = setLyricsMode;
@@ -5407,6 +6056,7 @@ Respond ONLY with JSON (no markdown, no backticks):
             window.toggleChoir = toggleChoir;
             window.addStructurePoint = addStructurePoint;
             window.updateStructureStepChords = updateStructureStepChords;
+            window.updateStructureStepInstructions = updateStructureStepInstructions;
             window.addCustomStructureBlock = addCustomStructureBlock;
             window.moveCustomStructurePoint = moveCustomStructurePoint;
             window.removeCustomStructurePoint = removeCustomStructurePoint;
@@ -5442,7 +6092,9 @@ Respond ONLY with JSON (no markdown, no backticks):
             window.resolveSubmitConfirm = resolveSubmitConfirm;
             window.closeSubmitConfirm = closeSubmitConfirm;
 
-            // ── Init ──────────────────────────────────────────────────────────────────────
+            // ========================================================================
+            // Initialization
+            // ========================================================================
             loadHistoryFromStorage();
             renderHistory();
             renderStructureBuilderPalette();
