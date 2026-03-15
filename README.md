@@ -44,6 +44,12 @@ SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to 
 ### Prerequisites
 
 - A Google AI Studio API key ([Get one here](https://aistudio.google.com/app/apikey))
+  - Sign in with a google account
+  - Click on Create API Key
+  - Give it a name
+  - Assign it to the default project or create a new one
+  - Make sure billing is enabled on the key/project (Free tier is fine)  
+
 - A modern web browser
 - No installation required - runs entirely in your browser
 
@@ -164,7 +170,6 @@ Provide your own lyrics for AI to work with.
   - **Fit to structure** - Adapt lyrics to chosen structure
   - **Keep my current lyrics** - Use as-is with minimal changes
 - **Your Lyrics** - Paste or type lyrics with optional section labels:
-
   ```text
   [Verse]
   Your verse here...
