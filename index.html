@@ -62,14 +62,20 @@
                 font-weight: 800;
             }
             .logo-icon {
-                width: 30px;
-                height: 30px;
-                background: linear-gradient(135deg, var(--accent), var(--accent4));
-                border-radius: 7px;
+                height: 40px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 14px;
+            }
+            .logo-icon img {
+                height: 215%;
+            }
+            .header-right {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+                max-width: 350px;
             }
             .version {
                 font-size: 10px;
@@ -77,6 +83,17 @@
                 color: var(--text-muted);
                 user-select: all;
                 cursor: text;
+                text-align: right;
+                white-space: nowrap;
+            }
+            .disclaimer {
+                font-size: 9px;
+                font-weight: bold;
+                color: var(--error);
+                max-width: 350px;
+                line-height: 1.3;
+                opacity: 0.7;
+                text-align: right;
             }
 
             .main {
@@ -1549,11 +1566,13 @@
     <body>
         <header class="header">
             <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
-                <div class="logo-icon">&#127932;</div>
-                SunoForge
+                <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
             <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
-            <div class="version" id="version">20260315-008</div>
+            <div class="header-right">
+                <span class="disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
+                <span class="version" id="version">Version: <br />20260315-008</span>
+            </div>
         </header>
 
         <div class="api-bar">

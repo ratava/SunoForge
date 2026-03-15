@@ -32,7 +32,7 @@ if ($currentVersion -match '^(\d{8})-(\d{3})$') {
 $version = "{0}-{1:D3}" -f $dateString, $versionNumber
 
 # Replace the entire version div content
-$newContent = $content -replace 'id="version">[^<]*</div>', "id=`"version`">$version</div>"
+$newContent = $content -replace 'id="version">[^<]*</div>', "id=`"version`">Version: <br>$version</div>"
 
 # Write back only if changed
 if ($content -ne $newContent) {
