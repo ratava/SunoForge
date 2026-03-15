@@ -43,22 +43,28 @@ SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to 
 
 ### Prerequisites
 
-- A Google AI Studio API key ([Get one here](https://aistudio.google.com/app/apikey))
-  - Sign in with a google account
-  - Click on Create API Key
-  - Give it a name
-  - Assign it to the default project or create a new one
-  - Make sure billing is enabled on the key/project (Free tier is fine)  
-
+- A Google AI Studio API key
 - A modern web browser
 - No installation required - runs entirely in your browser
 
 ### Setup
 
+If you need to create an API key ([Get one here](https://aistudio.google.com/app/apikey))  
+1. Sign in with a google account
+2. Click on Create API Key
+3. Give it a name
+4. Assign it to the default project or create a new one
+   ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio1.png?raw=true)
+5.  Make sure billing is enabled on the key/project (Free tier is fine)
+    ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio2.png?raw=true)
+6. Hit the copy key icon get your api key
+
 1. [Open SunoForge](https://ratava.github.io/SunoForge/index.html) in your browser
 2. Enter your Google AI Studio API key in the top bar
 3. Click **Save**
 4. Status indicator should change to **✓ ready**
+
+   ![API Key](https://github.com/ratava/SunoForge/blob/main/images/apikey.png?raw=true)
 
 > **Note:** Your API key is stored locally in your browser's localStorage (unencrypted). Only use on trusted devices.
 
