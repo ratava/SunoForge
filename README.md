@@ -1,4 +1,8 @@
-# SunoForge 🎼
+![API Key](https://github.com/ratava/SunoForge/blob/main/images/logo.webp?raw=true)
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
+[![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 
 **AI-Powered Song Lyric Generator & Composer Assistant**
 
