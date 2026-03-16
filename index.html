@@ -930,6 +930,46 @@
                 color: var(--accent6);
                 border: 1px solid rgba(136, 112, 192, 0.3);
             }
+            .b-electronic {
+                background: rgba(100, 200, 255, 0.15);
+                color: #64c8ff;
+                border: 1px solid rgba(100, 200, 255, 0.3);
+            }
+            .b-ambient {
+                background: rgba(180, 180, 200, 0.15);
+                color: #b4b4c8;
+                border: 1px solid rgba(180, 180, 200, 0.3);
+            }
+            .b-lofi {
+                background: rgba(150, 130, 110, 0.15);
+                color: #96826e;
+                border: 1px solid rgba(150, 130, 110, 0.3);
+            }
+            .b-classical {
+                background: rgba(180, 140, 200, 0.15);
+                color: #b48cc8;
+                border: 1px solid rgba(180, 140, 200, 0.3);
+            }
+            .b-cinematic {
+                background: rgba(200, 160, 100, 0.15);
+                color: #c8a064;
+                border: 1px solid rgba(200, 160, 100, 0.3);
+            }
+            .b-world {
+                background: rgba(140, 180, 120, 0.15);
+                color: #8cb478;
+                border: 1px solid rgba(140, 180, 120, 0.3);
+            }
+            .b-pop {
+                background: rgba(255, 150, 200, 0.15);
+                color: #ff96c8;
+                border: 1px solid rgba(255, 150, 200, 0.3);
+            }
+            .b-christian {
+                background: rgba(220, 180, 120, 0.15);
+                color: #dcb478;
+                border: 1px solid rgba(220, 180, 120, 0.3);
+            }
 
             .block {
                 padding: 14px 18px;
@@ -1571,7 +1611,7 @@
             <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
             <div class="header-right">
                 <span class="disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260316-003</span>
+                <span class="version" id="version">Version: <br />20260317-001</span>
             </div>
         </header>
 
@@ -1615,9 +1655,17 @@
                             <div class="tag g4" data-val="Hip-Hop / Boom-Bap" data-key="hiphop">Hip-Hop</div>
                             <div class="tag g5" data-val="Gospel / Southern Soul" data-key="gospel">Gospel</div>
                             <div class="tag g5" data-val="Reggae / Roots Reggae" data-key="reggae">Reggae</div>
-                            <div class="tag g5" data-val="Ska / Third Wave Ska" data-key="ska">Ska</div>
-                            <div class="tag g6" data-val="Latin / Afrobeats" data-key="latin">Latin / Afrobeats</div>
-                            <div class="tag g6" data-val="Cumbia / Salsa" data-key="cumbia">Cumbia / Salsa</div>
+                            <div class="tag g6" data-val="Latin" data-key="latin">Latin</div>
+                            <div class="tag g6" data-val="Afrobeats" data-key="afrobeats">Afrobeats</div>
+                            <div class="tag g6" data-val="Salsa" data-key="salsa">Salsa</div>
+                            <div class="tag" data-val="EDM / House / Techno" data-key="electronic">Electronic/Dance</div>
+                            <div class="tag g2" data-val="Ambient / Atmospheric" data-key="ambient">Ambient</div>
+                            <div class="tag g2" data-val="Lo-Fi / Chill Beats" data-key="lofi">Lo-Fi/Chill</div>
+                            <div class="tag g3" data-val="Classical / Orchestral" data-key="classical">Classical</div>
+                            <div class="tag g3" data-val="Cinematic / Epic" data-key="cinematic">Cinematic</div>
+                            <div class="tag g4" data-val="World Music / Ethnic" data-key="world">World Music</div>
+                            <div class="tag g4" data-val="Pop / Contemporary Pop" data-key="pop">Pop</div>
+                            <div class="tag g5" data-val="Christian / Contemporary Christian" data-key="christian">Christian</div>
                             <button class="tag-add-btn" onclick="showCustomInput('genre-tags', 'genre-custom-input-row')">+ Custom</button>
                         </div>
                         <div class="tag-row" id="genre-custom-row" style="display: none; margin-top: 4px">
@@ -1642,6 +1690,25 @@
                         </div>
                         <div class="tag-row" id="mood-custom-row" style="display: none; margin-top: 4px">
                             <div class="tag-custom" id="mood-custom-tag"></div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Goal</label>
+                        <div class="tag-row" id="goal-tags">
+                            <div class="tag active" data-val="Not specified">Not Specified</div>
+                            <div class="tag" data-val="Background Music">Background Music</div>
+                            <div class="tag" data-val="Dance Floor Banger">Dance Floor Banger</div>
+                            <div class="tag" data-val="Meditation">Meditation</div>
+                            <div class="tag" data-val="Workout">Workout</div>
+                            <div class="tag" data-val="Focus/Study">Focus/Study</div>
+                            <div class="tag" data-val="Sleep">Sleep</div>
+                            <div class="tag" data-val="Party">Party</div>
+                            <div class="tag" data-val="Cinematic">Cinematic</div>
+                            <div class="tag" data-val="Gaming">Gaming</div>
+                            <div class="tag" data-val="Podcast Intro/Outro">Podcast</div>
+                            <div class="tag" data-val="TikTok/Social Media">TikTok</div>
+                            <div class="tag" data-val="Emotional Impact">Emotional</div>
+                            <div class="tag" data-val="Storytelling">Storytelling</div>
                         </div>
                     </div>
                     <div class="field-group">
@@ -1670,6 +1737,20 @@
                         </div>
                         <div class="tag-row" id="rhyme-custom-row" style="display: none; margin-top: 4px">
                             <div class="tag-custom" id="rhyme-custom-tag"></div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Rhythm</label>
+                        <div class="tag-row" id="rhythm-tags">
+                            <div class="tag active" data-val="AI Choose">AI Choose</div>
+                            <div class="tag" data-val="Triplet">Triplet</div>
+                            <div class="tag" data-val="Swing">Swing</div>
+                            <div class="tag" data-val="Syncopated">Syncopated</div>
+                            <div class="tag" data-val="Polyrhythmic">Polyrhythmic</div>
+                            <div class="tag" data-val="Minimal">Minimal</div>
+                            <div class="tag" data-val="Broken">Broken</div>
+                            <div class="tag" data-val="Locked">Locked</div>
+                            <div class="tag" data-val="Groove-Based">Groove-Based</div>
                         </div>
                     </div>
                     <div class="field-group">
@@ -1753,13 +1834,14 @@
                     <div class="field-group">
                         <label class="field-label">Time Signature</label>
                         <select id="time-signature" onchange="toggleTimeSignatureMode()">
-                            <option value="Auto">Auto (let AI choose)</option>
-                            <option value="4/4" selected>4/4 (Common time)</option>
+                            <option value="Auto" selected>Auto (let AI choose)</option>
+                            <option value="4/4">4/4 (Common time)</option>
                             <option value="3/4">3/4 (Waltz)</option>
                             <option value="2/4">2/4 (March)</option>
                             <option value="6/8">6/8 (Compound duple)</option>
                             <option value="5/4">5/4</option>
                             <option value="7/4">7/4</option>
+                            <option value="7/8">7/8</option>
                             <option value="9/8">9/8</option>
                             <option value="12/8">12/8</option>
                             <option value="Custom">Custom</option>
@@ -2364,6 +2446,62 @@
                     { name: "Cumbia-Pop Fusion", tag: "Pop Cumbia", flow: "Intro -> V -> PCh -> Ch -> V -> PCh -> Ch -> Bridge -> Final Ch", desc: "Cumbia rhythm with contemporary pop structure." },
                     { name: "Modern Cumbia", tag: "Modern", flow: "Electronic Intro -> V -> Hook -> V -> Hook -> Drop -> Hook x2 -> Outro", desc: "Electronic production fused with cumbia rhythm." },
                 ],
+                electronic: [
+                    { name: "EDM Build & Drop", tag: "EDM", flow: "Intro -> Build -> Drop -> V -> Build -> Drop -> Bridge -> Final Drop", desc: "Built around tension-release cycles with massive drops." },
+                    { name: "House Groove", tag: "House", flow: "Beat Intro -> V -> Breakdown -> Drop -> V -> Breakdown -> Drop -> Outro", desc: "Four-on-the-floor rhythm with breakdowns leading to drops." },
+                    { name: "Techno Loop Evolution", tag: "Techno", flow: "Minimal Intro -> Layer 1 -> Layer 2 -> Layer 3 -> Peak -> Breakdown -> Rebuild -> Outro", desc: "Gradual layering and evolution of looped elements." },
+                    { name: "Trance Journey", tag: "Trance", flow: "Intro -> Build -> Breakdown -> Drop -> Interlude -> Build -> Euphoric Drop -> Outro", desc: "Emotional builds leading to euphoric releases." },
+                    { name: "Dubstep Wobble", tag: "Dubstep", flow: "Intro -> Build -> Drop (wobble bass) -> V -> Build -> Drop -> Outro", desc: "Half-time breaks with heavy wobble bass drops." },
+                    { name: "Drum & Bass Rush", tag: "DnB", flow: "Intro -> Drop -> V -> Breakdown -> Drop -> V -> Final Drop -> Outro", desc: "Fast breakbeats with deep basslines and atmospheric breaks." },
+                ],
+                ambient: [
+                    { name: "Ambient Drift", tag: "Ambient", flow: "Emergence -> Development -> Plateau -> Dissolution", desc: "Sound gradually emerges, develops, sustains, then fades." },
+                    { name: "Atmospheric Layers", tag: "Atmospheric", flow: "Layer 1 -> Layer 2 -> Layer 3 -> Peak -> Slow Fade", desc: "Gradual addition of textural layers building to a peaceful peak." },
+                    { name: "Soundscape Evolution", tag: "Soundscape", flow: "Theme A -> Transition -> Theme B -> Transition -> Theme A' -> Outro", desc: "Two contrasting sonic environments linked by transitional passages." },
+                    { name: "Minimal Meditation", tag: "Minimal", flow: "Single Element -> Subtle Variations -> Return -> Silence", desc: "Minimal elements with subtle changes over extended duration." },
+                ],
+                lofi: [
+                    { name: "Lo-Fi Hip-Hop", tag: "Chill Beats", flow: "Intro Loop -> Beat Drop -> V -> Loop Break -> V -> Outro Loop", desc: "Relaxed beats with vinyl crackle and warm samples." },
+                    { name: "Study Beats", tag: "Study", flow: "Piano Loop -> Beat Entry -> Development -> Breakdown -> Return -> Fade", desc: "Mellow, repetitive structure designed for background focus." },
+                    { name: "Jazz Lo-Fi", tag: "Jazz Hop", flow: "Jazz Sample -> Beat -> Verse -> Sample Break -> Verse -> Outro", desc: "Jazz samples chopped over laid-back beats." },
+                    { name: "Chill Vibe", tag: "Chill", flow: "Ambient Intro -> Groove -> Melody -> Groove Variation -> Outro", desc: "Relaxed progression with warm, nostalgic textures." },
+                ],
+                classical: [
+                    { name: "Sonata Form", tag: "Sonata", flow: "Exposition -> Development -> Recapitulation", desc: "The cornerstone of classical structure: themes introduced, developed, then returned." },
+                    { name: "Rondo", tag: "Rondo", flow: "A -> B -> A -> C -> A", desc: "Main theme returns between contrasting episodes." },
+                    { name: "Theme & Variations", tag: "Variations", flow: "Theme -> Variation 1 -> Variation 2 -> Variation 3 -> Variation 4 -> Coda", desc: "A single theme transformed through multiple variations." },
+                    { name: "Ternary (ABA)", tag: "ABA", flow: "Section A -> Section B -> Section A", desc: "Statement, contrast, return - simple and elegant." },
+                    { name: "Through-Composed", tag: "Through-Composed", flow: "Section A -> Section B -> Section C -> Section D", desc: "Continuous development without repeated sections." },
+                    { name: "Minuet & Trio", tag: "Dance", flow: "Minuet -> Trio -> Minuet da capo", desc: "Classical dance form with graceful return." },
+                ],
+                cinematic: [
+                    { name: "Epic Trailer Build", tag: "Trailer", flow: "Tension Intro -> Rising Action -> Climax -> Impact -> Aftermath", desc: "Dramatic build designed for maximum emotional impact." },
+                    { name: "Film Score Arc", tag: "Film Score", flow: "Theme Introduction -> Conflict -> Resolution -> Epilogue", desc: "Follows narrative arc with distinct emotional movements." },
+                    { name: "Heroic Journey", tag: "Epic", flow: "Awakening -> Call to Adventure -> Battle -> Victory -> Celebration", desc: "Classic hero's journey in musical form." },
+                    { name: "Orchestral Suite", tag: "Suite", flow: "Overture -> Movement I -> Movement II -> Movement III -> Finale", desc: "Multi-movement orchestral work with contrasting sections." },
+                    { name: "Tension & Release", tag: "Suspense", flow: "Quiet Tension -> Building Dread -> Climax -> Resolution", desc: "Builds unbearable tension before cathartic release." },
+                ],
+                world: [
+                    { name: "Call & Response", tag: "Traditional", flow: "Call -> Response -> Call -> Response -> Instrumental -> Call -> Response", desc: "Universal form found across many world music traditions." },
+                    { name: "Cyclical Form", tag: "Cyclical", flow: "Theme -> Variation 1 -> Variation 2 -> Variation 3 -> Return to Theme", desc: "Circular structure common in many non-Western traditions." },
+                    { name: "Raga Development", tag: "Indian Classical", flow: "Alap (intro) -> Jor (rhythm) -> Jhala (climax) -> Gat (composition)", desc: "Indian classical music's gradual rhythmic intensification." },
+                    { name: "Flamenco Structure", tag: "Flamenco", flow: "Intro -> Letra (verse) -> Falseta (guitar) -> Letra -> Escobilla (footwork) -> Finale", desc: "Spanish flamenco with guitar interludes and percussive dance." },
+                    { name: "African Polyrhythm", tag: "African", flow: "Rhythm Foundation -> Layer 2 -> Layer 3 -> Call & Response -> Peak -> Outro", desc: "Interlocking rhythmic layers build to communal peak." },
+                ],
+                pop: [
+                    { name: "Standard Pop", tag: "Pop", flow: "Intro -> V -> Ch -> V -> Ch -> Bridge -> Ch -> Outro", desc: "The universal pop song structure - proven and effective." },
+                    { name: "Hit Single Format", tag: "Radio", flow: "Intro -> V -> PCh -> Ch -> Post-Ch -> V -> PCh -> Ch -> Bridge -> Final Ch", desc: "Modern pop with pre-chorus and post-chorus hooks." },
+                    { name: "Verse-Verse-Chorus", tag: "Alternative", flow: "Intro -> V -> V -> Ch -> V -> V -> Ch -> Bridge -> Ch", desc: "Delayed chorus creates anticipation." },
+                    { name: "Dance-Pop Drop", tag: "Dance Pop", flow: "Intro -> V -> Build -> Drop -> V -> Build -> Drop -> Bridge -> Final Drop", desc: "EDM-influenced structure with explosive drops." },
+                    { name: "Power Ballad", tag: "Ballad", flow: "Piano Intro -> Soft V -> Build Ch -> V -> Full Ch -> Bridge -> Final Ch (key change)", desc: "Starts intimate, builds to powerful climax with key change." },
+                ],
+                christian: [
+                    { name: "Contemporary Worship", tag: "Worship", flow: "Intro -> V -> Ch -> V -> Ch -> Bridge (spontaneous) -> Ch -> Outro", desc: "Modern worship structure with open bridge for spontaneous worship." },
+                    { name: "Traditional Hymn", tag: "Hymn", flow: "V1 -> V2 -> V3 -> V4", desc: "Four verses tell progressive story of faith." },
+                    { name: "Praise Anthem", tag: "Anthem", flow: "Intro -> V -> PCh -> Ch -> V -> PCh -> Ch -> Bridge -> Ch x2", desc: "High-energy praise with repeating chorus for congregation participation." },
+                    { name: "Contemplative", tag: "Contemplative", flow: "Gentle Intro -> V -> Ch -> Instrumental Reflection -> V -> Ch -> Outro", desc: "Reflective structure with instrumental meditation." },
+                    { name: "Gospel Vamp", tag: "Gospel", flow: "V -> Ch -> V -> Ch -> Modulation -> Vamp -> Shout", desc: "Builds through key modulation to energetic vamp and shout section." },
+                ],
             };
 
             const DEFAULT_STRUCTURES = [{ name: "Verse-Chorus", tag: "Universal", flow: "Intro -> V -> Ch -> V -> Ch -> Bridge -> Ch -> Outro", desc: "The most versatile song form across all popular genres." }];
@@ -2782,6 +2920,12 @@
             function getSelectedMood() {
                 return getCustomTagValue("mood-custom-tag") || getActive("mood-tags");
             }
+            function getSelectedGoal() {
+                return getActive("goal-tags");
+            }
+            function getSelectedRhythm() {
+                return getActive("rhythm-tags");
+            }
             function getSelectedPov() {
                 return getCustomTagValue("pov-custom-tag") || getActive("pov-tags");
             }
@@ -2868,8 +3012,18 @@
                                             <div class="vocal-style-tags" id="choir-style-tags">
                                                 <div class="tag multi" data-val="Clean">Clean</div>
                                                 <div class="tag multi" data-val="Gritty">Gritty</div>
+                                                <div class="tag multi" data-val="Airy">Marm</div>
+                                                <div class="tag multi" data-val="Deep">Deep</div>
                                                 <div class="tag multi" data-val="Breathy">Breathy</div>
                                                 <div class="tag multi" data-val="Airy">Airy</div>
+                                                <div class="tag multi" data-val="Etherial">Etherial</div>
+                                                <div class="tag multi" data-val="Raspy">Raspy</div>
+                                                <div class="tag multi" data-val="Smooth">Smooth</div>
+                                                <div class="tag multi" data-val="Powerful">Powerful</div>
+                                                <div class="tag multi" data-val="Falsetto">Falsetto</div>
+                                                <div class="tag multi" data-val="High-Pitched">High-Pitched</div>
+                                                <div class="tag multi" data-val="Husky">Husky</div>
+                                                <div class="tag multi" data-val="Sultry">Sultry</div>
                                                 <div class="tag multi" data-val="Restrained">Restrained</div>
                                                 <div class="tag multi" data-val="Dynamic">Dynamic</div>
                                                 <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
@@ -3007,8 +3161,18 @@
                                             <div class="vocal-style-tags" id="vp-style-${idx}">
                                                 <div class="tag multi" data-val="Clean">Clean</div>
                                                 <div class="tag multi" data-val="Gritty">Gritty</div>
+                                                <div class="tag multi" data-val="Airy">Marm</div>
+                                                <div class="tag multi" data-val="Deep">Deep</div>
                                                 <div class="tag multi" data-val="Breathy">Breathy</div>
                                                 <div class="tag multi" data-val="Airy">Airy</div>
+                                                <div class="tag multi" data-val="Etherial">Etherial</div>
+                                                <div class="tag multi" data-val="Raspy">Raspy</div>
+                                                <div class="tag multi" data-val="Smooth">Smooth</div>
+                                                <div class="tag multi" data-val="Powerful">Powerful</div>
+                                                <div class="tag multi" data-val="Falsetto">Falsetto</div>
+                                                <div class="tag multi" data-val="High-Pitched">High-Pitched</div>
+                                                <div class="tag multi" data-val="Husky">Husky</div>
+                                                <div class="tag multi" data-val="Sultry">Sultry</div>
                                                 <div class="tag multi" data-val="Restrained">Restrained</div>
                                                 <div class="tag multi" data-val="Dynamic">Dynamic</div>
                                                 <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
@@ -4425,10 +4589,13 @@
                 if (sp.infs.length) parts.push(`Key Influences: ${sp.infs.join(", ")}`);
                 return parts.join("\n");
             }
-            function buildSubmissionSummary({ title, concept, genre, mood, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
+            function buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
                 const tempoFormatted = formatTempoPreference(tempo);
                 const vocalConfig = getSelectedVocalGender();
-                const parts = ["Submit these settings to AI?", "", `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`, `Mood: ${mood}`, `Rhyme: ${rhyme}`];
+                const parts = ["Submit these settings to AI?", "", `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`, `Mood: ${mood}`];
+                if (goal && goal !== "Not specified") parts.push(`Goal: ${goal}`);
+                if (rhythm && rhythm !== "AI Choose") parts.push(`Rhythm: ${rhythm}`);
+                parts.push(`Rhyme: ${rhyme}`);
 
                 if (tempoFormatted !== "AI Choose") parts.push(`Tempo: ${tempoFormatted}`);
                 if (duration) parts.push(`Duration: ${duration}`);
@@ -4692,6 +4859,8 @@
                     genreKey: currentGenreKey,
                     genreLabel: getSelectedGenreLabel(),
                     mood: getActive("mood-tags") || getCustomTagValue("mood-custom-tag"),
+                    goal: getActive("goal-tags"),
+                    rhythm: getActive("rhythm-tags"),
                     rhyme: getActive("rhyme-tags"),
                     tempo: formatTempoPreference(getTempoPreference()),
                     musicalKey: getSelectedMusicalKey(),
@@ -4831,6 +5000,22 @@
 
                 applyGenreSetting(settings.genreKey || currentGenreKey || "rock", settings.genreLabel || song.genre || "");
                 applySingleTagOrCustom("mood-tags", settings.mood || song.mood || "", "mood-custom-row", "mood-custom-tag", "Custom mood");
+                // Apply goal setting
+                const goalValue = settings.goal || song.goal || "Not specified";
+                document
+                    .getElementById("goal-tags")
+                    .querySelectorAll(".tag")
+                    .forEach((t) => {
+                        t.classList.toggle("active", t.dataset.val === goalValue);
+                    });
+                // Apply rhythm setting
+                const rhythmValue = settings.rhythm || song.rhythm || "AI Choose";
+                document
+                    .getElementById("rhythm-tags")
+                    .querySelectorAll(".tag")
+                    .forEach((t) => {
+                        t.classList.toggle("active", t.dataset.val === rhythmValue);
+                    });
                 applyRhymeSetting(settings.rhyme || song.rhyme || "AABB (couplets)");
 
                 applyTempoPreference(settings.tempo || song.tempoPreference || song.key_info?.tempo || "AI Choose");
@@ -5442,6 +5627,8 @@
                         logline: song.logline,
                         genre: song.genre,
                         mood: song.mood,
+                        goal: song.goal,
+                        rhythm: song.rhythm,
                         rhyme: song.rhyme,
                         concept: song.concept,
                         structureName: song.structureName,
@@ -5851,6 +6038,8 @@
                 const concept = document.getElementById("concept").value.trim() || "A raw, honest song";
                 const genre = getSelectedGenreLabel();
                 const mood = getSelectedMood();
+                const goal = getSelectedGoal();
+                const rhythm = getSelectedRhythm();
                 const rhyme = getSelectedRhymeScheme();
                 const tempo = getSelectedTempoPreference();
                 const duration = getDurationPreference();
@@ -5865,7 +6054,7 @@
                 const userLyrics = getUserLyrics();
                 const aiMode = activeLeftTab === "lyrics" ? getActive("aimode-tags") : null;
 
-                const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
+                const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
                 if (!confirmed) return;
 
                 const genBtn = document.getElementById("gen-btn");
@@ -5990,7 +6179,7 @@
                 Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
                 Concept: ${concept}
                 Genre: ${genre}
-                Mood: ${mood}
+                Mood: ${mood}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}
                 Rhyme Scheme: ${rhyme}${tempoForPrompt !== "AI Choose" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}
                 Perspective: ${pov}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}
                 Verse Length Preference: ${formatLengthPreference(verseLength)}
@@ -6124,6 +6313,8 @@
                     song.durationPreference = duration;
                     song.verseLength = verseLength;
                     song.chorusLength = chorusLength;
+                    song.goal = goal;
+                    song.rhythm = rhythm;
                     song.instrumentExclusions = getInstrumentExclusions();
 
                     // Handle suggested influences from AI
