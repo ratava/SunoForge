@@ -1,39 +1,40 @@
+# SunoForge #
+
 ![API Key](https://github.com/ratava/SunoForge/blob/main/images/logo.webp?raw=true)
 
 This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
 [![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
 
-
-**AI-Powered Song Lyric Generator & Composer Assistant**
+## AI-Powered Song Lyric Generator & Composer Assistant ##
 
 SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to generate professional-quality lyrics, suggest chord progressions, and provide detailed production guidance. Designed for use with Suno AI or other music creation platforms.
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features ##
 
-### Two Main Workflows
+### Two Main Workflows ###
 
-**1. 🎨 Generate from Scratch**
+#### 1. 🎨 Generate from Scratch ####
 
 - Start with just an idea, concept, or title
 - AI generates complete lyrics, style prompts, and chord progressions
 - Full control over genre, mood, structure, vocals, and production
 - Perfect for: New song ideas, creative exploration, complete AI-assisted composition
 
-**2. 🔄 Analyze & Import**
+#### 2. 🔄 Analyze & Import ####
 
 - Import existing lyrics or style descriptions from Suno (or anywhere)
 - AI analyzes and auto-configures all settings
 - Refine, complete, or rewrite existing material
 - Perfect for: Enhancing Suno outputs, analyzing existing songs, style matching
 
-### At a Minimum, You Need
+### At a Minimum, You Need ###
 
 - **Just an idea** - Enter a song title or concept and let AI handle everything else
 - **Or import lyrics/style** - Paste existing content to analyze and enhance
 
-### What You Get
+### What You Get ###
 
 - ✅ Complete song lyrics with professional structure
 - ✅ Suno-compatible style prompts (genre, mood, era, production)
@@ -43,30 +44,31 @@ SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to 
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started ##
 
-### Prerequisites
+### Prerequisites ###
 
 - A Google AI Studio API key
 - A modern web browser
 - No installation required - runs entirely in your browser
 
-### Setup
+### Setup ###
 
 If you need to create an API key ([Get one here](https://aistudio.google.com/app/apikey))  
+
 1. Sign in with a google account
 2. Click on Create API Key
 3. Give it a name
 4. Assign it to the default project or create a new one
    ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio1.png?raw=true)
-5.  Make sure billing is enabled on the key/project (Free tier is fine)
+5. Make sure billing is enabled on the key/project (Free tier is fine)
     ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio2.png?raw=true)
 6. Hit the copy key icon get your api key
 
-1. [Open SunoForge](https://ratava.github.io/SunoForge/index.html) in your browser
-2. Enter your Google AI Studio API key in the top bar
-3. Click **Save**
-4. Status indicator should change to **✓ ready**
+7. [Open SunoForge](https://ratava.github.io/SunoForge/index.html) in your browser
+8. Enter your Google AI Studio API key in the top bar
+9. Click **Save**
+10. Status indicator should change to **✓ ready**
 
    ![API Key](https://github.com/ratava/SunoForge/blob/main/images/apikey.png?raw=true)
 
@@ -74,16 +76,16 @@ If you need to create an API key ([Get one here](https://aistudio.google.com/app
 
 ---
 
-## 🎵 Quick Start
+## 🎵 Quick Start ##
 
-### Basic Workflow
+### Basic Workflow ###
 
 1. **Configure** your song using the left panel tabs
 2. **Click "Write My Song"** to generate lyrics
 3. **Review** the output in the right panel
 4. **Export** your song for use in Suno or other platforms
 
-### Recommended First Steps
+### Recommended First Steps ###
 
 1. **Settings Tab:** Enter a song title and concept
 2. **Structure Tab:** Choose a genre-appropriate structure
@@ -92,9 +94,9 @@ If you need to create an API key ([Get one here](https://aistudio.google.com/app
 
 ---
 
-## 📋 Left Panel Tabs
+## 📋 Left Panel Tabs ##
 
-### ⚙️ Settings
+### ⚙️ Settings ###
 
 Core song configuration and musical fundamentals.
 
@@ -111,7 +113,7 @@ Core song configuration and musical fundamentals.
 - **Verse Length** - AI Choose, Short (2 lines), Standard (4 lines), Extended (6+ lines)
 - **Chorus Length** - AI Choose, Concise (2 lines), Standard (4 lines), Extended (6+ lines)
 
-### 🎤 Vocal
+### 🎤 Vocal ###
 
 Define vocal characteristics and arrangements.
 
@@ -132,7 +134,7 @@ Define vocal characteristics and arrangements.
   - Enable to add choir or backing vocals
   - Configure gender, size (small/large ensemble), and when they appear (chorus, bridge, throughout)
 
-### 🎵 Structure
+### 🎵 Structure ###
 
 Choose or build your song's structural blueprint.
 
@@ -148,7 +150,7 @@ Choose or build your song's structural blueprint.
   - Structures update automatically when you change genres
   - Includes flow diagram and description for each preset
 
-### 🔊 Sound
+### 🔊 Sound ###
 
 Shape the production aesthetic and sonic character.
 
@@ -169,17 +171,18 @@ Shape the production aesthetic and sonic character.
   - AI will incorporate stylistic elements into the generation
   - Quick-add suggestions provided
 
-### ✍️ Lyrics
+### ✍️ Lyrics ###
 
 Provide your own lyrics for AI to work with.
 
 - **AI Mode** - What should the AI do with your lyrics?
   - **Complete the song** - Finish partial lyrics
   - **Rewrite/improve** - Enhance existing lyrics
-  - **Match my style** - Generate new lyrics in your style
-  - **Fit to structure** - Adapt lyrics to chosen structure
+  - **Match my style** - Generate completely new lyrics matching the voice/style of your examples
+  - **Fit to structure** - Reorganize and adapt existing lyrics to match the chosen song structure
   - **Keep my current lyrics** - Use as-is with minimal changes
 - **Your Lyrics** - Paste or type lyrics with optional section labels:
+
   ```text
   [Verse]
   Your verse here...
@@ -190,24 +193,26 @@ Provide your own lyrics for AI to work with.
 
 ---
 
-## 📊 Right Panel Tabs
+## 📊 Right Panel Tabs ##
 
-### Output
+### Output ###
 
 Displays your generated song with interactive controls.
 
 - **Song metadata** - Title, genre, tempo, key, structure
 - **Full lyrics** - Organized by section with meta tags
 - **Section controls**
-  - **Regenerate individual sections** - Click section header to regenerate just that part
+  - **↻ Regen** - Regenerate individual sections with AI (preserves other sections)
+  - **✎ Edit** - Manually edit section lyrics, type, and direction tags
   - View chord progressions per section
   - Copy individual sections
 - **Action buttons**
-  - **Copy Lyrics** - Copy all lyrics to clipboard
+  - **⤴ Copy to Lyrics Tab** - Send generated lyrics back to Lyrics tab for refinement
+  - **Copy All** - Copy all lyrics to clipboard
   - **Export** - Open full export modal
   - **Save to History** - Preserve this version
 
-### Chords
+### Chords ###
 
 View suggested chord progressions for your song.
 
@@ -215,7 +220,7 @@ View suggested chord progressions for your song.
 - Roman numeral notation with chord names
 - Updates automatically with each generation
 
-### History
+### History ###
 
 Manage saved songs and project versions.
 
@@ -228,9 +233,9 @@ Manage saved songs and project versions.
 
 ---
 
-## 🔧 Key Features
+## 🔧 Key Features ##
 
-### 🔍 Analyze Button
+### 🔍 Analyze Button ###
 
 Auto-configure settings from lyrics or style descriptions.
 
@@ -256,7 +261,7 @@ Auto-configure settings from lyrics or style descriptions.
 5. Make any manual adjustments
 6. Generate your song
 
-### 📤 Export Modal
+### 📤 Export Modal ###
 
 Comprehensive export options for your generated song.
 
@@ -281,7 +286,7 @@ Your lyrics here...
 Your chorus...
 ```
 
-### 🐛 Debug Mode
+### 🐛 Debug Mode ###
 
 Advanced troubleshooting and logging.
 
@@ -307,9 +312,9 @@ Advanced troubleshooting and logging.
 
 ---
 
-## 💡 Tips & Best Practices
+## 💡 Tips & Best Practices ##
 
-### For Best Results
+### For Best Results ###
 
 1. **Start Simple**
 
@@ -353,29 +358,29 @@ Advanced troubleshooting and logging.
 - Mix Character + Era + Production Style = rich sonic palette
 - Use Influences sparingly (1-3 artists max)
 
-### Common Workflows
+### Common Workflows ###
 
-**Workflow 1: Quick Generation**
+#### Workflow 1: Quick Generation ####
 
 1. Settings: Enter title and concept
 2. Click "Write My Song"
 3. Export to Suno
 
-**Workflow 2: Style-Based**
+#### Workflow 2: Style-Based ####
 
 1. Click Analyze
 2. Describe desired sound
 3. Review auto-configured settings
 4. Generate
 
-**Workflow 3: Lyrics-First**
+#### Workflow 3: Lyrics-First ####
 
 1. Lyrics tab: Paste your lyrics
 2. Choose AI mode (complete/rewrite/match/fit)
 3. Optionally use Analyzer to extract structure
 4. Generate
 
-**Workflow 4: Precision Control**
+#### Workflow 4: Precision Control ####
 
 1. Configure all tabs (Settings, Vocal, Structure, Sound)
 2. Build custom structure if needed
@@ -384,7 +389,7 @@ Advanced troubleshooting and logging.
 
 ---
 
-## 🔒 Privacy & Security
+## 🔒 Privacy & Security ##
 
 - **API Key Storage:** Your Google AI Studio API key is stored locally in browser localStorage (not encrypted)
 - **Data:** All song data is stored locally in your browser
@@ -395,13 +400,13 @@ Advanced troubleshooting and logging.
 
 ---
 
-## 📝 Version
+## 📝 Version ##
 
 Current Version: **20260315-004** (March 15, 2026)
 
 ---
 
-## 🎸 Suno Integration
+## 🎸 Suno Integration ##
 
 SunoForge is designed to export songs in Suno-compatible format:
 
@@ -417,7 +422,7 @@ SunoForge is designed to export songs in Suno-compatible format:
 
 ---
 
-## ❓ FAQ
+## ❓ FAQ ##
 
 **Q: Do I need an internet connection?**  
 A: Yes, for AI generation only. The app itself runs offline but needs internet to call Google's Gemini AI API.
@@ -449,6 +454,6 @@ A: Submit bug reports via our [GitHub Issues page](https://github.com/ratava/Sun
 
 ---
 
-## 🎼 Happy Creating
+## 🎼 Happy Creating ##
 
 SunoForge is your creative partner in songwriting. Experiment, iterate, and make something amazing.
