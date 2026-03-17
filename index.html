@@ -1611,7 +1611,7 @@
             <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
             <div class="header-right">
                 <span class="disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260317-001</span>
+                <span class="version" id="version">Version: <br />20260318-001</span>
             </div>
         </header>
 
@@ -1680,22 +1680,27 @@
                     <div class="field-group">
                         <label class="field-label">Mood</label>
                         <div class="tag-row" id="mood-tags">
-                            <div class="tag active" data-val="Gritty, defiant, cathartic">Raw & Defiant</div>
+                            <div class="tag" data-val="Gritty, defiant, cathartic">Raw & Defiant</div>
                             <div class="tag" data-val="Melancholic, longing, introspective">Melancholic</div>
                             <div class="tag" data-val="Triumphant, soaring, anthemic">Anthemic</div>
                             <div class="tag" data-val="Dark, brooding, tense">Dark & Brooding</div>
                             <div class="tag" data-val="Warm, soulful, intimate">Soulful & Warm</div>
                             <div class="tag" data-val="Joyful, uplifting, celebratory">Joyful</div>
                             <div class="tag" data-val="Playful, swinging, loose">Playful & Loose</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('mood-tags', 'mood-custom-input-row')">+ Custom</button>
                         </div>
                         <div class="tag-row" id="mood-custom-row" style="display: none; margin-top: 4px">
                             <div class="tag-custom" id="mood-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="mood-custom-input-row" style="display: none">
+                            <input type="text" id="mood-custom-input" placeholder="e.g. Melancholic yet hopeful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('mood-custom-input-row', 'mood-custom-input')">&#10005;</button>
                         </div>
                     </div>
                     <div class="field-group">
                         <label class="field-label">Goal</label>
                         <div class="tag-row" id="goal-tags">
-                            <div class="tag active" data-val="Not specified">Not Specified</div>
                             <div class="tag" data-val="Background Music">Background Music</div>
                             <div class="tag" data-val="Dance Floor Banger">Dance Floor Banger</div>
                             <div class="tag" data-val="Meditation">Meditation</div>
@@ -1709,12 +1714,77 @@
                             <div class="tag" data-val="TikTok/Social Media">TikTok</div>
                             <div class="tag" data-val="Emotional Impact">Emotional</div>
                             <div class="tag" data-val="Storytelling">Storytelling</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('goal-tags', 'goal-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="goal-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="goal-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="goal-custom-input-row" style="display: none">
+                            <input type="text" id="goal-custom-input" placeholder="e.g. Walking soundtrack..." onkeydown="if (event.key === 'Enter') confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('goal-custom-input-row', 'goal-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Rhythm</label>
+                        <div class="tag-row" id="rhythm-tags">
+                            <div class="tag" data-val="Triplet">Triplet</div>
+                            <div class="tag" data-val="Swing">Swing</div>
+                            <div class="tag" data-val="Syncopated">Syncopated</div>
+                            <div class="tag" data-val="Polyrhythmic">Polyrhythmic</div>
+                            <div class="tag" data-val="Minimal">Minimal</div>
+                            <div class="tag" data-val="Broken">Broken</div>
+                            <div class="tag" data-val="Locked">Locked</div>
+                            <div class="tag" data-val="Groove-Based">Groove-Based</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('rhythm-tags', 'rhythm-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="rhythm-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="rhythm-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="rhythm-custom-input-row" style="display: none">
+                            <input type="text" id="rhythm-custom-input" placeholder="e.g. Shuffled, Off-beat..." onkeydown="if (event.key === 'Enter') confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhythm-custom-input-row', 'rhythm-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Groove Feel</label>
+                        <div class="tag-row" id="groove-tags">
+                            <div class="tag" data-val="Funky">Funky</div>
+                            <div class="tag" data-val="Smooth">Smooth</div>
+                            <div class="tag" data-val="Driving">Driving</div>
+                            <div class="tag" data-val="Tight">Tight</div>
+                            <div class="tag" data-val="Loose">Loose</div>
+                            <div class="tag" data-val="Bouncy">Bouncy</div>
+                            <div class="tag" data-val="Laid-back">Laid-back</div>
+                            <div class="tag" data-val="Groovy">Groovy</div>
+                            <div class="tag" data-val="Hypnotic">Hypnotic</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('groove-tags', 'groove-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="groove-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="groove-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="groove-custom-input-row" style="display: none">
+                            <input type="text" id="groove-custom-input" placeholder="e.g. Swinging, Staccato..." onkeydown="if (event.key === 'Enter') confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('groove-custom-input-row', 'groove-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Perspective</label>
+                        <div class="tag-row" id="pov-tags">
+                            <div class="tag active" data-val="first person (I/me)">First Person</div>
+                            <div class="tag" data-val="second person (you)">Second Person</div>
+                            <div class="tag" data-val="third person narrative">Third Person</div>
+                            <div class="tag" data-val="collective (we/us)">Collective</div>
+                        </div>
+                        <div class="tag-row" id="pov-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="pov-custom-tag"></div>
                         </div>
                     </div>
                     <div class="field-group">
                         <label class="field-label">Rhyme Scheme</label>
                         <div class="tag-row" id="rhyme-tags">
-                            <div class="tag active" data-val="AI Choose">AI Choose</div>
                             <div class="tag" data-val="AABB (couplets)">AABB</div>
                             <div class="tag" data-val="ABAB (alternating)">ABAB</div>
                             <div class="tag" data-val="ABCB (ballad)">ABCB</div>
@@ -1734,29 +1804,21 @@
                             <div class="tag" data-val="Free verse with internal rhymes">Free / Internal</div>
                             <div class="tag" data-val="Multisyllabic rap rhymes">Multisyllabic</div>
                             <div class="tag" data-val="Triplet flow rap rhymes">Triplet Flow</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('rhyme-tags', 'rhyme-custom-input-row')">+ Custom</button>
                         </div>
                         <div class="tag-row" id="rhyme-custom-row" style="display: none; margin-top: 4px">
                             <div class="tag-custom" id="rhyme-custom-tag"></div>
                         </div>
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">Rhythm</label>
-                        <div class="tag-row" id="rhythm-tags">
-                            <div class="tag active" data-val="AI Choose">AI Choose</div>
-                            <div class="tag" data-val="Triplet">Triplet</div>
-                            <div class="tag" data-val="Swing">Swing</div>
-                            <div class="tag" data-val="Syncopated">Syncopated</div>
-                            <div class="tag" data-val="Polyrhythmic">Polyrhythmic</div>
-                            <div class="tag" data-val="Minimal">Minimal</div>
-                            <div class="tag" data-val="Broken">Broken</div>
-                            <div class="tag" data-val="Locked">Locked</div>
-                            <div class="tag" data-val="Groove-Based">Groove-Based</div>
+                        <div class="custom-input-row" id="rhyme-custom-input-row" style="display: none">
+                            <input type="text" id="rhyme-custom-input" placeholder="e.g. ABCABC, Slant rhymes..." onkeydown="if (event.key === 'Enter') confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhyme-custom-input-row', 'rhyme-custom-input')">&#10005;</button>
                         </div>
                     </div>
                     <div class="field-group">
                         <label class="field-label">Tempo</label>
                         <select id="tempo-mode" onchange="toggleTempoMode()">
-                            <option value="ai" selected>AI Choose</option>
+                            <option value="ai" selected>Auto (let AI choose)</option>
                             <option value="custom">Specific BPM / Range</option>
                         </select>
                         <div class="range-slider-container" id="tempo-custom-row" style="display: none">
@@ -1774,7 +1836,7 @@
                     <div class="field-group">
                         <label class="field-label">Song Duration</label>
                         <select id="duration-mode" onchange="toggleDurationMode()">
-                            <option value="none" selected>No Constraint</option>
+                            <option value="none" selected>Auto (let AI choose)</option>
                             <option value="custom">Specific Duration</option>
                         </select>
                         <div class="range-slider-container" id="duration-custom-row" style="display: none">
@@ -1848,18 +1910,6 @@
                         </select>
                         <div id="time-signature-custom-row" style="display: none; margin-top: 8px">
                             <input type="text" id="time-signature-custom" placeholder="e.g., 7/8, 13/16, 5/8" style="width: 100%" />
-                        </div>
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">Perspective</label>
-                        <div class="tag-row" id="pov-tags">
-                            <div class="tag active" data-val="first person (I/me)">First Person</div>
-                            <div class="tag" data-val="second person (you)">Second Person</div>
-                            <div class="tag" data-val="third person narrative">Third Person</div>
-                            <div class="tag" data-val="collective (we/us)">Collective</div>
-                        </div>
-                        <div class="tag-row" id="pov-custom-row" style="display: none; margin-top: 4px">
-                            <div class="tag-custom" id="pov-custom-tag"></div>
                         </div>
                     </div>
                     <div class="field-group">
@@ -1983,22 +2033,65 @@
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label">Production Style</label>
-                        <div class="tag-row" id="prodstyle-tags">
-                            <div class="tag multi" data-val="Raw & live - minimal overdubs, room sound, first-take energy">Raw & Live</div>
-                            <div class="tag multi active" data-val="Polished studio - multi-layered, produced, radio-ready">Polished Studio</div>
-                            <div class="tag multi" data-val="Lo-fi - tape hiss, vinyl crackle, intentional imperfection">Lo-Fi</div>
-                            <div class="tag multi" data-val="Cinematic / orchestral - sweeping arrangements, strings, brass">Cinematic</div>
-                            <div class="tag multi" data-val="Minimalist - sparse, lots of space and silence">Minimalist</div>
-                            <div class="tag multi" data-val="Experimental / avant-garde - unconventional sounds and structures">Experimental</div>
-                            <div class="tag multi" data-val="Live concert / arena - big reverb, crowd energy, anthemic">Live / Arena</div>
-                            <div class="tag multi" data-val="Bedroom / DIY - intimate, self-produced, vulnerable">Bedroom / DIY</div>
-                            <button class="tag-add-btn" onclick="showCustomInput('prodstyle-tags', 'prodstyle-custom-row')">+ Custom</button>
+                        <label class="field-label">Instruments</label>
+                        <div class="tag-row" id="instruments-tags">
+                            <div class="tag multi" data-val="Acoustic Guitar">Acoustic Guitar</div>
+                            <div class="tag multi" data-val="Nylon Guitar">Nylon Guitar</div>
+                            <div class="tag multi" data-val="Electric Guitar">Electric Guitar</div>
+                            <div class="tag multi" data-val="Classical Guitar">Classical Guitar</div>
+                            <div class="tag multi" data-val="Steel Guitar">Steel Guitar</div>
+                            <div class="tag multi" data-val="Pedal Steel Guitar">Pedal Steel Guitar</div>
+                            <div class="tag multi" data-val="Dobro">Dobro</div>
+                            <div class="tag multi" data-val="Bass Guitar">Bass Guitar</div>
+                            <div class="tag multi" data-val="Upright Bass">Upright Bass</div>
+                            <div class="tag multi" data-val="Synth Bass">Synth Bass</div>
+                            <div class="tag multi" data-val="Acoustic Piano">Acoustic Piano</div>
+                            <div class="tag multi" data-val="Electric Piano">Electric Piano</div>
+                            <div class="tag multi" data-val="Concert Grand Piano">Concert Grand Piano</div>
+                            <div class="tag multi" data-val="Upright Piano">Upright Piano</div>
+                            <div class="tag multi" data-val="Synthesizer">Synthesizer</div>
+                            <div class="tag multi" data-val="Moog Synthesizer">Moog Synthesizer</div>
+                            <div class="tag multi" data-val="Wavetable Synth">Wavetable Synth</div>
+                            <div class="tag multi" data-val="Pad Synth">Pad Synth</div>
+                            <div class="tag multi" data-val="Lead Synth">Lead Synth</div>
+                            <div class="tag multi" data-val="Bass Synth">Bass Synth</div>
+                            <div class="tag multi" data-val="Pipe Organ">Pipe Organ</div>
+                            <div class="tag multi" data-val="Hammond Organ">Hammond Organ</div>
+                            <div class="tag multi" data-val="Electric Organ">Electric Organ</div>
+                            <div class="tag multi" data-val="Wurlitzer Organ">Wurlitzer Organ</div>
+                            <div class="tag multi" data-val="String Section">String Section</div>
+                            <div class="tag multi" data-val="String Quartet">String Quartet</div>
+                            <div class="tag multi" data-val="Violin">Violin</div>
+                            <div class="tag multi" data-val="Cello">Cello</div>
+                            <div class="tag multi" data-val="Brass Section">Brass Section</div>
+                            <div class="tag multi" data-val="Trumpet">Trumpet</div>
+                            <div class="tag multi" data-val="Trombone">Trombone</div>
+                            <div class="tag multi" data-val="French Horn">French Horn</div>
+                            <div class="tag multi" data-val="Tuba">Tuba</div>
+                            <div class="tag multi" data-val="Horns">Horns</div>
+                            <div class="tag multi" data-val="Saxophone">Saxophone</div>
+                            <div class="tag multi" data-val="Woodwind Section">Woodwind Section</div>
+                            <div class="tag multi" data-val="Clarinet">Clarinet</div>
+                            <div class="tag multi" data-val="Oboe">Oboe</div>
+                            <div class="tag multi" data-val="Flute">Flute</div>
+                            <div class="tag multi" data-val="Harp">Harp</div>
+                            <div class="tag multi" data-val="Ukulele">Ukulele</div>
+                            <div class="tag multi" data-val="Mandolin">Mandolin</div>
+                            <div class="tag multi" data-val="Banjo">Banjo</div>
+                            <div class="tag multi" data-val="Harmonica">Harmonica</div>
+                            <div class="tag multi" data-val="Vibraphone">Vibraphone</div>
+                            <div class="tag multi" data-val="Marimba">Marimba</div>
+                            <div class="tag multi" data-val="Drums (Acoustic)">Drums (Acoustic)</div>
+                            <div class="tag multi" data-val="Drums (Electronic)">Drums (Electronic)</div>
+                            <div class="tag multi" data-val="Timpani">Timpani</div>
+                            <div class="tag multi" data-val="Gong">Gong</div>
+                            <div class="tag multi" data-val="Cowbell">Cowbell</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('instruments-tags', 'instruments-custom-row')">+ Custom</button>
                         </div>
-                        <div class="custom-input-row" id="prodstyle-custom-row" style="display: none">
-                            <input type="text" id="prodstyle-custom-input" placeholder="e.g. Vintage tape echo..." onkeydown="if (event.key === 'Enter') confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row');" />
-                            <button class="custom-input-confirm" onclick="confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('prodstyle-custom-row', 'prodstyle-custom-input')">&#10005;</button>
+                        <div class="custom-input-row" id="instruments-custom-row" style="display: none">
+                            <input type="text" id="instruments-custom-input" placeholder="e.g. Theremin, Didgeridoo..." onkeydown="if (event.key === 'Enter') confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('instruments-custom-row', 'instruments-custom-input')">&#10005;</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2006,7 +2099,7 @@
                         <label class="field-label">Instrumentation Focus</label>
                         <div class="tag-row" id="inst-tags">
                             <div class="tag multi" data-val="Acoustic only - no electric instruments">Acoustic</div>
-                            <div class="tag multi active" data-val="Full band - guitar, bass, drums, keys">Full Band</div>
+                            <div class="tag multi" data-val="Full band - guitar, bass, drums, keys">Full Band</div>
                             <div class="tag multi" data-val="Electronic / synth-forward - pads, synths, programmed drums">Electronic</div>
                             <div class="tag multi" data-val="Strings-led - violin, cello, viola as primary texture">Strings-Led</div>
                             <div class="tag multi" data-val="Horns section - brass and woodwinds prominent">Horns Section</div>
@@ -2017,14 +2110,78 @@
                             <button class="tag-add-btn" onclick="showCustomInput('inst-tags', 'inst-custom-row')">+ Custom</button>
                         </div>
                         <div class="custom-input-row" id="inst-custom-row" style="display: none">
-                            <input type="text" id="inst-custom-input" placeholder="e.g. Sitar, tabla, harmonium..." onkeydown="if (event.key === 'Enter') confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row');" />
+                            <input type="text" id="inst-custom-input" placeholder="..." onkeydown="if (event.key === 'Enter') confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row')">Add</button>
                             <button class="custom-input-cancel" onclick="hideCustomInput('inst-custom-row', 'inst-custom-input')">&#10005;</button>
                         </div>
                     </div>
+                    <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label">Instrument Exclusions</label>
-                        <input type="text" id="instrument-exclude" placeholder="Comma-separated instruments to exclude (e.g. banjo, accordion)" />
+                        <label class="field-label">Bass</label>
+                        <div class="tag-row" id="bass-tags">
+                            <div class="tag" data-val="Deep Sub-Bass">Deep Sub-Bass</div>
+                            <div class="tag" data-val="808 Bass">808 Bass</div>
+                            <div class="tag" data-val="Warm Bass">Warm Bass</div>
+                            <div class="tag" data-val="Punchy Bass">Punchy Bass</div>
+                            <div class="tag" data-val="Clean Bass">Clean Bass</div>
+                            <div class="tag" data-val="Fuzzy Bass">Fuzzy Bass</div>
+                            <div class="tag" data-val="Melodic Bass">Melodic Bass</div>
+                            <div class="tag" data-val="Minimal Bass">Minimal Bass</div>
+                            <div class="tag" data-val="Prominent Bass">Prominent Bass</div>
+                            <div class="tag" data-val="Subtle Bass">Subtle Bass</div>
+                            <div class="tag" data-val="Filtered Bass">Filtered Bass</div>
+                            <div class="tag" data-val="Synth Bass">Synth Bass</div>
+                            <div class="tag" data-val="Acoustic Bass">Acoustic Bass</div>
+                            <div class="tag" data-val="Fretless Bass">Fretless Bass</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('bass-tags', 'bass-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="bass-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="bass-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="bass-custom-input-row" style="display: none">
+                            <input type="text" id="bass-custom-input" placeholder="e.g. Slap bass, Distorted bass..." onkeydown="if (event.key === 'Enter') confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('bass-custom-input-row', 'bass-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <label class="field-label">Spatial / Effects</label>
+                        <div class="tag-row" id="spatial-tags">
+                            <div class="tag multi" data-val="Reverb-Heavy">Reverb-Heavy</div>
+                            <div class="tag multi" data-val="Delay Effects">Delay Effects</div>
+                            <div class="tag multi" data-val="Wide Stereo">Wide Stereo</div>
+                            <div class="tag multi" data-val="Dolby Atmos">Dolby Atmos</div>
+                            <div class="tag multi" data-val="Panning">Panning</div>
+                            <div class="tag multi" data-val="Spatial Effects">Spatial Effects</div>
+                            <div class="tag multi" data-val="Echo">Echo</div>
+                            <div class="tag multi" data-val="Chorus">Chorus</div>
+                            <div class="tag multi" data-val="Flanger">Flanger</div>
+                            <div class="tag multi" data-val="Phaser">Phaser</div>
+                            <div class="tag multi" data-val="No Distortion">No Distortion</div>
+                            <div class="tag multi" data-val="Light Distortion">Light Distortion</div>
+                            <div class="tag multi" data-val="Medium Distortion">Medium Distortion</div>
+                            <div class="tag multi" data-val="Heavy Distortion">Heavy Distortion</div>
+                            <div class="tag multi" data-val="No Compression">No Compression</div>
+                            <div class="tag multi" data-val="Light Compression">Light Compression</div>
+                            <div class="tag multi" data-val="Medium Compression">Medium Compression</div>
+                            <div class="tag multi" data-val="Heavy Compression">Heavy Compression</div>
+                            <div class="tag multi" data-val="No Modulation">No Modulation</div>
+                            <div class="tag multi" data-val="Light Modulation">Light Modulation</div>
+                            <div class="tag multi" data-val="Medium Modulation">Medium Modulation</div>
+                            <div class="tag multi" data-val="Heavy Modulation">Heavy Modulation</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('spatial-tags', 'spatial-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="spatial-custom-row" style="display: none">
+                            <input type="text" id="spatial-custom-input" placeholder="e.g. Tremolo, Ring modulation..." onkeydown="if (event.key === 'Enter') confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('spatial-custom-row', 'spatial-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <label class="field-label">Exclusions</label>
+                        <input type="text" id="instrument-exclude" placeholder="Comma-separated instrument and styles to exclude (e.g. banjo, trap, country)" />
                         <div
                             style="
                                 font-size: 10px;
@@ -2040,6 +2197,27 @@
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
+                        <label class="field-label">Production Style</label>
+                        <div class="tag-row" id="prodstyle-tags">
+                            <div class="tag multi" data-val="Raw & live - minimal overdubs, room sound, first-take energy">Raw & Live</div>
+                            <div class="tag multi active" data-val="Polished studio - multi-layered, produced, radio-ready">Polished Studio</div>
+                            <div class="tag multi" data-val="Lo-fi - tape hiss, vinyl crackle, intentional imperfection">Lo-Fi</div>
+                            <div class="tag multi" data-val="Cinematic / orchestral - sweeping arrangements, strings, brass">Cinematic</div>
+                            <div class="tag multi" data-val="Minimalist - sparse, lots of space and silence">Minimalist</div>
+                            <div class="tag multi" data-val="Experimental / avant-garde - unconventional sounds and structures">Experimental</div>
+                            <div class="tag multi" data-val="Live concert / arena - big reverb, crowd energy, anthemic">Live / Arena</div>
+                            <div class="tag multi" data-val="Bedroom / DIY - intimate, self-produced, vulnerable">Bedroom / DIY</div>
+                            <div class="tag multi" data-val="Club Ready - low-end clarity, dynamic energy">Club Ready</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('prodstyle-tags', 'prodstyle-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="prodstyle-custom-row" style="display: none">
+                            <input type="text" id="prodstyle-custom-input" placeholder="e.g. Vintage tape echo..." onkeydown="if (event.key === 'Enter') confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('prodstyle-custom-row', 'prodstyle-custom-input')">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
                         <label class="field-label">Mix Character</label>
                         <div class="tag-row" id="mix-tags">
                             <div class="tag multi" data-val="Warm analog - tape saturation, soft highs, rounded transients">Warm Analog</div>
@@ -2051,6 +2229,16 @@
                             <div class="tag multi" data-val="Mid-forward - vocals and guitars pushed forward in the mix">Mid-Forward</div>
                             <div class="tag multi" data-val="Wet and reverb-heavy - cavernous spaces, long tails">Wet / Reverb-Heavy</div>
                             <div class="tag multi" data-val="Dry and intimate - close-micd, no reverb, in-your-face">Dry & Intimate</div>
+                            <div class="tag multi" data-val="Loud and punchy - high energy, impactful transients">Loud and Punchy</div>
+                            <div class="tag multi" data-val="Balanced - even frequency response, neutral character">Balanced</div>
+                            <div class="tag multi" data-val="Vocal-forward - vocals prominent, clear, upfront">Vocal-Forward</div>
+                            <div class="tag multi" data-val="Vocal-balanced - vocals blend naturally with instruments">Vocal-Balanced</div>
+                            <div class="tag multi" data-val="Instrumental-focused - instruments emphasized, vocals supportive">Instrumental-Focused</div>
+                            <div class="tag multi" data-val="Warm-mastering - smooth, analog warmth in final master">Warm-Mastering</div>
+                            <div class="tag multi" data-val="Bright-mastering - clear, crisp highs in final master">Bright-Mastering</div>
+                            <div class="tag multi" data-val="Dark-mastering - rolled-off highs, subdued brightness">Dark-Mastering</div>
+                            <div class="tag multi" data-val="Headphone-optimized - tight stereo image, detail-focused">Headphone-Optimized</div>
+                            <div class="tag multi" data-val="Mono-compatible - maintains quality when summed to mono">Mono-Compatible</div>
                             <button class="tag-add-btn" onclick="showCustomInput('mix-tags', 'mix-custom-row')">+ Custom</button>
                         </div>
                         <div class="custom-input-row" id="mix-custom-row" style="display: none">
@@ -2180,7 +2368,7 @@
                         style="width: 100%; flex: 1; min-height: 0; font-family: &quot;Space Mono&quot;, monospace; font-size: 11px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text); padding: 12px; border-radius: 6px"
                         placeholder="Examples:&#10;&#10;Option 1 - Just lyrics:&#10;[Verse]&#10;Your lyrics here...&#10;&#10;Option 2 - Just style:&#10;Sound like early Tom Waits meets Nick Cave, dark cabaret, upright bass, 1970s lo-fi&#10;&#10;Option 3 - Both lyrics and style:&#10;Style: Radiohead OK Computer era&#10;&#10;[Verse]&#10;Your verse...&#10;[Chorus]&#10;Your chorus..."
                     ></textarea>
-                    <div id="unified-analysis-result" style="display: none; margin-top: 12px; flex-shrink: 0"></div>
+                    <div id="unified-analysis-result" style="display: none; margin-top: 12px; max-height: 200px; overflow-y: auto; flex-shrink: 0"></div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeAnalyzerModal()">Close</button>
@@ -2646,11 +2834,15 @@
                         t.classList.add("active");
                         if (id === "rhyme-tags") clearCustomRhyme();
                         if (id === "mood-tags") clearCustomSingleValue("mood-custom-row", "mood-custom-tag");
+                        if (id === "goal-tags") clearCustomSingleValue("goal-custom-row", "goal-custom-tag");
+                        if (id === "rhythm-tags") clearCustomSingleValue("rhythm-custom-row", "rhythm-custom-tag");
+                        if (id === "groove-tags") clearCustomSingleValue("groove-custom-row", "groove-custom-tag");
+                        if (id === "bass-tags") clearCustomSingleValue("bass-custom-row", "bass-custom-tag");
                         if (id === "pov-tags") clearCustomSingleValue("pov-custom-row", "pov-custom-tag");
                     });
                 });
             }
-            ["mood-tags", "rhyme-tags", "pov-tags", "aimode-tags"].forEach(setupSingleTags);
+            ["mood-tags", "goal-tags", "rhythm-tags", "groove-tags", "bass-tags", "rhyme-tags", "pov-tags", "aimode-tags"].forEach(setupSingleTags);
 
             document
                 .getElementById("genre-tags")
@@ -2668,7 +2860,7 @@
                     });
                 });
 
-            ["era-tags", "prodstyle-tags", "inst-tags", "mix-tags"].forEach((id) => {
+            ["era-tags", "instruments-tags", "prodstyle-tags", "inst-tags", "spatial-tags", "mix-tags"].forEach((id) => {
                 document
                     .getElementById(id)
                     .querySelectorAll(".tag")
@@ -2885,6 +3077,10 @@
                 let groupId = "";
                 if (tagId === "genre-custom-tag") groupId = "genre-tags";
                 if (tagId === "mood-custom-tag") groupId = "mood-tags";
+                if (tagId === "goal-custom-tag") groupId = "goal-tags";
+                if (tagId === "rhythm-custom-tag") groupId = "rhythm-tags";
+                if (tagId === "groove-custom-tag") groupId = "groove-tags";
+                if (tagId === "bass-custom-tag") groupId = "bass-tags";
                 if (tagId === "pov-custom-tag") groupId = "pov-tags";
                 if (tagId === "vocalgender-custom-tag") groupId = "vocalgender-tags";
                 if (tagId === "rhyme-custom-tag") groupId = "rhyme-tags";
@@ -2921,10 +3117,19 @@
                 return getCustomTagValue("mood-custom-tag") || getActive("mood-tags");
             }
             function getSelectedGoal() {
-                return getActive("goal-tags");
+                return getCustomTagValue("goal-custom-tag") || getActive("goal-tags");
             }
             function getSelectedRhythm() {
-                return getActive("rhythm-tags");
+                return getCustomTagValue("rhythm-custom-tag") || getActive("rhythm-tags");
+            }
+            function getSelectedGrooveFeel() {
+                return getCustomTagValue("groove-custom-tag") || getActive("groove-tags");
+            }
+            function getSelectedBass() {
+                return getCustomTagValue("bass-custom-tag") || getActive("bass-tags");
+            }
+            function getSelectedSpatialEffects() {
+                return getActiveMulti("spatial-tags");
             }
             function getSelectedPov() {
                 return getCustomTagValue("pov-custom-tag") || getActive("pov-tags");
@@ -3027,6 +3232,11 @@
                                                 <div class="tag multi" data-val="Restrained">Restrained</div>
                                                 <div class="tag multi" data-val="Dynamic">Dynamic</div>
                                                 <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
+                                                <div class="tag multi" data-val="Vocalization">Vocalization</div>
+                                                <div class="tag multi" data-val="Robotic">Robotic</div>
+                                                <div class="tag multi" data-val="Autotuned">Autotuned</div>
+                                                <div class="tag multi" data-val="Pitched Vocals">Pitched Vocals/div>
+                                                
                                                 <button class="tag-add-btn" onclick="showCustomInput('choir-style-tags', 'choir-style-custom-input-row')">+ Custom</button>
                                             </div>
                                             <div class="custom-input-row" id="choir-style-custom-input-row" style="display: none; margin-top: 4px">
@@ -3176,6 +3386,10 @@
                                                 <div class="tag multi" data-val="Restrained">Restrained</div>
                                                 <div class="tag multi" data-val="Dynamic">Dynamic</div>
                                                 <div class="tag multi" data-val="Wide Vocal Range">Wide Range</div>
+                                                <div class="tag multi" data-val="Vocalization">Vocalization</div>
+                                                <div class="tag multi" data-val="Robotic">Robotic</div>
+                                                <div class="tag multi" data-val="Autotuned">Autotuned</div>
+                                                <div class="tag multi" data-val="Pitched Vocals">Pitched Vocals</div>                                                
                                                 <button class="tag-add-btn" onclick="showCustomInput('vp-style-${idx}', 'vp-style-custom-input-row-${idx}')">+ Custom</button>
                                             </div>
                                             <div class="custom-input-row" id="vp-style-custom-input-row-${idx}" style="display: none; margin-top: 4px">
@@ -4109,6 +4323,11 @@
                   "genre_key": "one of: rock|metal|folk|country|jazz|blues|rnb|hiphop|gospel|reggae|ska|latin|cumbia; empty string if not strongly implied",
                   "genre_label": "specific genre or subgenre label; not limited to preset UI options; empty string if not applicable",
                   "mood": "specific mood description; not limited to preset UI options; empty string if not strongly implied",
+                  "goal": "song purpose/goal like Workout, Meditation, Dance Floor Banger, Background Music, etc.; empty string if not strongly implied",
+                  "rhythm": "rhythm style like Syncopated, Swing, Groove-Based, Triplet, etc.; empty string if not strongly implied",
+                  "groove_feel": "groove/pocket feel like Funky, Smooth, Driving, Tight, Loose, Bouncy, Laid-back, Groovy, Hypnotic, etc.; empty string if not strongly implied",
+                  "bass": "bass style like Deep Sub-Bass, 808 Bass, Warm Bass, Punchy Bass, Synth Bass, etc.; empty string if not strongly implied",
+                  "spatial_effects": ["spatial/effects like Reverb-Heavy, Delay Effects, Wide Stereo, Chorus, Flanger, etc.; empty array if not applicable"],
                   "rhyme": "detected rhyme scheme or rhyme style; do not limit this to preset UI choices; empty string if not applicable",
                   "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM; empty string if not strongly implied",
                   "pov": "perspective description; can match presets or be custom; empty string if not strongly implied",
@@ -4116,6 +4335,7 @@
                   "time_signature": "one of: Auto | 4/4 | 3/4 | 2/4 | 6/8 | 5/4 | 7/4 | 9/8 | 12/8 | or custom like 7/8; empty string if not applicable",
                   "era_keys": ["era/decade labels if detected; preset or custom"],
                   "prodstyle_keys": ["production style labels if detected; preset or custom"],
+                  "instruments_keys": ["specific instruments detected like Acoustic Guitar, Electric Piano, Violin, Saxophone, Drums, etc.; empty array if not applicable"],
                   "inst_keys": ["instrumentation labels if detected; preset or custom"],
                   "mix_keys": ["mix-character labels if detected; preset or custom"],
                   "influences": ["up to 3 artist names if style references are detected"],
@@ -4169,6 +4389,11 @@
 
                     if (analysis.rhyme) applyRhymeSetting(analysis.rhyme);
                     if (analysis.mood) applySingleTagOrCustom("mood-tags", analysis.mood, "mood-custom-row", "mood-custom-tag", "Custom mood");
+                    if (analysis.goal) applySingleTagOrCustom("goal-tags", analysis.goal, "goal-custom-row", "goal-custom-tag", "Custom goal");
+                    if (analysis.rhythm) applySingleTagOrCustom("rhythm-tags", analysis.rhythm, "rhythm-custom-row", "rhythm-custom-tag", "Custom rhythm");
+                    if (analysis.groove_feel) applySingleTagOrCustom("groove-tags", analysis.groove_feel, "groove-custom-row", "groove-custom-tag", "Custom groove feel");
+                    if (analysis.bass) applySingleTagOrCustom("bass-tags", analysis.bass, "bass-custom-row", "bass-custom-tag", "Custom bass");
+                    if (analysis.spatial_effects && analysis.spatial_effects.length) applyMultiTagValues("spatial-tags", analysis.spatial_effects);
                     if (analysis.pov) applySingleTagOrCustom("pov-tags", analysis.pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
 
                     // Build custom structure with chords and instructions if provided
@@ -4251,6 +4476,7 @@
                     if (analysis.instrument_exclusions) document.getElementById("instrument-exclude").value = String(analysis.instrument_exclusions || "");
                     if (analysis.era_keys && analysis.era_keys.length) applyMultiTagValues("era-tags", analysis.era_keys);
                     if (analysis.prodstyle_keys && analysis.prodstyle_keys.length) applyMultiTagValues("prodstyle-tags", analysis.prodstyle_keys);
+                    if (analysis.instruments_keys && analysis.instruments_keys.length) applyMultiTagValues("instruments-tags", analysis.instruments_keys);
                     if (analysis.inst_keys && analysis.inst_keys.length) applyMultiTagValues("inst-tags", analysis.inst_keys);
                     if (analysis.mix_keys && analysis.mix_keys.length) applyMultiTagValues("mix-tags", analysis.mix_keys);
                     if (analysis.influences && analysis.influences.length) analysis.influences.forEach((inf) => addInfluenceVal(inf));
@@ -4262,6 +4488,11 @@
                       <span class="style-result-title">✓ Analysis Applied</span>
                       ${analysis.genre_key || analysis.genre_label ? `<div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${escapeHtml(getSelectedGenreLabel() || analysis.genre_label || analysis.genre_key || "—")}</span></div>` : ""}
                       ${analysis.mood ? `<div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${escapeHtml(analysis.mood)}</span></div>` : ""}
+                      ${analysis.goal ? `<div class="style-applied-row"><span class="style-applied-key">Goal:</span><span class="style-applied-val">${escapeHtml(analysis.goal)}</span></div>` : ""}
+                      ${analysis.rhythm ? `<div class="style-applied-row"><span class="style-applied-key">Rhythm:</span><span class="style-applied-val">${escapeHtml(analysis.rhythm)}</span></div>` : ""}
+                      ${analysis.groove_feel ? `<div class="style-applied-row"><span class="style-applied-key">Groove Feel:</span><span class="style-applied-val">${escapeHtml(analysis.groove_feel)}</span></div>` : ""}
+                      ${analysis.bass ? `<div class="style-applied-row"><span class="style-applied-key">Bass:</span><span class="style-applied-val">${escapeHtml(analysis.bass)}</span></div>` : ""}
+                      ${analysis.spatial_effects && analysis.spatial_effects.length ? `<div class="style-applied-row"><span class="style-applied-key">Spatial/Effects:</span><span class="style-applied-val">${escapeHtml((analysis.spatial_effects || []).join(", "))}</span></div>` : ""}
                       ${analysis.rhyme ? `<div class="style-applied-row"><span class="style-applied-key">Rhyme:</span><span class="style-applied-val">${escapeHtml(analysis.rhyme)}</span></div>` : ""}
                       ${analysis.pov ? `<div class="style-applied-row"><span class="style-applied-key">Perspective:</span><span class="style-applied-val">${escapeHtml(analysis.pov)}</span></div>` : ""}
                       ${analysis.tempo ? `<div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${escapeHtml(formatTempoPreference(analysis.tempo))}</span></div>` : ""}
@@ -4273,7 +4504,8 @@
                       ${sectionsWithInstructions > 0 ? `<div class="style-applied-row"><span class="style-applied-key">Instructions:</span><span class="style-applied-val">${sectionsWithInstructions} section(s) with performance notes</span></div>` : ""}
                       ${analysis.era_keys && analysis.era_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${escapeHtml((analysis.era_keys || []).join(", "))}</span></div>` : ""}
                       ${analysis.prodstyle_keys && analysis.prodstyle_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Production:</span><span class="style-applied-val">${escapeHtml((analysis.prodstyle_keys || []).join(", "))}</span></div>` : ""}
-                      ${analysis.inst_keys && analysis.inst_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${escapeHtml((analysis.inst_keys || []).join(", "))}</span></div>` : ""}
+                      ${analysis.instruments_keys && analysis.instruments_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${escapeHtml((analysis.instruments_keys || []).join(", "))}</span></div>` : ""}
+                      ${analysis.inst_keys && analysis.inst_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Instrumentation:</span><span class="style-applied-val">${escapeHtml((analysis.inst_keys || []).join(", "))}</span></div>` : ""}
                       ${analysis.mix_keys && analysis.mix_keys.length ? `<div class="style-applied-row"><span class="style-applied-key">Mix:</span><span class="style-applied-val">${escapeHtml((analysis.mix_keys || []).join(", "))}</span></div>` : ""}
                       ${vocalConfigDisplay}
                       ${analysis.influences && analysis.influences.length ? `<div class="style-applied-row"><span class="style-applied-key">Influences:</span><span class="style-applied-val">${escapeHtml(analysis.influences.join(", "))}</span></div>` : ""}
@@ -4573,40 +4805,55 @@
             function buildSoundProfile() {
                 const eras = getActiveMulti("era-tags"),
                     styles = getActiveMulti("prodstyle-tags"),
+                    instruments = getActiveMulti("instruments-tags"),
                     insts = getActiveMulti("inst-tags"),
                     mixes = getActiveMulti("mix-tags"),
+                    bass = getSelectedBass(),
+                    spatialRaw = getSelectedSpatialEffects(),
+                    spatial = spatialRaw.filter((s) => s !== "AI Choose"),
                     infs = [...influences];
-                if (!eras.length && !styles.length && !insts.length && !mixes.length && !infs.length) return null;
-                return { eras, styles, insts, mixes, infs };
+                const hasBass = bass && bass !== "AI Choose";
+                if (!eras.length && !styles.length && !instruments.length && !insts.length && !mixes.length && !hasBass && !spatial.length && !infs.length) return null;
+                return { eras, styles, instruments, insts, mixes, bass, spatial, infs };
             }
             function soundProfilePromptText(sp) {
                 if (!sp) return "";
                 const parts = [];
                 if (sp.eras.length) parts.push(`Era/Decade: ${sp.eras.join(", ")}`);
                 if (sp.styles.length) parts.push(`Production Style: ${sp.styles.join(", ")}`);
+                if (sp.instruments && sp.instruments.length) parts.push(`Instruments: ${sp.instruments.join(", ")}`);
                 if (sp.insts.length) parts.push(`Instrumentation: ${sp.insts.join(", ")}`);
                 if (sp.mixes.length) parts.push(`Mix Character: ${sp.mixes.join(", ")}`);
+                if (sp.bass && sp.bass !== "AI Choose") parts.push(`Bass: ${sp.bass}`);
+                if (sp.spatial && sp.spatial.length) parts.push(`Spatial/Effects: ${sp.spatial.join(", ")}`);
                 if (sp.infs.length) parts.push(`Key Influences: ${sp.infs.join(", ")}`);
                 return parts.join("\n");
             }
-            function buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
+            function buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
                 const tempoFormatted = formatTempoPreference(tempo);
                 const vocalConfig = getSelectedVocalGender();
-                const parts = ["Submit these settings to AI?", "", `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`, `Mood: ${mood}`];
+                const parts = ["Submit these settings to AI?", "", `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`];
+                if (mood) parts.push(`Mood: ${mood}`);
                 if (goal && goal !== "Not specified") parts.push(`Goal: ${goal}`);
                 if (rhythm && rhythm !== "AI Choose") parts.push(`Rhythm: ${rhythm}`);
-                parts.push(`Rhyme: ${rhyme}`);
+                if (grooveFeel && grooveFeel !== "AI Choose") parts.push(`Groove Feel: ${grooveFeel}`);
+                if (rhyme) parts.push(`Rhyme: ${rhyme}`);
 
-                if (tempoFormatted !== "AI Choose") parts.push(`Tempo: ${tempoFormatted}`);
+                if (tempoFormatted !== "AI Choose" && tempoFormatted !== "Auto") parts.push(`Tempo: ${tempoFormatted}`);
                 if (duration) parts.push(`Duration: ${duration}`);
                 if (selectedMusicalKey !== "Auto") parts.push(`Key: ${selectedMusicalKey}`);
                 if (selectedTimeSignature !== "Auto") parts.push(`Time Signature: ${selectedTimeSignature}`);
 
-                parts.push(`Perspective: ${pov}`);
+                if (pov) parts.push(`Perspective: ${pov}`);
 
                 if (vocalConfig !== "Not specified") parts.push(`Vocal Configuration: ${vocalConfig}`);
 
-                parts.push(`Verse Length: ${formatLengthPreference(verseLength)}`, `Chorus Length: ${formatLengthPreference(chorusLength)}`, `Structure: ${struct?.name || "--"}`, `Structure Flow: ${struct?.flow || "--"}`);
+                const verseLengthFormatted = formatLengthPreference(verseLength);
+                const chorusLengthFormatted = formatLengthPreference(chorusLength);
+                if (verseLengthFormatted !== "Follow Structure" && verseLengthFormatted) parts.push(`Verse Length: ${verseLengthFormatted}`);
+                if (chorusLengthFormatted !== "Follow Structure" && chorusLengthFormatted) parts.push(`Chorus Length: ${chorusLengthFormatted}`);
+
+                parts.push(`Structure: ${struct?.name || "--"}`, `Structure Flow: ${struct?.flow || "--"}`);
 
                 if (soundProfile) {
                     parts.push("", "Sound Profile:", soundProfilePromptText(soundProfile));
@@ -4859,8 +5106,9 @@
                     genreKey: currentGenreKey,
                     genreLabel: getSelectedGenreLabel(),
                     mood: getActive("mood-tags") || getCustomTagValue("mood-custom-tag"),
-                    goal: getActive("goal-tags"),
-                    rhythm: getActive("rhythm-tags"),
+                    goal: getActive("goal-tags") || getCustomTagValue("goal-custom-tag"),
+                    rhythm: getActive("rhythm-tags") || getCustomTagValue("rhythm-custom-tag"),
+                    grooveFeel: getActive("groove-tags") || getCustomTagValue("groove-custom-tag"),
                     rhyme: getActive("rhyme-tags"),
                     tempo: formatTempoPreference(getTempoPreference()),
                     musicalKey: getSelectedMusicalKey(),
@@ -5000,22 +5248,9 @@
 
                 applyGenreSetting(settings.genreKey || currentGenreKey || "rock", settings.genreLabel || song.genre || "");
                 applySingleTagOrCustom("mood-tags", settings.mood || song.mood || "", "mood-custom-row", "mood-custom-tag", "Custom mood");
-                // Apply goal setting
-                const goalValue = settings.goal || song.goal || "Not specified";
-                document
-                    .getElementById("goal-tags")
-                    .querySelectorAll(".tag")
-                    .forEach((t) => {
-                        t.classList.toggle("active", t.dataset.val === goalValue);
-                    });
-                // Apply rhythm setting
-                const rhythmValue = settings.rhythm || song.rhythm || "AI Choose";
-                document
-                    .getElementById("rhythm-tags")
-                    .querySelectorAll(".tag")
-                    .forEach((t) => {
-                        t.classList.toggle("active", t.dataset.val === rhythmValue);
-                    });
+                applySingleTagOrCustom("goal-tags", settings.goal || song.goal || "", "goal-custom-row", "goal-custom-tag", "Custom goal");
+                applySingleTagOrCustom("rhythm-tags", settings.rhythm || song.rhythm || "", "rhythm-custom-row", "rhythm-custom-tag", "Custom rhythm");
+                applySingleTagOrCustom("groove-tags", settings.grooveFeel || song.grooveFeel || "", "groove-custom-row", "groove-custom-tag", "Custom groove feel");
                 applyRhymeSetting(settings.rhyme || song.rhyme || "AABB (couplets)");
 
                 applyTempoPreference(settings.tempo || song.tempoPreference || song.key_info?.tempo || "AI Choose");
@@ -5048,8 +5283,11 @@
 
                 applyMultiTagValues("era-tags", settings.soundProfile?.eras || song.soundProfile?.eras || []);
                 applyMultiTagValues("prodstyle-tags", settings.soundProfile?.styles || song.soundProfile?.styles || []);
+                applyMultiTagValues("instruments-tags", settings.soundProfile?.instruments || song.soundProfile?.instruments || []);
                 applyMultiTagValues("inst-tags", settings.soundProfile?.insts || song.soundProfile?.insts || []);
                 applyMultiTagValues("mix-tags", settings.soundProfile?.mixes || song.soundProfile?.mixes || []);
+                applySingleTagOrCustom("bass-tags", settings.soundProfile?.bass || song.soundProfile?.bass || "", "bass-custom-row", "bass-custom-tag", "Custom bass");
+                applyMultiTagValues("spatial-tags", settings.soundProfile?.spatial || song.soundProfile?.spatial || []);
                 (settings.soundProfile?.infs || song.soundProfile?.infs || []).forEach((inf) => addInfluenceVal(inf));
 
                 if (settings.structure) applySavedStructure(settings.structure, currentGenreKey);
@@ -5550,14 +5788,22 @@
                 }
 
                 // Main details section
-                if (vocalConfig !== "Not specified") styleDetailsLines.push(`Vocal: ${vocalConfig}`);
-                if (tempoPreference) styleDetailsLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (vocalConfig && vocalConfig !== "Not specified") styleDetailsLines.push(`Vocal: ${vocalConfig}`);
+                if (song.mood) styleDetailsLines.push(`Mood: ${song.mood}`);
+                if (song.goal && song.goal !== "Not specified") styleDetailsLines.push(`Goal: ${song.goal}`);
+                if (song.rhythm && song.rhythm !== "AI Choose") styleDetailsLines.push(`Rhythm: ${song.rhythm}`);
+                if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleDetailsLines.push(`Groove Feel: ${song.grooveFeel}`);
+                if (song.pov) styleDetailsLines.push(`Perspective: ${song.pov}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleDetailsLines.push(`Tempo Preference: ${tempoPreference}`);
                 // Only include verse/chorus length if not "Follow Structure"
-                if (verseLength !== "Follow Structure") styleDetailsLines.push(`Verse Length: ${verseLength}`);
-                if (chorusLength !== "Follow Structure") styleDetailsLines.push(`Chorus Length: ${chorusLength}`);
+                if (verseLength && verseLength !== "Follow Structure") styleDetailsLines.push(`Verse Length: ${verseLength}`);
+                if (chorusLength && chorusLength !== "Follow Structure") styleDetailsLines.push(`Chorus Length: ${chorusLength}`);
                 if (sp?.eras?.length) styleDetailsLines.push(`Era: ${sp.eras.join(", ")}`);
                 if (sp?.styles?.length) styleDetailsLines.push(`Production style: ${sp.styles.join(", ")}`);
+                if (sp?.instruments?.length) styleDetailsLines.push(`Instruments: ${sp.instruments.join(", ")}`);
                 if (sp?.insts?.length) styleDetailsLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
+                if (sp?.bass && sp.bass !== "AI Choose") styleDetailsLines.push(`Bass: ${sp.bass}`);
+                if (sp?.spatial?.length) styleDetailsLines.push(`Spatial/Effects: ${sp.spatial.join(", ")}`);
                 // Instrument exclusions removed from style prompt - now has dedicated button
 
                 // Mix section with blank line before it
@@ -5614,8 +5860,11 @@
                           `--- SOUND PROFILE ---`,
                           sp.eras?.length ? `Era: ${sp.eras.join(", ")}` : "",
                           sp.styles?.length ? `Style: ${sp.styles.join(", ")}` : "",
+                          sp.instruments?.length ? `Instruments: ${sp.instruments.join(", ")}` : "",
                           sp.insts?.length ? `Instrumentation: ${sp.insts.join(", ")}` : "",
                           sp.mixes?.length ? `Mix: ${sp.mixes.join(", ")}` : "",
+                          sp.bass && sp.bass !== "AI Choose" ? `Bass: ${sp.bass}` : "",
+                          sp.spatial?.length ? `Spatial/Effects: ${sp.spatial.join(", ")}` : "",
                           sp.infs?.length ? `Influences: ${sp.infs.join(", ")}` : "",
                       ].filter((x) => x !== undefined && x !== null)
                     : "";
@@ -5629,6 +5878,7 @@
                         mood: song.mood,
                         goal: song.goal,
                         rhythm: song.rhythm,
+                        grooveFeel: song.grooveFeel,
                         rhyme: song.rhyme,
                         concept: song.concept,
                         structureName: song.structureName,
@@ -5648,34 +5898,36 @@
                     },
                 };
 
-                exportText = [
-                    `SONG: ${song.title}`,
-                    `${song.logline}`,
-                    ``,
-                    `Genre: ${song.genre}`,
-                    `Vocal Configuration: ${vocalConfig}`,
-                    `Tempo Preference: ${tempoPreference}`,
-                    `Verse Length: ${formatLengthPreference(song.verseLength)}`,
-                    `Chorus Length: ${formatLengthPreference(song.chorusLength)}`,
-                    `Instrument Exclusions: ${song.instrumentExclusions || "--"}`,
-                    `Structure: ${song.structureName || ""}`,
-                    `Key: ${song.key_info?.key || "--"} · ${song.key_info?.time_sig || "--"} · ${song.key_info?.tempo || "--"} · ${song.key_info?.feel || "--"}`,
-                    `Suno Style Prompt: ${song.suno_style_prompt || "--"}`,
-                    ...(Array.isArray(spLines) ? spLines : []),
-                    ``,
-                    `--- PRODUCTION NOTES ---`,
-                    song.production,
-                    ``,
-                    `--- CHORD PROGRESSION ---`,
-                    song.chords?.progression || "--",
-                    ``,
-                    `--- LYRICS ---`,
-                    exportLyricsText,
-                    ``,
-                    ``,
-                    `--- SUNOFORGE JSON DATA ---`,
-                    JSON.stringify(jsonExportData, null, 2),
-                ].join("\n");
+                const exportLines = [`SONG: ${song.title}`, `${song.logline}`, ``, `Genre: ${song.genre}`];
+
+                if (vocalConfig && vocalConfig !== "Not specified") exportLines.push(`Vocal Configuration: ${vocalConfig}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") exportLines.push(`Tempo Preference: ${tempoPreference}`);
+
+                const verseLengthExp = formatLengthPreference(song.verseLength);
+                const chorusLengthExp = formatLengthPreference(song.chorusLength);
+                if (verseLengthExp && verseLengthExp !== "Follow Structure") exportLines.push(`Verse Length: ${verseLengthExp}`);
+                if (chorusLengthExp && chorusLengthExp !== "Follow Structure") exportLines.push(`Chorus Length: ${chorusLengthExp}`);
+
+                if (song.instrumentExclusions) exportLines.push(`Instrument Exclusions: ${song.instrumentExclusions}`);
+                if (song.structureName) exportLines.push(`Structure: ${song.structureName}`);
+
+                // Only include Key info if it has meaningful values (not all defaults)
+                const hasKeyInfo =
+                    (song.key_info?.key && song.key_info.key !== "--" && song.key_info.key !== "Auto") ||
+                    (song.key_info?.time_sig && song.key_info.time_sig !== "--" && song.key_info.time_sig !== "Auto") ||
+                    (song.key_info?.tempo && song.key_info.tempo !== "--") ||
+                    (song.key_info?.feel && song.key_info.feel !== "--");
+                if (hasKeyInfo) {
+                    exportLines.push(`Key: ${song.key_info?.key || "--"} · ${song.key_info?.time_sig || "--"} · ${song.key_info?.tempo || "--"} · ${song.key_info?.feel || "--"}`);
+                }
+
+                if (song.suno_style_prompt) exportLines.push(`Suno Style Prompt: ${song.suno_style_prompt}`);
+
+                if (Array.isArray(spLines) && spLines.length > 0) exportLines.push(...spLines);
+
+                exportLines.push(``, `--- PRODUCTION NOTES ---`, song.production, ``, `--- CHORD PROGRESSION ---`, song.chords?.progression || "--", ``, `--- LYRICS ---`, exportLyricsText, ``, ``, `--- SUNOFORGE JSON DATA ---`, JSON.stringify(jsonExportData, null, 2));
+
+                exportText = exportLines.join("\n");
                 document.getElementById("export-preview").textContent = exportText;
 
                 // Show/hide exclusions button based on whether there are exclusions
@@ -6040,6 +6292,7 @@
                 const mood = getSelectedMood();
                 const goal = getSelectedGoal();
                 const rhythm = getSelectedRhythm();
+                const grooveFeel = getSelectedGrooveFeel();
                 const rhyme = getSelectedRhymeScheme();
                 const tempo = getSelectedTempoPreference();
                 const duration = getDurationPreference();
@@ -6054,7 +6307,7 @@
                 const userLyrics = getUserLyrics();
                 const aiMode = activeLeftTab === "lyrics" ? getActive("aimode-tags") : null;
 
-                const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
+                const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
                 if (!confirmed) return;
 
                 const genBtn = document.getElementById("gen-btn");
@@ -6178,12 +6431,7 @@
                 SONG SPECS:
                 Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
                 Concept: ${concept}
-                Genre: ${genre}
-                Mood: ${mood}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}
-                Rhyme Scheme: ${rhyme}${tempoForPrompt !== "AI Choose" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}
-                Perspective: ${pov}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}
-                Verse Length Preference: ${formatLengthPreference(verseLength)}
-                Chorus Length Preference: ${formatLengthPreference(chorusLength)}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
+                Genre: ${genre}${mood ? `\nMood: ${mood}` : ""}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}${grooveFeel && grooveFeel !== "AI Choose" ? `\nGroove Feel: ${grooveFeel}` : ""}${rhyme ? `\nRhyme Scheme: ${rhyme}` : ""}${tempoForPrompt !== "AI Choose" && tempoForPrompt !== "Auto" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}${pov ? `\nPerspective: ${pov}` : ""}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${formatLengthPreference(verseLength) !== "Follow Structure" ? `\nVerse Length Preference: ${formatLengthPreference(verseLength)}` : ""}${formatLengthPreference(chorusLength) !== "Follow Structure" ? `\nChorus Length Preference: ${formatLengthPreference(chorusLength)}` : ""}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
                 Structure: ${struct.name} -- ${struct.flow}
                 Structure description: ${struct.desc}${sectionChordsInstruction}${sectionInstructionsData}${soundInstruction}${influenceInstruction}${lyricsInstruction}
 
@@ -6192,7 +6440,6 @@
                 LYRICAL PHRASING TECHNIQUES:
                 When generating lyrics, use appropriate phrasing techniques to enhance vocal delivery and expression:
                 - Commas within lines create pauses (multiple commas create longer pauses; typically use 1-5 commas where appropriate)
-                - The [Pause] meta tag can be placed between lines within a section for dramatic effect
                 - Capitalizing the first letter of a word adds emphasis when sung (e.g., "I Never wanted this")
                 - ALL CAPITALS forces a word or phrase to be yelled (e.g., "STOP right there")
                 Only use these techniques where appropriate to the genre, style, dynamic, and emotional content of the lyrics. Rock, metal, and intense genres may use more emphasis and pauses, while softer genres should use them sparingly for maximum impact.
@@ -6315,6 +6562,7 @@
                     song.chorusLength = chorusLength;
                     song.goal = goal;
                     song.rhythm = rhythm;
+                    song.grooveFeel = grooveFeel;
                     song.instrumentExclusions = getInstrumentExclusions();
 
                     // Handle suggested influences from AI

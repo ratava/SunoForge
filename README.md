@@ -102,16 +102,19 @@ Core song configuration and musical fundamentals.
 
 - **Song Title** - Name your track
 - **Concept/Story** - What the song is about (narrative, theme, emotion)
-- **Genre** - Select from Rock, Metal, Folk, Country, Jazz, Blues, R&B, Hip-Hop, Gospel, Reggae, Ska, Latin, Cumbia, or create custom
-- **Mood** - Emotional tone (Raw & Defiant, Melancholic, Anthemic, Dark & Brooding, etc.)
-- **Rhyme Scheme** - Choose from AABB, ABAB, ABCB, AABA, Free Verse, Multisyllabic, or let AI decide
-- **Tempo** - AI Choose, Slow, Medium, Fast, or set custom BPM range
-- **Song Duration** - AI Choose, Short (~~2 min), Medium (~~3.5 min), Long (~5+ min), or custom
-- **Musical Key** - Select key signature or let AI choose
-- **Time Signature** - 4/4, 3/4, 6/8, 5/4, 7/8, or custom
-- **Perspective** - 1st person, 2nd person, 3rd person, or shifting POV
-- **Verse Length** - AI Choose, Short (2 lines), Standard (4 lines), Extended (6+ lines)
-- **Chorus Length** - AI Choose, Concise (2 lines), Standard (4 lines), Extended (6+ lines)
+- **Genre** - Select from Rock, Metal, Folk, Country, Jazz, Blues, R&B, Hip-Hop, Gospel, Reggae, Electronic/Dance, Ambient, Lo-Fi/Chill, Classical, Cinematic, World Music, Pop, Christian, or create custom
+- **Mood** - Emotional tone (Raw & Defiant, Melancholic, Anthemic, Dark & Brooding, Soulful & Warm, Joyful, Playful & Loose, or custom)
+- **Goal** - Song purpose (Background Music, Dance Floor Banger, Meditation, Workout, Focus/Study, Sleep, Party, Cinematic, Gaming, Podcast, TikTok, Emotional, Storytelling, or custom)
+- **Rhythm** - Rhythm style (Triplet, Swing, Syncopated, Polyrhythmic, Minimal, Broken, Locked, Groove-Based, or custom)
+- **Groove Feel** - Pocket/groove character (Funky, Smooth, Driving, Tight, Loose, Bouncy, Laid-back, Groovy, Hypnotic, or custom)
+- **Perspective** - 1st person, 2nd person, 3rd person, or collective (we/us)
+- **Rhyme Scheme** - Choose from AABB, ABAB, ABCB, AABA, ABBA, Free Verse, Multisyllabic, Triplet Flow, or custom
+- **Tempo** - Auto (let AI choose) or set custom BPM range (e.g., 90-110 BPM)
+- **Song Duration** - Auto (let AI choose) or set specific duration (e.g., 3:00 - 4:00)
+- **Musical Key** - Select key signature or Auto (let AI choose)
+- **Time Signature** - 4/4, 3/4, 2/4, 6/8, 5/4, 7/4, 7/8, 9/8, 12/8, or custom
+- **Verse Length** - Follow Structure, 4 Bars, 8 Bars, or 16 Bars
+- **Chorus Length** - Follow Structure, 4 Bars, 8 Bars, 16 Bars, or 32 Bars
 
 ### 🎤 Vocal ###
 
@@ -154,17 +157,39 @@ Choose or build your song's structural blueprint.
 
 Shape the production aesthetic and sonic character.
 
-- **Era/Decade** - 1950s through 2020s, Timeless, or custom period
-- **Production Style** - Lo-Fi, Hi-Fi, Vintage, Modern, Live, Bedroom, Studio Polished, etc.
-- **Instrumentation Focus**
+- **Era/Decade** - 1920s-40s through Modern/2020s, Timeless, or custom period
+- **Instruments** - Select specific instruments (52 options including guitars, keyboards, strings, brass, woodwinds, percussion, and more, or add custom)
+  - Guitars: Acoustic, Nylon, Electric, Classical, Steel, Pedal Steel, Dobro
+  - Bass: Bass Guitar, Upright Bass, Synth Bass
+  - Keyboards: Pianos (Acoustic, Electric, Concert Grand, Upright), Synthesizers (Moog, Wavetable, Pad, Lead, Bass), Organs (Pipe, Hammond, Electric, Wurlitzer)
+  - Strings: String Section/Quartet, Violin, Cello
+  - Brass: Brass Section, Trumpet, Trombone, French Horn, Tuba, Horns
+  - Woodwinds: Saxophone, Woodwind Section, Clarinet, Oboe, Flute
+  - Other: Harp, Ukulele, Mandolin, Banjo, Harmonica, Vibraphone, Marimba
+  - Percussion: Drums (Acoustic/Electronic), Timpani, Gong, Cowbell
+- **Instrumentation Focus** - General approach
   - Acoustic, Full Band, Electronic, Strings-Led, Horns Section
   - Solo + Voice, Heavy Guitar, Rhythm-Led, Hybrid Organic
   - Add custom instrumentation descriptions
+- **Bass** - Bass style and character
+  - Deep Sub-Bass, 808 Bass, Warm Bass, Punchy Bass, Clean Bass, Fuzzy Bass
+  - Melodic Bass, Minimal Bass, Prominent Bass, Subtle Bass, Filtered Bass
+  - Synth Bass, Acoustic Bass, Fretless Bass, or custom
+- **Spatial/Effects** - Effects and spatial processing (multi-select)
+  - Spatial: Reverb-Heavy, Delay Effects, Wide Stereo, Dolby Atmos, Panning, Echo
+  - Modulation: Chorus, Flanger, Phaser, Light/Medium/Heavy Modulation
+  - Distortion levels: None, Light, Medium, Heavy
+  - Compression levels: None, Light, Medium, Heavy
+  - Add custom effects
 - **Instrument Exclusions** - Comma-separated list of instruments to avoid
-- **Mix Character**
-  - Warm Analog, Crisp Digital, Heavy Compression, Dynamic & Open
-  - Deep Low-End, Bright & Airy, Mid-Forward
-  - Wet/Reverb-Heavy, Dry & Intimate
+- **Production Style** - Raw & Live, Polished Studio, Lo-Fi, Cinematic, Minimalist, Experimental, Live/Arena, Bedroom/DIY, Club Ready, or custom
+- **Mix Character** (multi-select)
+  - Character: Warm Analog, Crisp Digital, Heavy Compression, Dynamic & Open
+  - Frequency: Deep Low-End, Bright & Airy, Mid-Forward
+  - Space: Wet/Reverb-Heavy, Dry & Intimate
+  - Balance: Loud and Punchy, Balanced, Vocal-Forward, Vocal-Balanced, Instrumental-Focused
+  - Mastering: Warm-Mastering, Bright-Mastering, Dark-Mastering
+  - Optimization: Headphone-Optimized, Mono-Compatible
   - Add custom mix descriptions
 - **Suggest Influences** (optional)
   - Add artist/band influences (must be Suno-compatible)
@@ -248,7 +273,7 @@ Auto-configure settings from lyrics or style descriptions.
 **What it does:**
 
 - Extracts song structure from labeled sections
-- Auto-sets Genre, Mood, Tempo, Era, Production, Instrumentation, Mix
+- Auto-sets Genre, Mood, Goal, Rhythm, Groove Feel, Tempo, Era, Production, Instruments, Instrumentation, Bass, Spatial/Effects, Mix
 - Suggests influences based on style description
 - Updates settings across all tabs
 
@@ -354,9 +379,20 @@ Advanced troubleshooting and logging.
 
 1. **Sound Layering**
 
-- Combine multiple options in Sound tab
-- Mix Character + Era + Production Style = rich sonic palette
+- Combine multiple options in Sound tab for rich sonic palette
+- Use **Instruments** for specific instrument selection (e.g., "Moog Synthesizer, Fretless Bass, Timpani")
+- Use **Instrumentation Focus** for general approach (e.g., "Acoustic", "Electronic")
+- **Bass** controls bass character independently
+- **Spatial/Effects** lets you specify multiple effects at once
+- Mix Character supports multiple selections for nuanced production
 - Use Influences sparingly (1-3 artists max)
+
+1. **Granular Control**
+
+- **Goal** and **Groove Feel** help AI understand the song's purpose and pocket
+- **Rhythm** styles (Triplet, Swing, Syncopated) influence lyric phrasing and flow
+- Leave settings unselected (or "AI Choose") to let AI decide based on genre/mood
+- Custom inputs available for most options when you need something specific
 
 ### Common Workflows ###
 
@@ -402,7 +438,7 @@ Advanced troubleshooting and logging.
 
 ## 📝 Version ##
 
-Current Version: **20260315-004** (March 15, 2026)
+Current Version: **20260318-001** (March 18, 2026)
 
 ---
 
@@ -429,6 +465,12 @@ A: Yes, for AI generation only. The app itself runs offline but needs internet t
 
 **Q: What's the difference between Genre presets and custom genre?**  
 A: Presets include curated song structures. Custom genres let you define any style but use universal structures.
+
+**Q: What's the difference between Instruments and Instrumentation Focus?**  
+A: **Instruments** lets you select specific instruments (e.g., "Moog Synthesizer", "Fretless Bass", "Timpani"). **Instrumentation Focus** describes the general approach (e.g., "Acoustic", "Full Band", "Electronic"). Use both together for precise control, or just one for more general direction.
+
+**Q: Should I fill out all the settings?**  
+A: No! You can be as specific or as loose as you want. At minimum, just provide a title/concept. Leave settings unselected or set to "AI Choose" to let the AI decide based on your genre and mood. The more you specify, the more control you have.
 
 **Q: Can I save my API key permanently?**  
 A: It's saved in your browser's localStorage on the device you're using, but this is not encrypted storage.
