@@ -25,9 +25,10 @@
                 --accent4: #a06090;
                 --accent5: #c85050;
                 --accent6: #8870c0;
-                --text: #e0d8cc;
-                --text-muted: #5a5248;
+                --text: #f3f0ed;
+                --text-muted: #b3a79a;
                 --text-dim: #9a9080;
+                --text-field: #0f5a8d;
                 --success: #7ab87a;
                 --error: #c05050;
             }
@@ -78,7 +79,7 @@
                 max-width: 350px;
             }
             .version {
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 color: var(--text-muted);
                 user-select: all;
@@ -120,7 +121,7 @@
             .ltab {
                 flex: 1;
                 padding: 9px 2px;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 color: var(--text-muted);
@@ -152,7 +153,7 @@
                 margin: 2px 0;
             }
             .section-header {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 1.5px;
@@ -165,9 +166,9 @@
                 gap: 4px;
             }
             .field-label {
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 600;
-                color: var(--text-dim);
+                color: var(--text-field);
             }
             textarea,
             input,
@@ -177,7 +178,7 @@
                 border-radius: 7px;
                 color: var(--text);
                 font-family: "Space Mono", monospace;
-                font-size: 11px;
+                font-size: 12px;
                 padding: 8px 10px;
                 width: 100%;
                 outline: none;
@@ -213,7 +214,7 @@
             .tag {
                 padding: 4px 9px;
                 border-radius: 20px;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 600;
                 cursor: pointer;
                 border: 1px solid var(--border);
@@ -269,7 +270,7 @@
             .tag-add-btn {
                 padding: 4px 9px;
                 border-radius: 20px;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 border: 1px dashed var(--border);
@@ -287,7 +288,7 @@
             .tag-custom {
                 padding: 4px 9px;
                 border-radius: 20px;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 600;
                 border: 1px solid var(--accent3);
                 background: rgba(110, 143, 170, 0.12);
@@ -300,7 +301,7 @@
             .tag-custom-x {
                 cursor: pointer;
                 opacity: 0.6;
-                font-size: 11px;
+                font-size: 12px;
                 line-height: 1;
                 margin-left: 1px;
             }
@@ -317,7 +318,7 @@
             .custom-input-row input {
                 flex: 1;
                 padding: 5px 8px;
-                font-size: 10px;
+                font-size: 12px;
                 border-radius: 6px;
             }
             .custom-input-confirm {
@@ -326,7 +327,7 @@
                 border: none;
                 border-radius: 6px;
                 color: #0e0c0a;
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Syne", sans-serif;
                 font-weight: 700;
                 cursor: pointer;
@@ -338,9 +339,90 @@
                 border: 1px solid var(--border);
                 border-radius: 6px;
                 color: var(--text-muted);
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Syne", sans-serif;
                 cursor: pointer;
+            }
+
+            /* Genre Selector Specific Styles */
+            .selected-genres-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px;
+                background: var(--surface2);
+                border-radius: 8px;
+                border: 1px solid var(--border);
+            }
+            .selected-genre-chip {
+                padding: 5px 10px;
+                border-radius: 16px;
+                font-size: 12px;
+                font-weight: 600;
+                background: rgba(201, 124, 46, 0.15);
+                border: 1px solid var(--accent);
+                color: var(--accent);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                user-select: none;
+            }
+            .selected-genre-chip .genre-main {
+                font-weight: 700;
+            }
+            .selected-genre-chip .genre-sub {
+                opacity: 0.9;
+            }
+            .selected-genre-chip .remove-chip {
+                cursor: pointer;
+                opacity: 0.6;
+                font-size: 12px;
+                line-height: 1;
+                margin-left: 2px;
+                transition: opacity 0.15s;
+            }
+            .selected-genre-chip .remove-chip:hover {
+                opacity: 1;
+            }
+            .genre-add-btn {
+                padding: 6px 12px;
+                background: var(--accent);
+                border: none;
+                border-radius: 6px;
+                color: #0e0c0a;
+                font-size: 12px;
+                font-family: "Syne", sans-serif;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .genre-add-btn:hover:not(:disabled) {
+                background: #d89350;
+                transform: translateY(-1px);
+            }
+            .genre-add-btn:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+            .genre-cancel-btn {
+                padding: 6px 12px;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                color: var(--text-muted);
+                font-size: 12px;
+                font-family: "Syne", sans-serif;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .genre-cancel-btn:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+            .genre-selector-label {
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
             .influence-input-row {
@@ -357,7 +439,7 @@
                 border: 1px solid var(--border);
                 border-radius: 6px;
                 color: var(--text-dim);
-                font-size: 11px;
+                font-size: 12px;
                 font-family: "Syne", sans-serif;
                 font-weight: 700;
                 cursor: pointer;
@@ -382,14 +464,14 @@
                 background: rgba(110, 143, 170, 0.12);
                 border: 1px solid rgba(110, 143, 170, 0.3);
                 border-radius: 12px;
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--accent3);
                 font-family: "Space Mono", monospace;
             }
             .inf-chip-x {
                 cursor: pointer;
                 opacity: 0.6;
-                font-size: 11px;
+                font-size: 12px;
                 line-height: 1;
             }
             .inf-chip-x:hover {
@@ -457,13 +539,13 @@
                 border: 2px solid var(--surface);
             }
             .range-slider-label {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 min-width: 40px;
             }
             .range-slider-value {
                 font-family: "Space Mono", monospace;
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--accent);
                 min-width: 90px;
                 text-align: right;
@@ -490,19 +572,19 @@
                 background: rgba(201, 124, 46, 0.08);
             }
             .struct-name {
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 700;
                 color: var(--text);
                 margin-bottom: 1px;
             }
             .struct-desc {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 font-family: "Space Mono", monospace;
                 line-height: 1.4;
             }
             .struct-flow {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--accent);
                 font-family: "Space Mono", monospace;
                 margin-top: 2px;
@@ -553,7 +635,7 @@
                 border: 1px solid var(--border);
                 background: var(--surface3);
                 color: var(--text-dim);
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 cursor: pointer;
                 transition: all 0.15s;
@@ -573,7 +655,7 @@
                 background: rgba(255, 255, 255, 0.02);
             }
             .custom-structure-empty {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 font-family: "Space Mono", monospace;
                 line-height: 1.6;
@@ -587,7 +669,7 @@
                 border: 1px solid rgba(201, 124, 46, 0.25);
                 background: rgba(201, 124, 46, 0.08);
                 color: var(--text);
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
             }
             .custom-structure-step-header {
@@ -644,7 +726,7 @@
                 color: var(--accent);
             }
             .custom-structure-flow-preview {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--accent3);
                 font-family: "Space Mono", monospace;
                 line-height: 1.7;
@@ -716,7 +798,7 @@
                 border: 1px solid rgba(122, 158, 110, 0.25);
                 border-radius: 8px;
                 padding: 12px 14px;
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 color: var(--accent2);
                 line-height: 1.7;
@@ -726,7 +808,7 @@
                 display: block;
                 margin-bottom: 6px;
                 font-family: "Syne", sans-serif;
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 700;
             }
             .style-applied-row {
@@ -787,7 +869,7 @@
             }
             .rtab {
                 padding: 10px 18px;
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 color: var(--text-muted);
@@ -831,7 +913,7 @@
                 font-weight: 600;
             }
             .empty-sub {
-                font-size: 11px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 max-width: 240px;
                 line-height: 1.6;
@@ -873,7 +955,7 @@
             }
             .card-meta {
                 font-family: "Space Mono", monospace;
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 margin-top: 5px;
             }
@@ -1000,7 +1082,7 @@
                 gap: 10px;
             }
             .vocal-profile-header {
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 700;
                 color: var(--accent);
                 margin-bottom: 4px;
@@ -1016,12 +1098,12 @@
                 gap: 3px;
             }
             .vocal-profile-field label {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 600;
                 color: var(--text-dim);
             }
             .vocal-profile-field select {
-                font-size: 10px;
+                font-size: 12px;
                 padding: 6px 8px;
             }
             .vocal-style-tags {
@@ -1044,7 +1126,7 @@
                 gap: 10px;
             }
             .choir-header {
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 700;
                 color: var(--accent2);
                 margin-bottom: 4px;
@@ -1069,7 +1151,7 @@
             .sound-pill {
                 padding: 3px 9px;
                 border-radius: 12px;
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 font-weight: 700;
             }
@@ -1105,7 +1187,7 @@
                 gap: 14px;
             }
             .prod-body {
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--text-dim);
                 font-family: "Space Mono", monospace;
                 line-height: 1.75;
@@ -1130,12 +1212,12 @@
                 margin-bottom: 0;
             }
             .key-k {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 font-family: "Space Mono", monospace;
             }
             .key-v {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text);
                 font-family: "Space Mono", monospace;
                 font-weight: 700;
@@ -1169,7 +1251,7 @@
                 letter-spacing: 0.5px;
             }
             .chord-prog {
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--text-dim);
                 font-family: "Space Mono", monospace;
                 margin-top: 8px;
@@ -1189,7 +1271,7 @@
                 margin-bottom: 0;
             }
             .lyric-label {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 letter-spacing: 1px;
                 text-transform: uppercase;
@@ -1227,7 +1309,7 @@
                 white-space: pre-line;
             }
             .lyric-direction {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 font-style: italic;
                 font-family: "Space Mono", monospace;
@@ -1276,7 +1358,7 @@
                 border: 1px solid var(--border);
                 border-radius: 5px;
                 color: var(--text-dim);
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 cursor: pointer;
                 transition: all 0.15s;
@@ -1295,7 +1377,7 @@
                 border: 1px solid var(--border);
                 border-radius: 5px;
                 color: var(--text-dim);
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Space Mono", monospace;
                 cursor: pointer;
                 transition: all 0.15s;
@@ -1314,7 +1396,7 @@
                 border: 1px solid rgba(192, 80, 80, 0.3);
                 border-radius: 7px;
                 padding: 12px 14px;
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--error);
                 font-family: "Space Mono", monospace;
                 line-height: 1.6;
@@ -1345,7 +1427,7 @@
                 color: var(--text);
             }
             .hist-meta {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 font-family: "Space Mono", monospace;
                 margin-top: 3px;
@@ -1394,7 +1476,7 @@
                 border-radius: 7px;
                 padding: 14px;
                 font-family: "Space Mono", monospace;
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--text-dim);
                 line-height: 1.75;
                 max-height: 300px;
@@ -1420,7 +1502,7 @@
                 white-space: nowrap;
             }
             .modal-subtitle {
-                font-size: 11px;
+                font-size: 12px;
                 color: var(--text-dim);
                 margin-bottom: 12px;
                 line-height: 1.6;
@@ -1491,7 +1573,7 @@
                 flex: 1;
                 padding: 5px 8px;
                 border-radius: 5px;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 color: var(--text-muted);
@@ -1515,7 +1597,7 @@
                 border: 1px solid var(--border);
             }
             .section-lyric-label {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 color: var(--text-dim);
                 display: flex;
@@ -1529,7 +1611,7 @@
             }
             .section-lyric-row textarea {
                 background: var(--surface3);
-                font-size: 10px;
+                font-size: 12px;
                 padding: 6px 8px;
                 margin-top: 2px;
             }
@@ -1538,7 +1620,7 @@
                 border: 1px solid rgba(110, 143, 170, 0.2);
                 border-radius: 7px;
                 padding: 9px 11px;
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--accent3);
                 font-family: "Space Mono", monospace;
                 line-height: 1.6;
@@ -1570,11 +1652,11 @@
             }
             .api-bar input {
                 flex: 1;
-                font-size: 10px;
+                font-size: 12px;
                 padding: 5px 8px;
             }
             .api-bar-label {
-                font-size: 10px;
+                font-size: 12px;
                 color: var(--text-muted);
                 white-space: nowrap;
                 font-family: "Space Mono", monospace;
@@ -1585,7 +1667,7 @@
                 border: none;
                 border-radius: 5px;
                 color: #0e0c0a;
-                font-size: 10px;
+                font-size: 12px;
                 font-family: "Syne", sans-serif;
                 font-weight: 700;
                 cursor: pointer;
@@ -1608,10 +1690,10 @@
             <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
                 <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
-            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
+            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
             <div class="header-right">
                 <span class="disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260318-001</span>
+                <span class="version" id="version">Version: <br />20260318-003</span>
             </div>
         </header>
 
@@ -1643,38 +1725,39 @@
                         <textarea id="concept" rows="3" placeholder="What is this song about?"></textarea>
                     </div>
                     <div class="field-group">
-                        <label class="field-label">Genre</label>
-                        <div class="tag-row" id="genre-tags">
-                            <div class="tag active" data-val="Hard Rock / Classic Rock" data-key="rock">Rock</div>
-                            <div class="tag" data-val="Heavy Metal / Alt-Metal" data-key="metal">Metal</div>
-                            <div class="tag g2" data-val="Folk / Americana" data-key="folk">Folk</div>
-                            <div class="tag g2" data-val="Outlaw Country / Traditional Country" data-key="country">Country</div>
-                            <div class="tag g3" data-val="Jazz / Bebop" data-key="jazz">Jazz</div>
-                            <div class="tag g3" data-val="Delta Blues / Electric Blues" data-key="blues">Blues</div>
-                            <div class="tag g4" data-val="R&B / Neo-Soul" data-key="rnb">R&B</div>
-                            <div class="tag g4" data-val="Hip-Hop / Boom-Bap" data-key="hiphop">Hip-Hop</div>
-                            <div class="tag g5" data-val="Gospel / Southern Soul" data-key="gospel">Gospel</div>
-                            <div class="tag g5" data-val="Reggae / Roots Reggae" data-key="reggae">Reggae</div>
-                            <div class="tag g6" data-val="Latin" data-key="latin">Latin</div>
-                            <div class="tag g6" data-val="Afrobeats" data-key="afrobeats">Afrobeats</div>
-                            <div class="tag g6" data-val="Salsa" data-key="salsa">Salsa</div>
-                            <div class="tag" data-val="EDM / House / Techno" data-key="electronic">Electronic/Dance</div>
-                            <div class="tag g2" data-val="Ambient / Atmospheric" data-key="ambient">Ambient</div>
-                            <div class="tag g2" data-val="Lo-Fi / Chill Beats" data-key="lofi">Lo-Fi/Chill</div>
-                            <div class="tag g3" data-val="Classical / Orchestral" data-key="classical">Classical</div>
-                            <div class="tag g3" data-val="Cinematic / Epic" data-key="cinematic">Cinematic</div>
-                            <div class="tag g4" data-val="World Music / Ethnic" data-key="world">World Music</div>
-                            <div class="tag g4" data-val="Pop / Contemporary Pop" data-key="pop">Pop</div>
-                            <div class="tag g5" data-val="Christian / Contemporary Christian" data-key="christian">Christian</div>
-                            <button class="tag-add-btn" onclick="showCustomInput('genre-tags', 'genre-custom-input-row')">+ Custom</button>
+                        <label class="field-label">Genre Selection</label>
+
+                        <!-- Selected Genres Display -->
+                        <div id="selected-genres-display" class="selected-genres-row" style="display: none; margin-bottom: 8px">
+                            <!-- Selected genre chips will appear here -->
                         </div>
-                        <div class="tag-row" id="genre-custom-row" style="display: none; margin-top: 4px">
-                            <div class="tag-custom" id="genre-custom-tag"></div>
+
+                        <!-- Main Genre Selector -->
+                        <div class="genre-selector-label" style="font-size: 11px; color: var(--accent); margin-bottom: 4px; font-weight: 600">Select Main Genre:</div>
+                        <div class="tag-row" id="genre-main-tags">
+                            <!-- Main genre tags will be dynamically populated -->
                         </div>
-                        <div class="custom-input-row" id="genre-custom-input-row" style="display: none">
-                            <input type="text" id="genre-custom-input" placeholder="e.g. Dream Pop / Shoegaze..." onkeydown="if (event.key === 'Enter') confirmCustomTag('genre-tags', 'genre-custom-input', 'genre-custom-input-row');" />
-                            <button class="custom-input-confirm" onclick="confirmCustomTag('genre-tags', 'genre-custom-input', 'genre-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('genre-custom-input-row', 'genre-custom-input')">&#10005;</button>
+
+                        <!-- Sub-Genre Selector (appears when main genre selected) -->
+                        <div id="subgenre-section" style="display: none; margin-top: 8px">
+                            <div class="genre-selector-label" style="font-size: 11px; color: var(--accent); margin-bottom: 4px; font-weight: 600">Select Sub-Genre for <span id="current-main-genre-name" style="color: var(--accent)"></span>:</div>
+                            <div class="tag-row" id="genre-sub-tags">
+                                <!-- Sub-genre tags will be dynamically populated -->
+                            </div>
+                            <div style="margin-top: 8px; display: flex; gap: 6px">
+                                <button class="genre-add-btn" onclick="addSelectedGenre()" id="add-genre-btn" disabled>+ Add this Genre</button>
+                                <button class="genre-cancel-btn" onclick="cancelGenreSelection()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Genre Input -->
+                        <div style="margin-top: 8px">
+                            <button class="tag-add-btn" onclick="showCustomGenreInput()">+ Custom Genre</button>
+                        </div>
+                        <div class="custom-input-row" id="genre-custom-input-row" style="display: none; margin-top: 6px">
+                            <input type="text" id="genre-custom-input" placeholder="e.g. Dream Pop, Shoegaze, etc." onkeydown="if (event.key === 'Enter') confirmCustomGenre();" />
+                            <button class="custom-input-confirm" onclick="confirmCustomGenre()">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomGenreInput()">&#10005;</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -1773,7 +1856,7 @@
                     <div class="field-group">
                         <label class="field-label">Perspective</label>
                         <div class="tag-row" id="pov-tags">
-                            <div class="tag active" data-val="first person (I/me)">First Person</div>
+                            <div class="tag" data-val="first person (I/me)">First Person</div>
                             <div class="tag" data-val="second person (you)">Second Person</div>
                             <div class="tag" data-val="third person narrative">Third Person</div>
                             <div class="tag" data-val="collective (we/us)">Collective</div>
@@ -1852,7 +1935,7 @@
                         </div>
                         <div
                             style="
-                                font-size: 10px;
+                                font-size: 12px;
                                 color: var(--text-muted);
                                 margin-top: 6px;
                                 font-family:
@@ -2184,7 +2267,7 @@
                         <input type="text" id="instrument-exclude" placeholder="Comma-separated instrument and styles to exclude (e.g. banjo, trap, country)" />
                         <div
                             style="
-                                font-size: 10px;
+                                font-size: 12px;
                                 color: var(--text-muted);
                                 margin-top: 6px;
                                 font-family:
@@ -2253,7 +2336,7 @@
                             <input type="checkbox" id="enable-influences-checkbox" style="flex-shrink: 0" />
                             <span>Suggest Influences</span>
                         </label>
-                        <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px">Key Influences / Sounds Like (Must be Suno compatible)</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px">Key Influences / Sounds Like (Must be Suno compatible)</div>
                         <div class="influence-input-row">
                             <input type="text" id="influence-input" placeholder="e.g. Hendrix, Coltrane..." onkeydown="if (event.key === 'Enter') addInfluence();" />
                             <button class="btn-add-inf" onclick="addInfluence()">+ Add</button>
@@ -2315,6 +2398,7 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px">
                         <div class="section-header">Saved Songs</div>
                         <div style="display: flex; gap: 6px">
+                            <button class="btn-sm" onclick="exportHistoryBackup()">Backup</button>
                             <button class="btn-sm" onclick="importFromFile()">Import</button>
                             <button class="btn-sm danger" onclick="clearHistory()">Clear All</button>
                         </div>
@@ -2365,7 +2449,7 @@
                     <div class="info-box green" style="margin-bottom: 12px; flex-shrink: 0">This analyzer will automatically extract song structure, update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix & Influences across all tabs.</div>
                     <textarea
                         id="analysis-input"
-                        style="width: 100%; flex: 1; min-height: 0; font-family: &quot;Space Mono&quot;, monospace; font-size: 11px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text); padding: 12px; border-radius: 6px"
+                        style="width: 100%; flex: 1; min-height: 0; font-family: &quot;Space Mono&quot;, monospace; font-size: 12px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text); padding: 12px; border-radius: 6px"
                         placeholder="Examples:&#10;&#10;Option 1 - Just lyrics:&#10;[Verse]&#10;Your lyrics here...&#10;&#10;Option 2 - Just style:&#10;Sound like early Tom Waits meets Nick Cave, dark cabaret, upright bass, 1970s lo-fi&#10;&#10;Option 3 - Both lyrics and style:&#10;Style: Radiohead OK Computer era&#10;&#10;[Verse]&#10;Your verse...&#10;[Chorus]&#10;Your chorus..."
                     ></textarea>
                     <div id="unified-analysis-result" style="display: none; margin-top: 12px; max-height: 200px; overflow-y: auto; flex-shrink: 0"></div>
@@ -2373,6 +2457,32 @@
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeAnalyzerModal()">Close</button>
                     <button class="btn-primary" id="unified-analyze-btn" onclick="applyUnifiedAnalysis()">&#128269; Analyze</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup History Modal -->
+        <div class="modal-overlay" id="backup-modal" style="display: none" onclick="closeBackupModal(event)">
+            <div class="modal" style="width: 500px; max-width: 90vw">
+                <div class="modal-title">📦 Backup History</div>
+                <div style="padding: 0 24px 24px 24px">
+                    <div style="margin-bottom: 16px; padding: 12px; background: rgba(201, 124, 46, 0.1); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 12px; line-height: 1.5">
+                        📦 This will export all <strong id="backup-song-count">0</strong> songs in your history to a single backup file.
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" style="display: flex; align-items: flex-start; gap: 6px; cursor: pointer">
+                            <input type="checkbox" id="backup-include-api" style="margin-top: 2px; width: auto" />
+                            <span>Include API Key in backup</span>
+                        </label>
+                        <div style="margin-top: 8px; padding: 10px; background: rgba(200, 80, 80, 0.1); border-left: 3px solid var(--accent5); border-radius: 4px; font-size: 12px; line-height: 1.5; color: var(--text-muted)">
+                            ⚠️ <strong>Security Warning:</strong> If you include your API key, it will be stored in <strong>plain text</strong> in the backup file. Only enable this if you will secure the backup file (encrypted storage, password-protected, etc.). Anyone with access to this file will
+                            have your API key.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeBackupModal()">Cancel</button>
+                    <button class="btn-primary" onclick="confirmHistoryBackup()">📥 Download Backup</button>
                 </div>
             </div>
         </div>
@@ -2498,6 +2608,1191 @@
                     const aiChooseTag = document.querySelector('#vocalgender-tags .tag[data-val="AI Choose"]');
                     if (!hasSelections && aiChooseTag) aiChooseTag.classList.add("active");
                 }
+            }
+
+            // Custom vocal range functions
+            function showCustomRangeInput(idx) {
+                const customRow = document.getElementById(`vp-custom-range-row-${idx}`);
+                const input = document.getElementById(`vp-custom-range-input-${idx}`);
+                if (customRow) customRow.style.display = "block";
+                if (input) {
+                    input.value = "";
+                    input.focus();
+                }
+            }
+
+            function hideCustomRangeInput(idx) {
+                const customRow = document.getElementById(`vp-custom-range-row-${idx}`);
+                if (customRow) customRow.style.display = "none";
+            }
+
+            function confirmCustomRange(idx) {
+                const input = document.getElementById(`vp-custom-range-input-${idx}`);
+                const rangeSelect = document.querySelector(`.vp-range[data-idx="${idx}"]`);
+                const customValue = input?.value?.trim();
+
+                if (!customValue) return;
+
+                // Add custom option if it doesn't exist
+                let customOption = rangeSelect.querySelector(`option[value="${escapeAttr(customValue)}"]`);
+                if (!customOption) {
+                    customOption = document.createElement("option");
+                    customOption.value = customValue;
+                    customOption.textContent = customValue;
+                    // Insert before the "+ Custom Range..." option
+                    const customMarker = rangeSelect.querySelector('option[value="__custom__"]');
+                    rangeSelect.insertBefore(customOption, customMarker);
+                }
+
+                // Select the custom range
+                rangeSelect.value = customValue;
+
+                // Hide the input
+                hideCustomRangeInput(idx);
+            }
+
+            function cancelCustomRange(idx) {
+                const rangeSelect = document.querySelector(`.vp-range[data-idx="${idx}"]`);
+                const input = document.getElementById(`vp-custom-range-input-${idx}`);
+
+                // Reset to "Not specified"
+                rangeSelect.value = "";
+                input.value = "";
+
+                // Hide the input
+                hideCustomRangeInput(idx);
+            }
+
+            // ========================================================================
+            // Genre Metadata - Comprehensive genre and sub-genre definitions
+            // Imported from genre.js for consistency across the application
+            // ========================================================================
+            const GENRE_METADATA = [
+                {
+                    id: "pop",
+                    name: "Pop",
+                    description: "Modern contemporary pop",
+                    subOptions: [
+                        {
+                            id: "pop_dream",
+                            name: "Dream Pop",
+                        },
+                        {
+                            id: "pop_kpop",
+                            name: "K-Pop",
+                        },
+                        {
+                            id: "pop_main",
+                            name: "Pop",
+                        },
+                        {
+                            id: "pop_electro",
+                            name: "Electropop",
+                        },
+                        {
+                            id: "pop_chamber",
+                            name: "Chamber Pop",
+                        },
+                        {
+                            id: "pop_indie",
+                            name: "Indie Pop",
+                        },
+                        {
+                            id: "pop_bubblegum",
+                            name: "Bubblegum Pop",
+                        },
+                        {
+                            id: "pop_dark",
+                            name: "Dark Pop",
+                        },
+                        {
+                            id: "pop_alternative",
+                            name: "Alternative Pop",
+                        },
+                        {
+                            id: "pop_jpop",
+                            name: "J-Pop",
+                        },
+                        {
+                            id: "pop_synth",
+                            name: "Synthpop",
+                        },
+                    ],
+                },
+                {
+                    id: "rock",
+                    name: "Rock",
+                    description: "Rock and alternative",
+                    subOptions: [
+                        {
+                            id: "rock_psychedelic",
+                            name: "Psychedelic Rock",
+                        },
+                        {
+                            id: "rock_garage",
+                            name: "Garage Rock",
+                        },
+                        {
+                            id: "rock_80s",
+                            name: "80s Rock",
+                        },
+                        {
+                            id: "rock_main",
+                            name: "Rock",
+                        },
+                        {
+                            id: "rock_southern",
+                            name: "Southern Rock",
+                        },
+                        {
+                            id: "rock_indie",
+                            name: "Indie Rock",
+                        },
+                        {
+                            id: "rock_blues",
+                            name: "Blues Rock",
+                        },
+                        {
+                            id: "rock_grunge",
+                            name: "Grunge",
+                        },
+                        {
+                            id: "rock_surf",
+                            name: "Surf Rock",
+                        },
+                        {
+                            id: "rock_punk",
+                            name: "Punk",
+                        },
+                        {
+                            id: "rock_90s",
+                            name: "90s Rock",
+                        },
+                        {
+                            id: "rock_alternative",
+                            name: "Alternative Rock",
+                        },
+                        {
+                            id: "rock_americana",
+                            name: "American Rock",
+                        },
+                        {
+                            id: "rock_post",
+                            name: "Post-Rock",
+                        },
+                        {
+                            id: "rock_rockabilly",
+                            name: "Rockabilly",
+                        },
+                        {
+                            id: "rock_punkrock",
+                            name: "Punk Rock",
+                        },
+                        {
+                            id: "rock_70s",
+                            name: "70s Rock",
+                        },
+                        {
+                            id: "rock_roll",
+                            name: "Rock & Roll",
+                        },
+                    ],
+                },
+                {
+                    id: "metal",
+                    name: "Metal",
+                    description: "Heavy metal and subgenres",
+                    subOptions: [
+                        {
+                            id: "mtl_symphonic",
+                            name: "Symphonic Metal",
+                        },
+                        {
+                            id: "mtl_doom",
+                            name: "Doom Metal",
+                        },
+                        {
+                            id: "mtl_main",
+                            name: "Metal",
+                        },
+                        {
+                            id: "mtl_black",
+                            name: "Black Metal",
+                        },
+                        {
+                            id: "mtl_progressive",
+                            name: "Progressive Metal",
+                        },
+                        {
+                            id: "mtl_thrash",
+                            name: "Thrash Metal",
+                        },
+                        {
+                            id: "mtl_post",
+                            name: "Post-Metal",
+                        },
+                        {
+                            id: "mtl_heavy",
+                            name: "Heavy Metal",
+                        },
+                        {
+                            id: "mtl_power",
+                            name: "Power Metal",
+                        },
+                        {
+                            id: "mtl_nu",
+                            name: "Nu-Metal",
+                        },
+                        {
+                            id: "mtl_death",
+                            name: "Death Metal",
+                        },
+                    ],
+                },
+                {
+                    id: "hip-hop",
+                    name: "Hip-Hop",
+                    description: "Hip-hop and rap",
+                    subOptions: [
+                        {
+                            id: "hiphop_drill",
+                            name: "Drill",
+                        },
+                        {
+                            id: "hiphop_conscious",
+                            name: "Conscious Rap",
+                        },
+                        {
+                            id: "hiphop_main",
+                            name: "Hip-Hop",
+                        },
+                        {
+                            id: "hiphop_phonk",
+                            name: "Phonk",
+                        },
+                        {
+                            id: "hiphop_cloud",
+                            name: "Cloud Rap",
+                        },
+                        {
+                            id: "hiphop_boombap",
+                            name: "Boom Bap",
+                        },
+                        {
+                            id: "hiphop_oldschool",
+                            name: "Old School Hip-Hop",
+                        },
+                        {
+                            id: "hiphop_trap",
+                            name: "Trap",
+                        },
+                        {
+                            id: "hiphop_lofi",
+                            name: "Lo-Fi Hip-Hop",
+                        },
+                        {
+                            id: "hiphop_gangsta",
+                            name: "Gangsta Rap",
+                        },
+                    ],
+                },
+                {
+                    id: "rnb-soul",
+                    name: "R&B / Soul",
+                    description: "Rhythm & Blues and Soul",
+                    subOptions: [
+                        {
+                            id: "rnb_funk",
+                            name: "Funk",
+                        },
+                        {
+                            id: "rnb_main",
+                            name: "R&B",
+                        },
+                        {
+                            id: "rnb_contemporary",
+                            name: "Contemporary R&B",
+                        },
+                        {
+                            id: "rnb_neosoul",
+                            name: "Neo-Soul",
+                        },
+                        {
+                            id: "rnb_gospel",
+                            name: "Gospel",
+                        },
+                        {
+                            id: "rnb_soul",
+                            name: "Soul",
+                        },
+                        {
+                            id: "rnb_motown",
+                            name: "Motown",
+                        },
+                    ],
+                },
+                {
+                    id: "jazz",
+                    name: "Jazz",
+                    description: "Jazz and its variants",
+                    subOptions: [
+                        {
+                            id: "jz_acid",
+                            name: "Acid Jazz",
+                        },
+                        {
+                            id: "jz_main",
+                            name: "Jazz",
+                        },
+                        {
+                            id: "jz_latin",
+                            name: "Latin Jazz",
+                        },
+                        {
+                            id: "jz_bigband",
+                            name: "Big Band",
+                        },
+                        {
+                            id: "jz_swing",
+                            name: "Swing",
+                        },
+                        {
+                            id: "jz_nu",
+                            name: "Nu-Jazz",
+                        },
+                        {
+                            id: "jz_bebop",
+                            name: "Bebop",
+                        },
+                        {
+                            id: "jz_fusion",
+                            name: "Jazz Fusion",
+                        },
+                        {
+                            id: "jz_cool",
+                            name: "Cool Jazz",
+                        },
+                        {
+                            id: "jz_free",
+                            name: "Free Jazz",
+                        },
+                        {
+                            id: "jz_smooth",
+                            name: "Smooth Jazz",
+                        },
+                    ],
+                },
+                {
+                    id: "blues",
+                    name: "Blues",
+                    description: "Blues and related styles",
+                    subOptions: [
+                        {
+                            id: "blues_electric",
+                            name: "Electric Blues",
+                        },
+                        {
+                            id: "blues_main",
+                            name: "Blues",
+                        },
+                        {
+                            id: "blues_country",
+                            name: "Country Blues",
+                        },
+                        {
+                            id: "blues_chicago",
+                            name: "Chicago Blues",
+                        },
+                        {
+                            id: "blues_rhythm",
+                            name: "Rhythm & Blues",
+                        },
+                        {
+                            id: "blues_delta",
+                            name: "Delta Blues",
+                        },
+                    ],
+                },
+                {
+                    id: "dance",
+                    name: "Electronic / Dance",
+                    description: "Electronic Dance Music",
+                    subOptions: [
+                        {
+                            id: "edm_breakbeat",
+                            name: "Breakbeat",
+                        },
+                        {
+                            id: "edm_electro",
+                            name: "Electro",
+                        },
+                        {
+                            id: "edm_dubstep",
+                            name: "Dubstep",
+                        },
+                        {
+                            id: "edm_main",
+                            name: "Dance",
+                        },
+                        {
+                            id: "edm_bigroom",
+                            name: "Big Room",
+                        },
+                        {
+                            id: "edm_futbass",
+                            name: "Future Bass",
+                        },
+                        {
+                            id: "edm_edm",
+                            name: "EDM",
+                        },
+                        {
+                            id: "edm_electroclash",
+                            name: "Electroclash",
+                        },
+                        {
+                            id: "edm_drumstep",
+                            name: "Drum Step",
+                        },
+                    ],
+                },
+                {
+                    id: "house",
+                    name: "House",
+                    description: "Classic and modern house",
+                    subOptions: [
+                        {
+                            id: "hs_progressive",
+                            name: "Progressive House",
+                        },
+                        {
+                            id: "hs_tribal",
+                            name: "Tribal House",
+                        },
+                        {
+                            id: "hs_main",
+                            name: "House",
+                        },
+                        {
+                            id: "hs_afro",
+                            name: "Afro House",
+                        },
+                        {
+                            id: "hs_deep",
+                            name: "Deep House",
+                        },
+                        {
+                            id: "hs_ukgarage",
+                            name: "UK Garage",
+                        },
+                        {
+                            id: "hs_tech",
+                            name: "Tech House",
+                        },
+                        {
+                            id: "hs_future",
+                            name: "Future House",
+                        },
+                    ],
+                },
+                {
+                    id: "techno",
+                    name: "Techno",
+                    description: "Industrial and hypnotic techno",
+                    subOptions: [
+                        {
+                            id: "tch_minimal",
+                            name: "Minimal Techno",
+                        },
+                        {
+                            id: "tch_main",
+                            name: "Techno",
+                        },
+                        {
+                            id: "tch_detroit",
+                            name: "Detroit Techno",
+                        },
+                        {
+                            id: "tch_hard",
+                            name: "Hard Techno",
+                        },
+                        {
+                            id: "tch_industrial",
+                            name: "Industrial Techno",
+                        },
+                        {
+                            id: "tch_melodic",
+                            name: "Melodic Techno",
+                        },
+                        {
+                            id: "tch_acid",
+                            name: "Acid Techno",
+                        },
+                    ],
+                },
+                {
+                    id: "trance",
+                    name: "Trance",
+                    description: "Uplifting and emotional trance",
+                    subOptions: [
+                        {
+                            id: "trn_goa",
+                            name: "Goa Trance",
+                        },
+                        {
+                            id: "trn_uplifting",
+                            name: "Uplifting Trance",
+                        },
+                        {
+                            id: "trn_main",
+                            name: "Trance",
+                        },
+                        {
+                            id: "trn_vocal",
+                            name: "Vocal Trance",
+                        },
+                        {
+                            id: "trn_psy",
+                            name: "Psytrance",
+                        },
+                        {
+                            id: "trn_darkpsy",
+                            name: "Dark Psy",
+                        },
+                        {
+                            id: "trn_progressive",
+                            name: "Progressive Trance",
+                        },
+                    ],
+                },
+                {
+                    id: "dnb",
+                    name: "Drum & Bass",
+                    description: "Fast drum and bass",
+                    subOptions: [
+                        {
+                            id: "dnb_jumpup",
+                            name: "Jump Up",
+                        },
+                        {
+                            id: "dnb_main",
+                            name: "Drum & Bass",
+                        },
+                        {
+                            id: "dnb_halftime",
+                            name: "Halftime",
+                        },
+                        {
+                            id: "dnb_neurofunk",
+                            name: "Neurofunk",
+                        },
+                        {
+                            id: "dnb_footwork",
+                            name: "Footwork",
+                        },
+                        {
+                            id: "dnb_liquid",
+                            name: "Liquid DnB",
+                        },
+                        {
+                            id: "dnb_jungle",
+                            name: "Jungle",
+                        },
+                    ],
+                },
+                {
+                    id: "ambient",
+                    name: "Ambient / IDM",
+                    description: "Ambient, experimental and atmospheric",
+                    subOptions: [
+                        {
+                            id: "amb_noise",
+                            name: "Noise",
+                        },
+                        {
+                            id: "amb_idm",
+                            name: "IDM",
+                        },
+                        {
+                            id: "amb_main",
+                            name: "Ambient",
+                        },
+                        {
+                            id: "amb_glitch",
+                            name: "Glitch",
+                        },
+                        {
+                            id: "amb_space",
+                            name: "Space Ambient",
+                        },
+                        {
+                            id: "amb_drone",
+                            name: "Drone",
+                        },
+                        {
+                            id: "amb_experimental",
+                            name: "Experimental Electronic",
+                        },
+                        {
+                            id: "amb_dark",
+                            name: "Dark Ambient",
+                        },
+                    ],
+                },
+                {
+                    id: "lofi-chill",
+                    name: "Lo-Fi / Chill",
+                    description: "Relaxed and downtempo vibes",
+                    subOptions: [
+                        {
+                            id: "chill_chillwave",
+                            name: "Chillwave",
+                        },
+                        {
+                            id: "chill_main",
+                            name: "Lo-Fi",
+                        },
+                        {
+                            id: "chill_downtempo",
+                            name: "Downtempo",
+                        },
+                        {
+                            id: "chill_step",
+                            name: "Chillstep",
+                        },
+                        {
+                            id: "chill_out",
+                            name: "Chillout",
+                        },
+                        {
+                            id: "chill_triphop",
+                            name: "Trip-Hop",
+                        },
+                    ],
+                },
+                {
+                    id: "classical",
+                    name: "Classical",
+                    description: "Classical and academic music",
+                    subOptions: [
+                        {
+                            id: "cls_chamber",
+                            name: "Chamber Music",
+                        },
+                        {
+                            id: "cls_romantic",
+                            name: "Romantic Era",
+                        },
+                        {
+                            id: "cls_main",
+                            name: "Classical",
+                        },
+                        {
+                            id: "cls_minimalism",
+                            name: "Minimalism",
+                        },
+                        {
+                            id: "cls_neoclassical",
+                            name: "Neoclassical",
+                        },
+                        {
+                            id: "cls_contemporary",
+                            name: "Contemporary Classical",
+                        },
+                        {
+                            id: "cls_baroque",
+                            name: "Baroque",
+                        },
+                    ],
+                },
+                {
+                    id: "opera",
+                    name: "Opera / Theatrical",
+                    description: "Opera, musical theatre and vocal performance",
+                    subOptions: [
+                        {
+                            id: "opr_chanson",
+                            name: "Chanson",
+                        },
+                        {
+                            id: "opr_main",
+                            name: "Opera",
+                        },
+                        {
+                            id: "opr_cabaret",
+                            name: "Cabaret",
+                        },
+                        {
+                            id: "opr_operatic_pop",
+                            name: "Operatic Pop",
+                        },
+                        {
+                            id: "opr_aria",
+                            name: "Aria",
+                        },
+                        {
+                            id: "opr_musical",
+                            name: "Musical Theatre",
+                        },
+                    ],
+                },
+                {
+                    id: "cinematic",
+                    name: "Cinematic / Soundtrack",
+                    description: "Film, TV and game music",
+                    subOptions: [
+                        {
+                            id: "cin_trailer",
+                            name: "Trailer Music",
+                        },
+                        {
+                            id: "cin_main",
+                            name: "Cinematic",
+                        },
+                        {
+                            id: "cin_epic",
+                            name: "Epic Orchestral",
+                        },
+                        {
+                            id: "cin_vgame",
+                            name: "Video Game OST",
+                        },
+                        {
+                            id: "cin_dark",
+                            name: "Dark Cinematic",
+                        },
+                        {
+                            id: "cin_orchestral",
+                            name: "Orchestral",
+                        },
+                        {
+                            id: "cin_tv",
+                            name: "TV Soundtrack",
+                        },
+                    ],
+                },
+                {
+                    id: "reggae",
+                    name: "Reggae",
+                    description: "Reggae and Caribbean rhythms",
+                    subOptions: [
+                        {
+                            id: "reg_dancehall",
+                            name: "Dancehall",
+                        },
+                        {
+                            id: "reg_main",
+                            name: "Reggae",
+                        },
+                        {
+                            id: "reg_roots",
+                            name: "Roots Reggae",
+                        },
+                        {
+                            id: "reg_ska",
+                            name: "Ska",
+                        },
+                        {
+                            id: "reg_dub",
+                            name: "Dub",
+                        },
+                        {
+                            id: "reg_rocksteady",
+                            name: "Rock Steady",
+                        },
+                    ],
+                },
+                {
+                    id: "latin",
+                    name: "Latin",
+                    description: "Latin and Caribbean music",
+                    subOptions: [
+                        {
+                            id: "lat_tango",
+                            name: "Tango",
+                        },
+                        {
+                            id: "lat_cumbia",
+                            name: "Cumbia",
+                        },
+                        {
+                            id: "lat_pop",
+                            name: "Latin Pop",
+                        },
+                        {
+                            id: "lat_reggaeton",
+                            name: "Reggaeton",
+                        },
+                        {
+                            id: "lat_mariachi",
+                            name: "Mariachi",
+                        },
+                        {
+                            id: "lat_bossa",
+                            name: "Bossa Nova",
+                        },
+                        {
+                            id: "lat_bachata",
+                            name: "Bachata",
+                        },
+                        {
+                            id: "lat_flamenco",
+                            name: "Flamenco",
+                        },
+                        {
+                            id: "lat_salsa",
+                            name: "Salsa",
+                        },
+                        {
+                            id: "lat_samba",
+                            name: "Samba",
+                        },
+                    ],
+                },
+                {
+                    id: "folk-country",
+                    name: "Folk / Country",
+                    description: "Folk, country and acoustic traditions",
+                    subOptions: [
+                        {
+                            id: "flk_bluegrass",
+                            name: "Bluegrass",
+                        },
+                        {
+                            id: "flk_main",
+                            name: "Folk",
+                        },
+                        {
+                            id: "flk_countrypop",
+                            name: "Country Pop",
+                        },
+                        {
+                            id: "flk_indie",
+                            name: "Indie Folk",
+                        },
+                        {
+                            id: "flk_celtic",
+                            name: "Celtic",
+                        },
+                        {
+                            id: "flk_country",
+                            name: "Country",
+                        },
+                        {
+                            id: "flk_americana",
+                            name: "Americana",
+                        },
+                        {
+                            id: "flk_singersongwriter",
+                            name: "Singer-Songwriter",
+                        },
+                    ],
+                },
+                {
+                    id: "world",
+                    name: "World Music",
+                    description: "Global and ethnic music",
+                    subOptions: [
+                        {
+                            id: "wld_afropop",
+                            name: "Afropop",
+                        },
+                        {
+                            id: "wld_gamelan",
+                            name: "Gamelan",
+                        },
+                        {
+                            id: "wld_celtic",
+                            name: "Celtic Folk",
+                        },
+                        {
+                            id: "wld_arabic",
+                            name: "Arabic Music",
+                        },
+                        {
+                            id: "wld_afrobeat",
+                            name: "Afrobeat",
+                        },
+                        {
+                            id: "wld_main",
+                            name: "World Music",
+                        },
+                        {
+                            id: "wld_indian",
+                            name: "Indian Classical",
+                        },
+                    ],
+                },
+            ];
+
+            // Genre key aliases for UI compatibility
+            const GENRE_KEY_ALIASES = {
+                folk: "folk-country",
+                country: "folk-country",
+                rnb: "rnb-soul",
+                hiphop: "hip-hop",
+                afrobeats: "world",
+                salsa: "latin",
+                ska: "reggae",
+                cumbia: "latin",
+                gospel: "rnb-soul",
+                electronic: "dance",
+                ambient: "ambient",
+                lofi: "lofi-chill",
+                classical: "classical",
+                cinematic: "cinematic",
+            };
+
+            function normalizeGenreKey(genreKey) {
+                return GENRE_KEY_ALIASES[genreKey] || genreKey;
+            }
+
+            // Helper functions for genre metadata
+            function getGenreById(genreId) {
+                const normalizedId = normalizeGenreKey(genreId);
+                return GENRE_METADATA.find((g) => g.id === normalizedId);
+            }
+
+            function getSubGenresForGenre(genreId) {
+                const genre = getGenreById(genreId);
+                return genre ? genre.subOptions : [];
+            }
+
+            function findGenreBySubgenreName(subgenreName) {
+                const normalized = subgenreName.toLowerCase().trim();
+                for (const genre of GENRE_METADATA) {
+                    const matchingSub = genre.subOptions.find((sub) => sub.name.toLowerCase() === normalized);
+                    if (matchingSub) {
+                        return { genre: genre, subgenre: matchingSub };
+                    }
+                }
+                return null;
+            }
+
+            function getAllSubGenreNames() {
+                const names = [];
+                GENRE_METADATA.forEach((genre) => {
+                    genre.subOptions.forEach((sub) => {
+                        names.push(sub.name);
+                    });
+                });
+                return names;
+            }
+
+            function getGenreOptionsForAnalyzer() {
+                return GENRE_METADATA.map((g) => g.id).join("|");
+            }
+
+            function getAllGenreAndSubGenreNames() {
+                const names = [];
+                GENRE_METADATA.forEach((genre) => {
+                    names.push(genre.name);
+                    genre.subOptions.forEach((sub) => {
+                        names.push(sub.name);
+                    });
+                });
+                return names.join(", ");
+            }
+
+            // ========================================================================
+            // Hierarchical Genre Selection State and Functions
+            // ========================================================================
+            let selectedGenres = []; // Array of {mainGenre, subGenre, mainId, subId}
+            let currentMainGenreSelection = null;
+            let currentSubGenreSelection = null;
+
+            // Initialize main genre tags from GENRE_METADATA
+            function initializeGenreSelector() {
+                const mainTagsContainer = document.getElementById("genre-main-tags");
+                mainTagsContainer.innerHTML = "";
+
+                GENRE_METADATA.forEach((genre, index) => {
+                    const tag = document.createElement("div");
+                    tag.className = "tag";
+                    tag.textContent = genre.name;
+                    tag.dataset.genreId = genre.id;
+                    tag.dataset.genreName = genre.name;
+
+                    // Add color classes for variety
+                    const colorClass = ["", "g2", "g3", "g4", "g5", "g6"][index % 6];
+                    if (colorClass) tag.classList.add(colorClass);
+
+                    tag.addEventListener("click", () => selectMainGenre(genre));
+                    mainTagsContainer.appendChild(tag);
+                });
+
+                // Don't auto-select any genre - let user choose
+                updateSelectedGenresDisplay();
+            }
+
+            function selectMainGenre(genre) {
+                currentMainGenreSelection = genre;
+                currentSubGenreSelection = null;
+
+                // Update UI
+                document.querySelectorAll("#genre-main-tags .tag").forEach((t) => t.classList.remove("active"));
+                const activeTag = document.querySelector(`#genre-main-tags .tag[data-genre-id=\"${genre.id}\"]`);
+                if (activeTag) activeTag.classList.add("active");
+
+                // Show sub-genre section
+                document.getElementById("subgenre-section").style.display = "block";
+                document.getElementById("current-main-genre-name").textContent = genre.name;
+
+                // Populate sub-genres
+                const subTagsContainer = document.getElementById("genre-sub-tags");
+                subTagsContainer.innerHTML = "";
+
+                if (genre.subOptions && genre.subOptions.length > 0) {
+                    genre.subOptions.forEach((subGenre) => {
+                        const tag = document.createElement("div");
+                        tag.className = "tag multi";
+                        tag.textContent = subGenre.name;
+                        tag.dataset.subgenreId = subGenre.id;
+                        tag.dataset.subgenreName = subGenre.name;
+                        tag.addEventListener("click", () => selectSubGenre(subGenre));
+                        subTagsContainer.appendChild(tag);
+                    });
+                } else {
+                    subTagsContainer.innerHTML = '<div style=\"font-size: 12px; color: var(--text-muted); padding: 8px;\">No sub-genres available for this genre</div>';
+                }
+
+                // Disable add button until sub-genre selected
+                document.getElementById("add-genre-btn").disabled = true;
+            }
+
+            function selectSubGenre(subGenre) {
+                currentSubGenreSelection = subGenre;
+
+                // Update UI
+                document.querySelectorAll("#genre-sub-tags .tag").forEach((t) => t.classList.remove("active"));
+                const activeTag = document.querySelector(`#genre-sub-tags .tag[data-subgenre-id=\"${subGenre.id}\"]`);
+                if (activeTag) activeTag.classList.add("active");
+
+                // Enable add button
+                document.getElementById("add-genre-btn").disabled = false;
+            }
+
+            function addSelectedGenre() {
+                if (!currentMainGenreSelection || !currentSubGenreSelection) return;
+
+                // Check if this combination already exists
+                const exists = selectedGenres.some((g) => g.mainId === currentMainGenreSelection.id && g.subId === currentSubGenreSelection.id);
+
+                if (!exists) {
+                    addGenreToSelection(currentMainGenreSelection, currentSubGenreSelection);
+                }
+
+                // Reset selection
+                cancelGenreSelection();
+            }
+
+            function addGenreToSelection(mainGenre, subGenre) {
+                selectedGenres.push({
+                    mainGenre: mainGenre.name,
+                    subGenre: subGenre.name,
+                    mainId: mainGenre.id,
+                    subId: subGenre.id,
+                });
+
+                updateSelectedGenresDisplay();
+                updateCurrentGenreKey();
+            }
+
+            function removeSelectedGenre(index) {
+                selectedGenres.splice(index, 1);
+                updateSelectedGenresDisplay();
+                updateCurrentGenreKey();
+            }
+
+            function updateSelectedGenresDisplay() {
+                const displayContainer = document.getElementById("selected-genres-display");
+
+                if (selectedGenres.length === 0) {
+                    displayContainer.style.display = "none";
+                    displayContainer.innerHTML = "";
+                    return;
+                }
+
+                displayContainer.style.display = "flex";
+                displayContainer.innerHTML = "";
+
+                selectedGenres.forEach((genre, index) => {
+                    const chip = document.createElement("div");
+                    chip.className = "selected-genre-chip";
+                    chip.innerHTML = `
+                        <span class=\"genre-main\">${genre.mainGenre}</span>
+                        <span style=\"opacity: 0.5;\">•</span>
+                        <span class=\"genre-sub\">${genre.subGenre}</span>
+                        <span class=\"remove-chip\" onclick=\"removeSelectedGenre(${index})\">×</span>
+                    `;
+                    displayContainer.appendChild(chip);
+                });
+            }
+
+            function updateCurrentGenreKey() {
+                // Update currentGenreKey to first selected genre's main ID for structure compatibility
+                if (selectedGenres.length > 0) {
+                    const normalizedKey = normalizeGenreKey(selectedGenres[0].mainId);
+                    currentGenreKey = normalizedKey;
+                    // Only build structure list if the element exists (not during early init)
+                    if (document.getElementById("structure-list")) {
+                        buildStructureList(currentGenreKey);
+                    }
+                } else {
+                    // No genres selected - use default Rock for structure list
+                    currentGenreKey = "rock";
+                    // Only build structure list if the element exists (not during early init)
+                    if (document.getElementById("structure-list")) {
+                        buildStructureList(currentGenreKey);
+                    }
+                }
+            }
+
+            function cancelGenreSelection() {
+                currentMainGenreSelection = null;
+                currentSubGenreSelection = null;
+
+                // Hide sub-genre section
+                document.getElementById("subgenre-section").style.display = "none";
+
+                // Clear active states
+                document.querySelectorAll("#genre-main-tags .tag").forEach((t) => t.classList.remove("active"));
+                document.querySelectorAll("#genre-sub-tags .tag").forEach((t) => t.classList.remove("active"));
+            }
+
+            function showCustomGenreInput() {
+                document.getElementById("genre-custom-input-row").style.display = "flex";
+                document.getElementById("genre-custom-input").focus();
+            }
+
+            function hideCustomGenreInput() {
+                document.getElementById("genre-custom-input-row").style.display = "none";
+                document.getElementById("genre-custom-input").value = "";
+            }
+
+            function confirmCustomGenre() {
+                const input = document.getElementById("genre-custom-input");
+                const value = input.value.trim();
+
+                if (value) {
+                    selectedGenres.push({
+                        mainGenre: "Custom",
+                        subGenre: value,
+                        mainId: "custom",
+                        subId: "custom_" + Date.now(),
+                    });
+
+                    updateSelectedGenresDisplay();
+                    updateCurrentGenreKey();
+                    hideCustomGenreInput();
+                }
+            }
+
+            function getSelectedGenreLabel() {
+                if (selectedGenres.length === 0) return "Not specified";
+
+                // Return formatted string of all selected genres
+                return selectedGenres.map((g) => `${g.mainGenre}: ${g.subGenre}`).join(" + ");
             }
 
             // ========================================================================
@@ -2844,21 +4139,8 @@
             }
             ["mood-tags", "goal-tags", "rhythm-tags", "groove-tags", "bass-tags", "rhyme-tags", "pov-tags", "aimode-tags"].forEach(setupSingleTags);
 
-            document
-                .getElementById("genre-tags")
-                .querySelectorAll(".tag")
-                .forEach((t) => {
-                    t.addEventListener("click", () => {
-                        document
-                            .getElementById("genre-tags")
-                            .querySelectorAll(".tag")
-                            .forEach((x) => x.classList.remove("active"));
-                        t.classList.add("active");
-                        clearCustomSingleValue("genre-custom-row", "genre-custom-tag");
-                        currentGenreKey = t.dataset.key;
-                        buildStructureList(currentGenreKey);
-                    });
-                });
+            // Initialize the new hierarchical genre selector
+            initializeGenreSelector();
 
             ["era-tags", "instruments-tags", "prodstyle-tags", "inst-tags", "spatial-tags", "mix-tags"].forEach((id) => {
                 document
@@ -3110,9 +4392,6 @@
                 const custom = document.getElementById("rhyme-custom-tag")?.dataset.val?.trim();
                 return custom || getActive("rhyme-tags");
             }
-            function getSelectedGenreLabel() {
-                return getCustomTagValue("genre-custom-tag") || getActiveGenre();
-            }
             function getSelectedMood() {
                 return getCustomTagValue("mood-custom-tag") || getActive("mood-tags");
             }
@@ -3346,7 +4625,16 @@
                                                     `
                                                             : ""
                                                     }
+                                                    <option value="__custom__">+ Custom Range...</option>
                                                 </select>
+                                            </div>
+                                            <div class="vocal-profile-field" id="vp-custom-range-row-${idx}" style="display: none; margin-top: 4px">
+                                                <label>Custom Range</label>
+                                                <div class="custom-input-row" style="margin-top: 0">
+                                                    <input type="text" id="vp-custom-range-input-${idx}" placeholder="e.g. Low Baritone, High Tenor..." onkeydown="if (event.key === 'Enter') confirmCustomRange(${idx});" />
+                                                    <button class="custom-input-confirm" onclick="confirmCustomRange(${idx})">Set</button>
+                                                    <button class="custom-input-cancel" onclick="cancelCustomRange(${idx})">Cancel</button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
@@ -3429,7 +4717,20 @@
                                                 <option value="Soprano">Soprano</option>
                                             `;
                         }
+                        options += '<option value="__custom__">+ Custom Range...</option>';
                         rangeSelect.innerHTML = options;
+                    });
+                });
+
+                // Setup range change handlers to show custom input
+                container.querySelectorAll(".vp-range").forEach((select) => {
+                    select.addEventListener("change", (e) => {
+                        const idx = e.target.dataset.idx;
+                        if (e.target.value === "__custom__") {
+                            showCustomRangeInput(idx);
+                        } else {
+                            hideCustomRangeInput(idx);
+                        }
                     });
                 });
             }
@@ -3558,8 +4859,8 @@
                 return [...preset, ...custom];
             }
             function getActiveGenre() {
-                const el = document.getElementById("genre-tags").querySelector(".tag.active");
-                return el ? el.dataset.val : "Hard Rock / Classic Rock";
+                // Use the new genre selector system
+                return getSelectedGenreLabel();
             }
             function clearCustomRhyme() {
                 clearCustomSingleValue("rhyme-custom-row", "rhyme-custom-tag");
@@ -3632,42 +4933,73 @@
                 });
             }
             function applyGenreSetting(genreKey, genreLabel) {
-                let matchedByKey = false;
-                const genreTags = document.getElementById("genre-tags").querySelectorAll(".tag");
-                genreTags.forEach((t) => {
-                    const isMatch = !!genreKey && t.dataset.key === genreKey;
-                    t.classList.toggle("active", isMatch);
-                    if (isMatch) matchedByKey = true;
-                });
-                if (!matchedByKey && genreLabel) {
-                    genreTags.forEach((t) => {
-                        const isMatch = (t.dataset.val || "").trim().toLowerCase() === genreLabel.trim().toLowerCase();
-                        t.classList.toggle("active", isMatch);
-                        if (isMatch) matchedByKey = true;
-                        if (isMatch) genreKey = t.dataset.key;
+                // Parse the genre label to extract genre/sub-genre combinations
+                // Format could be "Rock: Classic Rock" or "Rock: Classic Rock + Jazz: Bebop"
+                selectedGenres = [];
+
+                if (genreLabel && genreLabel.includes(":")) {
+                    // Parse format like "Rock: Classic Rock + Jazz: Bebop"
+                    const parts = genreLabel.split("+").map((p) => p.trim());
+                    parts.forEach((part) => {
+                        const [mainName, subName] = part.split(":").map((s) => s.trim());
+                        if (mainName && subName) {
+                            // Find the genre and sub-genre in metadata
+                            const mainGenre = GENRE_METADATA.find((g) => g.name.toLowerCase() === mainName.toLowerCase());
+                            if (mainGenre) {
+                                const subGenre = mainGenre.subOptions.find((s) => s.name.toLowerCase() === subName.toLowerCase());
+                                if (subGenre) {
+                                    selectedGenres.push({
+                                        mainGenre: mainGenre.name,
+                                        subGenre: subGenre.name,
+                                        mainId: mainGenre.id,
+                                        subId: subGenre.id,
+                                    });
+                                }
+                            }
+                        }
                     });
-                }
-                if (!matchedByKey) {
-                    const fallback = document.getElementById("genre-tags").querySelector(`.tag[data-key="${genreKey}"]`) || document.getElementById("genre-tags").querySelector(".tag.active") || document.getElementById("genre-tags").querySelector(".tag");
-                    if (fallback) {
-                        genreTags.forEach((t) => t.classList.toggle("active", t === fallback));
-                        genreKey = fallback.dataset.key;
+                } else if (genreLabel) {
+                    // Try to match as custom genre
+                    selectedGenres.push({
+                        mainGenre: "Custom",
+                        subGenre: genreLabel,
+                        mainId: "custom",
+                        subId: "custom_" + Date.now(),
+                    });
+                } else if (genreKey) {
+                    // Fall back to genre key
+                    const normalizedKey = normalizeGenreKey(genreKey);
+                    const mainGenre = GENRE_METADATA.find((g) => g.id === normalizedKey);
+                    if (mainGenre && mainGenre.subOptions.length > 0) {
+                        selectedGenres.push({
+                            mainGenre: mainGenre.name,
+                            subGenre: mainGenre.subOptions[0].name,
+                            mainId: mainGenre.id,
+                            subId: mainGenre.subOptions[0].id,
+                        });
                     }
                 }
-                currentGenreKey = genreKey || currentGenreKey || "rock";
-                const activeGenre = document.getElementById("genre-tags").querySelector(".tag.active")?.dataset.val || "";
-                if (genreLabel && genreLabel.trim().toLowerCase() !== activeGenre.trim().toLowerCase()) {
-                    setCustomSingleValue("genre-custom-row", "genre-custom-tag", "Custom genre", genreLabel.trim());
-                } else {
-                    clearCustomSingleValue("genre-custom-row", "genre-custom-tag");
+
+                // If nothing matched, ensure at least one genre is selected
+                if (selectedGenres.length === 0) {
+                    const rockGenre = GENRE_METADATA.find((g) => g.id === "rock");
+                    if (rockGenre && rockGenre.subOptions.length > 0) {
+                        selectedGenres.push({
+                            mainGenre: rockGenre.name,
+                            subGenre: rockGenre.subOptions[0].name,
+                            mainId: rockGenre.id,
+                            subId: rockGenre.subOptions[0].id,
+                        });
+                    }
                 }
+
+                updateSelectedGenresDisplay();
+                updateCurrentGenreKey();
 
                 // Update custom structure genreKey and preserve selection for lyrics, builder, and history sources
                 if (customStructureOption && ["lyrics", "builder", "history"].includes(customStructureOption.source)) {
                     customStructureOption.genreKey = currentGenreKey;
                 }
-
-                buildStructureList(currentGenreKey);
 
                 // Re-select custom structure after rebuilding list
                 if (customStructureOption && ["lyrics", "builder", "history"].includes(customStructureOption.source)) {
@@ -3721,6 +5053,16 @@
                             setTimeout(() => {
                                 const rangeSelect = builder.querySelector(`.vp-range[data-idx="${idx}"]`);
                                 if (rangeSelect && profile.range) {
+                                    // Check if this range value exists in the options
+                                    if (!rangeSelect.querySelector(`option[value="${escapeAttr(profile.range)}"]`)) {
+                                        // It's a custom range - add it as an option
+                                        const customOption = document.createElement("option");
+                                        customOption.value = profile.range;
+                                        customOption.textContent = profile.range;
+                                        // Insert before the "+ Custom Range..." option
+                                        const customMarker = rangeSelect.querySelector('option[value="__custom__"]');
+                                        rangeSelect.insertBefore(customOption, customMarker);
+                                    }
                                     rangeSelect.value = profile.range;
                                 }
                             }, 50);
@@ -4065,9 +5407,23 @@
             }
             function buildStructureList(genreKey) {
                 const list = document.getElementById("structure-list");
+                if (!list) return; // Element doesn't exist yet during early initialization
+
                 const structs = getStructuresForGenre(genreKey);
-                const label = document.getElementById("genre-tags").querySelector(".tag.active")?.textContent || "";
-                document.getElementById("struct-genre-label").textContent = label;
+
+                // Get genre label from selected genres or genre metadata
+                let label = "";
+                if (selectedGenres.length > 0) {
+                    label = selectedGenres[0].mainGenre;
+                } else {
+                    // Fallback to genre metadata
+                    const genre = GENRE_METADATA.find((g) => g.id === genreKey);
+                    label = genre ? genre.name : "";
+                }
+
+                const labelEl = document.getElementById("struct-genre-label");
+                if (labelEl) labelEl.textContent = label;
+
                 list.innerHTML = structs
                     .map(
                         (s, i) => `
@@ -4548,8 +5904,8 @@
 
                 Return ONLY valid JSON (no markdown, no backticks):
                 {
-                  "genre_key": "one of: rock|metal|folk|country|jazz|blues|rnb|hiphop|gospel|reggae|ska|latin|cumbia",
-                    "genre_label": "specific genre or subgenre label; not limited to preset UI options",
+                  "genre_key": "one of: ${getGenreOptionsForAnalyzer()}",
+                    "genre_label": "specific genre or subgenre label. Choose from comprehensive list: ${getAllGenreAndSubGenreNames()}. You may also use custom variations not limited to these options.",
                     "mood": "specific mood description; not limited to preset UI options",
                         "rhyme": "specific rhyme scheme or rhyme style; not limited to preset UI options",
                     "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM",
@@ -5162,7 +6518,19 @@
                         }
                         if (profile.range) {
                             const rangeSelect = container.querySelector(`.vp-range[data-idx="${idx}"]`);
-                            if (rangeSelect) rangeSelect.value = profile.range;
+                            if (rangeSelect) {
+                                // Check if this range value exists in the options
+                                if (!rangeSelect.querySelector(`option[value="${escapeAttr(profile.range)}"]`)) {
+                                    // It's a custom range - add it as an option
+                                    const customOption = document.createElement("option");
+                                    customOption.value = profile.range;
+                                    customOption.textContent = profile.range;
+                                    // Insert before the "+ Custom Range..." option
+                                    const customMarker = rangeSelect.querySelector('option[value="__custom__"]');
+                                    rangeSelect.insertBefore(customOption, customMarker);
+                                }
+                                rangeSelect.value = profile.range;
+                            }
                         }
                         // Restore accents (now as chips)
                         if (profile.accents && profile.accents.length) {
@@ -5360,7 +6728,6 @@
                 console.log("saveToHistory - userLyrics in snapshot:", snapshot.userLyrics);
 
                 history.unshift({ ...song, settings: snapshot, savedAt: new Date().toISOString(), id: Date.now() });
-                if (history.length > 20) history.pop();
                 persistHistory();
                 renderHistory();
             }
@@ -5406,6 +6773,201 @@
                 renderHistory();
             }
 
+            // ========================================================================
+            // History Backup and Restore
+            // ========================================================================
+            function exportHistoryBackup() {
+                if (history.length === 0) {
+                    alert("No songs in history to backup.");
+                    return;
+                }
+
+                // Update song count in modal
+                document.getElementById("backup-song-count").textContent = history.length;
+
+                // Reset checkbox
+                document.getElementById("backup-include-api").checked = false;
+
+                // Show modal
+                document.getElementById("backup-modal").style.display = "flex";
+            }
+
+            function closeBackupModal(e) {
+                if (!e || e.target.id === "backup-modal") {
+                    document.getElementById("backup-modal").style.display = "none";
+                }
+            }
+
+            function confirmHistoryBackup() {
+                const includeAPI = document.getElementById("backup-include-api").checked;
+
+                const backupData = {
+                    version: "1.0",
+                    backupDate: new Date().toISOString(),
+                    songCount: history.length,
+                    songs: history.map((song) => ({
+                        ...song,
+                        // Ensure we capture the saved date
+                        savedAt: song.savedAt || new Date().toISOString(),
+                    })),
+                };
+
+                // Optionally include API key
+                if (includeAPI) {
+                    const apiKey = localStorage.getItem("gemini_api_key");
+                    if (apiKey) {
+                        backupData.apiKey = apiKey;
+                    }
+                }
+
+                // JSON replacer that cleans strings during stringification
+                const cleanReplacer = (key, value) => {
+                    if (typeof value === "string") {
+                        // Remove ALL control characters (0x00-0x1F and 0x7F)
+                        // Replace newlines/tabs with spaces to preserve readability
+                        return value
+                            .replace(/[\r\n\t]+/g, " ") // Replace newlines, returns, tabs with space
+                            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ""); // Remove other control chars
+                    }
+                    return value;
+                };
+
+                const backupText = [
+                    "SUNOFORGE HISTORY BACKUP",
+                    "",
+                    `Backup Date: ${new Date().toLocaleString()}`,
+                    `Songs: ${backupData.songCount}`,
+                    includeAPI ? "API Key: Included (PLAIN TEXT - SECURE THIS FILE!)" : "API Key: Not included",
+                    "",
+                    "This backup contains all your saved songs and can be imported",
+                    "into SunoForge to restore your history.",
+                    "",
+                    "--- SUNOFORGE HISTORY BACKUP ---",
+                    JSON.stringify(backupData, cleanReplacer, 2),
+                ].join("\n");
+
+                // Download the backup file
+                const a = document.createElement("a");
+                const timestamp = new Date().toISOString().split("T")[0];
+                const filename = `SunoForge_Backup_${timestamp}.txt`;
+                a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(backupText);
+                a.download = filename;
+                a.click();
+
+                // Close modal
+                closeBackupModal();
+
+                // Show confirmation
+                alert(`Backup exported successfully!\n\nFile: ${filename}\nSongs: ${backupData.songCount}${includeAPI ? "\n\n⚠️ API Key included - Please secure this file!" : ""}`);
+            }
+
+            function importHistoryBackup(content) {
+                try {
+                    // Extract JSON data
+                    const jsonMarker = "--- SUNOFORGE HISTORY BACKUP ---";
+
+                    // Normalize line breaks (handle old backups with literal \n)
+                    const normalizedContent = content.replace(/\\n/g, "\n");
+                    const jsonIndex = normalizedContent.indexOf(jsonMarker);
+
+                    if (jsonIndex === -1) {
+                        throw new Error("Invalid backup file format - marker not found");
+                    }
+
+                    // Extract everything after the marker
+                    let jsonText = normalizedContent.substring(jsonIndex + jsonMarker.length);
+
+                    // Remove all leading whitespace and newlines
+                    jsonText = jsonText.replace(/^\s+/, "");
+
+                    // Find the first { which marks the start of JSON
+                    const jsonStart = jsonText.indexOf("{");
+                    if (jsonStart === -1) {
+                        throw new Error("No JSON object found in backup file");
+                    }
+
+                    // Extract from the first { onwards
+                    jsonText = jsonText.substring(jsonStart);
+
+                    // Parse the JSON with error handling
+                    let backupData;
+                    try {
+                        backupData = JSON.parse(jsonText);
+                    } catch (parseError) {
+                        // Try to fix common issues: remove problematic control characters
+                        // Keep: tab (0x09), newline (0x0A), carriage return (0x0D)
+                        // Remove: other control chars (0x00-0x08, 0x0B, 0x0C, 0x0E-0x1F)
+                        const cleanedText = jsonText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+                        try {
+                            backupData = JSON.parse(cleanedText);
+                        } catch (cleanError) {
+                            throw new Error("Invalid JSON in backup file: " + parseError.message);
+                        }
+                    }
+
+                    if (!backupData.version || !backupData.songs || !Array.isArray(backupData.songs)) {
+                        throw new Error("Invalid backup data structure");
+                    }
+
+                    // Import songs - always merge, never replace existing
+                    const importedSongs = backupData.songs.map((song, idx) => ({
+                        ...song,
+                        id: Date.now() + idx, // Ensure unique IDs
+                        savedAt: song.savedAt || new Date().toISOString(),
+                    }));
+
+                    // Merge: add imported songs, remove duplicates by title+genre, keep most recent
+                    const combined = [...history, ...importedSongs];
+                    const uniqueMap = new Map();
+
+                    combined.forEach((song) => {
+                        const key = `${song.title}|${song.genre}`;
+                        const existing = uniqueMap.get(key);
+
+                        if (!existing || new Date(song.savedAt) > new Date(existing.savedAt)) {
+                            uniqueMap.set(key, song);
+                        }
+                    });
+
+                    history = Array.from(uniqueMap.values()).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+
+                    // Import API key if present
+                    let apiKeyRestored = false;
+                    if (backupData.apiKey) {
+                        const restoreAPI = confirm("This backup includes an API key.\\n\\n" + "Do you want to restore it?\\n\\n" + "(This will replace your current API key if you have one)");
+
+                        if (restoreAPI) {
+                            localStorage.setItem("gemini_api_key", backupData.apiKey);
+                            document.getElementById("api-key-input").value = backupData.apiKey;
+                            aiClient = new GoogleGenAI({ apiKey: backupData.apiKey });
+                            const st = document.getElementById("api-status");
+                            st.textContent = "✓ ready";
+                            st.className = "api-status ok";
+                            apiKeyRestored = true;
+                        }
+                    }
+
+                    // Persist and render
+                    persistHistory();
+                    renderHistory();
+
+                    // Show success message
+                    const msg = ["✅ Backup imported successfully!", "", `Songs from backup: ${importedSongs.length}`, `Total songs in history: ${history.length}`, "", "(Duplicates merged, most recent versions kept)"];
+
+                    if (apiKeyRestored) {
+                        msg.push("", "🔑 API Key restored");
+                    }
+
+                    alert(msg.join("\n"));
+
+                    // Switch to history tab
+                    switchRTab("history");
+                } catch (err) {
+                    console.error("Backup import error:", err);
+                    alert("Failed to import backup file. Please make sure it's a valid SunoForge backup file.\\n\\nError: " + err.message);
+                }
+            }
+
             function importFromFile() {
                 document.getElementById("import-file-input").click();
             }
@@ -5418,26 +6980,32 @@
                 reader.onload = function (e) {
                     try {
                         const content = e.target.result;
-                        const song = parseImportedSong(content);
-                        if (song) {
-                            // Add to history
-                            history.unshift({ ...song, savedAt: new Date().toISOString(), id: Date.now() });
-                            if (history.length > 20) history.pop();
-                            persistHistory();
-                            renderHistory();
 
-                            // Load the imported song
-                            currentSong = song;
-                            applyHistorySettings(song);
-                            renderSongCard(song);
-                            renderChordsCard(song);
+                        // Check if this is a history backup file
+                        if (content.includes("--- SUNOFORGE HISTORY BACKUP ---")) {
+                            importHistoryBackup(content);
+                        } else {
+                            // Single song import
+                            const song = parseImportedSong(content);
+                            if (song) {
+                                // Add to history
+                                history.unshift({ ...song, savedAt: new Date().toISOString(), id: Date.now() });
+                                persistHistory();
+                                renderHistory();
 
-                            // If lyrics were imported, switch to lyrics tab to show them
-                            if (song.settings?.userLyrics?.content) {
-                                switchLTab("lyrics");
+                                // Load the imported song
+                                currentSong = song;
+                                applyHistorySettings(song);
+                                renderSongCard(song);
+                                renderChordsCard(song);
+
+                                // If lyrics were imported, switch to lyrics tab to show them
+                                if (song.settings?.userLyrics?.content) {
+                                    switchLTab("lyrics");
+                                }
+
+                                switchRTab("output");
                             }
-
-                            switchRTab("output");
                         }
                     } catch (err) {
                         console.error("Import error:", err);
@@ -6659,6 +8227,8 @@
             window.showCustomInput = showCustomInput;
             window.hideCustomInput = hideCustomInput;
             window.confirmCustomTag = confirmCustomTag;
+            window.confirmCustomRange = confirmCustomRange;
+            window.cancelCustomRange = cancelCustomRange;
             window.toggleTempoMode = toggleTempoMode;
             window.toggleDurationMode = toggleDurationMode;
             window.toggleTimeSignatureMode = toggleTimeSignatureMode;
@@ -6684,6 +8254,19 @@
             window.handleImportFile = handleImportFile;
             window.resolveSubmitConfirm = resolveSubmitConfirm;
             window.closeSubmitConfirm = closeSubmitConfirm;
+            // Genre selector functions
+            window.selectMainGenre = selectMainGenre;
+            window.selectSubGenre = selectSubGenre;
+            window.addSelectedGenre = addSelectedGenre;
+            window.removeSelectedGenre = removeSelectedGenre;
+            window.cancelGenreSelection = cancelGenreSelection;
+            window.showCustomGenreInput = showCustomGenreInput;
+            window.hideCustomGenreInput = hideCustomGenreInput;
+            window.confirmCustomGenre = confirmCustomGenre;
+            // History backup/restore functions
+            window.exportHistoryBackup = exportHistoryBackup;
+            window.closeBackupModal = closeBackupModal;
+            window.confirmHistoryBackup = confirmHistoryBackup;
 
             // ========================================================================
             // Initialization
