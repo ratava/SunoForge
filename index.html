@@ -571,6 +571,19 @@
                 border-color: var(--accent);
                 background: rgba(201, 124, 46, 0.08);
             }
+            .struct-genre-header {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--accent);
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                padding: 8px 2px 4px;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 4px;
+            }
+            .struct-genre-header:first-child {
+                padding-top: 2px;
+            }
             .struct-name {
                 font-size: 12px;
                 font-weight: 700;
@@ -1113,7 +1126,7 @@
                 margin-top: 2px;
             }
             .vocal-style-tags .tag {
-                font-size: 9px;
+                font-size: 12px;
                 padding: 3px 8px;
             }
             .choir-builder {
@@ -1138,7 +1151,7 @@
                 margin-top: 2px;
             }
             .accent-chips .tag {
-                font-size: 9px;
+                font-size: 12px;
                 padding: 3px 8px;
             }
 
@@ -1693,7 +1706,7 @@
             <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
             <div class="header-right">
                 <span class="disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260318-003</span>
+                <span class="version" id="version">Version: <br />20260319-001</span>
             </div>
         </header>
 
@@ -1723,6 +1736,10 @@
                     <div class="field-group">
                         <label class="field-label">Concept / Story</label>
                         <textarea id="concept" rows="3" placeholder="What is this song about?"></textarea>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Special AI Instructions</label>
+                        <textarea id="special-instructions" rows="3" placeholder="Optional special instructions to the AI"></textarea>
                     </div>
                     <div class="field-group">
                         <label class="field-label">Genre Selection</label>
@@ -1860,9 +1877,15 @@
                             <div class="tag" data-val="second person (you)">Second Person</div>
                             <div class="tag" data-val="third person narrative">Third Person</div>
                             <div class="tag" data-val="collective (we/us)">Collective</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('pov-tags', 'pov-custom-input-row')">+ Custom</button>
                         </div>
                         <div class="tag-row" id="pov-custom-row" style="display: none; margin-top: 4px">
                             <div class="tag-custom" id="pov-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="pov-custom-input-row" style="display: none">
+                            <input type="text" id="pov-custom-input" placeholder="e.g. Omniscient narrator, Stream of consciousness..." onkeydown="if (event.key === 'Enter') confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('pov-custom-input-row', 'pov-custom-input')">&#10005;</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2437,6 +2460,18 @@
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="resolveSubmitConfirm(false)">Cancel</button>
                     <button class="btn-primary" onclick="resolveSubmitConfirm(true)">Write My Song</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="settings-confirm-modal" style="display: none" onclick="closeSettingsConfirm(event, false)">
+            <div class="modal confirm-modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title">Confirm Settings Update</div>
+                <div class="modal-subtitle">The following settings will be applied to the form.</div>
+                <div class="modal-preview" id="settings-confirm-preview" style="flex: 1; overflow-y: auto; min-height: 0; padding: 0 24px 24px 24px"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveSettingsConfirm(false)">Cancel</button>
+                    <button class="btn-primary" onclick="resolveSettingsConfirm(true)">Update Settings</button>
                 </div>
             </div>
         </div>
@@ -4481,6 +4516,14 @@
                                                 <div class="tag multi" data-val="Australian">Australian</div>
                                                 <div class="tag multi" data-val="British">British</div>
                                                 <div class="tag multi" data-val="New Zealand">New Zealand</div>
+                                                <div class="tag multi" data-val="Spanish">Spanish</div>
+                                                <div class="tag multi" data-val="French">French</div>
+                                                <div class="tag multi" data-val="Italian">Italian</div>
+                                                <div class="tag multi" data-val="German">German</div>
+                                                <div class="tag multi" data-val="Russian">Russian</div>
+                                                <div class="tag multi" data-val="Japanese">Japanese</div>
+                                                <div class="tag multi" data-val="Chinese">Chinese</div>
+                                                <div class="tag multi" data-val="Korean">Korean</div>
                                                 <div class="tag multi" data-val="African">African</div>
                                                 <div class="tag multi" data-val="Jamaican">Jamaican</div>
                                                 <button class="tag-add-btn" onclick="showCustomInput('choir-accent-tags', 'choir-accent-custom-input-row')">+ Custom</button>
@@ -4644,6 +4687,14 @@
                                                 <div class="tag multi" data-val="Australian">Australian</div>
                                                 <div class="tag multi" data-val="British">British</div>
                                                 <div class="tag multi" data-val="New Zealand">New Zealand</div>
+                                                <div class="tag multi" data-val="Spanish">Spanish</div>
+                                                <div class="tag multi" data-val="French">French</div>
+                                                <div class="tag multi" data-val="Italian">Italian</div>
+                                                <div class="tag multi" data-val="German">German</div>
+                                                <div class="tag multi" data-val="Russian">Russian</div>
+                                                <div class="tag multi" data-val="Japanese">Japanese</div>
+                                                <div class="tag multi" data-val="Chinese">Chinese</div>
+                                                <div class="tag multi" data-val="Korean">Korean</div>
                                                 <div class="tag multi" data-val="African">African</div>
                                                 <div class="tag multi" data-val="Jamaican">Jamaican</div>
                                                 <button class="tag-add-btn" onclick="showCustomInput('vp-accent-${idx}', 'vp-accent-custom-input-row-${idx}')">+ Custom</button>
@@ -4941,21 +4992,41 @@
                     // Parse format like "Rock: Classic Rock + Jazz: Bebop"
                     const parts = genreLabel.split("+").map((p) => p.trim());
                     parts.forEach((part) => {
-                        const [mainName, subName] = part.split(":").map((s) => s.trim());
-                        if (mainName && subName) {
-                            // Find the genre and sub-genre in metadata
-                            const mainGenre = GENRE_METADATA.find((g) => g.name.toLowerCase() === mainName.toLowerCase());
-                            if (mainGenre) {
-                                const subGenre = mainGenre.subOptions.find((s) => s.name.toLowerCase() === subName.toLowerCase());
-                                if (subGenre) {
-                                    selectedGenres.push({
-                                        mainGenre: mainGenre.name,
-                                        subGenre: subGenre.name,
-                                        mainId: mainGenre.id,
-                                        subId: subGenre.id,
-                                    });
-                                }
+                        const colonIdx = part.indexOf(":");
+                        if (colonIdx === -1) return;
+                        const mainName = part.slice(0, colonIdx).trim();
+                        const subName = part.slice(colonIdx + 1).trim();
+                        if (!mainName || !subName) return;
+
+                        // Find the genre in metadata
+                        const mainGenre = GENRE_METADATA.find((g) => g.name.toLowerCase() === mainName.toLowerCase());
+                        if (mainGenre) {
+                            // Known main genre — try to match sub-genre, fall back to custom sub
+                            const subGenre = mainGenre.subOptions.find((s) => s.name.toLowerCase() === subName.toLowerCase());
+                            if (subGenre) {
+                                selectedGenres.push({
+                                    mainGenre: mainGenre.name,
+                                    subGenre: subGenre.name,
+                                    mainId: mainGenre.id,
+                                    subId: subGenre.id,
+                                });
+                            } else {
+                                // Sub-genre not in preset list — keep as custom sub under this main genre
+                                selectedGenres.push({
+                                    mainGenre: mainGenre.name,
+                                    subGenre: subName,
+                                    mainId: mainGenre.id,
+                                    subId: "custom_" + Date.now(),
+                                });
                             }
+                        } else {
+                            // Main genre not found (e.g. "Custom") — store as a custom entry
+                            selectedGenres.push({
+                                mainGenre: mainName,
+                                subGenre: subName,
+                                mainId: "custom",
+                                subId: "custom_" + Date.now(),
+                            });
                         }
                     });
                 } else if (genreLabel) {
@@ -5409,33 +5480,49 @@
                 const list = document.getElementById("structure-list");
                 if (!list) return; // Element doesn't exist yet during early initialization
 
-                const structs = getStructuresForGenre(genreKey);
-
-                // Get genre label from selected genres or genre metadata
-                let label = "";
+                // Collect unique main genre keys in selection order
+                const uniqueGenres = [];
+                const seenKeys = new Set();
                 if (selectedGenres.length > 0) {
-                    label = selectedGenres[0].mainGenre;
+                    selectedGenres.forEach((g) => {
+                        const key = normalizeGenreKey(g.mainId);
+                        if (!seenKeys.has(key)) {
+                            seenKeys.add(key);
+                            uniqueGenres.push({ key, name: g.mainGenre });
+                        }
+                    });
                 } else {
-                    // Fallback to genre metadata
-                    const genre = GENRE_METADATA.find((g) => g.id === genreKey);
-                    label = genre ? genre.name : "";
+                    // Fallback to the provided genreKey
+                    const meta = GENRE_METADATA.find((g) => g.id === genreKey);
+                    uniqueGenres.push({ key: genreKey, name: meta ? meta.name : genreKey || "Rock" });
                 }
 
+                // Update label to reflect all selected genres
                 const labelEl = document.getElementById("struct-genre-label");
-                if (labelEl) labelEl.textContent = label;
+                if (labelEl) labelEl.textContent = uniqueGenres.map((g) => g.name).join(" + ");
 
-                list.innerHTML = structs
-                    .map(
-                        (s, i) => `
-                    <div class="struct-opt${i === 0 ? " active" : ""}" onclick="selectStructure(this,${i},'${escapeAttr(genreKey)}')">
+                const showHeaders = uniqueGenres.length > 1;
+                let html = "";
+                let isFirst = true;
+
+                uniqueGenres.forEach(({ key, name }) => {
+                    const structs = getStructuresForGenre(key);
+                    if (showHeaders) {
+                        html += `<div class="struct-genre-header">${escapeHtml(name)}</div>`;
+                    }
+                    structs.forEach((s, i) => {
+                        html += `<div class="struct-opt${isFirst ? " active" : ""}" data-genre-key="${escapeAttr(key)}" data-idx="${i}" onclick="selectStructure(this,${i},'${escapeAttr(key)}')">
                       <div class="struct-tag">${escapeHtml(s.tag)}</div>
                       <div class="struct-name">${escapeHtml(s.name)}</div>
                       <div class="struct-flow">${escapeHtml(s.flow)}</div>
                       <div class="struct-desc">${escapeHtml(s.desc)}</div>
-                    </div>`,
-                    )
-                    .join("");
-                selectedStructure = structs[0];
+                    </div>`;
+                        isFirst = false;
+                    });
+                });
+
+                list.innerHTML = html;
+                selectedStructure = getStructuresForGenre(uniqueGenres[0].key)[0];
             }
             function selectStructure(el, idx, genreKey) {
                 document.querySelectorAll(".struct-opt").forEach((x) => x.classList.remove("active"));
@@ -5443,10 +5530,18 @@
                 selectedStructure = getStructuresForGenre(genreKey)[idx];
             }
             function activateStructureIndex(genreKey, idx) {
-                const options = document.querySelectorAll(".struct-opt");
-                if (!options.length) return;
-                const safeIndex = Math.max(0, Math.min(idx, options.length - 1));
-                selectStructure(options[safeIndex], safeIndex, genreKey);
+                const target = document.querySelector(`.struct-opt[data-genre-key="${genreKey}"][data-idx="${idx}"]`);
+                if (target) {
+                    selectStructure(target, idx, genreKey);
+                } else {
+                    // Fallback: activate first option
+                    const first = document.querySelector(".struct-opt");
+                    if (first) {
+                        const fKey = first.dataset.genreKey || genreKey;
+                        const fIdx = parseInt(first.dataset.idx || "0", 10);
+                        selectStructure(first, fIdx, fKey);
+                    }
+                }
             }
             function findMatchingStructureIndex(genreKey, structureName, structureFlow) {
                 const structs = GENRE_STRUCTURES[genreKey] || DEFAULT_STRUCTURES;
@@ -5897,17 +5992,17 @@
                 btn.innerHTML = '<span class="spin">♪</span> Analyzing...';
                 document.getElementById("style-result").style.display = "none";
 
-                const prompt = `You are a music expert. Analyze this style description and extract settings for a song generator.
+                const prompt = `You are master in Suno prompts, music style and theory. Analyze this style description and extract settings for a Suno song generator.
 
                 Style: "${styleInput}"
                 Current musical key preference: "${selectedMusicalKey}"
 
                 Return ONLY valid JSON (no markdown, no backticks):
                 {
-                  "genre_key": "one of: ${getGenreOptionsForAnalyzer()}",
+                    "genre_key": "one of: ${getGenreOptionsForAnalyzer()}",
                     "genre_label": "specific genre or subgenre label. Choose from comprehensive list: ${getAllGenreAndSubGenreNames()}. You may also use custom variations not limited to these options.",
                     "mood": "specific mood description; not limited to preset UI options",
-                        "rhyme": "specific rhyme scheme or rhyme style; not limited to preset UI options",
+                    "rhyme": "specific rhyme scheme or rhyme style; not limited to preset UI options",
                     "tempo": "AI Choose or a specific BPM / range like 100 BPM or 90-110 BPM",
                     "pov": "perspective description; can match presets or be a more specific custom perspective",
                     "musical_key": "one of exactly: Auto | C major | C minor | C#/Db major | C#/Db minor | D major | D minor | D#/Eb major | D#/Eb minor | E major | E minor | F major | F minor | F#/Gb major | F#/Gb minor | G major | G minor | G#/Ab major | G#/Ab minor | A major | A minor | A#/Bb major | A#/Bb minor | B major | B minor",
@@ -5936,7 +6031,7 @@
                             "styles": ["Optional array of vocal styles. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
                         }
                     },
-                  "summary": "One sentence describing what was applied"
+                    "summary": "One sentence describing what was applied"
                 }
 
                 VOCAL CONFIG INSTRUCTIONS:
@@ -6185,10 +6280,11 @@
                 if (sp.infs.length) parts.push(`Key Influences: ${sp.infs.join(", ")}`);
                 return parts.join("\n");
             }
-            function buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
+            function buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
                 const tempoFormatted = formatTempoPreference(tempo);
                 const vocalConfig = getSelectedVocalGender();
                 const parts = ["Submit these settings to AI?", "", `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`];
+                if (specialInstructions) parts.push(`Special Instructions: ${specialInstructions}`);
                 if (mood) parts.push(`Mood: ${mood}`);
                 if (goal && goal !== "Not specified") parts.push(`Goal: ${goal}`);
                 if (rhythm && rhythm !== "AI Choose") parts.push(`Rhythm: ${rhythm}`);
@@ -6222,6 +6318,24 @@
                 parts.push("", "Choose OK to continue or Cancel to stop.");
                 return parts.join("\n");
             }
+            let settingsConfirmResolver = null;
+            function openSettingsConfirm(summaryText) {
+                document.getElementById("settings-confirm-preview").textContent = summaryText;
+                document.getElementById("settings-confirm-modal").style.display = "flex";
+                return new Promise((resolve) => {
+                    settingsConfirmResolver = resolve;
+                });
+            }
+            function resolveSettingsConfirm(accepted) {
+                document.getElementById("settings-confirm-modal").style.display = "none";
+                const resolver = settingsConfirmResolver;
+                settingsConfirmResolver = null;
+                if (resolver) resolver(accepted);
+            }
+            function closeSettingsConfirm(event, accepted) {
+                if (event.target.id === "settings-confirm-modal") resolveSettingsConfirm(accepted);
+            }
+
             let submitConfirmResolver = null;
             function openSubmitConfirm(summaryText) {
                 document.getElementById("submit-confirm-preview").textContent = summaryText;
@@ -6459,6 +6573,7 @@
                 return {
                     title: document.getElementById("title").value.trim(),
                     concept: document.getElementById("concept").value.trim(),
+                    specialInstructions: document.getElementById("special-instructions").value.trim(),
                     genreKey: currentGenreKey,
                     genreLabel: getSelectedGenreLabel(),
                     mood: getActive("mood-tags") || getCustomTagValue("mood-custom-tag"),
@@ -6560,7 +6675,12 @@
                             if (styleContainer) {
                                 profile.styles.forEach((style) => {
                                     const styleTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
-                                    if (styleTag) styleTag.classList.add("active");
+                                    if (styleTag) {
+                                        styleTag.classList.add("active");
+                                    } else {
+                                        // Custom style — add as custom tag
+                                        addCustomTagToRow(`vp-style-${idx}`, style);
+                                    }
                                 });
                             }
                         }
@@ -6612,7 +6732,8 @@
                 const settings = song?.settings || {};
 
                 document.getElementById("title").value = settings.title ?? song.title ?? "";
-                document.getElementById("concept").value = settings.concept ?? song.concept ?? "";
+                document.getElementById("concept").value = settings.concept || song.concept || "";
+                document.getElementById("special-instructions").value = settings.specialInstructions ?? song.specialInstructions ?? "";
 
                 applyGenreSetting(settings.genreKey || currentGenreKey || "rock", settings.genreLabel || song.genre || "");
                 applySingleTagOrCustom("mood-tags", settings.mood || song.mood || "", "mood-custom-row", "mood-custom-tag", "Custom mood");
@@ -6726,6 +6847,11 @@
                 const snapshot = captureCurrentSettingsSnapshot();
                 console.log("saveToHistory - captured snapshot:", snapshot);
                 console.log("saveToHistory - userLyrics in snapshot:", snapshot.userLyrics);
+
+                // Ensure top-level song.concept is always populated (used as fallback in applyHistorySettings)
+                if (!song.concept && snapshot.concept) {
+                    song.concept = snapshot.concept;
+                }
 
                 history.unshift({ ...song, settings: snapshot, savedAt: new Date().toISOString(), id: Date.now() });
                 persistHistory();
@@ -7099,6 +7225,8 @@
                         song.title = line.substring(6).trim();
                     } else if (line.startsWith("Genre: ")) {
                         song.genre = line.substring(7).trim();
+                    } else if (line.startsWith("Concept: ")) {
+                        song.concept = line.substring(9).trim();
                     } else if (line.startsWith("Vocal Configuration: ")) {
                         const vocalText = line.substring(21).trim();
                         song.vocalProfiles = parseVocalConfiguration(vocalText);
@@ -7248,7 +7376,7 @@
                 // Fill in settings from parsed data
                 song.settings = {
                     title: song.title,
-                    concept: song.logline || "",
+                    concept: song.concept || song.logline || "",
                     genreKey: currentGenreKey,
                     genreLabel: song.genre,
                     mood: null,
@@ -7467,6 +7595,8 @@
                 };
 
                 const exportLines = [`SONG: ${song.title}`, `${song.logline}`, ``, `Genre: ${song.genre}`];
+
+                if (song.concept) exportLines.push(`Concept: ${song.concept}`);
 
                 if (vocalConfig && vocalConfig !== "Not specified") exportLines.push(`Vocal Configuration: ${vocalConfig}`);
                 if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") exportLines.push(`Tempo Preference: ${tempoPreference}`);
@@ -7752,6 +7882,132 @@
             }
             window.copyLyricsToTab = copyLyricsToTab;
 
+            function applySettingsFromAIResult() {
+                const song = currentSong;
+                if (!song) return;
+
+                const s = song.settings || {};
+
+                // Collect all values to be applied
+                const genreKey      = s.genreKey || "rock";
+                const genreLabel    = s.genreLabel || song.genre || "";
+                const title         = song.title || s.title || "";
+                const mood          = song.mood || s.mood || "";
+                const goal          = song.goal || s.goal || "";
+                const rhythm        = song.rhythm || s.rhythm || "";
+                const grooveFeel    = song.grooveFeel || s.grooveFeel || "";
+                const rhyme         = song.rhyme || s.rhyme || "";
+                const pov           = s.pov || "";
+                const tempo         = song.key_info?.tempo || song.tempoPreference || s.tempo || "AI Choose";
+                const musicalKey    = song.key_info?.key || s.musicalKey || "Auto";
+                const timeSignature = song.key_info?.time_sig || s.timeSignature || "Auto";
+                const structureData = s.structure || (song.structureName ? { name: song.structureName } : null);
+                const vp            = song.vocalProfiles || s.vocalProfiles;
+                const sp            = song.soundProfile || s.soundProfile;
+                const instrExcl     = song.instrumentExclusions || s.instrumentExclusions || "";
+                const concept       = song.concept || s.concept || "";
+
+                // Build confirmation summary
+                const lines = ["The following settings will be applied:", ""];
+                if (genreLabel)   lines.push("Genre: " + genreLabel);
+                if (title)        lines.push("Title: " + title);
+                if (concept)      lines.push("Concept: " + concept);
+                if (mood)         lines.push("Mood: " + mood);
+                if (goal && goal !== "Not specified") lines.push("Goal: " + goal);
+                if (rhythm && rhythm !== "AI Choose") lines.push("Rhythm: " + rhythm);
+                if (grooveFeel && grooveFeel !== "AI Choose") lines.push("Groove Feel: " + grooveFeel);
+                if (rhyme)        lines.push("Rhyme Scheme: " + rhyme);
+                if (pov)          lines.push("Perspective: " + pov);
+                lines.push("Tempo: " + tempo);
+                lines.push("Musical Key: " + musicalKey);
+                lines.push("Time Signature: " + timeSignature);
+                if (structureData?.name) lines.push("Structure: " + structureData.name);
+                if (vp?.type)     lines.push("Vocal: " + vp.type);
+                if (song.verseLength || s.verseLength)   lines.push("Verse Length: " + (song.verseLength || s.verseLength));
+                if (song.chorusLength || s.chorusLength) lines.push("Chorus Length: " + (song.chorusLength || s.chorusLength));
+                if (sp) {
+                    if (sp.eras?.length)        lines.push("Era: " + sp.eras.join(", "));
+                    if (sp.styles?.length)      lines.push("Production Style: " + sp.styles.join(", "));
+                    if (sp.instruments?.length) lines.push("Instruments: " + sp.instruments.join(", "));
+                    if (sp.insts?.length)       lines.push("Instrumentation: " + sp.insts.join(", "));
+                    if (sp.bass)                lines.push("Bass: " + sp.bass);
+                    if (sp.spatial?.length)     lines.push("Spatial/Effects: " + sp.spatial.join(", "));
+                    if (sp.mixes?.length)       lines.push("Mix: " + sp.mixes.join(", "));
+                    if (sp.infs?.length)        lines.push("Influences: " + sp.infs.join(", "));
+                }
+                if (instrExcl) lines.push("Instrument Exclusions: " + instrExcl);
+
+                openSettingsConfirm(lines.join("\n")).then(function(confirmed) {
+                    if (!confirmed) return;
+
+                    // Genre (must come first — drives structure list)
+                    applyGenreSetting(genreKey, genreLabel);
+
+                    // Title
+                    document.getElementById("title").value = title;
+
+                    // Concept
+                    document.getElementById("concept").value = concept;
+
+                    // Mood / Goal / Rhythm / Groove / Rhyme / POV
+                    if (mood)     applySingleTagOrCustom("mood-tags",   mood,       "mood-custom-row",   "mood-custom-tag",   "Custom mood");
+                    if (goal && goal !== "Not specified") applySingleTagOrCustom("goal-tags", goal, "goal-custom-row", "goal-custom-tag", "Custom goal");
+                    if (rhythm && rhythm !== "AI Choose") applySingleTagOrCustom("rhythm-tags", rhythm, "rhythm-custom-row", "rhythm-custom-tag", "Custom rhythm");
+                    if (grooveFeel && grooveFeel !== "AI Choose") applySingleTagOrCustom("groove-tags", grooveFeel, "groove-custom-row", "groove-custom-tag", "Custom groove feel");
+                    if (rhyme) applyRhymeSetting(rhyme);
+                    if (pov)   applySingleTagOrCustom("pov-tags", pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
+
+                    // Tempo
+                    applyTempoPreference(tempo);
+
+                    // Musical Key
+                    document.getElementById("musical-key").value = normalizeMusicalKey(musicalKey);
+
+                    // Time Signature
+                    const timeSignatureSelect = document.getElementById("time-signature");
+                    const timeSignatureCustom = document.getElementById("time-signature-custom");
+                    const tsPresets = ["Auto", "4/4", "3/4", "2/4", "6/8", "5/4", "7/4", "9/8", "12/8"];
+                    if (tsPresets.includes(timeSignature)) {
+                        timeSignatureSelect.value = timeSignature;
+                    } else {
+                        timeSignatureSelect.value = "Custom";
+                        timeSignatureCustom.value = timeSignature;
+                    }
+                    toggleTimeSignatureMode();
+
+                    // Structure
+                    if (structureData) applySavedStructure(structureData, currentGenreKey);
+
+                    // Vocal Profiles
+                    restoreVocalProfiles(vp || null);
+
+                    // Verse / Chorus Length
+                    document.getElementById("verse-length-select").value  = song.verseLength  || s.verseLength  || "";
+                    document.getElementById("chorus-length-select").value = song.chorusLength || s.chorusLength || "";
+
+                    // Sound Profile
+                    if (sp) {
+                        applyMultiTagValues("era-tags",         sp.eras        || []);
+                        applyMultiTagValues("prodstyle-tags",   sp.styles      || []);
+                        applyMultiTagValues("instruments-tags", sp.instruments || []);
+                        applyMultiTagValues("inst-tags",        sp.insts       || []);
+                        applyMultiTagValues("mix-tags",         sp.mixes       || []);
+                        applySingleTagOrCustom("bass-tags", sp.bass || "", "bass-custom-row", "bass-custom-tag", "Custom bass");
+                        applyMultiTagValues("spatial-tags", sp.spatial || []);
+                        influences = [];
+                        renderInfluenceChips();
+                        (sp.infs || []).forEach(function(inf) { addInfluenceVal(inf); });
+                    }
+
+                    // Instrument Exclusions
+                    document.getElementById("instrument-exclude").value = instrExcl;
+
+                    // Switch to settings tab
+                    switchLTab("settings");
+                });
+            }
+            window.applySettingsFromAIResult = applySettingsFromAIResult;
+
             // ========================================================================
             // Render Output Cards
             // Creates HTML card displays for song output, chords, and metadata
@@ -7802,7 +8058,11 @@
                 card.className = "output-card";
                 card.id = "main-song-card";
                 card.innerHTML = `
-                    <div class="card-header"><div class="card-header-row"><div>
+                    <div class="card-header">
+                      <div style="margin-bottom:8px;text-align:center;">
+                        <button class="btn-copy" onclick="applySettingsFromAIResult()">&#8679; Update Settings</button>
+                      </div>
+                      <div class="card-header-row"><div>
                       <div class="card-title">${escapeHtml(song.title)}</div>
                       <div class="card-subtitle">${escapeHtml(song.logline)}</div>
                       <div class="genre-badge ${badgeClass(song.genre)}">${escapeHtml(song.genre)}</div>
@@ -7856,6 +8116,7 @@
                 const titleInput = document.getElementById("title").value.trim();
                 const title = titleInput || "";
                 const concept = document.getElementById("concept").value.trim() || "A raw, honest song";
+                const specialInstructions = document.getElementById("special-instructions").value.trim();
                 const genre = getSelectedGenreLabel();
                 const mood = getSelectedMood();
                 const goal = getSelectedGoal();
@@ -7875,7 +8136,9 @@
                 const userLyrics = getUserLyrics();
                 const aiMode = activeLeftTab === "lyrics" ? getActive("aimode-tags") : null;
 
-                const confirmed = await openSubmitConfirm(buildSubmissionSummary({ title, concept, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }));
+                const confirmed = await openSubmitConfirm(
+                    buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }),
+                );
                 if (!confirmed) return;
 
                 const genBtn = document.getElementById("gen-btn");
@@ -7994,7 +8257,7 @@
                     ? `Use the provided title exactly as given: ${title}.`
                     : `Because no title was provided, you must create a compelling song title derived primarily from the ${isInstrumental ? "concept and musical style" : "lyrics and hook, and secondarily from the concept if needed"}. Do not return generic placeholders like Untitled, Song Title, or Title.`;
 
-                const prompt = `You are a professional songwriter and producer with deep expertise in all genres.
+                const prompt = `You are a professional songwriter and producer with deep expertise in all genres. Also you are master in Suno prompts.
 
                 SONG SPECS:
                 Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
@@ -8002,9 +8265,8 @@
                 Genre: ${genre}${mood ? `\nMood: ${mood}` : ""}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}${grooveFeel && grooveFeel !== "AI Choose" ? `\nGroove Feel: ${grooveFeel}` : ""}${rhyme ? `\nRhyme Scheme: ${rhyme}` : ""}${tempoForPrompt !== "AI Choose" && tempoForPrompt !== "Auto" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}${pov ? `\nPerspective: ${pov}` : ""}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${formatLengthPreference(verseLength) !== "Follow Structure" ? `\nVerse Length Preference: ${formatLengthPreference(verseLength)}` : ""}${formatLengthPreference(chorusLength) !== "Follow Structure" ? `\nChorus Length Preference: ${formatLengthPreference(chorusLength)}` : ""}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
                 Structure: ${struct.name} -- ${struct.flow}
                 Structure description: ${struct.desc}${sectionChordsInstruction}${sectionInstructionsData}${soundInstruction}${influenceInstruction}${lyricsInstruction}
-
                 Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested tempo preference: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
-
+                Take in to account these special instructions: ${specialInstructions ? `\nSpecial Instructions: ${specialInstructions}` : "Not specified"}
                 LYRICAL PHRASING TECHNIQUES:
                 When generating lyrics, use appropriate phrasing techniques to enhance vocal delivery and expression:
                 - Commas within lines create pauses (multiple commas create longer pauses; typically use 1-5 commas where appropriate)
@@ -8254,6 +8516,8 @@
             window.handleImportFile = handleImportFile;
             window.resolveSubmitConfirm = resolveSubmitConfirm;
             window.closeSubmitConfirm = closeSubmitConfirm;
+            window.resolveSettingsConfirm = resolveSettingsConfirm;
+            window.closeSettingsConfirm = closeSettingsConfirm;
             // Genre selector functions
             window.selectMainGenre = selectMainGenre;
             window.selectSubGenre = selectSubGenre;
