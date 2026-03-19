@@ -268,6 +268,7 @@ Displays your generated song with interactive controls.
   - **✎ Edit** - Manually edit section lyrics, type, and direction tags
   - View chord progressions per section
   - Copy individual sections
+- **↑ Update Settings** button — appears at the top of the output card. Reads all settings that the AI used or generated (genre, mood, tempo, key, structure, vocal type, sound profile, influences, etc.) and writes them back to every field in the left-panel form. Shows a full preview of what will change and asks for confirmation before applying. Useful for keeping your form in sync with the settings the AI actually used, so the next generation starts from the same baseline.
 - **Action buttons**
   - **⤴ Copy to Lyrics Tab** - Send generated lyrics back to Lyrics tab for refinement
   - **Copy All** - Copy all lyrics to clipboard
@@ -286,12 +287,15 @@ View suggested chord progressions for your song.
 
 Manage saved songs and project versions.
 
-- **Saved Songs List** - All previously saved songs with metadata
-- **Load** - Click any saved song to restore it
-- **Delete** - Remove individual songs
-- **Import** - Load songs from exported .txt files
-- **Export** - Save individual songs to .txt
-- **Clear All** - Remove all saved history
+- **Saved Songs List** - All previously saved songs with title, genre, and save timestamp
+- **Load** - Restores a saved song: reloads all settings into the form and re-renders the output, chords, and lyrics tabs
+- **Export** - Save an individual song to a `.txt` file
+- **Delete** (✗) - Remove a song from history
+- **Backup** - Exports **all** songs in history to a single `.txt` backup file. A confirmation modal shows the song count and offers an optional **Include API Key in backup** checkbox (covers both Google AI Studio and OpenRouter keys). If checked, the key is stored in plain text — keep the file in a secure location.
+- **Import** - Accepts two file types:
+  - **Single-song `.txt`** — a file exported via the per-song Export button. Adds it to history and loads it immediately.
+  - **History backup `.txt`** — a file created with the Backup button. Songs are **merged** into the existing history (duplicates resolved by keeping the most recently saved version). If the backup included API keys or a selected model, those are also restored automatically.
+- **Clear All** - Remove all saved history after confirmation
 
 ---
 
