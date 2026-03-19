@@ -1,40 +1,40 @@
-# SunoForge #
+# SunoForge
 
 ![API Key](https://github.com/ratava/SunoForge/blob/main/images/logo.webp?raw=true)
 
 This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
 [![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
 
-## AI-Powered Song Lyric Generator & Composer Assistant ##
+## AI-Powered Song Lyric Generator & Composer Assistant
 
-SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to generate professional-quality lyrics, suggest chord progressions, and provide detailed production guidance. Designed for use with Suno AI or other music creation platforms.
+SunoForge is a comprehensive song creation tool that uses AI to generate professional-quality lyrics, suggest chord progressions, and provide detailed production guidance. Designed for use with Suno AI or other music creation platforms. Supports Google AI Studio (Gemini models) and OpenRouter (hundreds of third-party models) as AI providers.
 
 ---
 
-## ✨ Key Features ##
+## ✨ Key Features
 
-### Two Main Workflows ###
+### Two Main Workflows
 
-#### 1. 🎨 Generate from Scratch ####
+#### 1. 🎨 Generate from Scratch
 
 - Start with just an idea, concept, or title
 - AI generates complete lyrics, style prompts, and chord progressions
 - Full control over genre, mood, structure, vocals, and production
 - Perfect for: New song ideas, creative exploration, complete AI-assisted composition
 
-#### 2. 🔄 Analyze & Import ####
+#### 2. 🔄 Analyze & Import
 
 - Import existing lyrics or style descriptions from Suno (or anywhere)
 - AI analyzes and auto-configures all settings
 - Refine, complete, or rewrite existing material
 - Perfect for: Enhancing Suno outputs, analyzing existing songs, style matching
 
-### At a Minimum, You Need ###
+### At a Minimum, You Need
 
 - **Just an idea** - Enter a song title or concept and let AI handle everything else
 - **Or import lyrics/style** - Paste existing content to analyze and enhance
 
-### What You Get ###
+### What You Get
 
 - ✅ Complete song lyrics with professional structure
 - ✅ Suno-compatible style prompts (genre, mood, era, production)
@@ -44,48 +44,81 @@ SunoForge is a comprehensive song creation tool that uses Google's Gemini AI to 
 
 ---
 
-## 🚀 Getting Started ##
+## 🚀 Getting Started
 
-### Prerequisites ###
+### Prerequisites
 
-- A Google AI Studio API key
+- A **Google AI Studio API key** and/or an **OpenRouter API key** (at least one is required)
 - A modern web browser
-- No installation required - runs entirely in your browser
+- No installation required — runs entirely in your browser
 
-### Setup ###
+### API Providers
 
-If you need to create an API key ([Get one here](https://aistudio.google.com/app/apikey))  
+SunoForge supports two AI providers. You can configure one or both:
 
-1. Sign in with a google account
-2. Click on Create API Key
+| Provider | Cost | Models available |
+| --- | --- | --- |
+| **Google AI Studio** | Free tier available, cheapest | Gemini models (fetched live from your account) |
+| **OpenRouter** | Pay-per-use, more expensive | Hundreds of text models from many providers |
+
+You can have both keys saved simultaneously. The **Model selector** determines which provider is used for each generation — SunoForge routes the request automatically based on which provider the selected model belongs to.
+
+### Setup — Google AI Studio Key
+
+If you need to create an API key ([Get one here](https://aistudio.google.com/app/apikey))
+
+1. Sign in with a Google account
+2. Click **Create API Key**
 3. Give it a name
 4. Assign it to the default project or create a new one
    ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio1.png?raw=true)
 5. Make sure billing is enabled on the key/project (Free tier is fine)
     ![API Key](https://github.com/ratava/SunoForge/blob/main/images/aistudio2.png?raw=true)
-6. Hit the copy key icon get your api key
+6. Hit the copy key icon to get your API key
 
 7. [Open SunoForge](https://ratava.github.io/SunoForge/index.html) in your browser
-8. Enter your Google AI Studio API key in the top bar
+8. Enter your Google AI Studio API key in the **Google AI Studio Key** field in the top bar
 9. Click **Save**
-10. Status indicator should change to **✓ ready**
+10. Status indicator should change to **✓ ready** — the model list will populate with your available Gemini models
 
    ![API Key](https://github.com/ratava/SunoForge/blob/main/images/apikey.png?raw=true)
 
-> **Note:** Your API key is stored locally in your browser's localStorage (unencrypted). Only use on trusted devices.
+### Setup — OpenRouter Key
+
+1. Create an account at [openrouter.ai](https://openrouter.ai)
+2. Go to **Keys** and create a new API key
+3. Add credit to your account (OpenRouter is pay-per-use)
+4. In SunoForge, enter your key in the **OpenRouter Key** field
+5. Click **Save**
+6. Status indicator will show **✓ ready** — the full OpenRouter model catalogue will be fetched and added to the model list
+
+> **Note:** Both API keys are stored locally in your browser's localStorage (unencrypted). Only use on trusted devices.
+
+### Model Selection
+
+The **Model** dropdown in the top bar lets you choose which AI model to use for generation.
+
+- When a Google AI Studio key is saved, all Gemini models available to your account appear at the top of the list
+- When an OpenRouter key is saved, all OpenRouter text-generation models are appended below
+- The list is **searchable** — type any part of a model name to filter
+- Your selection is saved between sessions
+- The default model is `gemini-3.1-flash-lite-preview` (Google) — fast and inexpensive
+- Models listed with **(Google)** route through Google AI Studio; models listed with **(OpenRouter)** route through OpenRouter
+
+> ⚠ SunoForge is not liable for any costs incurred when using your selected model. Always verify pricing on the provider's website before using a high-cost model.
 
 ---
 
-## 🎵 Quick Start ##
+## 🎵 Quick Start
 
-### Basic Workflow ###
+### Basic Workflow
 
 1. **Configure** your song using the left panel tabs
 2. **Click "Write My Song"** to generate lyrics
 3. **Review** the output in the right panel
 4. **Export** your song for use in Suno or other platforms
 
-### Recommended First Steps ###
+### Recommended First Steps
 
 1. **Settings Tab:** Enter a song title and concept
 2. **Structure Tab:** Choose a genre-appropriate structure
@@ -94,9 +127,9 @@ If you need to create an API key ([Get one here](https://aistudio.google.com/app
 
 ---
 
-## 📋 Left Panel Tabs ##
+## 📋 Left Panel Tabs
 
-### ⚙️ Settings ###
+### ⚙️ Settings
 
 Core song configuration and musical fundamentals.
 
@@ -115,8 +148,12 @@ Core song configuration and musical fundamentals.
 - **Time Signature** - 4/4, 3/4, 2/4, 6/8, 5/4, 7/4, 7/8, 9/8, 12/8, or custom
 - **Verse Length** - Follow Structure, 4 Bars, 8 Bars, or 16 Bars
 - **Chorus Length** - Follow Structure, 4 Bars, 8 Bars, 16 Bars, or 32 Bars
+- **Song Language** - The language the AI writes the **lyrics** in. Choose from:
+  - English, German, French, Dutch, Spanish, Portuguese, Russian, Japanese, Korean, Chinese (Mandarin), Chinese (Cantonese), or **Custom** (type any language)
+  - This is independent of the UI language — you can use the app in English but generate lyrics in French, for example
+  - When a non-English language is selected, the AI prompt explicitly instructs the model not to mix in any English
 
-### 🎤 Vocal ###
+### 🎤 Vocal
 
 Define vocal characteristics and arrangements.
 
@@ -137,7 +174,7 @@ Define vocal characteristics and arrangements.
   - Enable to add choir or backing vocals
   - Configure gender, size (small/large ensemble), and when they appear (chorus, bridge, throughout)
 
-### 🎵 Structure ###
+### 🎵 Structure
 
 Choose or build your song's structural blueprint.
 
@@ -153,7 +190,7 @@ Choose or build your song's structural blueprint.
   - Structures update automatically when you change genres
   - Includes flow diagram and description for each preset
 
-### 🔊 Sound ###
+### 🔊 Sound
 
 Shape the production aesthetic and sonic character.
 
@@ -196,7 +233,7 @@ Shape the production aesthetic and sonic character.
   - AI will incorporate stylistic elements into the generation
   - Quick-add suggestions provided
 
-### ✍️ Lyrics ###
+### ✍️ Lyrics
 
 Provide your own lyrics for AI to work with.
 
@@ -218,9 +255,9 @@ Provide your own lyrics for AI to work with.
 
 ---
 
-## 📊 Right Panel Tabs ##
+## 📊 Right Panel Tabs
 
-### Output ###
+### Output
 
 Displays your generated song with interactive controls.
 
@@ -237,7 +274,7 @@ Displays your generated song with interactive controls.
   - **Export** - Open full export modal
   - **Save to History** - Preserve this version
 
-### Chords ###
+### Chords
 
 View suggested chord progressions for your song.
 
@@ -245,7 +282,7 @@ View suggested chord progressions for your song.
 - Roman numeral notation with chord names
 - Updates automatically with each generation
 
-### History ###
+### History
 
 Manage saved songs and project versions.
 
@@ -258,9 +295,9 @@ Manage saved songs and project versions.
 
 ---
 
-## 🔧 Key Features ##
+## 🔧 Key Features
 
-### 🔍 Analyze Button ###
+### 🔍 Analyze Button
 
 Auto-configure settings from lyrics or style descriptions.
 
@@ -286,7 +323,7 @@ Auto-configure settings from lyrics or style descriptions.
 5. Make any manual adjustments
 6. Generate your song
 
-### 📤 Export Modal ###
+### 📤 Export Modal
 
 Comprehensive export options for your generated song.
 
@@ -311,7 +348,7 @@ Your lyrics here...
 Your chorus...
 ```
 
-### 🐛 Debug Mode ###
+### 🐛 Debug Mode
 
 Advanced troubleshooting and logging.
 
@@ -337,86 +374,86 @@ Advanced troubleshooting and logging.
 
 ---
 
-## 💡 Tips & Best Practices ##
+## 💡 Tips & Best Practices
 
-### For Best Results ###
+### For Best Results
 
 1. **Start Simple**
 
-- Begin with just Title and Concept
-- Let AI handle Genre, Mood, and Structure
-- Fine-tune after seeing initial results
+   - Begin with just Title and Concept
+   - Let AI handle Genre, Mood, and Structure
+   - Fine-tune after seeing initial results
 
 1. **Use the Analyzer**
 
-- Paste reference lyrics to quickly configure settings
-- Describe your ideal sound in natural language
-- Combines well with manual tweaking
+   - Paste reference lyrics to quickly configure settings
+   - Describe your ideal sound in natural language
+   - Combines well with manual tweaking
 
 1. **Structure Matters**
 
-- Genre-specific structures are optimized for that style
-- Custom structures give you complete control
-- Add chord progressions and notes for precision
+   - Genre-specific structures are optimized for that style
+   - Custom structures give you complete control
+   - Add chord progressions and notes for precision
 
 1. **Iterate Sections**
 
-- Don't regenerate the whole song if only one section isn't working
-- Click section headers to regenerate individual parts
-- Preserves the rest of your song
+   - Don't regenerate the whole song if only one section isn't working
+   - Click section headers to regenerate individual parts
+   - Preserves the rest of your song
 
 1. **Save Frequently**
 
-- Use History tab to save versions
-- Export to .txt files for backup
-- Can import previously exported songs
+   - Use History tab to save versions
+   - Export to .txt files for backup
+   - Can import previously exported songs
 
 1. **Vocal Configuration**
 
-- For specific vocal styles, configure Vocal tab details
-- Leave fields as "AI Choose" for automatic selection
-- Instrumental mode provides performance directions instead of lyrics
+   - For specific vocal styles, configure Vocal tab details
+   - Leave fields as "AI Choose" for automatic selection
+   - Instrumental mode provides performance directions instead of lyrics
 
 1. **Sound Layering**
 
-- Combine multiple options in Sound tab for rich sonic palette
-- Use **Instruments** for specific instrument selection (e.g., "Moog Synthesizer, Fretless Bass, Timpani")
-- Use **Instrumentation Focus** for general approach (e.g., "Acoustic", "Electronic")
-- **Bass** controls bass character independently
-- **Spatial/Effects** lets you specify multiple effects at once
-- Mix Character supports multiple selections for nuanced production
-- Use Influences sparingly (1-3 artists max)
+   - Combine multiple options in Sound tab for rich sonic palette
+   - Use **Instruments** for specific instrument selection (e.g., "Moog Synthesizer, Fretless Bass, Timpani")
+   - Use **Instrumentation Focus** for general approach (e.g., "Acoustic", "Electronic")
+   - **Bass** controls bass character independently
+   - **Spatial/Effects** lets you specify multiple effects at once
+   - Mix Character supports multiple selections for nuanced production
+   - Use Influences sparingly (1-3 artists max)
 
 1. **Granular Control**
 
-- **Goal** and **Groove Feel** help AI understand the song's purpose and pocket
-- **Rhythm** styles (Triplet, Swing, Syncopated) influence lyric phrasing and flow
-- Leave settings unselected (or "AI Choose") to let AI decide based on genre/mood
-- Custom inputs available for most options when you need something specific
+   - **Goal** and **Groove Feel** help AI understand the song's purpose and pocket
+   - **Rhythm** styles (Triplet, Swing, Syncopated) influence lyric phrasing and flow
+   - Leave settings unselected (or "AI Choose") to let AI decide based on genre/mood
+   - Custom inputs available for most options when you need something specific
 
-### Common Workflows ###
+### Common Workflows
 
-#### Workflow 1: Quick Generation ####
+#### Workflow 1: Quick Generation
 
 1. Settings: Enter title and concept
 2. Click "Write My Song"
 3. Export to Suno
 
-#### Workflow 2: Style-Based ####
+#### Workflow 2: Style-Based
 
 1. Click Analyze
 2. Describe desired sound
 3. Review auto-configured settings
 4. Generate
 
-#### Workflow 3: Lyrics-First ####
+#### Workflow 3: Lyrics-First
 
 1. Lyrics tab: Paste your lyrics
 2. Choose AI mode (complete/rewrite/match/fit)
 3. Optionally use Analyzer to extract structure
 4. Generate
 
-#### Workflow 4: Precision Control ####
+#### Workflow 4: Precision Control
 
 1. Configure all tabs (Settings, Vocal, Structure, Sound)
 2. Build custom structure if needed
@@ -425,24 +462,48 @@ Advanced troubleshooting and logging.
 
 ---
 
-## 🔒 Privacy & Security ##
+## 🌐 Interface Language
 
-- **API Key Storage:** Your Google AI Studio API key is stored locally in browser localStorage (not encrypted)
+The SunoForge UI is fully translated into **11 languages**, selectable via the flag dropdown in the top-right corner of the header.
+
+| Flag | Language |
+| --- | --- |
+| 🇬🇧 English | Default |
+| 🇩🇪 Deutsch | German |
+| 🇫🇷 Français | French |
+| 🇳🇱 Nederlands | Dutch |
+| 🇪🇸 Español | Spanish |
+| 🇵🇹 Português | Portuguese |
+| 🇷🇺 Русский | Russian |
+| 🇯🇵 日本語 | Japanese |
+| 🇰🇷 한국어 | Korean |
+| 🇨🇳 简体中文 | Simplified Chinese |
+| 🇨🇳 繁體中文 | Traditional Chinese |
+
+Switching language updates all labels, buttons, placeholders, and status messages instantly. Your preference is saved between sessions.
+
+> **Note:** The UI language is independent of the **Song Language** setting. Changing the UI language does not affect the language the AI writes lyrics in.
+
+---
+
+## 🔒 Privacy & Security
+
+- **API Key Storage:** Your Google AI Studio and OpenRouter API keys are stored locally in browser localStorage (not encrypted)
 - **Data:** All song data is stored locally in your browser
-- **Network:** Only connects to Google's Gemini AI API for generation
-- **No Server:** Completely client-side application, no data sent to external servers
+- **Network:** Only connects to Google's Gemini AI API or OpenRouter's API for generation, depending on the selected model
+- **No Server:** Completely client-side application — no data is sent to any SunoForge servers
 
-**Recommendation:** Only use on trusted personal devices.
-
----
-
-## 📝 Version ##
-
-Current Version: **20260318-001** (March 18, 2026)
+**Recommendation:** Only use on trusted personal devices. Do not share exported backup files that include your API key.
 
 ---
 
-## 🎸 Suno Integration ##
+## 📝 Version
+
+Current Version: **20260319-001** (March 19, 2026)
+
+---
+
+## 🎸 Suno Integration
 
 SunoForge is designed to export songs in Suno-compatible format:
 
@@ -450,18 +511,27 @@ SunoForge is designed to export songs in Suno-compatible format:
 2. Click **Export**
 3. Use the copy buttons:
 
-- **Copy Song Title** → Paste into Suno's title field
-- **Copy Style Prompt** → Paste into Suno's style field
-- **Copy Lyrics** → Paste into Suno's lyrics field
+   - **Copy Song Title** → Paste into Suno's title field
+   - **Copy Style Prompt** → Paste into Suno's style field
+   - **Copy Lyrics** → Paste into Suno's lyrics field
 
-1. Create your track in Suno
+4. Create your track in Suno
 
 ---
 
-## ❓ FAQ ##
+## ❓ FAQ
 
 **Q: Do I need an internet connection?**  
-A: Yes, for AI generation only. The app itself runs offline but needs internet to call Google's Gemini AI API.
+A: Yes, for AI generation only. The app itself runs offline but needs internet to call the Google AI or OpenRouter API.
+
+**Q: Do I need both a Google AI Studio key and an OpenRouter key?**  
+A: No — you only need one. Google AI Studio is recommended as a starting point because it has a free tier. OpenRouter is useful if you want to experiment with other models (Claude, Llama, Mistral, etc.). You can add both at any time and switch between them via the Model selector.
+
+**Q: Which model should I use?**  
+A: The default `gemini-3.1-flash-lite-preview` is fast and costs very little. For better quality at slightly higher cost, try a full `gemini-flash` or `gemini-pro` model. If using OpenRouter, any instruction-following text model works — look for models with large context windows (32k+) for best results with long lyrics.
+
+**Q: Can I write lyrics in a language other than English?**  
+A: Yes. Use the **Song Language** dropdown in the Settings tab to select the language for the lyrics. The AI will write all lyrics exclusively in that language. This is independent of the UI language — the app interface and the song lyrics can be in different languages.
 
 **Q: What's the difference between Genre presets and custom genre?**  
 A: Presets include curated song structures. Custom genres let you define any style but use universal structures.
@@ -496,6 +566,6 @@ A: Submit bug reports via our [GitHub Issues page](https://github.com/ratava/Sun
 
 ---
 
-## 🎼 Happy Creating ##
+## 🎼 Happy Creating
 
 SunoForge is your creative partner in songwriting. Experiment, iterate, and make something amazing.

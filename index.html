@@ -1839,7 +1839,7 @@
                     <option value="zh-hant">&#127464;&#127475; 繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260319-002</span>
+                <span class="version" id="version">Version: <br />20260319-003</span>
             </div>
         </header>
 
@@ -6824,12 +6824,13 @@
                 if (sp.infs.length) parts.push(`Key Influences: ${sp.infs.join(", ")}`);
                 return parts.join("\n");
             }
-            function buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }) {
+            function buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics, songLanguage }) {
                 const tempoFormatted = formatTempoPreference(tempo);
                 const vocalConfig = getSelectedVocalGender();
                 const modelId = document.getElementById("model-select")?.value || selectedModel;
                 const providerLabel = (modelProviderMap[modelId] || activeApiProvider) === "openrouter" ? "OpenRouter" : "Google AI";
                 const parts = ["Submit these settings to AI?", "", `Provider: ${providerLabel}`, `Model: ${modelId}`, ``, `Title: ${title}`, `Concept: ${concept}`, `Genre: ${genre}`];
+                if (songLanguage && songLanguage !== "English") parts.push(`Lyrics Language: ${songLanguage}`);
                 if (specialInstructions) parts.push(`Special Instructions: ${specialInstructions}`);
                 if (mood) parts.push(`Mood: ${mood}`);
                 if (goal && goal !== "Not specified") parts.push(`Goal: ${goal}`);
@@ -8742,7 +8743,7 @@
                 }
 
                 const confirmed = await openSubmitConfirm(
-                    buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics }),
+                    buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics, songLanguage }),
                 );
                 if (!confirmed) return;
 
