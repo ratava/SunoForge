@@ -1,3 +1,10 @@
+<!-- SunoForge is copyright © Brent Wesley https://github.com/ratava all rights reserved.
+SunoForge is released under Creative Commons Attribution-NonCommercial 4.0 International https://creativecommons.org/licenses/by-nc/4.0/
+SunoForge or any of its parts can be used for non-commercial purposes only and Attribution must be given back to this project. Removal of this header is expressly forbidden.
+SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")
+Legal permission has been sought for the use of the name Suno
+-->
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -136,7 +143,9 @@
             }
             .ltab.active {
                 color: var(--accent);
-                border-bottom-color: var(--accent);
+                border-color: var(--accent);
+                border: 2px solid;
+                border-radius: 6px;
             }
             .left-panel-content {
                 padding: 16px 14px;
@@ -906,7 +915,9 @@
             }
             .rtab.active {
                 color: var(--accent);
-                border-bottom-color: var(--accent);
+                border-color: var(--accent);
+                border: 2px solid;
+                border-radius: 6px;
             }
             .right-content {
                 flex: 1;
@@ -1866,59 +1877,59 @@
             <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
                 <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
-            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">🐛 DEBUG MODE</div>
+            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">DEBUG MODE</div>
             <div class="header-right">
                 <select id="lang-select" onchange="window.I18N.switchLocale(this.value)" title="Language / Sprache">
-                    <option value="en">&#127468;&#127463; English</option>
-                    <option value="de">&#127465;&#127466; Deutsch</option>
-                    <option value="fr">&#127467;&#127479; Français</option>
-                    <option value="nl">&#127475;&#127473; Nederlands</option>
-                    <option value="es">&#127466;&#127480; Español</option>
-                    <option value="pt">&#127477;&#127481; Português</option>
-                    <option value="ru">&#127479;&#127482; Русский</option>
-                    <option value="ja">&#127471;&#127477; 日本語</option>
-                    <option value="ko">&#127472;&#127479; 한국어</option>
-                    <option value="zh-hans">&#127464;&#127475; 简体中文</option>
-                    <option value="zh-hant">&#127464;&#127475; 繁體中文</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="zh-hans">简体中文</option>
+                    <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260321-001</span>
+                <span class="version" id="version">Version: <br />20260321-002</span>
             </div>
         </header>
 
         <div class="api-bar">
             <div class="api-bar-toggle" id="api-bar-toggle" onclick="toggleApiBar()">
                 <div class="api-bar-toggle-info">
-                    <span class="api-bar-label" style="white-space: nowrap">⚙ API &amp; Model</span>
+                    <span class="api-bar-label" style="white-space: nowrap">API &amp; Model</span>
                     <span class="api-bar-summary-model" id="api-bar-summary-model"></span>
-                    <span class="api-status missing" id="api-bar-sum-google">⚠ Google</span>
-                    <span class="api-status missing" id="api-bar-sum-or">⚠ OR</span>
-                    <span class="api-status missing" id="api-bar-sum-custom">⚠ LLM</span>
+                    <span class="api-status missing" id="api-bar-sum-google">Google</span>
+                    <span class="api-status missing" id="api-bar-sum-or">OR</span>
+                    <span class="api-status missing" id="api-bar-sum-custom">LLM</span>
                 </div>
                 <span id="api-bar-chevron">▼</span>
             </div>
             <div id="api-bar-body" style="display: none; flex-direction: column; gap: 5px">
                 <div class="api-bar-row" id="api-no-key-hint">
-                    <span class="api-no-key-hint" data-i18n="api.no_key_hint">&#128273; Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.</span>
+                    <span class="api-no-key-hint" data-i18n="api.no_key_hint">Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">Google AI Studio Key:</span>
                     <input type="password" id="api-key-input" placeholder="AIza..." />
                     <button class="api-bar-save" onclick="saveApiKey()">Save</button>
-                    <span class="api-status missing" id="api-status">⚠ not set</span>
+                    <span class="api-status missing" id="api-status">not set</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">OpenRouter Key:</span>
                     <input type="password" id="openrouter-key-input" placeholder="sk-or-..." />
                     <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
-                    <span class="api-status missing" id="openrouter-status">⚠ not set</span>
+                    <span class="api-status missing" id="openrouter-status">not set</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">Local LLM Server:</span>
                     <input type="text" id="custom-server-input" placeholder="http://localhost:1234" style="max-width: 280px" />
                     <button class="api-bar-save" onclick="saveCustomServer()">Save</button>
                     <button class="api-bar-save" onclick="fetchCustomServerModels()" style="background: var(--success); color: #0e0c0a">Fetch Models</button>
-                    <span class="api-status missing" id="custom-server-status">⚠ not set</span>
+                    <span class="api-status missing" id="custom-server-status">not set</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">Local LLM Auth Key:</span>
@@ -1930,14 +1941,13 @@
                     <div class="model-select-wrap" id="model-select-wrap">
                         <button type="button" class="model-select-btn" id="model-select-btn" onclick="toggleModelDropdown(event)">
                             <span id="model-select-label">gemini-3.1-flash-lite-preview (Google)</span>
-                            <span style="opacity: 0.5; font-size: 10px; flex-shrink: 0">&#9660;</span>
                         </button>
                         <div class="model-select-dropdown" id="model-select-dropdown" style="display: none">
                             <input type="text" class="model-select-filter" id="model-select-filter" data-i18n-ph="ph.model_filter" placeholder="Filter models…" oninput="filterModelOptions(this.value)" onkeydown="modelFilterKeydown(event)" autocomplete="off" />
                             <div class="model-select-list" id="model-select-list"></div>
                         </div>
                     </div>
-                    <span class="api-model-warning" data-i18n="api.cost_warning">&#9888; SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
+                    <span class="api-model-warning" data-i18n="api.cost_warning">SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
                 </div>
             </div>
         </div>
@@ -1945,11 +1955,11 @@
         <div class="main">
             <div class="panel-left">
                 <div class="left-tabs">
-                    <button class="ltab active" id="ltab-settings" onclick="switchLTab('settings')" data-i18n="nav.settings">&#9881; Settings</button>
-                    <button class="ltab" id="ltab-vocal" onclick="switchLTab('vocal')" data-i18n="nav.vocal">&#127908; Vocal</button>
-                    <button class="ltab" id="ltab-structure" onclick="switchLTab('structure')" data-i18n="nav.structure">&#127925; Structure</button>
-                    <button class="ltab" id="ltab-sound" onclick="switchLTab('sound')" data-i18n="nav.sound">&#128266; Sound</button>
-                    <button class="ltab" id="ltab-lyrics" onclick="switchLTab('lyrics')" data-i18n="nav.lyrics">&#9998; Lyrics</button>
+                    <button class="ltab active" id="ltab-settings" onclick="switchLTab('settings')" data-i18n="nav.settings">Settings</button>
+                    <button class="ltab" id="ltab-vocal" onclick="switchLTab('vocal')" data-i18n="nav.vocal">Vocal</button>
+                    <button class="ltab" id="ltab-structure" onclick="switchLTab('structure')" data-i18n="nav.structure">Structure</button>
+                    <button class="ltab" id="ltab-sound" onclick="switchLTab('sound')" data-i18n="nav.sound">Sound</button>
+                    <button class="ltab" id="ltab-lyrics" onclick="switchLTab('lyrics')" data-i18n="nav.lyrics">Lyrics</button>
                 </div>
 
                 <!-- SETTINGS TAB -->
@@ -2017,7 +2027,7 @@
                         <div class="custom-input-row" id="genre-custom-input-row" style="display: none; margin-top: 6px">
                             <input type="text" id="genre-custom-input" placeholder="e.g. Dream Pop, Shoegaze, etc." data-i18n-ph="ph.genre_custom" onkeydown="if (event.key === 'Enter') confirmCustomGenre();" />
                             <button class="custom-input-confirm" onclick="confirmCustomGenre()">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomGenreInput()">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomGenreInput()">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2038,7 +2048,7 @@
                         <div class="custom-input-row" id="mood-custom-input-row" style="display: none">
                             <input type="text" id="mood-custom-input" placeholder="e.g. Melancholic yet hopeful..." data-i18n-ph="ph.mood_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('mood-custom-input-row', 'mood-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('mood-custom-input-row', 'mood-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2065,7 +2075,7 @@
                         <div class="custom-input-row" id="goal-custom-input-row" style="display: none">
                             <input type="text" id="goal-custom-input" placeholder="e.g. Walking soundtrack..." data-i18n-ph="ph.goal_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('goal-custom-input-row', 'goal-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('goal-custom-input-row', 'goal-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2087,7 +2097,7 @@
                         <div class="custom-input-row" id="rhythm-custom-input-row" style="display: none">
                             <input type="text" id="rhythm-custom-input" placeholder="e.g. Shuffled, Off-beat..." data-i18n-ph="ph.rhythm_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('rhythm-custom-input-row', 'rhythm-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhythm-custom-input-row', 'rhythm-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2110,7 +2120,7 @@
                         <div class="custom-input-row" id="groove-custom-input-row" style="display: none">
                             <input type="text" id="groove-custom-input" placeholder="e.g. Swinging, Staccato..." data-i18n-ph="ph.groove_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('groove-custom-input-row', 'groove-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('groove-custom-input-row', 'groove-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2128,7 +2138,7 @@
                         <div class="custom-input-row" id="pov-custom-input-row" style="display: none">
                             <input type="text" id="pov-custom-input" placeholder="e.g. Omniscient narrator, Stream of consciousness..." data-i18n-ph="ph.pov_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('pov-custom-input-row', 'pov-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('pov-custom-input-row', 'pov-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2161,7 +2171,7 @@
                         <div class="custom-input-row" id="rhyme-custom-input-row" style="display: none">
                             <input type="text" id="rhyme-custom-input" placeholder="e.g. ABCABC, Slant rhymes..." data-i18n-ph="ph.rhyme_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('rhyme-custom-input-row', 'rhyme-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhyme-custom-input-row', 'rhyme-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="field-group">
@@ -2378,7 +2388,7 @@
                         <div class="custom-input-row" id="era-custom-row" style="display: none">
                             <input type="text" id="era-custom-input" placeholder="e.g. Late 70s Krautrock..." data-i18n-ph="ph.era_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('era-tags', 'era-custom-input', 'era-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('era-tags', 'era-custom-input', 'era-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('era-custom-row', 'era-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('era-custom-row', 'era-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2441,7 +2451,7 @@
                         <div class="custom-input-row" id="instruments-custom-row" style="display: none">
                             <input type="text" id="instruments-custom-input" placeholder="e.g. Theremin, Didgeridoo..." data-i18n-ph="ph.instruments_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('instruments-custom-row', 'instruments-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('instruments-custom-row', 'instruments-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2462,7 +2472,7 @@
                         <div class="custom-input-row" id="inst-custom-row" style="display: none">
                             <input type="text" id="inst-custom-input" placeholder="..." data-i18n-ph="ph.inst_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('inst-custom-row', 'inst-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('inst-custom-row', 'inst-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2491,7 +2501,7 @@
                         <div class="custom-input-row" id="bass-custom-input-row" style="display: none">
                             <input type="text" id="bass-custom-input" placeholder="e.g. Slap bass, Distorted bass..." data-i18n-ph="ph.bass_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('bass-custom-input-row', 'bass-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('bass-custom-input-row', 'bass-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2525,7 +2535,7 @@
                         <div class="custom-input-row" id="spatial-custom-row" style="display: none">
                             <input type="text" id="spatial-custom-input" placeholder="e.g. Tremolo, Ring modulation..." data-i18n-ph="ph.spatial_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('spatial-custom-row', 'spatial-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('spatial-custom-row', 'spatial-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2564,7 +2574,7 @@
                         <div class="custom-input-row" id="prodstyle-custom-row" style="display: none">
                             <input type="text" id="prodstyle-custom-input" placeholder="e.g. Vintage tape echo..." data-i18n-ph="ph.prodstyle_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('prodstyle-custom-row', 'prodstyle-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('prodstyle-custom-row', 'prodstyle-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2595,7 +2605,7 @@
                         <div class="custom-input-row" id="mix-custom-row" style="display: none">
                             <input type="text" id="mix-custom-input" placeholder="e.g. Sidechain pumping..." data-i18n-ph="ph.mix_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('mix-tags', 'mix-custom-input', 'mix-custom-row');" />
                             <button class="custom-input-confirm" onclick="confirmCustomTag('mix-tags', 'mix-custom-input', 'mix-custom-row')">Add</button>
-                            <button class="custom-input-cancel" onclick="hideCustomInput('mix-custom-row', 'mix-custom-input')">&#10005;</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('mix-custom-row', 'mix-custom-input')">x</button>
                         </div>
                     </div>
                     <div class="section-divider"></div>
@@ -2638,11 +2648,11 @@
             <div class="panel-right">
                 <!-- ACTION PANEL -->
                 <div class="action-panel">
-                    <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-i18n="btn.analyze">&#128269; Analyze</button>
-                    <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">&#9834; Write My Song</button>
-                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">&#128229; Copy to Suno</button>
-                    <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">&#10006; Reset</button>
-                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">? Help</button>
+                    <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-i18n="btn.analyze">Analyze</button>
+                    <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">Write My Song</button>
+                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">Copy to Suno</button>
+                    <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">Reset</button>
+                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge/Wiki', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">Help</button>
                 </div>
 
                 <div class="right-tabs">
@@ -2652,14 +2662,14 @@
                 </div>
                 <div class="right-content" id="tab-output">
                     <div class="output-empty" id="empty-state">
-                        <div class="empty-icon">&#127928;</div>
+                        <div class="empty-icon"></div>
                         <div class="empty-label" data-i18n="empty.output_label">Your studio is ready</div>
                         <div class="empty-sub" data-i18n="empty.output_sub">Configure your song on the left and hit &quot;Write My Song.&quot;</div>
                     </div>
                 </div>
                 <div class="right-content" id="tab-chords" style="display: none">
                     <div class="output-empty" id="chords-empty">
-                        <div class="empty-icon">&#9833;</div>
+                        <div class="empty-icon"></div>
                         <div class="empty-label" data-i18n="empty.chords_label">No chords yet</div>
                         <div class="empty-sub" data-i18n="empty.chords_sub">Generate a song first.</div>
                     </div>
@@ -2676,7 +2686,6 @@
                     <input type="file" id="import-file-input" accept=".txt" style="display: none" onchange="handleImportFile(event)" />
                     <div class="history-list" id="history-list">
                         <div class="output-empty" style="padding: 30px 0">
-                            <div class="empty-icon" style="font-size: 28px">&#128194;</div>
                             <div class="empty-label" data-i18n="empty.history_label">No songs saved yet</div>
                         </div>
                     </div>
@@ -2688,7 +2697,7 @@
         <!-- Validation Modal -->
         <div class="modal-overlay" id="validation-modal" style="display: none" onclick="if (event.target.id === 'validation-modal') closeValidationModal();">
             <div class="modal" style="max-width: 420px">
-                <div class="modal-title" data-i18n="modal.validation.title">&#9888; Required Field Missing</div>
+                <div class="modal-title" data-i18n="modal.validation.title">Required Field Missing</div>
                 <p id="validation-modal-msg" style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6"></p>
                 <div class="modal-actions">
                     <button class="btn-primary" onclick="closeValidationModal()" data-i18n="btn.ok">OK</button>
@@ -2698,22 +2707,22 @@
 
         <div class="modal-overlay" id="lyrics-copy-confirm-modal" style="display: none">
             <div class="modal" style="max-width: 420px">
-                <div class="modal-title" data-i18n="modal.lyrics_copy.title">&#9998; Copy to Lyrics Tab</div>
+                <div class="modal-title" data-i18n="modal.lyrics_copy.title">Copy to Lyrics Tab</div>
                 <p style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6" data-i18n="modal.lyrics_copy.body">This will overwrite any existing lyrics in the Lyrics tab with the generated lyrics. Continue?</p>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeLyricsCopyConfirm()" data-i18n="btn.cancel">Cancel</button>
-                    <button class="btn-primary" onclick="confirmCopyLyricsToTab()" data-i18n="btn.copy_to_lyrics">&#9974; Copy to Lyrics Tab</button>
+                    <button class="btn-primary" onclick="confirmCopyLyricsToTab()" data-i18n="btn.copy_to_lyrics">Copy to Lyrics Tab</button>
                 </div>
             </div>
         </div>
 
         <div class="modal-overlay" id="reset-confirm-modal" style="display: none">
             <div class="modal" style="max-width: 420px">
-                <div class="modal-title" data-i18n="modal.reset.title">&#10006; Reset Settings</div>
+                <div class="modal-title" data-i18n="modal.reset.title">Reset Settings</div>
                 <p style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6" data-i18n="modal.reset.body">This will clear all your current song settings and reload the page. Any unsaved work will be lost.</p>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeResetConfirm()" data-i18n="btn.cancel">Cancel</button>
-                    <button class="btn-primary" style="background: var(--error); border-color: var(--error)" onclick="confirmReset()" data-i18n="btn.reset">&#10006; Reset</button>
+                    <button class="btn-primary" style="background: var(--error); border-color: var(--error)" onclick="confirmReset()" data-i18n="btn.reset">Reset</button>
                 </div>
             </div>
         </div>
@@ -2759,7 +2768,7 @@
 
         <div class="modal-overlay" id="lyrics-too-long-modal" style="display: none">
             <div class="modal confirm-modal" style="max-width: 460px">
-                <div class="modal-title" data-i18n="modal.lyrics_too_long.title">⚠ Lyrics Too Long</div>
+                <div class="modal-title" data-i18n="modal.lyrics_too_long.title">Lyrics Too Long</div>
                 <div id="lyrics-too-long-detail" style="padding: 0 24px 16px; font-size: 13px; color: var(--text-muted); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6; white-space: pre-line"></div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="resolveLyricsTooLong('manual')" data-i18n="btn.shorten_manually">Manually Shorten</button>
@@ -2770,7 +2779,7 @@
 
         <div class="modal-overlay" id="analyzer-modal" style="display: none" onclick="closeAnalyzerModal(event)">
             <div class="modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
-                <div class="modal-title" data-i18n="modal.analyzer.title">&#127911; Style &amp; Lyrics Analyzer</div>
+                <div class="modal-title" data-i18n="modal.analyzer.title">Style &amp; Lyrics Analyzer</div>
                 <div class="modal-subtitle" data-i18n="modal.analyzer.subtitle">Enter lyrics (with or without structure), a style description, or both to auto-configure settings.</div>
                 <div style="padding: 0 24px 24px 24px; flex: 1; display: flex; flex-direction: column; min-height: 0">
                     <div class="info-box green" style="margin-bottom: 12px; flex-shrink: 0" data-i18n="modal.analyzer.info_box">This analyzer will automatically extract song structure, update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix &amp; Influences across all tabs.</div>
@@ -2784,7 +2793,7 @@
                 </div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeAnalyzerModal()" data-i18n="btn.close">Close</button>
-                    <button class="btn-primary" id="unified-analyze-btn" onclick="applyUnifiedAnalysis()" data-i18n="btn.analyze">&#128269; Analyze</button>
+                    <button class="btn-primary" id="unified-analyze-btn" onclick="applyUnifiedAnalysis()" data-i18n="btn.analyze">Analyze</button>
                 </div>
             </div>
         </div>
@@ -2792,10 +2801,10 @@
         <!-- Backup History Modal -->
         <div class="modal-overlay" id="backup-modal" style="display: none" onclick="closeBackupModal(event)">
             <div class="modal" style="width: 500px; max-width: 90vw">
-                <div class="modal-title" data-i18n="modal.backup.title">📦 Backup History</div>
+                <div class="modal-title" data-i18n="modal.backup.title">Backup History</div>
                 <div style="padding: 0 24px 24px 24px">
                     <div style="margin-bottom: 16px; padding: 12px; background: rgba(201, 124, 46, 0.1); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 12px; line-height: 1.5">
-                        📦 This will export all <strong id="backup-song-count">0</strong> songs in your history to a single backup file.
+                        This will export all <strong id="backup-song-count">0</strong> songs in your history to a single backup file.
                     </div>
                     <div class="field-group">
                         <label class="field-label" style="display: flex; align-items: flex-start; gap: 6px; cursor: pointer">
@@ -2803,14 +2812,14 @@
                             <span data-i18n="lbl.backup_include_key">Include API Key in backup</span>
                         </label>
                         <div style="margin-top: 8px; padding: 10px; background: rgba(200, 80, 80, 0.1); border-left: 3px solid var(--accent5); border-radius: 4px; font-size: 12px; line-height: 1.5; color: var(--text-muted)" data-i18n="modal.backup.security">
-                            ⚠️ <strong>Security Warning:</strong> If you include your API key, it will be stored in <strong>plain text</strong> in the backup file. Only enable this if you will secure the backup file (encrypted storage, password-protected, etc.). Anyone with access to this file will
+                            <strong>Security Warning:</strong> If you include your API key, it will be stored in <strong>plain text</strong> in the backup file. Only enable this if you will secure the backup file (encrypted storage, password-protected, etc.). Anyone with access to this file will
                             have your API key.
                         </div>
                     </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeBackupModal()" data-i18n="btn.cancel">Cancel</button>
-                    <button class="btn-primary" onclick="confirmHistoryBackup()" data-i18n="btn.download_backup">📥 Download Backup</button>
+                    <button class="btn-primary" onclick="confirmHistoryBackup()" data-i18n="btn.download_backup">Download Backup</button>
                 </div>
             </div>
         </div>
@@ -3137,11 +3146,10 @@
                 if (!key) {
                     localStorage.removeItem("gemini_api_key");
                     aiClient = null;
-                    st.textContent = "⚠ not set";
+                    st.textContent = "not set";
                     st.className = "api-status missing";
                     if (activeApiProvider === "google") {
-                        activeApiProvider = localStorage.getItem("openrouter_api_key") ? "openrouter"
-                            : localStorage.getItem("custom_server_address") ? "custom" : "google";
+                        activeApiProvider = localStorage.getItem("openrouter_api_key") ? "openrouter" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
                     const hasAny = localStorage.getItem("openrouter_api_key") || localStorage.getItem("custom_server_address");
                     if (!hasAny) document.getElementById("api-no-key-hint").style.display = "";
@@ -3154,7 +3162,7 @@
                 aiClient = new GoogleGenAI({ apiKey: key });
                 activeApiProvider = "google";
                 document.getElementById("api-no-key-hint").style.display = "none";
-                st.textContent = _t("status.ready", "✓ ready");
+                st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
                 fetchGoogleModels(key);
                 updateApiBarSummary();
@@ -3168,11 +3176,10 @@
                     localStorage.removeItem("openrouter_api_key");
                     openrouterModels = [];
                     refreshCombinedModelList();
-                    st.textContent = "⚠ not set";
+                    st.textContent = "not set";
                     st.className = "api-status missing";
                     if (activeApiProvider === "openrouter") {
-                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google"
-                            : localStorage.getItem("custom_server_address") ? "custom" : "google";
+                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
                     const hasAny = localStorage.getItem("gemini_api_key") || localStorage.getItem("custom_server_address");
                     if (!hasAny) document.getElementById("api-no-key-hint").style.display = "";
@@ -3183,7 +3190,7 @@
                 localStorage.setItem("openrouter_api_key", key);
                 activeApiProvider = "openrouter";
                 document.getElementById("api-no-key-hint").style.display = "none";
-                st.textContent = _t("status.ready", "✓ ready");
+                st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
                 fetchOpenRouterModels(key);
                 updateApiBarSummary();
@@ -3202,11 +3209,10 @@
                     customModels = customModels.filter((id) => modelProviderMap[id] !== "custom");
                     localStorage.setItem("custom_models", JSON.stringify(customModels));
                     refreshCombinedModelList();
-                    st.textContent = "⚠ not set";
+                    st.textContent = "not set";
                     st.className = "api-status missing";
                     if (activeApiProvider === "custom") {
-                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google"
-                            : localStorage.getItem("openrouter_api_key") ? "openrouter" : "google";
+                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google" : localStorage.getItem("openrouter_api_key") ? "openrouter" : "google";
                         localStorage.setItem("active_api_provider", activeApiProvider);
                     }
                     const hasAny = localStorage.getItem("gemini_api_key") || localStorage.getItem("openrouter_api_key");
@@ -3231,9 +3237,11 @@
                 activeApiProvider = "custom";
                 localStorage.setItem("active_api_provider", "custom");
                 document.getElementById("api-no-key-hint").style.display = "none";
-                st.textContent = "✓ saved";
+                st.textContent = "saved";
                 st.className = "api-status ok";
-                customModels.forEach((id) => { modelProviderMap[id] = "custom"; });
+                customModels.forEach((id) => {
+                    modelProviderMap[id] = "custom";
+                });
                 fetchCustomServerModels(addr);
                 updateApiBarSummary();
                 toggleApiBar(false);
@@ -3246,28 +3254,30 @@
                     return;
                 }
                 const st = document.getElementById("custom-server-status");
-                st.textContent = "⟳ fetching\u2026";
+                st.textContent = "fetching...";
                 st.className = "api-status";
                 try {
                     const fetchKey = localStorage.getItem("custom_server_key");
-                    const fetchHeaders = fetchKey ? { "Authorization": "Bearer " + fetchKey } : undefined;
+                    const fetchHeaders = fetchKey ? { Authorization: "Bearer " + fetchKey } : undefined;
                     const resp = await fetch(url + "/v1/models", fetchHeaders ? { headers: fetchHeaders } : undefined);
                     if (!resp.ok) throw new Error("HTTP " + resp.status);
                     const data = await resp.json();
                     const ids = (data.data || []).map((m) => m.id).filter(Boolean);
                     if (ids.length === 0) throw new Error("No models returned — is the server running with a model loaded?");
                     customServerModels = ids;
-                    ids.forEach((id) => { modelProviderMap[id] = "custom"; });
+                    ids.forEach((id) => {
+                        modelProviderMap[id] = "custom";
+                    });
                     refreshCombinedModelList();
                     const current = document.getElementById("model-select")?.value;
                     if (!customServerModels.includes(current) && !customModels.includes(current)) {
                         selectModel(ids[0], ids[0]);
                     }
-                    st.textContent = "✓ " + ids.length + " model" + (ids.length !== 1 ? "s" : "");
+                    st.textContent = ids.length + " model" + (ids.length !== 1 ? "s" : "");
                     st.className = "api-status ok";
                 } catch (err) {
                     console.error("fetchCustomServerModels error:", err);
-                    st.textContent = "⚠ fetch failed";
+                    st.textContent = "fetch failed";
                     st.className = "api-status missing";
                     alert("Could not fetch models from " + url + "\n\nMake sure the local OpenAI compatible LLM server is running.\n\nError: " + err.message);
                 }
@@ -3293,15 +3303,15 @@
                 const so = document.getElementById("api-bar-sum-or");
                 const sc = document.getElementById("api-bar-sum-custom");
                 if (sg) {
-                    sg.textContent = googleOk ? "✓ Google" : "⚠ Google";
+                    sg.textContent = "Google";
                     sg.className = "api-status " + (googleOk ? "ok" : "missing");
                 }
                 if (so) {
-                    so.textContent = orOk ? "✓ OR" : "⚠ OR";
+                    so.textContent = "OR";
                     so.className = "api-status " + (orOk ? "ok" : "missing");
                 }
                 if (sc) {
-                    sc.textContent = csOk ? "✓ LLM" : "⚠ LLM";
+                    sc.textContent = "LLM";
                     sc.className = "api-status " + (csOk ? "ok" : "missing");
                 }
             }
@@ -3316,7 +3326,7 @@
                     aiClient = new GoogleGenAI({ apiKey: saved });
                     activeApiProvider = "google";
                     const st = document.getElementById("api-status");
-                    st.textContent = _t("status.ready", "✓ ready");
+                    st.textContent = _t("status.ready", "ready");
                     st.className = "api-status ok";
                     // Fetch models asynchronously after DOM is ready
                     fetchGoogleModels(saved);
@@ -3326,7 +3336,7 @@
                     document.getElementById("api-no-key-hint").style.display = "none";
                     document.getElementById("openrouter-key-input").value = orKey;
                     const ost = document.getElementById("openrouter-status");
-                    ost.textContent = _t("status.ready", "✓ ready");
+                    ost.textContent = _t("status.ready", "ready");
                     ost.className = "api-status ok";
                     if (!saved) activeApiProvider = "openrouter";
                     fetchOpenRouterModels(orKey);
@@ -3338,7 +3348,9 @@
                     document.getElementById("custom-server-input").value = csAddr;
                     document.getElementById("api-no-key-hint").style.display = "none";
                     if (!saved && !orKey) activeApiProvider = "custom";
-                    customModels.forEach((id) => { modelProviderMap[id] = "custom"; });
+                    customModels.forEach((id) => {
+                        modelProviderMap[id] = "custom";
+                    });
                     if (customModels.length) refreshCombinedModelList();
                     fetchCustomServerModels(csAddr);
                 }
@@ -5195,7 +5207,7 @@
                 if (tagId === "pov-custom-tag") groupId = "pov-tags";
                 if (tagId === "vocalgender-custom-tag") groupId = "vocalgender-tags";
                 if (tagId === "rhyme-custom-tag") groupId = "rhyme-tags";
-                tag.innerHTML = `${escapeHtml(prefix)}: ${escapeHtml(value)}<span class="tag-custom-x" onclick="removeCustomSingleValue('${escapeAttr(rowId)}','${escapeAttr(tagId)}','${escapeAttr(groupId)}')">✕</span>`;
+                tag.innerHTML = `${escapeHtml(prefix)}: ${escapeHtml(value)}<span class="tag-custom-x" onclick="removeCustomSingleValue('${escapeAttr(rowId)}','${escapeAttr(tagId)}','${escapeAttr(groupId)}')">x</span>`;
                 row.style.display = "flex";
             }
             function applySingleTagOrCustom(id, value, rowId, tagId, prefix) {
@@ -5299,7 +5311,7 @@
                 const container = document.getElementById("choir-builder-container");
                 container.innerHTML = `
                                     <div class="choir-builder">
-                                        <div class="choir-header">🎶 Choir/Backing Vocals</div>
+                                        <div class="choir-header">Choir/Backing Vocals</div>
                                         <div class="vocal-profile-row">
                                             <div class="vocal-profile-field">
                                                 <label>Gender</label>
@@ -5353,7 +5365,7 @@
                                             <div class="custom-input-row" id="choir-accent-custom-input-row" style="display: none; margin-top: 4px">
                                                 <input type="text" id="choir-accent-custom-input" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row');" />
                                                 <button class="custom-input-confirm" onclick="confirmCustomTag('choir-accent-tags', 'choir-accent-custom-input', 'choir-accent-custom-input-row')">Add</button>
-                                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-accent-custom-input-row', 'choir-accent-custom-input')">&#10005;</button>
+                                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-accent-custom-input-row', 'choir-accent-custom-input')">x</button>
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
@@ -5385,7 +5397,7 @@
                                             <div class="custom-input-row" id="choir-style-custom-input-row" style="display: none; margin-top: 4px">
                                                 <input type="text" id="choir-style-custom-input" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row');" />
                                                 <button class="custom-input-confirm" onclick="confirmCustomTag('choir-style-tags', 'choir-style-custom-input', 'choir-style-custom-input-row')">Add</button>
-                                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-style-custom-input-row', 'choir-style-custom-input')">&#10005;</button>
+                                                <button class="custom-input-cancel" onclick="hideCustomInput('choir-style-custom-input-row', 'choir-style-custom-input')">x</button>
                                             </div>
                                         </div>
                                     </div>
@@ -5523,7 +5535,7 @@
                                             <div class="custom-input-row" id="vp-accent-custom-input-row-${idx}" style="display: none; margin-top: 4px">
                                                 <input type="text" id="vp-accent-custom-input-${idx}" placeholder="e.g. Irish, Scottish..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}');" />
                                                 <button class="custom-input-confirm" onclick="confirmCustomTag('vp-accent-${idx}', 'vp-accent-custom-input-${idx}', 'vp-accent-custom-input-row-${idx}')">Add</button>
-                                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-accent-custom-input-row-${idx}', 'vp-accent-custom-input-${idx}')">&#10005;</button>
+                                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-accent-custom-input-row-${idx}', 'vp-accent-custom-input-${idx}')">x</button>
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
@@ -5554,7 +5566,7 @@
                                             <div class="custom-input-row" id="vp-style-custom-input-row-${idx}" style="display: none; margin-top: 4px">
                                                 <input type="text" id="vp-style-custom-input-${idx}" placeholder="e.g. Raspy, Operatic, Soulful..." onkeydown="if (event.key === 'Enter') confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}');" />
                                                 <button class="custom-input-confirm" onclick="confirmCustomTag('vp-style-${idx}', 'vp-style-custom-input-${idx}', 'vp-style-custom-input-row-${idx}')">Add</button>
-                                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-style-custom-input-row-${idx}', 'vp-style-custom-input-${idx}')">&#10005;</button>
+                                                <button class="custom-input-cancel" onclick="hideCustomInput('vp-style-custom-input-row-${idx}', 'vp-style-custom-input-${idx}')">x</button>
                                             </div>
                                         </div>
                                     `;
@@ -5774,7 +5786,7 @@
                 chip.dataset.val = trimmed;
                 chip.dataset.custom = "true";
                 if (options.analyzerCustom) chip.dataset.analyzerCustom = "true";
-                chip.innerHTML = escapeHtml(trimmed) + '<span class="tag-custom-x" onclick="removeCustomTag(this)">✕</span>';
+                chip.innerHTML = escapeHtml(trimmed) + '<span class="tag-custom-x" onclick="removeCustomTag(this)">x</span>';
                 const addBtn = tagRow.querySelector(".tag-add-btn");
                 if (addBtn) tagRow.insertBefore(chip, addBtn);
                 else tagRow.appendChild(chip);
@@ -6095,7 +6107,7 @@
                 renderInfluenceChips();
             }
             function renderInfluenceChips() {
-                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${escapeHtml(v)}</span><span class="inf-chip-x" onclick="removeInfluence('${escapeAttr(v).replace(/'/g, "\\'")}')">✕</span></div>`).join("");
+                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${escapeHtml(v)}</span><span class="inf-chip-x" onclick="removeInfluence('${escapeAttr(v).replace(/'/g, "\\'")}')">x</span></div>`).join("");
             }
 
             // ========================================================================
@@ -6209,7 +6221,7 @@
                                                     <span style="flex:1">${escapeHtml(stepName)}</span>
                                                     <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},-1)">←</button>
                                                     <button class="custom-structure-step-btn" type="button" onclick="moveCustomStructurePoint(${idx},1)">→</button>
-                                                    <button class="custom-structure-step-btn" type="button" onclick="removeCustomStructurePoint(${idx})">✕</button>
+                                                    <button class="custom-structure-step-btn" type="button" onclick="removeCustomStructurePoint(${idx})">x</button>
                                                 </div>
                                                 <div class="custom-structure-step-chords">
                                                     <input type="text" placeholder="Chords (e.g., Em-C-G-D)" value="${escapeAttr(stepChords)}"
@@ -6567,7 +6579,7 @@
 
                 const lyricsText = analysisInput;
                 btn.disabled = true;
-                btn.innerHTML = '<span class="spin">♪</span> Analyzing...';
+                btn.innerHTML = "Analyzing...";
                 resultEl.style.display = "none";
 
                 const prompt = `You are a music expert. Analyze this input and extract comprehensive settings for a song generator.
@@ -6753,7 +6765,7 @@
 
                     resultEl.style.display = "block";
                     resultEl.innerHTML = `<div class="style-result-box">
-                      <span class="style-result-title">${_t("status.analysis_applied", "✓ Analysis Applied")}</span>
+                      <span class="style-result-title">${_t("status.analysis_applied", "Analysis Applied")}</span>
                       ${analysis.genre_key || analysis.genre_label ? `<div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${escapeHtml(getSelectedGenreLabel() || analysis.genre_label || analysis.genre_key || "—")}</span></div>` : ""}
                       ${analysis.mood ? `<div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${escapeHtml(analysis.mood)}</span></div>` : ""}
                       ${analysis.goal ? `<div class="style-applied-row"><span class="style-applied-key">Goal:</span><span class="style-applied-val">${escapeHtml(analysis.goal)}</span></div>` : ""}
@@ -6791,7 +6803,7 @@
                 }
 
                 btn.disabled = false;
-                btn.innerHTML = "&#128269; " + _t("btn.analyze_for_style", "Analyze for Style and Lyrics");
+                btn.innerHTML = _t("btn.analyze_for_style", "Analyze for Style and Lyrics");
             }
 
             // ========================================================================
@@ -6806,7 +6818,7 @@
                 }
                 const btn = document.getElementById("style-apply-btn");
                 btn.disabled = true;
-                btn.innerHTML = '<span class="spin">♪</span> Analyzing...';
+                btn.innerHTML = "Analyzing...";
                 document.getElementById("style-result").style.display = "none";
 
                 const prompt = `You are master in Suno prompts, music style and theory. Analyze this style description and extract settings for a Suno song generator.
@@ -6916,7 +6928,7 @@
                     const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>` : "";
 
                     resultEl.innerHTML = `<div class="style-result-box">
-                      <span class="style-result-title">${_t("status.style_applied", "✓ Style Applied to All Settings")}</span>
+                      <span class="style-result-title">${_t("status.style_applied", "Style Applied to All Settings")}</span>
                             <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
                             <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${getSelectedMood() || s.mood || "—"}</span></div>
                     <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${formatTempoPreference(s.tempo) || "—"}</span></div>
@@ -6937,7 +6949,7 @@
                     resultEl.innerHTML = `<div class="error-box">Style analysis failed: ${escapeHtml(err.message)}</div>`;
                 }
                 btn.disabled = false;
-                btn.innerHTML = "&#10024; " + _t("btn.apply_style", "Apply Style to Settings");
+                btn.innerHTML = _t("btn.apply_style", "Apply Style to Settings");
             }
 
             // ========================================================================
@@ -7804,14 +7816,14 @@
                 const list = document.getElementById("history-list");
                 document.getElementById("hist-count").textContent = history.length ? `(${history.length})` : "";
                 if (!history.length) {
-                    list.innerHTML = `<div class="output-empty" style="padding:30px 0;"><div class="empty-icon" style="font-size:28px;">&#128194;</div><div class="empty-label">${_t("empty.history_label", "No songs saved yet")}</div></div>`;
+                    list.innerHTML = `<div class="output-empty" style="padding:30px 0;"><div class="empty-label">${_t("empty.history_label", "No songs saved yet")}</div></div>`;
                     return;
                 }
                 list.innerHTML = history
                     .map((s) => {
                         const d = new Date(s.savedAt);
                         const ts = d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                        return `<div class="hist-item"><div><div class="hist-title">${escapeHtml(s.title)}</div><div class="hist-meta">${escapeHtml(s.genre)} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">${_t("btn.load", "Load")}</button><button class="btn-sm" onclick="exportSong(${s.id})">${_t("nav.export", "Export")}</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">&#10005;</button></div></div>`;
+                        return `<div class="hist-item"><div><div class="hist-title">${escapeHtml(s.title)}</div><div class="hist-meta">${escapeHtml(s.genre)} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">${_t("btn.load", "Load")}</button><button class="btn-sm" onclick="exportSong(${s.id})">${_t("nav.export", "Export")}</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">x</button></div></div>`;
                     })
                     .join("");
             }
@@ -7933,7 +7945,7 @@
                 closeBackupModal();
 
                 // Show confirmation
-                alert(`Backup exported successfully!\n\nFile: ${filename}\nSongs: ${backupData.songCount}${includeAPI ? "\n\n⚠️ API Key included - Please secure this file!" : ""}`);
+                alert(`Backup exported successfully!\n\nFile: ${filename}\nSongs: ${backupData.songCount}${includeAPI ? "\n\nAPI Key included - Please secure this file!" : ""}`);
             }
 
             function importHistoryBackup(content) {
@@ -8022,7 +8034,7 @@
                         document.getElementById("api-key-input").value = backupData.apiKey;
                         aiClient = new GoogleGenAI({ apiKey: backupData.apiKey });
                         const st = document.getElementById("api-status");
-                        st.textContent = _t("status.ready", "✓ ready");
+                        st.textContent = _t("status.ready", "ready");
                         st.className = "api-status ok";
                         document.getElementById("api-no-key-hint").style.display = "none";
                         fetchGoogleModels(backupData.apiKey);
@@ -8032,7 +8044,7 @@
                         localStorage.setItem("openrouter_api_key", backupData.openrouterKey);
                         document.getElementById("openrouter-key-input").value = backupData.openrouterKey;
                         const ost = document.getElementById("openrouter-status");
-                        ost.textContent = _t("status.ready", "✓ ready");
+                        ost.textContent = _t("status.ready", "ready");
                         ost.className = "api-status ok";
                         document.getElementById("api-no-key-hint").style.display = "none";
                         fetchOpenRouterModels(backupData.openrouterKey);
@@ -8044,11 +8056,11 @@
                     renderHistory();
 
                     // Show success message
-                    const msg = ["✅ Backup imported successfully!", "", `Songs from backup: ${importedSongs.length}`, `Total songs in history: ${history.length}`, "", "(Duplicates merged, most recent versions kept)"];
+                    const msg = ["Backup imported successfully!", "", `Songs from backup: ${importedSongs.length}`, `Total songs in history: ${history.length}`, "", "(Duplicates merged, most recent versions kept)"];
 
-                    if (backupData.apiKey) msg.push("", "🔑 Google AI Studio key restored");
-                    if (backupData.openrouterKey) msg.push("🔑 OpenRouter key restored");
-                    if (backupData.selectedModel) msg.push(`🎛 Model restored: ${backupData.selectedModel}`);
+                    if (backupData.apiKey) msg.push("", "Google AI Studio key restored");
+                    if (backupData.openrouterKey) msg.push("OpenRouter key restored");
+                    if (backupData.selectedModel) msg.push(`Model restored: ${backupData.selectedModel}`);
 
                     alert(msg.join("\n"));
 
@@ -8729,7 +8741,7 @@
                 } catch (e) {
                     alert(_fmt("alert.regen_failed", "Regen failed: {0}", e.message));
                 }
-                btn.textContent = _t("btn.regen", "↺ Regen");
+                btn.textContent = _t("btn.regen", "Regen");
                 btn.classList.remove("loading");
                 btn.disabled = false;
             }
@@ -8813,8 +8825,8 @@
                 dirDiv.style.display = "";
 
                 // Restore action buttons
-                const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${idx},this)">↻ Regen</button>`;
-                const editBtn = `<button class="btn-regen" onclick="editSection(${idx})">✎ Edit</button>`;
+                const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${idx},this)">Regen</button>`;
+                const editBtn = `<button class="btn-regen" onclick="editSection(${idx})">Edit</button>`;
                 actionsSpan.innerHTML = `${regenBtn}${editBtn}`;
             }
 
@@ -9019,8 +9031,8 @@
                     .map((sec, i) => {
                         const cls = sectionClass(sec.type, sec.userProvided);
                         const userBadge = sec.userProvided ? `<span class="user-badge">yours</span>` : "";
-                        const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "&#8635; Regen")}</button>`;
-                        const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t("btn.edit", "&#9998; Edit")}</button>`;
+                        const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "Regen")}</button>`;
+                        const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t("btn.edit", "Edit")}</button>`;
                         const actionBtns = `<span id="section-actions-${i}">${regenBtn}${editBtn}</span>`;
                         return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${actionBtns}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(sec.lines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
                     })
@@ -9042,7 +9054,7 @@
                 card.innerHTML = `
                     <div class="card-header">
                       <div style="margin-bottom:8px;text-align:center;">
-                        <button class="btn-copy" onclick="applySettingsFromAIResult()">&#8679; ${_t("btn.update_card", "Update Settings")}</button>
+                        <button class="btn-copy" onclick="applySettingsFromAIResult()">${_t("btn.update_card", "Update Settings")}</button>
                       </div>
                       <div class="card-header-row"><div>
                       <div class="card-title">${escapeHtml(song.title)}</div>
@@ -9061,7 +9073,7 @@
                       <div class="prod-grid"><div><div class="prod-body">${escapeHtml(song.production)}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
                     </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "&#10548; Copy to Lyrics Tab")}</button><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "Copy to Lyrics Tab")}</button><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
                       <div class="lyrics-content">${lyricsHtml}</div>
                     </div>`;
                 panel.insertBefore(card, panel.firstChild);
@@ -9135,7 +9147,7 @@
                 const genBtn = document.getElementById("gen-btn");
                 if (genBtn) {
                     genBtn.disabled = true;
-                    genBtn.innerHTML = `<span class="spin">&#9834;</span> ${_t("btn.writing", "Writing...")}`;
+                    genBtn.innerHTML = `<span class="spin">...</span> ${_t("btn.writing", "Writing...")}`;
                 }
 
                 const panel = document.getElementById("tab-output");
@@ -9290,7 +9302,7 @@
                 async function runGeneration(maxLyricsChars, overageChars) {
                     const loadCard = document.createElement("div");
                     loadCard.className = "output-card";
-                    loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;"><div style="font-size:24px;margin-bottom:8px;animation:spin 1.2s linear infinite;display:inline-block">&#9834;</div><br>${_t("status.generating", "Writing your song...")}</div>`;
+                    loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating", "Writing your song...")}</div>`;
                     panel.insertBefore(loadCard, panel.firstChild);
 
                     let effectivePrompt = prompt;
@@ -9490,7 +9502,7 @@
 
                     if (genBtn) {
                         genBtn.disabled = false;
-                        genBtn.innerHTML = "&#9834; " + _t("btn.write_song_label", "Write My Song");
+                        genBtn.innerHTML = _t("btn.write_song_label", "Write My Song");
                     }
                 } // end runGeneration
 
