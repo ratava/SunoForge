@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Russian (Русский) translation file.",
   "nav.settings": "⚙ Настройки",
   "nav.vocal": "🎤 Вокал",
@@ -9,7 +9,7 @@
   "nav.chords": "Аккорды",
   "nav.history": "История",
   "nav.export": "Экспорт",
-  "api.no_key_hint": "🔑 Пожалуйста, укажите API-ключ <strong>Google AI Studio</strong> (дешевле) и/или API-ключ <strong>OpenRouter</strong> (больше моделей / дороже) для использования SunoForge.",
+  "api.no_key_hint": "🔑 Пожалуйста, укажите API-ключ <strong>Google AI Studio</strong> (дешевле) и/или API-ключ <strong>OpenRouter</strong> (больше моделей / дороже) или адрес <strong>локального LLM-сервера, совместимого с OpenAI</strong> для использования SunoForge.",
   "api.google_label": "Ключ Google AI Studio:",
   "api.openrouter_label": "Ключ OpenRouter:",
   "api.model_label": "Модель:",
@@ -113,6 +113,7 @@
   "btn.writing": "Пишу...",
   "btn.export": "📥 Экспорт",
   "btn.reset": "✗ Сбросить",
+  "btn.help":  "? Помощь",
   "btn.backup": "Резервная копия",
   "btn.import": "Импорт",
   "btn.clear_all": "Очистить всё",
@@ -180,5 +181,10 @@
   "modal.analyzer.info_box": "Этот анализатор автоматически извлечёт структуру песни и обновит Жанр, Настроение, Темп, Эпоху, Продакшен, Инструментовку, Микс и Влияния на всех вкладках.",
   "modal.backup.title": "📦 Резервная копия истории",
   "modal.backup.security": "⚠ Примечание по безопасности: Включайте API-ключ в резервную копию только если вы храните её надёжно. Никогда не делитесь публично резервными копиями, содержащими API-ключи.",
+
+  "modal.lyrics_too_long.title": "⚠ Текст слишком длинный",
+  "btn.shorten_manually":        "Сократить вручную",
+  "btn.shorten_ai":              "Сократить через ИИ",
+
   "ph.model_filter": "Фильтровать модели…"
 }

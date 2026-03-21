@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Dutch (Nederlands) translation file.",
   "nav.settings": "⚙ Instellingen",
   "nav.vocal": "🎤 Zang",
@@ -9,7 +9,7 @@
   "nav.chords": "Akkoorden",
   "nav.history": "Geschiedenis",
   "nav.export": "Exporteren",
-  "api.no_key_hint": "🔑 Voer een <strong>Google AI Studio</strong> (goedkoper) API-sleutel en/of een <strong>OpenRouter</strong> API-sleutel (meer modellen / duurder) in om SunoForge te gebruiken.",
+  "api.no_key_hint": "🔑 Voer een <strong>Google AI Studio</strong> (goedkoper) API-sleutel, een <strong>OpenRouter</strong> API-sleutel (meer modellen / duurder) of een <strong>lokale OpenAI-compatibele LLM-server</strong>-adres in om SunoForge te gebruiken.",
   "api.google_label": "Google AI Studio-sleutel:",
   "api.openrouter_label": "OpenRouter-sleutel:",
   "api.model_label": "Model:",
@@ -113,6 +113,7 @@
   "btn.writing": "Schrijven...",
   "btn.export": "📥 Exporteren",
   "btn.reset": "✗ Herstellen",
+  "btn.help":  "? Help",
   "btn.backup": "Back-up",
   "btn.import": "Importeren",
   "btn.clear_all": "Alles wissen",
@@ -180,5 +181,10 @@
   "modal.analyzer.info_box": "Deze analysator extraheert automatisch de songstructuur en werkt Genre, Sfeer, Tempo, Tijdperk, Productie, Instrumentatie, Mix en Invloeden bij voor alle tabbladen.",
   "modal.backup.title": "📦 Geschiedenis back-uppen",
   "modal.backup.security": "⚠ Beveiligingsopmerking: Voeg uw API-sleutel alleen toe aan een back-up als u deze veilig opslaat. Deel nooit back-ups met API-sleutels openbaar.",
+
+  "modal.lyrics_too_long.title": "⚠ Teksten te lang",
+  "btn.shorten_manually":        "Handmatig verkorten",
+  "btn.shorten_ai":              "Laat de AI verkorten",
+
   "ph.model_filter": "Modellen filteren…"
 }

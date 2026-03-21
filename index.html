@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai; img-src 'self' data:; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai; img-src 'self' data:; base-uri 'self'; form-action 'self';"
         />
         <title>SunoForge</title>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -1720,7 +1720,10 @@
                 min-height: 28px;
             }
             .model-select-btn:hover,
-            .model-select-btn:focus { outline: none; border-color: var(--accent); }
+            .model-select-btn:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
             .model-select-dropdown {
                 position: absolute;
                 top: calc(100% + 2px);
@@ -1732,7 +1735,7 @@
                 border: 1px solid var(--accent);
                 border-radius: 5px;
                 z-index: 9999;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             }
             .model-select-filter {
                 width: 100%;
@@ -1759,8 +1762,13 @@
                 color: var(--text);
                 white-space: nowrap;
             }
-            .model-option:hover { background: var(--accent); color: #fff; }
-            .model-option.active { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+            .model-option:hover {
+                background: var(--accent);
+                color: #fff;
+            }
+            .model-option.active {
+                background: color-mix(in srgb, var(--accent) 25%, transparent);
+            }
             .api-bar-label {
                 font-size: 12px;
                 color: var(--text-muted);
@@ -1805,6 +1813,41 @@
             .api-status.missing {
                 color: var(--error);
             }
+            .api-bar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+                padding: 2px 0;
+                gap: 8px;
+                user-select: none;
+            }
+            .api-bar-toggle:hover {
+                opacity: 0.82;
+            }
+            .api-bar-toggle-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                min-width: 0;
+                flex-wrap: wrap;
+            }
+            .api-bar-summary-model {
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 300px;
+            }
+            #api-bar-chevron {
+                font-size: 10px;
+                opacity: 0.5;
+                flex-shrink: 0;
+                transition: transform 0.2s;
+            }
             #lang-select {
                 background: var(--surface2);
                 border: 1px solid var(--border);
@@ -1839,44 +1882,63 @@
                     <option value="zh-hant">&#127464;&#127475; 繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260319-004</span>
+                <span class="version" id="version">Version: <br />20260321-001</span>
             </div>
         </header>
 
         <div class="api-bar">
-            <div class="api-bar-row" id="api-no-key-hint">
-                <span class="api-no-key-hint" data-i18n="api.no_key_hint">&#128273; Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.</span>
-            </div>
-            <div class="api-bar-row">
-                <span class="api-bar-label">Google AI Studio Key:</span>
-                <input type="password" id="api-key-input" placeholder="AIza..." />
-                <button class="api-bar-save" onclick="saveApiKey()">Save</button>
-                <span class="api-status missing" id="api-status">⚠ not set</span>
-            </div>
-            <div class="api-bar-row">
-                <span class="api-bar-label">OpenRouter Key:</span>
-                <input type="password" id="openrouter-key-input" placeholder="sk-or-..." />
-                <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
-                <span class="api-status missing" id="openrouter-status">⚠ not set</span>
-            </div>
-            <div class="api-bar-row">
-                <span class="api-bar-label" data-i18n="api.model_label">Model:</span>
-                <input type="hidden" id="model-select" value="gemini-3.1-flash-lite-preview">
-                <div class="model-select-wrap" id="model-select-wrap">
-                    <button type="button" class="model-select-btn" id="model-select-btn" onclick="toggleModelDropdown(event)">
-                        <span id="model-select-label">gemini-3.1-flash-lite-preview (Google)</span>
-                        <span style="opacity:0.5;font-size:10px;flex-shrink:0;">&#9660;</span>
-                    </button>
-                    <div class="model-select-dropdown" id="model-select-dropdown" style="display:none;">
-                        <input type="text" class="model-select-filter" id="model-select-filter"
-                            data-i18n-ph="ph.model_filter" placeholder="Filter models…"
-                            oninput="filterModelOptions(this.value)"
-                            onkeydown="modelFilterKeydown(event)"
-                            autocomplete="off">
-                        <div class="model-select-list" id="model-select-list"></div>
-                    </div>
+            <div class="api-bar-toggle" id="api-bar-toggle" onclick="toggleApiBar()">
+                <div class="api-bar-toggle-info">
+                    <span class="api-bar-label" style="white-space: nowrap">⚙ API &amp; Model</span>
+                    <span class="api-bar-summary-model" id="api-bar-summary-model"></span>
+                    <span class="api-status missing" id="api-bar-sum-google">⚠ Google</span>
+                    <span class="api-status missing" id="api-bar-sum-or">⚠ OR</span>
+                    <span class="api-status missing" id="api-bar-sum-custom">⚠ LLM</span>
                 </div>
-                <span class="api-model-warning" data-i18n="api.cost_warning">&#9888; SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
+                <span id="api-bar-chevron">▼</span>
+            </div>
+            <div id="api-bar-body" style="display: none; flex-direction: column; gap: 5px">
+                <div class="api-bar-row" id="api-no-key-hint">
+                    <span class="api-no-key-hint" data-i18n="api.no_key_hint">&#128273; Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Google AI Studio Key:</span>
+                    <input type="password" id="api-key-input" placeholder="AIza..." />
+                    <button class="api-bar-save" onclick="saveApiKey()">Save</button>
+                    <span class="api-status missing" id="api-status">⚠ not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">OpenRouter Key:</span>
+                    <input type="password" id="openrouter-key-input" placeholder="sk-or-..." />
+                    <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
+                    <span class="api-status missing" id="openrouter-status">⚠ not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Local LLM Server:</span>
+                    <input type="text" id="custom-server-input" placeholder="http://localhost:1234" style="max-width: 280px" />
+                    <button class="api-bar-save" onclick="saveCustomServer()">Save</button>
+                    <button class="api-bar-save" onclick="fetchCustomServerModels()" style="background: var(--success); color: #0e0c0a">Fetch Models</button>
+                    <span class="api-status missing" id="custom-server-status">⚠ not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Local LLM Auth Key:</span>
+                    <input type="password" id="custom-server-key-input" placeholder="sk-... (optional)" style="max-width: 280px" />
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label" data-i18n="api.model_label">Model:</span>
+                    <input type="hidden" id="model-select" value="gemini-3.1-flash-lite-preview" />
+                    <div class="model-select-wrap" id="model-select-wrap">
+                        <button type="button" class="model-select-btn" id="model-select-btn" onclick="toggleModelDropdown(event)">
+                            <span id="model-select-label">gemini-3.1-flash-lite-preview (Google)</span>
+                            <span style="opacity: 0.5; font-size: 10px; flex-shrink: 0">&#9660;</span>
+                        </button>
+                        <div class="model-select-dropdown" id="model-select-dropdown" style="display: none">
+                            <input type="text" class="model-select-filter" id="model-select-filter" data-i18n-ph="ph.model_filter" placeholder="Filter models…" oninput="filterModelOptions(this.value)" onkeydown="modelFilterKeydown(event)" autocomplete="off" />
+                            <div class="model-select-list" id="model-select-list"></div>
+                        </div>
+                    </div>
+                    <span class="api-model-warning" data-i18n="api.cost_warning">&#9888; SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
+                </div>
             </div>
         </div>
 
@@ -1908,7 +1970,7 @@
                             <option value="Chinese (Cantonese)">Chinese (Cantonese)</option>
                             <option value="custom" data-i18n-opt="btn.lang_custom">Custom...</option>
                         </select>
-                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display:none; margin-top:6px;" onchange="localStorage.setItem('sf_song_lang_custom', this.value)" />
+                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="localStorage.setItem('sf_song_lang_custom', this.value)" />
                     </div>
                     <div class="field-group">
                         <label class="field-label" data-i18n="lbl.song_title">Song Title</label>
@@ -2510,7 +2572,7 @@
                         <label class="field-label" data-i18n="lbl.mix_character">Mix Character</label>
                         <div class="tag-row" id="mix-tags">
                             <div class="tag multi" data-val="Warm analog - tape saturation, soft highs, rounded transients">Warm Analog</div>
-                            <div class="tag multi active" data-val="Crisp digital - clean, precise, wide stereo">Crisp Digital</div>
+                            <div class="tag multi active" data-val="Crisp digital - clean, precise, wide stereo, no tape hiss, no analogue hiss">Crisp Digital</div>
                             <div class="tag multi" data-val="Heavy compression - pumping, dense, loud">Heavy Compression</div>
                             <div class="tag multi" data-val="Dynamic and open - wide dynamic range, minimal limiting">Dynamic & Open</div>
                             <div class="tag multi" data-val="Deep low-end - bass-forward, sub-heavy mix">Deep Low-End</div>
@@ -2523,7 +2585,7 @@
                             <div class="tag multi" data-val="Vocal-forward - vocals prominent, clear, upfront">Vocal-Forward</div>
                             <div class="tag multi" data-val="Vocal-balanced - vocals blend naturally with instruments">Vocal-Balanced</div>
                             <div class="tag multi" data-val="Instrumental-focused - instruments emphasized, vocals supportive">Instrumental-Focused</div>
-                            <div class="tag multi" data-val="Warm-mastering - smooth, analog warmth in final master">Warm-Mastering</div>
+                            <div class="tag multi" data-val="Warm-mastering - smooth warmth in final master">Warm-Mastering</div>
                             <div class="tag multi" data-val="Bright-mastering - clear, crisp highs in final master">Bright-Mastering</div>
                             <div class="tag multi" data-val="Dark-mastering - rolled-off highs, subdued brightness">Dark-Mastering</div>
                             <div class="tag multi" data-val="Headphone-optimized - tight stereo image, detail-focused">Headphone-Optimized</div>
@@ -2578,8 +2640,9 @@
                 <div class="action-panel">
                     <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-i18n="btn.analyze">&#128269; Analyze</button>
                     <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">&#9834; Write My Song</button>
-                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">&#128229; Export</button>
+                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">&#128229; Copy to Suno</button>
                     <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">&#10006; Reset</button>
+                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">? Help</button>
                 </div>
 
                 <div class="right-tabs">
@@ -2623,7 +2686,7 @@
 
         <!-- Reset Confirmation Modal -->
         <!-- Validation Modal -->
-        <div class="modal-overlay" id="validation-modal" style="display: none" onclick="if(event.target.id==='validation-modal') closeValidationModal()">
+        <div class="modal-overlay" id="validation-modal" style="display: none" onclick="if (event.target.id === 'validation-modal') closeValidationModal();">
             <div class="modal" style="max-width: 420px">
                 <div class="modal-title" data-i18n="modal.validation.title">&#9888; Required Field Missing</div>
                 <p id="validation-modal-msg" style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6"></p>
@@ -2694,6 +2757,17 @@
             </div>
         </div>
 
+        <div class="modal-overlay" id="lyrics-too-long-modal" style="display: none">
+            <div class="modal confirm-modal" style="max-width: 460px">
+                <div class="modal-title" data-i18n="modal.lyrics_too_long.title">⚠ Lyrics Too Long</div>
+                <div id="lyrics-too-long-detail" style="padding: 0 24px 16px; font-size: 13px; color: var(--text-muted); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6; white-space: pre-line"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveLyricsTooLong('manual')" data-i18n="btn.shorten_manually">Manually Shorten</button>
+                    <button class="btn-primary" onclick="resolveLyricsTooLong('ai')" data-i18n="btn.shorten_ai">Have the AI Shorten</button>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-overlay" id="analyzer-modal" style="display: none" onclick="closeAnalyzerModal(event)">
             <div class="modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
                 <div class="modal-title" data-i18n="modal.analyzer.title">&#127911; Style &amp; Lyrics Analyzer</div>
@@ -2752,56 +2826,62 @@
             // ============================================================
             window.I18N = (() => {
                 let _data = {};
-                let _locale = 'en';
-                const t = (key, fallback) =>
-                    _data[key] !== undefined ? _data[key] :
-                    (fallback !== undefined ? fallback : key);
+                let _locale = "en";
+                const t = (key, fallback) => (_data[key] !== undefined ? _data[key] : fallback !== undefined ? fallback : key);
                 const fmt = (key, fallback, ...args) => {
                     let s = t(key, fallback);
-                    args.forEach((a, i) => { s = s.replace(new RegExp(`\\{${i}\\}`, 'g'), a); });
+                    args.forEach((a, i) => {
+                        s = s.replace(new RegExp(`\\{${i}\\}`, "g"), a);
+                    });
                     return s;
                 };
                 const apply = () => {
-                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                    document.querySelectorAll("[data-i18n]").forEach((el) => {
                         const v = t(el.dataset.i18n);
                         if (v !== el.dataset.i18n) el.innerHTML = v;
                     });
-                    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                    document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
                         const v = t(el.dataset.i18nPh);
                         if (v !== el.dataset.i18nPh) el.placeholder = v;
                     });
-                    const s = document.getElementById('lang-select');
+                    const s = document.getElementById("lang-select");
                     if (s) s.value = _locale;
                 };
                 const switchLocale = async (locale) => {
-                    _data = {}; _locale = locale;
-                    if (locale !== 'en') {
+                    _data = {};
+                    _locale = locale;
+                    if (locale !== "en") {
                         try {
-                            const r = await fetch('lang/' + locale + '.json');
-                            if (!r.ok) throw new Error('HTTP ' + r.status);
+                            const r = await fetch("lang/" + locale + ".json");
+                            if (!r.ok) throw new Error("HTTP " + r.status);
                             _data = await r.json();
                         } catch (e) {
                             console.warn(`[i18n] Cannot load "lang/${locale}.json": ${e.message}`);
-                            _data = {}; _locale = 'en';
+                            _data = {};
+                            _locale = "en";
                         }
                     }
                     // Restore English originals, then overlay translations
-                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                    document.querySelectorAll("[data-i18n]").forEach((el) => {
                         if (el.dataset.i18nEn !== undefined) el.innerHTML = el.dataset.i18nEn;
                     });
-                    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                    document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
                         if (el.dataset.i18nPhEn !== undefined) el.placeholder = el.dataset.i18nPhEn;
                     });
                     apply();
-                    localStorage.setItem('sf_locale', _locale);
+                    localStorage.setItem("sf_locale", _locale);
                 };
                 const init = async () => {
                     // Snapshot live English content as fallback before any translation runs
-                    document.querySelectorAll('[data-i18n]').forEach(el => { el.dataset.i18nEn = el.innerHTML; });
-                    document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.dataset.i18nPhEn = el.placeholder; });
-                    const saved = localStorage.getItem('sf_locale') || 'en';
-                    if (saved !== 'en') await switchLocale(saved);
-                    const s = document.getElementById('lang-select');
+                    document.querySelectorAll("[data-i18n]").forEach((el) => {
+                        el.dataset.i18nEn = el.innerHTML;
+                    });
+                    document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
+                        el.dataset.i18nPhEn = el.placeholder;
+                    });
+                    const saved = localStorage.getItem("sf_locale") || "en";
+                    if (saved !== "en") await switchLocale(saved);
+                    const s = document.getElementById("lang-select");
                     if (s) s.value = _locale;
                 };
                 return { t, fmt, apply, switchLocale, init };
@@ -2812,11 +2892,14 @@
             import { GoogleGenAI } from "@google/genai";
 
             let aiClient = null;
-            let activeApiProvider = localStorage.getItem("active_api_provider") || "google"; // "google" | "openrouter"
+            let activeApiProvider = localStorage.getItem("active_api_provider") || "google"; // "google" | "openrouter" | "custom"
             let selectedModel = localStorage.getItem("selected_model") || "gemini-3.1-flash-lite-preview";
-            let modelProviderMap = {}; // maps model ID → "google" | "openrouter"
-            let googleModels = [];      // cached list from last successful Google fetch
-            let openrouterModels = [];  // cached list from last successful OpenRouter fetch
+            let modelProviderMap = {}; // maps model ID → "google" | "openrouter" | "custom"
+            let googleModels = []; // cached list from last successful Google fetch
+            let openrouterModels = []; // cached list from last successful OpenRouter fetch
+            let customServerAddress = localStorage.getItem("custom_server_address") || "";
+            let customModels = JSON.parse(localStorage.getItem("custom_models") || "[]"); // manually-added model IDs
+            let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
 
             // i18n shorthand helpers — delegate through the global engine
             const _t = (k, fb) => window.I18N.t(k, fb);
@@ -2826,21 +2909,42 @@
             async function callAI(prompt) {
                 const model = document.getElementById("model-select")?.value || selectedModel;
                 const provider = modelProviderMap[model] || activeApiProvider;
-                if (provider === "openrouter") {
+                // Local OpenAI-compatible LLM server branch (LM Studio, Ollama, vLLM, etc.)
+                if (provider === "custom") {
+                    const addr = localStorage.getItem("custom_server_address");
+                    if (!addr) throw new Error("Local OpenAI compatible LLM server address not set — enter it in the API bar.");
+                    const key = localStorage.getItem("custom_server_key");
+                    const headers = { "Content-Type": "application/json" };
+                    if (key) headers["Authorization"] = "Bearer " + key;
+                    const resp = await fetch(addr.replace(/\/$/, "") + "/v1/chat/completions", {
+                        method: "POST",
+                        headers,
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [{ role: "user", content: prompt }],
+                        }),
+                    });
+                    if (!resp.ok) {
+                        const errText = await resp.text();
+                        throw new Error("Local LLM server error " + resp.status + ": " + errText.slice(0, 200));
+                    }
+                    const data = await resp.json();
+                    return { text: data.choices?.[0]?.message?.content || "" };
+                } else if (provider === "openrouter") {
                     const key = localStorage.getItem("openrouter_api_key");
                     if (!key) throw new Error("OpenRouter key not set — enter your key in the API Key bar.");
                     const resp = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": "Bearer " + key,
+                            Authorization: "Bearer " + key,
                             "HTTP-Referer": location.href,
-                            "X-Title": "SunoForge"
+                            "X-Title": "SunoForge",
                         },
                         body: JSON.stringify({
                             model: model,
-                            messages: [{ role: "user", content: prompt }]
-                        })
+                            messages: [{ role: "user", content: prompt }],
+                        }),
                     });
                     if (!resp.ok) {
                         const errText = await resp.text();
@@ -2861,9 +2965,9 @@
                     const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
                     if (!resp.ok) throw new Error("HTTP " + resp.status);
                     const data = await resp.json();
-                    const models = (data.models || []).filter(m => m.name && m.supportedGenerationMethods?.includes("generateContent"));
+                    const models = (data.models || []).filter((m) => m.name && m.supportedGenerationMethods?.includes("generateContent"));
                     if (models.length === 0) throw new Error("No models returned");
-                    googleModels = models.map(m => ({ id: m.name.replace("models/", ""), label: m.displayName || m.name.replace("models/", ""), provider: "Google" }));
+                    googleModels = models.map((m) => ({ id: m.name.replace("models/", ""), label: m.displayName || m.name.replace("models/", ""), provider: "Google" }));
                 } catch (err) {
                     console.warn("Could not fetch Google models:", err);
                     googleModels = [{ id: "gemini-3.1-flash-lite-preview", label: "gemini-3.1-flash-lite-preview", provider: "Google" }];
@@ -2875,20 +2979,20 @@
             async function fetchOpenRouterModels(apiKey) {
                 try {
                     const resp = await fetch("https://openrouter.ai/api/v1/models", {
-                        headers: { "Authorization": "Bearer " + apiKey }
+                        headers: { Authorization: "Bearer " + apiKey },
                     });
                     if (!resp.ok) throw new Error("HTTP " + resp.status);
                     const data = await resp.json();
-                    const models = (data.data || []);
+                    const models = data.data || [];
                     if (models.length === 0) throw new Error("No models returned");
                     // Only keep chat/text-output models — exclude image generators and agentic-only models
                     // architecture.modality is formatted as "input->output"; keep where output includes "text"
                     openrouterModels = models
-                        .filter(m => {
+                        .filter((m) => {
                             const output = (m.architecture?.modality || "text->text").split("->")[1] || "";
                             return output.includes("text");
                         })
-                        .map(m => ({ id: m.id, label: m.name || m.id, provider: "OpenRouter" }));
+                        .map((m) => ({ id: m.id, label: m.name || m.id, provider: "OpenRouter" }));
                 } catch (err) {
                     console.warn("Could not fetch OpenRouter models:", err);
                     openrouterModels = [{ id: "gemini-3.1-flash-lite-preview", label: "gemini-3.1-flash-lite-preview (fallback)", provider: "OpenRouter" }];
@@ -2898,25 +3002,29 @@
 
             // Merge Google (first) + OpenRouter models into one list and repopulate the selector
             function refreshCombinedModelList() {
-                const combined = [...googleModels, ...openrouterModels];
+                const csModels = customServerModels.map((id) => ({ id, label: id, provider: "Custom" }));
+                const manualModels = customModels.filter((id) => !customServerModels.includes(id)).map((id) => ({ id, label: id + " (manual)", provider: "Custom" }));
+                const combined = [...csModels, ...manualModels, ...googleModels, ...openrouterModels];
                 if (combined.length === 0) return;
                 // Build provider map for callAI routing
                 modelProviderMap = {};
-                combined.forEach(m => { modelProviderMap[m.id] = m.provider === "Google" ? "google" : "openrouter"; });
+                combined.forEach((m) => {
+                    if (m.provider === "Google") modelProviderMap[m.id] = "google";
+                    else if (m.provider === "OpenRouter") modelProviderMap[m.id] = "openrouter";
+                    else if (m.provider === "Custom") modelProviderMap[m.id] = "custom";
+                });
                 // Prioritise the JS variable (seeded from localStorage on startup) over the
                 // DOM element, whose value is just the hardcoded placeholder until lists load
                 const currentVal = selectedModel || document.getElementById("model-select")?.value;
-                const hasCurrentVal = combined.some(m => m.id === currentVal);
+                const hasCurrentVal = combined.some((m) => m.id === currentVal);
                 let defaultId = hasCurrentVal ? currentVal : null;
                 if (!defaultId) {
                     const preferredIds = ["gemini-3.1-flash-lite-preview", "google/gemini-2.0-flash-lite", "google/gemini-flash-lite"];
-                    const fuzzy = combined.find(m => {
+                    const fuzzy = combined.find((m) => {
                         const id = m.id.toLowerCase();
                         return id.includes("gemini") && id.includes("flash") && (id.includes("lite") || id.includes("light"));
                     });
-                    defaultId = preferredIds.find(pid => combined.some(m => m.id === pid))
-                        || (fuzzy && fuzzy.id)
-                        || combined[0].id;
+                    defaultId = preferredIds.find((pid) => combined.some((m) => m.id === pid)) || (fuzzy && fuzzy.id) || combined[0].id;
                 }
                 applyModelList(combined, defaultId);
             }
@@ -2928,14 +3036,18 @@
                 list.innerHTML = "";
                 let matched = false;
                 let defaultLabel = "";
-                models.forEach(m => {
+                models.forEach((m) => {
                     const label = m.label + (m.provider ? " (" + m.provider + ")" : "");
                     const div = document.createElement("div");
                     div.className = "model-option";
                     div.dataset.value = m.id;
                     div.textContent = label;
                     div.addEventListener("click", () => selectModel(m.id, label));
-                    if (m.id === defaultId) { div.classList.add("active"); matched = true; defaultLabel = label; }
+                    if (m.id === defaultId) {
+                        div.classList.add("active");
+                        matched = true;
+                        defaultLabel = label;
+                    }
                     list.appendChild(div);
                 });
                 if (!matched && list.children.length > 0) {
@@ -2970,16 +3082,15 @@
             // Filter visible options in the model dropdown to those matching the query
             function filterModelOptions(query) {
                 const q = query.trim().toLowerCase();
-                document.querySelectorAll("#model-select-list .model-option").forEach(item => {
-                    item.style.display = (!q || item.textContent.toLowerCase().includes(q)) ? "" : "none";
+                document.querySelectorAll("#model-select-list .model-option").forEach((item) => {
+                    item.style.display = !q || item.textContent.toLowerCase().includes(q) ? "" : "none";
                 });
             }
 
             // On Enter in filter input, click the first visible option
             function modelFilterKeydown(e) {
                 if (e.key === "Enter") {
-                    const first = Array.from(document.querySelectorAll("#model-select-list .model-option"))
-                        .find(el => el.style.display !== "none");
+                    const first = Array.from(document.querySelectorAll("#model-select-list .model-option")).find((el) => el.style.display !== "none");
                     if (first) first.click();
                 }
             }
@@ -2995,9 +3106,10 @@
                 activeApiProvider = modelProviderMap[id] || activeApiProvider;
                 localStorage.setItem("active_api_provider", activeApiProvider);
                 document.getElementById("model-select-dropdown").style.display = "none";
-                document.querySelectorAll("#model-select-list .model-option").forEach(el => {
+                document.querySelectorAll("#model-select-list .model-option").forEach((el) => {
                     el.classList.toggle("active", el.dataset.value === id);
                 });
+                updateApiBarSummary();
             }
 
             // Security: HTML escape utility to prevent XSS attacks
@@ -3021,8 +3133,19 @@
 
             function saveApiKey() {
                 const key = document.getElementById("api-key-input").value.trim();
+                const st = document.getElementById("api-status");
                 if (!key) {
-                    alert(_t('alert.no_google_key', 'Please enter a Google AI Studio API key.'));
+                    localStorage.removeItem("gemini_api_key");
+                    aiClient = null;
+                    st.textContent = "⚠ not set";
+                    st.className = "api-status missing";
+                    if (activeApiProvider === "google") {
+                        activeApiProvider = localStorage.getItem("openrouter_api_key") ? "openrouter"
+                            : localStorage.getItem("custom_server_address") ? "custom" : "google";
+                    }
+                    const hasAny = localStorage.getItem("openrouter_api_key") || localStorage.getItem("custom_server_address");
+                    if (!hasAny) document.getElementById("api-no-key-hint").style.display = "";
+                    updateApiBarSummary();
                     return;
                 }
                 // Security: Warn about localStorage
@@ -3031,26 +3154,156 @@
                 aiClient = new GoogleGenAI({ apiKey: key });
                 activeApiProvider = "google";
                 document.getElementById("api-no-key-hint").style.display = "none";
-                const st = document.getElementById("api-status");
-                st.textContent = _t('status.ready', '✓ ready');
+                st.textContent = _t("status.ready", "✓ ready");
                 st.className = "api-status ok";
                 fetchGoogleModels(key);
+                updateApiBarSummary();
+                toggleApiBar(false);
             }
 
             function saveOpenRouterKey() {
                 const key = document.getElementById("openrouter-key-input").value.trim();
+                const st = document.getElementById("openrouter-status");
                 if (!key) {
-                    alert(_t('alert.no_or_key', 'Please enter an OpenRouter API key.'));
+                    localStorage.removeItem("openrouter_api_key");
+                    openrouterModels = [];
+                    refreshCombinedModelList();
+                    st.textContent = "⚠ not set";
+                    st.className = "api-status missing";
+                    if (activeApiProvider === "openrouter") {
+                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google"
+                            : localStorage.getItem("custom_server_address") ? "custom" : "google";
+                    }
+                    const hasAny = localStorage.getItem("gemini_api_key") || localStorage.getItem("custom_server_address");
+                    if (!hasAny) document.getElementById("api-no-key-hint").style.display = "";
+                    updateApiBarSummary();
                     return;
                 }
                 console.warn("WARNING: API key is stored in browser localStorage (not encrypted). Only use this application on trusted devices.");
                 localStorage.setItem("openrouter_api_key", key);
                 activeApiProvider = "openrouter";
                 document.getElementById("api-no-key-hint").style.display = "none";
-                const st = document.getElementById("openrouter-status");
-                st.textContent = _t('status.ready', '✓ ready');
+                st.textContent = _t("status.ready", "✓ ready");
                 st.className = "api-status ok";
                 fetchOpenRouterModels(key);
+                updateApiBarSummary();
+                toggleApiBar(false);
+            }
+
+            function saveCustomServer() {
+                const addr = document.getElementById("custom-server-input").value.trim().replace(/\/$/, "");
+                const st = document.getElementById("custom-server-status");
+                if (!addr) {
+                    localStorage.removeItem("custom_server_address");
+                    localStorage.removeItem("custom_server_key");
+                    document.getElementById("custom-server-key-input").value = "";
+                    customServerAddress = "";
+                    customServerModels = [];
+                    customModels = customModels.filter((id) => modelProviderMap[id] !== "custom");
+                    localStorage.setItem("custom_models", JSON.stringify(customModels));
+                    refreshCombinedModelList();
+                    st.textContent = "⚠ not set";
+                    st.className = "api-status missing";
+                    if (activeApiProvider === "custom") {
+                        activeApiProvider = localStorage.getItem("gemini_api_key") ? "google"
+                            : localStorage.getItem("openrouter_api_key") ? "openrouter" : "google";
+                        localStorage.setItem("active_api_provider", activeApiProvider);
+                    }
+                    const hasAny = localStorage.getItem("gemini_api_key") || localStorage.getItem("openrouter_api_key");
+                    if (!hasAny) document.getElementById("api-no-key-hint").style.display = "";
+                    updateApiBarSummary();
+                    return;
+                }
+                try {
+                    new URL(addr);
+                } catch {
+                    alert("Please enter a valid URL (e.g. http://localhost:1234).");
+                    return;
+                }
+                localStorage.setItem("custom_server_address", addr);
+                customServerAddress = addr;
+                const key = document.getElementById("custom-server-key-input").value.trim();
+                if (key) {
+                    localStorage.setItem("custom_server_key", key);
+                } else {
+                    localStorage.removeItem("custom_server_key");
+                }
+                activeApiProvider = "custom";
+                localStorage.setItem("active_api_provider", "custom");
+                document.getElementById("api-no-key-hint").style.display = "none";
+                st.textContent = "✓ saved";
+                st.className = "api-status ok";
+                customModels.forEach((id) => { modelProviderMap[id] = "custom"; });
+                fetchCustomServerModels(addr);
+                updateApiBarSummary();
+                toggleApiBar(false);
+            }
+
+            async function fetchCustomServerModels(addr) {
+                const url = (addr || customServerAddress || localStorage.getItem("custom_server_address") || "").replace(/\/$/, "");
+                if (!url) {
+                    alert("Save a server address first.");
+                    return;
+                }
+                const st = document.getElementById("custom-server-status");
+                st.textContent = "⟳ fetching\u2026";
+                st.className = "api-status";
+                try {
+                    const fetchKey = localStorage.getItem("custom_server_key");
+                    const fetchHeaders = fetchKey ? { "Authorization": "Bearer " + fetchKey } : undefined;
+                    const resp = await fetch(url + "/v1/models", fetchHeaders ? { headers: fetchHeaders } : undefined);
+                    if (!resp.ok) throw new Error("HTTP " + resp.status);
+                    const data = await resp.json();
+                    const ids = (data.data || []).map((m) => m.id).filter(Boolean);
+                    if (ids.length === 0) throw new Error("No models returned — is the server running with a model loaded?");
+                    customServerModels = ids;
+                    ids.forEach((id) => { modelProviderMap[id] = "custom"; });
+                    refreshCombinedModelList();
+                    const current = document.getElementById("model-select")?.value;
+                    if (!customServerModels.includes(current) && !customModels.includes(current)) {
+                        selectModel(ids[0], ids[0]);
+                    }
+                    st.textContent = "✓ " + ids.length + " model" + (ids.length !== 1 ? "s" : "");
+                    st.className = "api-status ok";
+                } catch (err) {
+                    console.error("fetchCustomServerModels error:", err);
+                    st.textContent = "⚠ fetch failed";
+                    st.className = "api-status missing";
+                    alert("Could not fetch models from " + url + "\n\nMake sure the local OpenAI compatible LLM server is running.\n\nError: " + err.message);
+                }
+                updateApiBarSummary();
+            }
+
+            function toggleApiBar(forceOpen) {
+                const body = document.getElementById("api-bar-body");
+                const chevron = document.getElementById("api-bar-chevron");
+                const open = forceOpen !== undefined ? forceOpen : body.style.display === "none";
+                body.style.display = open ? "flex" : "none";
+                if (chevron) chevron.style.transform = open ? "rotate(0deg)" : "rotate(-90deg)";
+            }
+
+            function updateApiBarSummary() {
+                const modelLabel = document.getElementById("model-select-label")?.textContent || "";
+                const el = document.getElementById("api-bar-summary-model");
+                if (el) el.textContent = modelLabel;
+                const googleOk = !!localStorage.getItem("gemini_api_key");
+                const orOk = !!localStorage.getItem("openrouter_api_key");
+                const csOk = !!localStorage.getItem("custom_server_address");
+                const sg = document.getElementById("api-bar-sum-google");
+                const so = document.getElementById("api-bar-sum-or");
+                const sc = document.getElementById("api-bar-sum-custom");
+                if (sg) {
+                    sg.textContent = googleOk ? "✓ Google" : "⚠ Google";
+                    sg.className = "api-status " + (googleOk ? "ok" : "missing");
+                }
+                if (so) {
+                    so.textContent = orOk ? "✓ OR" : "⚠ OR";
+                    so.className = "api-status " + (orOk ? "ok" : "missing");
+                }
+                if (sc) {
+                    sc.textContent = csOk ? "✓ LLM" : "⚠ LLM";
+                    sc.className = "api-status " + (csOk ? "ok" : "missing");
+                }
             }
 
             // Auto-load saved API key on startup
@@ -3063,7 +3316,7 @@
                     aiClient = new GoogleGenAI({ apiKey: saved });
                     activeApiProvider = "google";
                     const st = document.getElementById("api-status");
-                    st.textContent = _t('status.ready', '✓ ready');
+                    st.textContent = _t("status.ready", "✓ ready");
                     st.className = "api-status ok";
                     // Fetch models asynchronously after DOM is ready
                     fetchGoogleModels(saved);
@@ -3073,11 +3326,26 @@
                     document.getElementById("api-no-key-hint").style.display = "none";
                     document.getElementById("openrouter-key-input").value = orKey;
                     const ost = document.getElementById("openrouter-status");
-                    ost.textContent = _t('status.ready', '✓ ready');
+                    ost.textContent = _t("status.ready", "✓ ready");
                     ost.className = "api-status ok";
                     if (!saved) activeApiProvider = "openrouter";
                     fetchOpenRouterModels(orKey);
                 }
+                // Restore custom server address and auto-fetch models
+                const csAddr = localStorage.getItem("custom_server_address");
+                if (csAddr) {
+                    customServerAddress = csAddr;
+                    document.getElementById("custom-server-input").value = csAddr;
+                    document.getElementById("api-no-key-hint").style.display = "none";
+                    if (!saved && !orKey) activeApiProvider = "custom";
+                    customModels.forEach((id) => { modelProviderMap[id] = "custom"; });
+                    if (customModels.length) refreshCombinedModelList();
+                    fetchCustomServerModels(csAddr);
+                }
+                const csKey = localStorage.getItem("custom_server_key");
+                if (csKey) document.getElementById("custom-server-key-input").value = csKey;
+                updateApiBarSummary();
+                toggleApiBar(!(saved || orKey || csAddr));
             })();
 
             // Close model dropdown on outside click or Escape key
@@ -4833,13 +5101,15 @@
                 const formatTime = (seconds) => {
                     const mins = Math.floor(seconds / 60);
                     const secs = seconds % 60;
-                    return secs > 0 ? `${mins}:${secs.toString().padStart(2, "0")}` : `${mins} minutes`;
+                    if (mins > 0 && secs > 0) return `${mins} minute${mins !== 1 ? "s" : ""} ${secs} second${secs !== 1 ? "s" : ""}`;
+                    if (mins > 0) return `${mins} minute${mins !== 1 ? "s" : ""}`;
+                    return `${secs} second${secs !== 1 ? "s" : ""}`;
                 };
 
                 if (min === max) {
                     return formatTime(min);
                 } else {
-                    return `${formatTime(min)} to ${formatTime(max)}`;
+                    return `Between ${formatTime(min)} and ${formatTime(max)}`;
                 }
             }
             function formatTempoPreference(value) {
@@ -4952,31 +5222,31 @@
                 return custom || getActive("rhyme-tags");
             }
             function getSongLanguage() {
-                const sel = document.getElementById('song-language');
-                if (!sel) return 'English';
-                if (sel.value === 'custom') {
-                    return document.getElementById('song-language-custom').value.trim() || 'English';
+                const sel = document.getElementById("song-language");
+                if (!sel) return "English";
+                if (sel.value === "custom") {
+                    return document.getElementById("song-language-custom").value.trim() || "English";
                 }
                 return sel.value;
             }
             function onSongLanguageChange(sel) {
-                const custom = document.getElementById('song-language-custom');
-                custom.style.display = sel.value === 'custom' ? '' : 'none';
-                localStorage.setItem('sf_song_lang', sel.value);
+                const custom = document.getElementById("song-language-custom");
+                custom.style.display = sel.value === "custom" ? "" : "none";
+                localStorage.setItem("sf_song_lang", sel.value);
             }
             function applySongLanguageSetting(lang) {
                 if (!lang) return;
-                const sel = document.getElementById('song-language');
-                const custom = document.getElementById('song-language-custom');
+                const sel = document.getElementById("song-language");
+                const custom = document.getElementById("song-language-custom");
                 if (!sel) return;
-                const opt = Array.from(sel.options).find(o => o.value === lang);
+                const opt = Array.from(sel.options).find((o) => o.value === lang);
                 if (opt) {
                     sel.value = lang;
-                    custom.style.display = 'none';
+                    custom.style.display = "none";
                 } else {
-                    sel.value = 'custom';
+                    sel.value = "custom";
                     custom.value = lang;
-                    custom.style.display = '';
+                    custom.style.display = "";
                 }
             }
             function getSelectedMood() {
@@ -5924,7 +6194,7 @@
                 if (!sequenceEl || !flowEl) return;
                 if (!customStructureDraft.length) {
                     sequenceEl.innerHTML = `<div class="custom-structure-empty">No custom steps yet. Click a structure block above to start building your flow.</div>`;
-                    flowEl.textContent = _t('empty.no_steps', 'No custom steps yet.');
+                    flowEl.textContent = _t("empty.no_steps", "No custom steps yet.");
                     return;
                 }
                 flowEl.textContent = structureFlowFromSequence(customStructureDraft);
@@ -6008,7 +6278,7 @@
             }
             function applyCustomStructureBuilder(sourceOverride = null) {
                 if (!customStructureDraft.length) {
-                    alert(_t('alert.no_struct_points', 'Add at least one structure point first.'));
+                    alert(_t("alert.no_struct_points", "Add at least one structure point first."));
                     return;
                 }
                 const name = document.getElementById("custom-structure-name").value.trim() || "Custom Structure";
@@ -6483,7 +6753,7 @@
 
                     resultEl.style.display = "block";
                     resultEl.innerHTML = `<div class="style-result-box">
-                      <span class="style-result-title">${_t('status.analysis_applied', '✓ Analysis Applied')}</span>
+                      <span class="style-result-title">${_t("status.analysis_applied", "✓ Analysis Applied")}</span>
                       ${analysis.genre_key || analysis.genre_label ? `<div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${escapeHtml(getSelectedGenreLabel() || analysis.genre_label || analysis.genre_key || "—")}</span></div>` : ""}
                       ${analysis.mood ? `<div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${escapeHtml(analysis.mood)}</span></div>` : ""}
                       ${analysis.goal ? `<div class="style-applied-row"><span class="style-applied-key">Goal:</span><span class="style-applied-val">${escapeHtml(analysis.goal)}</span></div>` : ""}
@@ -6521,7 +6791,7 @@
                 }
 
                 btn.disabled = false;
-                btn.innerHTML = "&#128269; " + _t('btn.analyze_for_style', 'Analyze for Style and Lyrics');
+                btn.innerHTML = "&#128269; " + _t("btn.analyze_for_style", "Analyze for Style and Lyrics");
             }
 
             // ========================================================================
@@ -6531,7 +6801,7 @@
                 const styleInput = document.getElementById("style-input").value.trim();
                 const selectedMusicalKey = getSelectedMusicalKey();
                 if (!styleInput) {
-                    alert(_t('alert.no_style', 'Please describe a style first.'));
+                    alert(_t("alert.no_style", "Please describe a style first."));
                     return;
                 }
                 const btn = document.getElementById("style-apply-btn");
@@ -6646,7 +6916,7 @@
                     const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>` : "";
 
                     resultEl.innerHTML = `<div class="style-result-box">
-                      <span class="style-result-title">${_t('status.style_applied', '✓ Style Applied to All Settings')}</span>
+                      <span class="style-result-title">${_t("status.style_applied", "✓ Style Applied to All Settings")}</span>
                             <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
                             <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${getSelectedMood() || s.mood || "—"}</span></div>
                     <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${formatTempoPreference(s.tempo) || "—"}</span></div>
@@ -6667,7 +6937,7 @@
                     resultEl.innerHTML = `<div class="error-box">Style analysis failed: ${escapeHtml(err.message)}</div>`;
                 }
                 btn.disabled = false;
-                btn.innerHTML = "&#10024; " + _t('btn.apply_style', 'Apply Style to Settings');
+                btn.innerHTML = "&#10024; " + _t("btn.apply_style", "Apply Style to Settings");
             }
 
             // ========================================================================
@@ -6695,10 +6965,10 @@
             }
             function copyText(el, text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    el.textContent = _t('btn.copied', 'Copied!');
+                    el.textContent = _t("btn.copied", "Copied!");
                     el.classList.add("copied");
                     setTimeout(() => {
-                        el.textContent = _t('btn.copy', 'Copy');
+                        el.textContent = _t("btn.copy", "Copy");
                         el.classList.remove("copied");
                     }, 2000);
                 });
@@ -6783,6 +7053,22 @@
                     const overflow = fullPrompt.slice(song.suno_style_prompt.length).trim();
                     if (overflow) {
                         styleMetaTag = normalizeStyleMetaTag(styleMetaTag ? `${styleMetaTag.replace(/^\[Style:\s*/i, "").replace(/\]$/, "")} ${overflow}` : overflow);
+                    }
+                }
+
+                // Inject duration into style prompt, or [Style:] meta tag if it would exceed 1000 chars
+                if (song.durationPreference) {
+                    const durationLine = `Duration: ${song.durationPreference}`;
+                    if (song.suno_style_prompt.length + 1 + durationLine.length <= 1000) {
+                        song.suno_style_prompt = song.suno_style_prompt ? `${song.suno_style_prompt}\n${durationLine}` : durationLine;
+                    } else {
+                        const innerTag = styleMetaTag
+                            ? styleMetaTag
+                                  .replace(/^\[Style:\s*/i, "")
+                                  .replace(/\]$/, "")
+                                  .trim()
+                            : "";
+                        styleMetaTag = normalizeStyleMetaTag(innerTag ? `${durationLine}\n${innerTag}` : durationLine);
                     }
                 }
 
@@ -6892,8 +7178,9 @@
             function confirmReset() {
                 // Explicitly clear all text fields so browser form-memory / autocomplete
                 // does not repopulate them after the page reload.
-                document.querySelectorAll("input[type=text], input:not([type]), textarea")
-                    .forEach(el => { el.value = ""; });
+                document.querySelectorAll("input[type=text], input:not([type]), textarea").forEach((el) => {
+                    el.value = "";
+                });
                 // Clear session-local app state from localStorage (keep API keys and history).
                 localStorage.removeItem("selected_model");
                 localStorage.removeItem("active_api_provider");
@@ -6904,6 +7191,76 @@
             }
 
             let submitConfirmResolver = null;
+            let _lyricsTooLongResolver = null;
+            function calcAssembledLyricsLength(song) {
+                if (!Array.isArray(song.sections)) return 0;
+
+                // Build the same [Style: ...] meta tag that exportSong prepends,
+                // so the length check matches what actually gets pasted into Suno.
+                const sp = song.soundProfile;
+                const tempoPreference = formatTempoPreference(song.tempoPreference || "AI Choose");
+                const vocalConfig = song.vocalProfiles ? formatVocalProfilesForPrompt(song.vocalProfiles) : song.vocalGender ? formatVocalGenderValue(song.vocalGender) : "Not specified";
+                const verseLength = formatLengthPreference(song.verseLength);
+                const chorusLength = formatLengthPreference(song.chorusLength);
+                const styleLines = [];
+                if (vocalConfig && vocalConfig !== "Not specified") styleLines.push(`Vocal: ${vocalConfig}`);
+                if (song.mood) styleLines.push(`Mood: ${song.mood}`);
+                if (song.goal && song.goal !== "Not specified") styleLines.push(`Goal: ${song.goal}`);
+                if (song.rhythm && song.rhythm !== "AI Choose") styleLines.push(`Rhythm: ${song.rhythm}`);
+                if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleLines.push(`Groove Feel: ${song.grooveFeel}`);
+                if (song.pov) styleLines.push(`Perspective: ${song.pov}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (verseLength && verseLength !== "Follow Structure") styleLines.push(`Verse Length: ${verseLength}`);
+                if (chorusLength && chorusLength !== "Follow Structure") styleLines.push(`Chorus Length: ${chorusLength}`);
+                if (sp?.eras?.length) styleLines.push(`Era: ${sp.eras.join(", ")}`);
+                if (sp?.styles?.length) styleLines.push(`Production style: ${sp.styles.join(", ")}`);
+                if (sp?.instruments?.length) styleLines.push(`Instruments: ${sp.instruments.join(", ")}`);
+                if (sp?.insts?.length) styleLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
+                if (sp?.bass && sp.bass !== "AI Choose") styleLines.push(`Bass: ${sp.bass}`);
+                if (sp?.spatial?.length) styleLines.push(`Spatial/Effects: ${sp.spatial.join(", ")}`);
+                if (sp?.mixes?.length) {
+                    styleLines.push("");
+                    styleLines.push(`Mix: ${sp.mixes.join(", ")}`);
+                }
+                if (song.production) {
+                    styleLines.push("");
+                    styleLines.push(`Production notes: ${song.production}`);
+                }
+                if (song.chords?.progression) {
+                    styleLines.push("");
+                    styleLines.push(`Chord progression: ${song.chords.progression}`);
+                }
+                const styleMetaTag = styleLines.length ? normalizeStyleMetaTag(styleLines.join("\n")) : "";
+
+                const sections = song.sections.map((s) => {
+                    // Strip the style meta tag that applySunoStylePromptData prepended to section 0
+                    const strippedLines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(s.lines || ""));
+                    const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+                    const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
+                    return `\n[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${strippedLines}`;
+                });
+                return normalizeLyricsText(removeDoubleBrackets([styleMetaTag, ...sections].join("\n"))).length;
+            }
+            function openLyricsTooLongModal(len) {
+                const excess = len - 5000;
+                const newMax = Math.max(1000, 4500 - excess);
+                const detail = document.getElementById("lyrics-too-long-detail");
+                if (detail) {
+                    detail.textContent = `The assembled lyrics are ${len.toLocaleString()} characters — ${excess.toLocaleString()} over Suno's 5,000-character limit.\n\nIf the AI shortens them, the new character limit will be set to ${newMax.toLocaleString()}.\n\nChoose how to proceed:`;
+                }
+                document.getElementById("lyrics-too-long-modal").style.display = "flex";
+                return new Promise((resolve) => {
+                    _lyricsTooLongResolver = resolve;
+                });
+            }
+            function resolveLyricsTooLong(choice) {
+                document.getElementById("lyrics-too-long-modal").style.display = "none";
+                if (_lyricsTooLongResolver) {
+                    const fn = _lyricsTooLongResolver;
+                    _lyricsTooLongResolver = null;
+                    fn(choice);
+                }
+            }
             function openSubmitConfirm(summaryText) {
                 document.getElementById("submit-confirm-preview").textContent = summaryText;
                 document.getElementById("submit-confirm-modal").style.display = "flex";
@@ -7170,6 +7527,9 @@
                     userLyrics: userLyricsForHistory,
                     instrumentExclusions: getInstrumentExclusions(),
                     songLanguage: getSongLanguage(),
+                    durationMode: document.getElementById("duration-mode")?.value || "none",
+                    durationMin: parseInt(document.getElementById("duration-min")?.value || "180"),
+                    durationMax: parseInt(document.getElementById("duration-max")?.value || "180"),
                 };
             }
             // Restore vocal profiles from saved settings
@@ -7312,6 +7672,20 @@
 
                 applyTempoPreference(settings.tempo || song.tempoPreference || song.key_info?.tempo || "AI Choose");
 
+                // Restore duration preference
+                const durationModeEl = document.getElementById("duration-mode");
+                if (durationModeEl) {
+                    durationModeEl.value = settings.durationMode || "none";
+                    if ((settings.durationMode || "none") === "custom") {
+                        const dMin = document.getElementById("duration-min");
+                        const dMax = document.getElementById("duration-max");
+                        if (dMin) dMin.value = settings.durationMin ?? 180;
+                        if (dMax) dMax.value = settings.durationMax ?? 180;
+                    }
+                    toggleDurationMode();
+                    updateDurationRange();
+                }
+
                 document.getElementById("musical-key").value = normalizeMusicalKey(settings.musicalKey || song.key_info?.key || "Auto");
 
                 // Restore time signature
@@ -7430,14 +7804,14 @@
                 const list = document.getElementById("history-list");
                 document.getElementById("hist-count").textContent = history.length ? `(${history.length})` : "";
                 if (!history.length) {
-                    list.innerHTML = `<div class="output-empty" style="padding:30px 0;"><div class="empty-icon" style="font-size:28px;">&#128194;</div><div class="empty-label">${_t('empty.history_label', 'No songs saved yet')}</div></div>`;
+                    list.innerHTML = `<div class="output-empty" style="padding:30px 0;"><div class="empty-icon" style="font-size:28px;">&#128194;</div><div class="empty-label">${_t("empty.history_label", "No songs saved yet")}</div></div>`;
                     return;
                 }
                 list.innerHTML = history
                     .map((s) => {
                         const d = new Date(s.savedAt);
                         const ts = d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                        return `<div class="hist-item"><div><div class="hist-title">${escapeHtml(s.title)}</div><div class="hist-meta">${escapeHtml(s.genre)} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">${_t('btn.load','Load')}</button><button class="btn-sm" onclick="exportSong(${s.id})">${_t('nav.export','Export')}</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">&#10005;</button></div></div>`;
+                        return `<div class="hist-item"><div><div class="hist-title">${escapeHtml(s.title)}</div><div class="hist-meta">${escapeHtml(s.genre)} · ${ts}</div></div><div class="hist-actions"><button class="btn-sm" onclick="loadFromHistory(${s.id})">${_t("btn.load", "Load")}</button><button class="btn-sm" onclick="exportSong(${s.id})">${_t("nav.export", "Export")}</button><button class="btn-sm danger" onclick="deleteFromHistory(${s.id})">&#10005;</button></div></div>`;
                     })
                     .join("");
             }
@@ -7462,7 +7836,7 @@
                 renderHistory();
             }
             function clearHistory() {
-                if (!confirm(_t('alert.clear_history', 'Clear all saved songs?'))) return;
+                if (!confirm(_t("alert.clear_history", "Clear all saved songs?"))) return;
                 history = [];
                 persistHistory();
                 renderHistory();
@@ -7473,7 +7847,7 @@
             // ========================================================================
             function exportHistoryBackup() {
                 if (history.length === 0) {
-                    alert(_t('alert.no_history', 'No songs in history to backup.'));
+                    alert(_t("alert.no_history", "No songs in history to backup."));
                     return;
                 }
 
@@ -7648,7 +8022,7 @@
                         document.getElementById("api-key-input").value = backupData.apiKey;
                         aiClient = new GoogleGenAI({ apiKey: backupData.apiKey });
                         const st = document.getElementById("api-status");
-                        st.textContent = _t('status.ready', '✓ ready');
+                        st.textContent = _t("status.ready", "✓ ready");
                         st.className = "api-status ok";
                         document.getElementById("api-no-key-hint").style.display = "none";
                         fetchGoogleModels(backupData.apiKey);
@@ -7658,7 +8032,7 @@
                         localStorage.setItem("openrouter_api_key", backupData.openrouterKey);
                         document.getElementById("openrouter-key-input").value = backupData.openrouterKey;
                         const ost = document.getElementById("openrouter-status");
-                        ost.textContent = _t('status.ready', '✓ ready');
+                        ost.textContent = _t("status.ready", "✓ ready");
                         ost.className = "api-status ok";
                         document.getElementById("api-no-key-hint").style.display = "none";
                         fetchOpenRouterModels(backupData.openrouterKey);
@@ -7682,7 +8056,7 @@
                     switchRTab("history");
                 } catch (err) {
                     console.error("Backup import error:", err);
-                    alert(_fmt('alert.import_backup_error', 'Failed to import backup file. Please make sure it\'s a valid SunoForge backup file.\n\nError: {0}', err.message));
+                    alert(_fmt("alert.import_backup_error", "Failed to import backup file. Please make sure it's a valid SunoForge backup file.\n\nError: {0}", err.message));
                 }
             }
 
@@ -7727,7 +8101,7 @@
                         }
                     } catch (err) {
                         console.error("Import error:", err);
-                        alert(_t('alert.import_file_error', 'Failed to import file. Please make sure it\'s a valid SunoForge export file.'));
+                        alert(_t("alert.import_file_error", "Failed to import file. Please make sure it's a valid SunoForge export file."));
                     }
                 };
                 reader.readAsText(file);
@@ -8342,15 +8716,20 @@
                     const parsed = JSON.parse(raw);
                     debugLog("SECTION_REGEN_PARSED", `Parsed regenerated section: ${sec.type}`, parsed);
                     currentSong.sections[idx].lines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(parsed.lines));
-                    currentSong.sections[idx].direction = parsed.direction ? parsed.direction.trim().replace(/^\[|\]$/g, "").trim() : "";
+                    currentSong.sections[idx].direction = parsed.direction
+                        ? parsed.direction
+                              .trim()
+                              .replace(/^\[|\]$/g, "")
+                              .trim()
+                        : "";
                     if (parsed.suno_style_prompt) currentSong.suno_style_prompt = parsed.suno_style_prompt;
                     currentSong.style_meta_tag = parsed.style_meta_tag || currentSong.style_meta_tag || "";
                     applySunoStylePromptData(currentSong);
                     renderSongCard(currentSong);
                 } catch (e) {
-                    alert(_fmt('alert.regen_failed', 'Regen failed: {0}', e.message));
+                    alert(_fmt("alert.regen_failed", "Regen failed: {0}", e.message));
                 }
-                btn.textContent = _t('btn.regen', '↺ Regen');
+                btn.textContent = _t("btn.regen", "↺ Regen");
                 btn.classList.remove("loading");
                 btn.disabled = false;
             }
@@ -8382,7 +8761,7 @@
                 dirDiv.style.display = "none";
 
                 // Replace action buttons with Save/Cancel
-                actionsSpan.innerHTML = `<button class="btn-regen" onclick="saveEditedSection(${idx})" style="background: var(--accent3); color: #0e0c0a;">${_t('btn.save_edit','\u2713 Save')}</button><button class="btn-regen" onclick="cancelEditSection(${idx})">${_t('btn.cancel_edit','\u2715 Cancel')}</button>`;
+                actionsSpan.innerHTML = `<button class="btn-regen" onclick="saveEditedSection(${idx})" style="background: var(--accent3); color: #0e0c0a;">${_t("btn.save_edit", "\u2713 Save")}</button><button class="btn-regen" onclick="cancelEditSection(${idx})">${_t("btn.cancel_edit", "\u2715 Cancel")}</button>`;
             }
 
             function saveEditedSection(idx) {
@@ -8458,13 +8837,15 @@
             function confirmCopyLyricsToTab() {
                 closeLyricsCopyConfirm();
                 // Format lyrics with section tags, direction, and instructions (same as allLyrics)
-                const formattedLyrics = normalizeLyricsText(currentSong.sections
-                    .map((s) => {
-                        const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
-                        const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                        return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
-                    })
-                    .join("\n\n"));
+                const formattedLyrics = normalizeLyricsText(
+                    currentSong.sections
+                        .map((s) => {
+                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+                            const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
+                            return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
+                        })
+                        .join("\n\n"),
+                );
 
                 // Populate the lyrics input
                 const lyricsInput = document.getElementById("lyrics-input");
@@ -8486,55 +8867,55 @@
                 const s = song.settings || {};
 
                 // Collect all values to be applied
-                const genreKey      = s.genreKey || "rock";
-                const genreLabel    = s.genreLabel || song.genre || "";
-                const title         = song.title || s.title || "";
-                const mood          = song.mood || s.mood || "";
-                const goal          = song.goal || s.goal || "";
-                const rhythm        = song.rhythm || s.rhythm || "";
-                const grooveFeel    = song.grooveFeel || s.grooveFeel || "";
-                const rhyme         = song.rhyme || s.rhyme || "";
-                const pov           = s.pov || "";
-                const tempo         = song.key_info?.tempo || song.tempoPreference || s.tempo || "AI Choose";
-                const musicalKey    = song.key_info?.key || s.musicalKey || "Auto";
+                const genreKey = s.genreKey || "rock";
+                const genreLabel = s.genreLabel || song.genre || "";
+                const title = song.title || s.title || "";
+                const mood = song.mood || s.mood || "";
+                const goal = song.goal || s.goal || "";
+                const rhythm = song.rhythm || s.rhythm || "";
+                const grooveFeel = song.grooveFeel || s.grooveFeel || "";
+                const rhyme = song.rhyme || s.rhyme || "";
+                const pov = s.pov || "";
+                const tempo = song.key_info?.tempo || song.tempoPreference || s.tempo || "AI Choose";
+                const musicalKey = song.key_info?.key || s.musicalKey || "Auto";
                 const timeSignature = song.key_info?.time_sig || s.timeSignature || "Auto";
                 const structureData = s.structure || (song.structureName ? { name: song.structureName } : null);
-                const vp            = song.vocalProfiles || s.vocalProfiles;
-                const sp            = song.soundProfile || s.soundProfile;
-                const instrExcl     = song.instrumentExclusions || s.instrumentExclusions || "";
-                const concept       = song.concept || s.concept || "";
+                const vp = song.vocalProfiles || s.vocalProfiles;
+                const sp = song.soundProfile || s.soundProfile;
+                const instrExcl = song.instrumentExclusions || s.instrumentExclusions || "";
+                const concept = song.concept || s.concept || "";
 
                 // Build confirmation summary
                 const lines = ["The following settings will be applied:", ""];
-                if (genreLabel)   lines.push("Genre: " + genreLabel);
-                if (title)        lines.push("Title: " + title);
-                if (concept)      lines.push("Concept: " + concept);
-                if (mood)         lines.push("Mood: " + mood);
+                if (genreLabel) lines.push("Genre: " + genreLabel);
+                if (title) lines.push("Title: " + title);
+                if (concept) lines.push("Concept: " + concept);
+                if (mood) lines.push("Mood: " + mood);
                 if (goal && goal !== "Not specified") lines.push("Goal: " + goal);
                 if (rhythm && rhythm !== "AI Choose") lines.push("Rhythm: " + rhythm);
                 if (grooveFeel && grooveFeel !== "AI Choose") lines.push("Groove Feel: " + grooveFeel);
-                if (rhyme)        lines.push("Rhyme Scheme: " + rhyme);
-                if (pov)          lines.push("Perspective: " + pov);
+                if (rhyme) lines.push("Rhyme Scheme: " + rhyme);
+                if (pov) lines.push("Perspective: " + pov);
                 lines.push("Tempo: " + tempo);
                 lines.push("Musical Key: " + musicalKey);
                 lines.push("Time Signature: " + timeSignature);
                 if (structureData?.name) lines.push("Structure: " + structureData.name);
-                if (vp?.type)     lines.push("Vocal: " + vp.type);
-                if (song.verseLength || s.verseLength)   lines.push("Verse Length: " + (song.verseLength || s.verseLength));
+                if (vp?.type) lines.push("Vocal: " + vp.type);
+                if (song.verseLength || s.verseLength) lines.push("Verse Length: " + (song.verseLength || s.verseLength));
                 if (song.chorusLength || s.chorusLength) lines.push("Chorus Length: " + (song.chorusLength || s.chorusLength));
                 if (sp) {
-                    if (sp.eras?.length)        lines.push("Era: " + sp.eras.join(", "));
-                    if (sp.styles?.length)      lines.push("Production Style: " + sp.styles.join(", "));
+                    if (sp.eras?.length) lines.push("Era: " + sp.eras.join(", "));
+                    if (sp.styles?.length) lines.push("Production Style: " + sp.styles.join(", "));
                     if (sp.instruments?.length) lines.push("Instruments: " + sp.instruments.join(", "));
-                    if (sp.insts?.length)       lines.push("Instrumentation: " + sp.insts.join(", "));
-                    if (sp.bass)                lines.push("Bass: " + sp.bass);
-                    if (sp.spatial?.length)     lines.push("Spatial/Effects: " + sp.spatial.join(", "));
-                    if (sp.mixes?.length)       lines.push("Mix: " + sp.mixes.join(", "));
-                    if (sp.infs?.length)        lines.push("Influences: " + sp.infs.join(", "));
+                    if (sp.insts?.length) lines.push("Instrumentation: " + sp.insts.join(", "));
+                    if (sp.bass) lines.push("Bass: " + sp.bass);
+                    if (sp.spatial?.length) lines.push("Spatial/Effects: " + sp.spatial.join(", "));
+                    if (sp.mixes?.length) lines.push("Mix: " + sp.mixes.join(", "));
+                    if (sp.infs?.length) lines.push("Influences: " + sp.infs.join(", "));
                 }
                 if (instrExcl) lines.push("Instrument Exclusions: " + instrExcl);
 
-                openSettingsConfirm(lines.join("\n")).then(function(confirmed) {
+                openSettingsConfirm(lines.join("\n")).then(function (confirmed) {
                     if (!confirmed) return;
 
                     // Genre (must come first — drives structure list)
@@ -8547,12 +8928,12 @@
                     document.getElementById("concept").value = concept;
 
                     // Mood / Goal / Rhythm / Groove / Rhyme / POV
-                    if (mood)     applySingleTagOrCustom("mood-tags",   mood,       "mood-custom-row",   "mood-custom-tag",   "Custom mood");
+                    if (mood) applySingleTagOrCustom("mood-tags", mood, "mood-custom-row", "mood-custom-tag", "Custom mood");
                     if (goal && goal !== "Not specified") applySingleTagOrCustom("goal-tags", goal, "goal-custom-row", "goal-custom-tag", "Custom goal");
                     if (rhythm && rhythm !== "AI Choose") applySingleTagOrCustom("rhythm-tags", rhythm, "rhythm-custom-row", "rhythm-custom-tag", "Custom rhythm");
                     if (grooveFeel && grooveFeel !== "AI Choose") applySingleTagOrCustom("groove-tags", grooveFeel, "groove-custom-row", "groove-custom-tag", "Custom groove feel");
                     if (rhyme) applyRhymeSetting(rhyme);
-                    if (pov)   applySingleTagOrCustom("pov-tags", pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
+                    if (pov) applySingleTagOrCustom("pov-tags", pov, "pov-custom-row", "pov-custom-tag", "Custom perspective");
 
                     // Tempo
                     applyTempoPreference(tempo);
@@ -8579,21 +8960,23 @@
                     restoreVocalProfiles(vp || null);
 
                     // Verse / Chorus Length
-                    document.getElementById("verse-length-select").value  = song.verseLength  || s.verseLength  || "";
+                    document.getElementById("verse-length-select").value = song.verseLength || s.verseLength || "";
                     document.getElementById("chorus-length-select").value = song.chorusLength || s.chorusLength || "";
 
                     // Sound Profile
                     if (sp) {
-                        applyMultiTagValues("era-tags",         sp.eras        || []);
-                        applyMultiTagValues("prodstyle-tags",   sp.styles      || []);
+                        applyMultiTagValues("era-tags", sp.eras || []);
+                        applyMultiTagValues("prodstyle-tags", sp.styles || []);
                         applyMultiTagValues("instruments-tags", sp.instruments || []);
-                        applyMultiTagValues("inst-tags",        sp.insts       || []);
-                        applyMultiTagValues("mix-tags",         sp.mixes       || []);
+                        applyMultiTagValues("inst-tags", sp.insts || []);
+                        applyMultiTagValues("mix-tags", sp.mixes || []);
                         applySingleTagOrCustom("bass-tags", sp.bass || "", "bass-custom-row", "bass-custom-tag", "Custom bass");
                         applyMultiTagValues("spatial-tags", sp.spatial || []);
                         influences = [];
                         renderInfluenceChips();
-                        (sp.infs || []).forEach(function(inf) { addInfluenceVal(inf); });
+                        (sp.infs || []).forEach(function (inf) {
+                            addInfluenceVal(inf);
+                        });
                     }
 
                     // Instrument Exclusions
@@ -8636,20 +9019,22 @@
                     .map((sec, i) => {
                         const cls = sectionClass(sec.type, sec.userProvided);
                         const userBadge = sec.userProvided ? `<span class="user-badge">yours</span>` : "";
-                        const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t('btn.regen', '&#8635; Regen')}</button>`;
-                        const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t('btn.edit', '&#9998; Edit')}</button>`;
+                        const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "&#8635; Regen")}</button>`;
+                        const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t("btn.edit", "&#9998; Edit")}</button>`;
                         const actionBtns = `<span id="section-actions-${i}">${regenBtn}${editBtn}</span>`;
                         return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${actionBtns}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(sec.lines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
                     })
                     .join('<div class="sec-div"></div>');
                 // Only output instructions if different from direction to avoid duplication
-                const allLyrics = normalizeLyricsText(song.sections
-                    .map((s) => {
-                        const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
-                        const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                        return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
-                    })
-                    .join("\n\n"));
+                const allLyrics = normalizeLyricsText(
+                    song.sections
+                        .map((s) => {
+                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+                            const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
+                            return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
+                        })
+                        .join("\n\n"),
+                );
                 const sunoStylePrompt = song.suno_style_prompt || "--";
                 const card = document.createElement("div");
                 card.className = "output-card";
@@ -8657,7 +9042,7 @@
                 card.innerHTML = `
                     <div class="card-header">
                       <div style="margin-bottom:8px;text-align:center;">
-                        <button class="btn-copy" onclick="applySettingsFromAIResult()">&#8679; ${_t('btn.update_card', 'Update Settings')}</button>
+                        <button class="btn-copy" onclick="applySettingsFromAIResult()">&#8679; ${_t("btn.update_card", "Update Settings")}</button>
                       </div>
                       <div class="card-header-row"><div>
                       <div class="card-title">${escapeHtml(song.title)}</div>
@@ -8668,15 +9053,15 @@
                       <div class="card-meta" style="margin-top:4px;">${ts}</div>
                     </div></div></div>
                         <div class="block">
-                            <div class="block-header"><div class="section-header">${_t('section.suno_style', 'Suno Style Prompt')}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(sunoStylePrompt).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                            <div class="block-header"><div class="section-header">${_t("section.suno_style", "Suno Style Prompt")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(sunoStylePrompt).replace(/`/g, "\\`")}\`)">Copy</button></div>
                             <div class="prod-body">${escapeHtml(sunoStylePrompt)}</div><div class="char-count">${sunoStylePrompt === "--" ? 0 : sunoStylePrompt.length} / 1000 chars</div>
                         </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t('section.prod_notes', 'Production Notes')}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(song.production).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.prod_notes", "Production Notes")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(song.production).replace(/`/g, "\\`")}\`)">Copy</button></div>
                       <div class="prod-grid"><div><div class="prod-body">${escapeHtml(song.production)}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
                     </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t('section.lyrics', 'Lyrics')}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t('btn.copy_to_lyrics', '&#10548; Copy to Lyrics Tab')}</button><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "&#10548; Copy to Lyrics Tab")}</button><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
                       <div class="lyrics-content">${lyricsHtml}</div>
                     </div>`;
                 panel.insertBefore(card, panel.firstChild);
@@ -8700,9 +9085,9 @@
                 card.id = "chords-card";
                 card.innerHTML = `
                     <div class="card-header"><div class="card-title" style="font-size:16px;">${escapeHtml(song.title)} &#8212; Chord Chart</div><div class="card-meta" style="margin-top:5px;">Key of ${escapeHtml(song.key_info?.key || "?")} · ${escapeHtml(song.key_info?.feel || "")}</div></div>
-                    <div class="block"><div class="section-header" style="margin-bottom:8px;">${_t('section.core_chords', 'Core Chords')}</div><div class="chord-grid">${chordCardsHtml}</div></div>
-                    <div class="block"><div class="block-header"><div class="section-header">${_t('section.progression', 'Progression')}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(c.progression || "").replace(/`/g, "\\`")}\`)">Copy</button></div><div class="chord-prog">${escapeHtml(c.progression || "")}</div></div>
-                    ${c.notes ? `<div class="block"><div class="section-header" style="margin-bottom:6px;">${_t('section.harmonic_notes', 'Harmonic Notes')}</div><div class="prod-body">${escapeHtml(c.notes)}</div></div>` : ""}`;
+                    <div class="block"><div class="section-header" style="margin-bottom:8px;">${_t("section.core_chords", "Core Chords")}</div><div class="chord-grid">${chordCardsHtml}</div></div>
+                    <div class="block"><div class="block-header"><div class="section-header">${_t("section.progression", "Progression")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(c.progression || "").replace(/`/g, "\\`")}\`)">Copy</button></div><div class="chord-prog">${escapeHtml(c.progression || "")}</div></div>
+                    ${c.notes ? `<div class="block"><div class="section-header" style="margin-bottom:6px;">${_t("section.harmonic_notes", "Harmonic Notes")}</div><div class="prod-body">${escapeHtml(c.notes)}</div></div>` : ""}`;
                 panel.insertBefore(card, panel.firstChild);
             }
 
@@ -8737,7 +9122,7 @@
 
                 // Validate: at least a genre or concept must be provided
                 if (!genre && !conceptRaw) {
-                    document.getElementById("validation-modal-msg").textContent = _t('alert.validation_song', 'Please select at least one Genre or enter a Concept / Story before writing your song.');
+                    document.getElementById("validation-modal-msg").textContent = _t("alert.validation_song", "Please select at least one Genre or enter a Concept / Story before writing your song.");
                     document.getElementById("validation-modal").style.display = "flex";
                     return;
                 }
@@ -8750,15 +9135,11 @@
                 const genBtn = document.getElementById("gen-btn");
                 if (genBtn) {
                     genBtn.disabled = true;
-                    genBtn.innerHTML = `<span class="spin">&#9834;</span> ${_t('btn.writing', 'Writing...')}`;
+                    genBtn.innerHTML = `<span class="spin">&#9834;</span> ${_t("btn.writing", "Writing...")}`;
                 }
 
                 const panel = document.getElementById("tab-output");
                 document.getElementById("empty-state").style.display = "none";
-                const loadCard = document.createElement("div");
-                loadCard.className = "output-card";
-                loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;"><div style="font-size:24px;margin-bottom:8px;animation:spin 1.2s linear infinite;display:inline-block">&#9834;</div><br>${_t('status.generating', 'Writing your song...')}</div>`;
-                panel.insertBefore(loadCard, panel.firstChild);
                 switchRTab("output");
 
                 let lyricsInstruction = "";
@@ -8874,7 +9255,7 @@
                 Structure description: ${struct.desc}${sectionChordsInstruction}${sectionInstructionsData}${soundInstruction}${influenceInstruction}${lyricsInstruction}
                 Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested tempo preference: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
                 Take in to account these special instructions: ${specialInstructions ? `\nSpecial Instructions: ${specialInstructions}` : "Not specified"}
-                LYRICS LANGUAGE: All lyrics must be written exclusively in ${songLanguage}.${songLanguage !== 'English' ? ` Do not write any lyrics in English or any other language.` : ''}
+                LYRICS LANGUAGE: All lyrics must be written exclusively in ${songLanguage}.${songLanguage !== "English" ? ` Do not write any lyrics in English or any other language.` : ""}
                 LYRICAL PHRASING TECHNIQUES:
                 When generating lyrics, use appropriate phrasing techniques to enhance vocal delivery and expression:
                 - Commas within lines create pauses (multiple commas create longer pauses; typically use 1-5 commas where appropriate)
@@ -8906,171 +9287,214 @@
                   "sections":[{"type":"Section name","direction":"Performance direction","instructions":"Section-specific instruction","lines":"Lyrics\nLine 2","userProvided":false}]
                 }`;
 
-                try {
+                async function runGeneration(maxLyricsChars, overageChars) {
+                    const loadCard = document.createElement("div");
+                    loadCard.className = "output-card";
+                    loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;"><div style="font-size:24px;margin-bottom:8px;animation:spin 1.2s linear infinite;display:inline-block">&#9834;</div><br>${_t("status.generating", "Writing your song...")}</div>`;
+                    panel.insertBefore(loadCard, panel.firstChild);
 
-                    // Log what we're sending to the AI
-                    debugLog("SONG_GENERATION_REQUEST", "Sending song generation request to AI", {
-                        promptLength: prompt.length,
-                        prompt: prompt,
-                        title: title || "[Not provided]",
-                        concept: concept,
-                        genre: genre,
-                        structure: struct.name,
-                    });
-                    console.log("=== SENDING TO AI ===");
-                    console.log("Prompt length:", prompt.length, "characters");
-                    console.log("Full prompt:", prompt);
-                    console.log("====================");
+                    let effectivePrompt = prompt;
+                    if (maxLyricsChars !== 4500 && overageChars) {
+                        const isKeepMode = aiMode === "keep";
+                        if (isKeepMode) {
+                            // Can't shorten user-provided lyrics — shorten production notes/directions instead
+                            effectivePrompt = prompt.replace(
+                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer. Count carefully before responding — if the lyrics are too long, shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.',
+                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The user's lyrics are locked and MUST NOT be changed. To reduce the total length, shorten the \"production\" field and reduce the length of section \"direction\" and \"instructions\" fields. The combined total character count of all \"lines\" fields across all sections must be ${maxLyricsChars} characters or fewer, but since lyrics are locked focus on cutting production notes and directions to compensate.`,
+                            );
+                        } else {
+                            effectivePrompt = prompt.replace(
+                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer. Count carefully before responding — if the lyrics are too long, shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.',
+                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The combined total character count of all \"lines\" fields across all sections must be ${maxLyricsChars} characters or fewer. Count carefully before responding — shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.`,
+                            );
+                        }
+                    }
+                    try {
+                        // Log what we're sending to the AI
+                        debugLog("SONG_GENERATION_REQUEST", "Sending song generation request to AI", {
+                            maxLyricsChars: maxLyricsChars,
+                            promptLength: effectivePrompt.length,
+                            prompt: effectivePrompt,
+                            title: title || "[Not provided]",
+                            concept: concept,
+                            genre: genre,
+                            structure: struct.name,
+                        });
+                        console.log("=== SENDING TO AI ===");
+                        console.log("Max lyrics chars:", maxLyricsChars);
+                        console.log("Prompt length:", effectivePrompt.length, "characters");
+                        console.log("Full prompt:", effectivePrompt);
+                        console.log("====================");
 
-                    const response = await callAI(prompt);
-                    const raw = response.text.replace(/```json|```/g, "").trim();
+                        const response = await callAI(effectivePrompt);
+                        const raw = response.text.replace(/```json|```/g, "").trim();
 
-                    // Log what we received from the AI
-                    debugLog("SONG_GENERATION_RESPONSE", "Received song from AI", {
-                        responseLength: raw.length,
-                        rawResponse: raw,
-                    });
-                    console.log("=== RECEIVED FROM AI ===");
-                    console.log("Raw response length:", raw.length, "characters");
-                    console.log("Raw response:", raw);
-                    console.log("=======================");
+                        // Log what we received from the AI
+                        debugLog("SONG_GENERATION_RESPONSE", "Received song from AI", {
+                            responseLength: raw.length,
+                            rawResponse: raw,
+                        });
+                        console.log("=== RECEIVED FROM AI ===");
+                        console.log("Raw response length:", raw.length, "characters");
+                        console.log("Raw response:", raw);
+                        console.log("=======================");
 
-                    const song = JSON.parse(raw);
+                        const song = JSON.parse(raw);
 
-                    // Log what we parsed from the AI response
-                    debugLog("SONG_GENERATION_PARSED", "Parsed song response", {
-                        song: song,
-                        sectionsCount: song.sections?.length || 0,
-                        sections: song.sections?.map((s) => ({
-                            type: s.type,
-                            direction: s.direction,
-                            instructions: s.instructions,
-                            linesLength: s.lines?.length,
-                            lines: s.lines,
-                            userProvided: s.userProvided,
-                        })),
-                    });
-                    console.log("=== PARSED AI RESPONSE ===");
-                    console.log("Parsed song object:", JSON.stringify(song, null, 2));
-                    console.log("Sections count:", song.sections?.length || 0);
-                    if (song.sections) {
-                        song.sections.forEach((section, idx) => {
-                            console.log(`Section ${idx}:`, {
-                                type: section.type,
-                                direction: section.direction,
-                                instructions: section.instructions,
-                                linesPreview: section.lines?.substring(0, 200) + (section.lines?.length > 200 ? "..." : ""),
-                                userProvided: section.userProvided,
+                        // Log what we parsed from the AI response
+                        debugLog("SONG_GENERATION_PARSED", "Parsed song response", {
+                            song: song,
+                            sectionsCount: song.sections?.length || 0,
+                            sections: song.sections?.map((s) => ({
+                                type: s.type,
+                                direction: s.direction,
+                                instructions: s.instructions,
+                                linesLength: s.lines?.length,
+                                lines: s.lines,
+                                userProvided: s.userProvided,
+                            })),
+                        });
+                        console.log("=== PARSED AI RESPONSE ===");
+                        console.log("Parsed song object:", JSON.stringify(song, null, 2));
+                        console.log("Sections count:", song.sections?.length || 0);
+                        if (song.sections) {
+                            song.sections.forEach((section, idx) => {
+                                console.log(`Section ${idx}:`, {
+                                    type: section.type,
+                                    direction: section.direction,
+                                    instructions: section.instructions,
+                                    linesPreview: section.lines?.substring(0, 200) + (section.lines?.length > 200 ? "..." : ""),
+                                    userProvided: section.userProvided,
+                                });
                             });
-                        });
-                    }
-                    console.log("=========================");
+                        }
+                        console.log("=========================");
 
-                    // Clean up section lines to remove any meta tags that will be re-added during export
-                    // This prevents duplication when the AI preserves user-provided lyrics with meta tags
-                    if (song.sections && Array.isArray(song.sections)) {
-                        song.sections.forEach((section, idx) => {
-                            if (section.lines) {
-                                const originalLines = section.lines;
-                                section.lines = stripAllLeadingMetaTags(section.lines);
-                                debugLog("SECTION_CLEANUP", `Stripped meta tags from section ${idx} (${section.type})`, {
-                                    original: originalLines,
-                                    stripped: section.lines,
-                                    removedChars: originalLines.length - section.lines.length,
-                                });
-                            }
-                        });
-                    }
-
-                    if (!titleInput && (!song.title || /^(untitled|song title|title)$/i.test(String(song.title).trim()))) {
-                        const fallbackSource = [...(song.sections || [])].map((section) => String(section?.lines || "").trim()).find(Boolean);
-                        const fallbackLine = fallbackSource
-                            ? fallbackSource
-                                  .split(/\r?\n/)
-                                  .map((line) => line.trim())
-                                  .find((line) => line && !/^\[.*\]$/.test(line) && !/^\(.*\)$/.test(line))
-                            : "";
-                        song.title = fallbackLine ? fallbackLine.replace(/[.,!?;:]+$/g, "").slice(0, 60) : concept.slice(0, 60);
-                    }
-                    // Save vocal profiles
-                    song.vocalProfiles = getVocalProfiles();
-                    song.tempoPreference = formatTempoPreference(tempo);
-                    song.durationPreference = duration;
-                    song.verseLength = verseLength;
-                    song.chorusLength = chorusLength;
-                    song.goal = goal;
-                    song.rhythm = rhythm;
-                    song.grooveFeel = grooveFeel;
-                    song.instrumentExclusions = getInstrumentExclusions();
-
-                    // Handle suggested influences from AI
-                    if (expectSuggestedInfluences && song.suggested_influences && Array.isArray(song.suggested_influences)) {
-                        song.suggested_influences.forEach((artistName) => {
-                            const trimmedName = String(artistName || "").trim();
-                            if (trimmedName && !influences.includes(trimmedName)) {
-                                addInfluenceVal(trimmedName);
-                            }
-                        });
-                    }
-
-                    // Clean up any section tags and direction tags that AI may have included in the lines
-                    // These will be re-added during export from the type and direction fields
-                    if (Array.isArray(song.sections)) {
-                        song.sections.forEach((section) => {
-                            if (section.lines) {
-                                section.lines = stripAllLeadingMetaTags(section.lines);
-                            }
-                            // Strip any wrapping brackets the AI may include in direction/instructions —
-                            // these fields get wrapped in [] during export, so pre-existing brackets double up
-                            if (section.direction) {
-                                section.direction = section.direction.trim().replace(/^\[|\]$/g, "").trim();
-                            }
-                            if (section.instructions) {
-                                section.instructions = section.instructions.trim().replace(/^\[|\]$/g, "").trim();
-                            }
-                        });
-
-                        // Map instructions from custom structure to sections
-                        if (struct.sequence && Array.isArray(struct.sequence)) {
-                            song.sections.forEach((section) => {
-                                // Find matching structure step by name
-                                const matchingStep = struct.sequence.find((step) => {
-                                    if (typeof step === "object" && step.name && section.type) {
-                                        // Normalize both names for comparison
-                                        const stepName = step.name.toLowerCase().trim();
-                                        const sectionType = section.type.toLowerCase().trim();
-                                        return stepName === sectionType || stepName.startsWith(sectionType) || sectionType.startsWith(stepName);
-                                    }
-                                    return false;
-                                });
-
-                                // Apply instructions from structure if found and not already set by AI
-                                if (matchingStep && matchingStep.instructions && !section.instructions) {
-                                    section.instructions = matchingStep.instructions;
+                        // Clean up section lines to remove any meta tags that will be re-added during export
+                        // This prevents duplication when the AI preserves user-provided lyrics with meta tags
+                        if (song.sections && Array.isArray(song.sections)) {
+                            song.sections.forEach((section, idx) => {
+                                if (section.lines) {
+                                    const originalLines = section.lines;
+                                    section.lines = stripAllLeadingMetaTags(section.lines);
+                                    debugLog("SECTION_CLEANUP", `Stripped meta tags from section ${idx} (${section.type})`, {
+                                        original: originalLines,
+                                        stripped: section.lines,
+                                        removedChars: originalLines.length - section.lines.length,
+                                    });
                                 }
                             });
                         }
-                    }
-                    song.sections = mergePreservedLyricsSections(song.sections, userLyrics, aiMode);
-                    song.soundProfile = soundProfile;
-                    applySunoStylePromptData(song);
-                    loadCard.remove();
-                    currentSong = song;
-                    renderSongCard(song);
-                    renderChordsCard(song);
-                    saveToHistory(song);
-                } catch (err) {
-                    loadCard.remove();
-                    const errCard = document.createElement("div");
-                    errCard.className = "output-card";
-                    errCard.innerHTML = `<div style="padding:18px;"><div class="section-header" style="margin-bottom:6px;">Error</div><div class="error-box">${escapeHtml(err.message)}</div></div>`;
-                    panel.insertBefore(errCard, panel.firstChild);
-                }
 
-                if (genBtn) {
-                    genBtn.disabled = false;
-                    genBtn.innerHTML = "&#9834; " + _t('btn.write_song_label', 'Write My Song');
-                }
+                        if (!titleInput && (!song.title || /^(untitled|song title|title)$/i.test(String(song.title).trim()))) {
+                            const fallbackSource = [...(song.sections || [])].map((section) => String(section?.lines || "").trim()).find(Boolean);
+                            const fallbackLine = fallbackSource
+                                ? fallbackSource
+                                      .split(/\r?\n/)
+                                      .map((line) => line.trim())
+                                      .find((line) => line && !/^\[.*\]$/.test(line) && !/^\(.*\)$/.test(line))
+                                : "";
+                            song.title = fallbackLine ? fallbackLine.replace(/[.,!?;:]+$/g, "").slice(0, 60) : concept.slice(0, 60);
+                        }
+                        // Save vocal profiles
+                        song.vocalProfiles = getVocalProfiles();
+                        song.tempoPreference = formatTempoPreference(tempo);
+                        song.durationPreference = duration;
+                        song.verseLength = verseLength;
+                        song.chorusLength = chorusLength;
+                        song.goal = goal;
+                        song.rhythm = rhythm;
+                        song.grooveFeel = grooveFeel;
+                        song.instrumentExclusions = getInstrumentExclusions();
+
+                        // Handle suggested influences from AI
+                        if (expectSuggestedInfluences && song.suggested_influences && Array.isArray(song.suggested_influences)) {
+                            song.suggested_influences.forEach((artistName) => {
+                                const trimmedName = String(artistName || "").trim();
+                                if (trimmedName && !influences.includes(trimmedName)) {
+                                    addInfluenceVal(trimmedName);
+                                }
+                            });
+                        }
+
+                        // Clean up any section tags and direction tags that AI may have included in the lines
+                        // These will be re-added during export from the type and direction fields
+                        if (Array.isArray(song.sections)) {
+                            song.sections.forEach((section) => {
+                                if (section.lines) {
+                                    section.lines = stripAllLeadingMetaTags(section.lines);
+                                }
+                                // Strip any wrapping brackets the AI may include in direction/instructions —
+                                // these fields get wrapped in [] during export, so pre-existing brackets double up
+                                if (section.direction) {
+                                    section.direction = section.direction
+                                        .trim()
+                                        .replace(/^\[|\]$/g, "")
+                                        .trim();
+                                }
+                                if (section.instructions) {
+                                    section.instructions = section.instructions
+                                        .trim()
+                                        .replace(/^\[|\]$/g, "")
+                                        .trim();
+                                }
+                            });
+
+                            // Map instructions from custom structure to sections
+                            if (struct.sequence && Array.isArray(struct.sequence)) {
+                                song.sections.forEach((section) => {
+                                    // Find matching structure step by name
+                                    const matchingStep = struct.sequence.find((step) => {
+                                        if (typeof step === "object" && step.name && section.type) {
+                                            // Normalize both names for comparison
+                                            const stepName = step.name.toLowerCase().trim();
+                                            const sectionType = section.type.toLowerCase().trim();
+                                            return stepName === sectionType || stepName.startsWith(sectionType) || sectionType.startsWith(stepName);
+                                        }
+                                        return false;
+                                    });
+
+                                    // Apply instructions from structure if found and not already set by AI
+                                    if (matchingStep && matchingStep.instructions && !section.instructions) {
+                                        section.instructions = matchingStep.instructions;
+                                    }
+                                });
+                            }
+                        }
+                        song.sections = mergePreservedLyricsSections(song.sections, userLyrics, aiMode);
+                        song.soundProfile = soundProfile;
+                        applySunoStylePromptData(song);
+                        loadCard.remove();
+                        currentSong = song;
+                        renderSongCard(song);
+                        renderChordsCard(song);
+                        saveToHistory(song);
+
+                        const assembledLen = calcAssembledLyricsLength(song);
+                        if (assembledLen > 5000) {
+                            const choice = await openLyricsTooLongModal(assembledLen);
+                            if (choice === "ai") {
+                                const excess = assembledLen - 5000;
+                                const newMax = Math.max(1000, 4500 - excess);
+                                await runGeneration(newMax, excess);
+                                return;
+                            }
+                        }
+                    } catch (err) {
+                        loadCard.remove();
+                        const errCard = document.createElement("div");
+                        errCard.className = "output-card";
+                        errCard.innerHTML = `<div style="padding:18px;"><div class="section-header" style="margin-bottom:6px;">Error</div><div class="error-box">${escapeHtml(err.message)}</div></div>`;
+                        panel.insertBefore(errCard, panel.firstChild);
+                    }
+
+                    if (genBtn) {
+                        genBtn.disabled = false;
+                        genBtn.innerHTML = "&#9834; " + _t("btn.write_song_label", "Write My Song");
+                    }
+                } // end runGeneration
+
+                await runGeneration(4500);
             }
 
             // ========================================================================
@@ -9079,10 +9503,14 @@
             // ========================================================================
             window.saveApiKey = saveApiKey;
             window.saveOpenRouterKey = saveOpenRouterKey;
+            window.saveCustomServer = saveCustomServer;
+            window.fetchCustomServerModels = fetchCustomServerModels;
+            window.toggleApiBar = toggleApiBar;
             window.toggleDebugMode = toggleDebugMode;
             window.switchLTab = switchLTab;
             window.switchRTab = switchRTab;
             window.generateSong = generateSong;
+            window.resolveLyricsTooLong = resolveLyricsTooLong;
             window.applyStyle = applyStyle;
             window.applyUnifiedAnalysis = applyUnifiedAnalysis;
             window.openAnalyzerModal = openAnalyzerModal;
@@ -9156,6 +9584,7 @@
             window.toggleModelDropdown = toggleModelDropdown;
             window.filterModelOptions = filterModelOptions;
             window.modelFilterKeydown = modelFilterKeydown;
+            window.onSongLanguageChange = onSongLanguageChange;
 
             // ========================================================================
             // Initialization
@@ -9172,15 +9601,15 @@
 
             // Restore song language preference from localStorage
             (function () {
-                const savedLang = localStorage.getItem('sf_song_lang');
+                const savedLang = localStorage.getItem("sf_song_lang");
                 if (savedLang) {
-                    const langSel = document.getElementById('song-language');
+                    const langSel = document.getElementById("song-language");
                     if (langSel) {
                         langSel.value = savedLang;
-                        if (savedLang === 'custom') {
-                            const customInput = document.getElementById('song-language-custom');
-                            customInput.style.display = '';
-                            customInput.value = localStorage.getItem('sf_song_lang_custom') || '';
+                        if (savedLang === "custom") {
+                            const customInput = document.getElementById("song-language-custom");
+                            customInput.style.display = "";
+                            customInput.value = localStorage.getItem("sf_song_lang_custom") || "";
                         }
                     }
                 }
@@ -9188,33 +9617,31 @@
 
             // Sync Song Language when UI locale changes
             (function () {
-                const LOCALE_TO_LANG = { en: 'English', de: 'German', fr: 'French', es: 'Spanish',
-                    pt: 'Portuguese', nl: 'Dutch', ru: 'Russian', ja: 'Japanese',
-                    ko: 'Korean', 'zh-hans': 'Chinese (Mandarin)', 'zh-hant': 'Chinese (Cantonese)' };
-                document.getElementById('lang-select')?.addEventListener('change', function () {
+                const LOCALE_TO_LANG = { en: "English", de: "German", fr: "French", es: "Spanish", pt: "Portuguese", nl: "Dutch", ru: "Russian", ja: "Japanese", ko: "Korean", "zh-hans": "Chinese (Mandarin)", "zh-hant": "Chinese (Cantonese)" };
+                document.getElementById("lang-select")?.addEventListener("change", function () {
                     const mapped = LOCALE_TO_LANG[this.value];
                     if (mapped) {
                         applySongLanguageSetting(mapped);
-                        localStorage.setItem('sf_song_lang', mapped);
+                        localStorage.setItem("sf_song_lang", mapped);
                     }
                 });
             })();
 
             // i18n: programmatically tag repeated generic buttons, then activate saved locale
             (function _i18nTagRepeated() {
-                document.querySelectorAll('button.custom-input-confirm').forEach(btn => {
-                    if (!btn.dataset.i18n) btn.dataset.i18n = btn.textContent.trim() === 'Set' ? 'btn.set' : 'btn.add';
+                document.querySelectorAll("button.custom-input-confirm").forEach((btn) => {
+                    if (!btn.dataset.i18n) btn.dataset.i18n = btn.textContent.trim() === "Set" ? "btn.set" : "btn.add";
                 });
-                document.querySelectorAll('button.custom-input-cancel').forEach(btn => {
-                    if (!btn.dataset.i18n) btn.dataset.i18n = 'btn.cancel_x';
+                document.querySelectorAll("button.custom-input-cancel").forEach((btn) => {
+                    if (!btn.dataset.i18n) btn.dataset.i18n = "btn.cancel_x";
                 });
-                document.querySelectorAll('button.tag-add-btn').forEach(btn => {
+                document.querySelectorAll("button.tag-add-btn").forEach((btn) => {
                     if (btn.dataset.i18n) return;
                     const txt = btn.textContent.trim();
-                    if (txt === '+ Custom') btn.dataset.i18n = 'btn.custom';
-                    else if (txt === '+ Add') btn.dataset.i18n = 'btn.add_influence';
-                    else if (txt === '+ Custom Genre') btn.dataset.i18n = 'btn.add_custom_genre';
-                    else if (txt === '+ Add Block') btn.dataset.i18n = 'btn.add_block';
+                    if (txt === "+ Custom") btn.dataset.i18n = "btn.custom";
+                    else if (txt === "+ Add") btn.dataset.i18n = "btn.add_influence";
+                    else if (txt === "+ Custom Genre") btn.dataset.i18n = "btn.add_custom_genre";
+                    else if (txt === "+ Add Block") btn.dataset.i18n = "btn.add_block";
                 });
             })();
             window.I18N.init();

@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n German (Deutsch) translation file.",
 
   "nav.settings":  "⚙ Einstellungen",
@@ -11,7 +11,7 @@
   "nav.history":   "Verlauf",
   "nav.export":    "Exportieren",
 
-  "api.no_key_hint":       "🔑 Bitte hinterlegen Sie entweder einen <strong>Google AI Studio</strong> (günstiger) API-Schlüssel und/oder einen <strong>OpenRouter</strong> API-Schlüssel (mehr Modelle / teurer) um SunoForge zu nutzen.",
+  "api.no_key_hint":       "🔑 Bitte hinterlegen Sie entweder einen <strong>Google AI Studio</strong> (günstiger) API-Schlüssel und/oder einen <strong>OpenRouter</strong> API-Schlüssel (mehr Modelle / teurer) oder eine <strong>lokalen OpenAI-kompatiblen LLM-Server</strong>-Adresse, um SunoForge zu nutzen.",
   "api.google_label":      "Google AI Studio Schlüssel:",
   "api.openrouter_label":  "OpenRouter Schlüssel:",
   "api.model_label":       "Modell:",
@@ -121,6 +121,7 @@
   "btn.writing":           "Schreibe...",
   "btn.export":            "📥 Exportieren",
   "btn.reset":             "✗ Zurücksetzen",
+  "btn.help":              "? Hilfe",
   "btn.backup":            "Sichern",
   "btn.import":            "Importieren",
   "btn.clear_all":         "Alle löschen",
@@ -193,6 +194,10 @@
   "modal.analyzer.info_box": "Dieser Analysator extrahiert automatisch die Songstruktur und aktualisiert Genre, Stimmung, Tempo, Ära, Produktion, Instrumentierung, Mix & Einflüsse auf allen Tabs.",
   "modal.backup.title":      "📦 Verlauf sichern",
   "modal.backup.security":   "⚠ Sicherheitshinweis: Schließen Sie Ihren API-Schlüssel nur dann in ein Backup ein, wenn Sie es sicher aufbewahren. Teilen Sie niemals Backups mit API-Schlüsseln öffentlich.",
+
+  "modal.lyrics_too_long.title": "⚠ Texte zu lang",
+  "btn.shorten_manually":        "Manuell kürzen",
+  "btn.shorten_ai":              "Von KI kürzen lassen",
 
   "ph.model_filter":          "Modelle filtern…"
 }

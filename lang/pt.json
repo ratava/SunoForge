@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Portuguese (Português) translation file.",
   "nav.settings": "⚙ Configurações",
   "nav.vocal": "🎤 Vocal",
@@ -9,7 +9,7 @@
   "nav.chords": "Acordes",
   "nav.history": "Histórico",
   "nav.export": "Exportar",
-  "api.no_key_hint": "🔑 Por favor, forneça uma chave API do <strong>Google AI Studio</strong> (mais barata) e/ou uma chave API do <strong>OpenRouter</strong> (mais modelos / mais cara) para usar o SunoForge.",
+  "api.no_key_hint": "🔑 Por favor, forne\u00e7a uma chave API do <strong>Google AI Studio</strong> (mais barata), uma chave API do <strong>OpenRouter</strong> (mais modelos / mais cara) ou um endere\u00e7o de <strong>servidor OpenAI v1</strong> para usar o SunoForge.",
   "api.google_label": "Chave do Google AI Studio:",
   "api.openrouter_label": "Chave do OpenRouter:",
   "api.model_label": "Modelo:",
@@ -113,6 +113,7 @@
   "btn.writing": "A escrever...",
   "btn.export": "📥 Exportar",
   "btn.reset": "✗ Repor",
+  "btn.help":  "? Ajuda",
   "btn.backup": "Cópia de segurança",
   "btn.import": "Importar",
   "btn.clear_all": "Limpar tudo",
@@ -180,5 +181,10 @@
   "modal.analyzer.info_box": "Este analisador extrairá automaticamente a estrutura da canção e atualizará Género, Mood, Andamento, Era, Produção, Instrumentação, Mix e Influências em todos os separadores.",
   "modal.backup.title": "📦 Cópia de segurança do histórico",
   "modal.backup.security": "⚠ Nota de segurança: Inclua a sua chave API numa cópia de segurança apenas se a armazenar com segurança. Nunca partilhe publicamente cópias de segurança com chaves API.",
+
+  "modal.lyrics_too_long.title": "⚠ Letra demasiado longa",
+  "btn.shorten_manually":        "Encurtar manualmente",
+  "btn.shorten_ai":              "Encurtar com IA",
+
   "ph.model_filter": "Filtrar modelos…"
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Korean (한국어) translation file.",
   "nav.settings": "⚙ 설정",
   "nav.vocal": "🎤 보컬",
@@ -9,7 +9,7 @@
   "nav.chords": "코드",
   "nav.history": "기록",
   "nav.export": "내보내기",
-  "api.no_key_hint": "🔑 SunoForge를 사용하려면 <strong>Google AI Studio</strong>(저렴함) API 키 및/또는 <strong>OpenRouter</strong>(더 많은 모델 / 더 비쌈) API 키를 입력해 주세요.",
+  "api.no_key_hint": "🔑 SunoForge를 사용하려면 <strong>Google AI Studio</strong>(저렴함) API 키 및/또는 <strong>OpenRouter</strong>(더 많은 모델 / 더 비쌈) API 키, 또는 <strong>로컬 OpenAI 호환 LLM 서버</strong> 주소를 입력해 주세요.",
   "api.google_label": "Google AI Studio 키:",
   "api.openrouter_label": "OpenRouter 키:",
   "api.model_label": "모델:",
@@ -113,6 +113,7 @@
   "btn.writing": "작성 중...",
   "btn.export": "📥 내보내기",
   "btn.reset": "✗ 초기화",
+  "btn.help":  "? 도움말",
   "btn.backup": "백업",
   "btn.import": "가져오기",
   "btn.clear_all": "모두 지우기",
@@ -180,5 +181,10 @@
   "modal.analyzer.info_box": "이 분석기는 노래 구조를 자동으로 추출하고 모든 탭에서 장르, 분위기, 템포, 시대, 프로덕션, 편성, 믹스 및 영향을 업데이트합니다.",
   "modal.backup.title": "📦 기록 백업",
   "modal.backup.security": "⚠ 보안 참고: API 키를 안전하게 보관하는 경우에만 백업에 포함시키세요. API 키가 포함된 백업을 공개적으로 공유하지 마세요.",
+
+  "modal.lyrics_too_long.title": "⚠ 가사가 너무 김요",
+  "btn.shorten_manually":        "수동으로 단축",
+  "btn.shorten_ai":              "AI로 단축",
+
   "ph.model_filter": "모델 필터링…"
 }

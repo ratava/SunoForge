@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Japanese (日本語) translation file.",
   "nav.settings": "⚙ 設定",
   "nav.vocal": "🎤 ボーカル",
@@ -9,7 +9,7 @@
   "nav.chords": "コード",
   "nav.history": "履歴",
   "nav.export": "エクスポート",
-  "api.no_key_hint": "🔑 SunoForgeを使用するには、<strong>Google AI Studio</strong>（より安価）および/または<strong>OpenRouter</strong>（より多くのモデル / より高価）のAPIキーを入力してください。",
+  "api.no_key_hint": "🔑 SunoForgeを使用するには、<strong>Google AI Studio</strong>（より安価）および/または<strong>OpenRouter</strong>（より多くのモデル / より高価）のAPIキー、または<strong>ローカルOpenAI互換LLMサーバー</strong>のアドレスを入力してください。",
   "api.google_label": "Google AI Studio キー：",
   "api.openrouter_label": "OpenRouter キー：",
   "api.model_label": "モデル：",
@@ -113,6 +113,7 @@
   "btn.writing": "作成中...",
   "btn.export": "📥 エクスポート",
   "btn.reset": "✗ リセット",
+  "btn.help":  "? ヘルプ",
   "btn.backup": "バックアップ",
   "btn.import": "インポート",
   "btn.clear_all": "すべてクリア",
@@ -180,5 +181,10 @@
   "modal.analyzer.info_box": "このアナライザーは楽曲構造を自動的に抽出し、すべてのタブでジャンル、ムード、テンポ、時代、プロダクション、楽器編成、ミックス、インフルエンスを更新します。",
   "modal.backup.title": "📦 履歴をバックアップ",
   "modal.backup.security": "⚠ セキュリティ上の注意：APIキーは安全に保管する場合にのみバックアップに含めてください。APIキーを含むバックアップを公開で共有しないでください。",
+
+  "modal.lyrics_too_long.title": "⚠ 歌詞が長すぎます",
+  "btn.shorten_manually":        "手動で短縮",
+  "btn.shorten_ai":              "AIで短縮する",
+
   "ph.model_filter": "モデルをフィルター…"
 }

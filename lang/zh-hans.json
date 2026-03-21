@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Chinese Simplified / Mandarin (简体中文) translation file.",
   "nav.settings": "⚙ 设置",
   "nav.vocal": "🎤 人声",
@@ -9,7 +9,7 @@
   "nav.chords": "和弦",
   "nav.history": "历史",
   "nav.export": "导出",
-  "api.no_key_hint": "🔑 请输入 <strong>Google AI Studio</strong>（更便宜）API 密钥和/或 <strong>OpenRouter</strong>（更多模型 / 更贵）API 密钥以使用 SunoForge。",
+  "api.no_key_hint": "🔑 请输入 <strong>Google AI Studio</strong>（更便宜）API 密钥和/或 <strong>OpenRouter</strong>（更多模型 / 更贵）API 密钥或 <strong>本地 OpenAI 兼容 LLM 服务器</strong>地址以使用 SunoForge。",
   "api.google_label": "Google AI Studio 密钥：",
   "api.openrouter_label": "OpenRouter 密钥：",
   "api.model_label": "模型：",
@@ -113,6 +113,7 @@
   "btn.writing": "创作中...",
   "btn.export": "📥 导出",
   "btn.reset": "✗ 重置",
+  "btn.help":  "? 帮助",
   "btn.backup": "备份",
   "btn.import": "导入",
   "btn.clear_all": "清除全部",
@@ -180,5 +181,8 @@
   "modal.analyzer.info_box": "此分析器将自动提取歌曲结构，并更新所有选项卡中的风格、情绪、速度、年代、制作、编曲、混音和影响。",
   "modal.backup.title": "📦 备份历史记录",
   "modal.backup.security": "⚠ 安全提示：仅在安全存储的情况下才将 API 密钥包含在备份中。切勿公开分享包含 API 密钥的备份。",
+  "modal.lyrics_too_long.title": "⚠ 歌词过长",
+  "btn.shorten_manually":        "手动缩短",
+  "btn.shorten_ai":              "AI 自动缩短",
   "ph.model_filter": "过滤模型…"
 }

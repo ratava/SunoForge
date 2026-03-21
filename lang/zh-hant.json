@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Chinese Traditional / Cantonese (繁體中文) translation file.",
   "nav.settings": "⚙ 設定",
   "nav.vocal": "🎤 人聲",
@@ -9,7 +9,7 @@
   "nav.chords": "和弦",
   "nav.history": "歷史",
   "nav.export": "匯出",
-  "api.no_key_hint": "🔑 請輸入 <strong>Google AI Studio</strong>（較便宜）API 金鑰及/或 <strong>OpenRouter</strong>（更多模型 / 較貴）API 金鑰以使用 SunoForge。",
+  "api.no_key_hint": "🔑 請輸入 <strong>Google AI Studio</strong>（較便宜）API 金鑰及/或 <strong>OpenRouter</strong>（更多模型 / 較貴）API 金鑰或 <strong>本地 OpenAI 相容 LLM 伺服器</strong>地址以使用 SunoForge。",
   "api.google_label": "Google AI Studio 金鑰：",
   "api.openrouter_label": "OpenRouter 金鑰：",
   "api.model_label": "模型：",
@@ -113,6 +113,7 @@
   "btn.writing": "創作中...",
   "btn.export": "📥 匯出",
   "btn.reset": "✗ 重置",
+  "btn.help":  "? 說明",
   "btn.backup": "備份",
   "btn.import": "匯入",
   "btn.clear_all": "清除全部",
@@ -180,5 +181,8 @@
   "modal.analyzer.info_box": "此分析器將自動提取歌曲結構，並更新所有分頁中的風格、情緒、速度、年代、製作、編曲、混音和影響。",
   "modal.backup.title": "📦 備份歷史記錄",
   "modal.backup.security": "⚠ 安全提示：僅在安全儲存的情況下才將 API 金鑰包含在備份中。切勿公開分享包含 API 金鑰的備份。",
+  "modal.lyrics_too_long.title": "⚠ 歌詞過長",
+  "btn.shorten_manually":        "手動縮短",
+  "btn.shorten_ai":              "AI 自動縮短",
   "ph.model_filter": "過濳模型…"
 }

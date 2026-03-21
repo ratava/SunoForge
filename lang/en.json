@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n English master token file. Keep in sync with index.html data-i18n attributes.",
 
   "nav.settings":  "⚙ Settings",
@@ -11,7 +11,7 @@
   "nav.history":   "History",
   "nav.export":    "Export",
 
-  "api.no_key_hint":       "🔑 Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.",
+  "api.no_key_hint":       "🔑 Please provide either a <strong>Google AI Studio</strong> (cheaper) API key, an <strong>OpenRouter</strong> API key (more models / more expensive), or an <strong>Local OpenAI Compatible LLM Server</strong> address to use SunoForge.",
   "api.google_label":      "Google AI Studio Key:",
   "api.openrouter_label":  "OpenRouter Key:",
   "api.model_label":       "Model:",
@@ -121,6 +121,7 @@
   "btn.writing":           "Writing...",
   "btn.export":            "📥 Export",
   "btn.reset":             "✗ Reset",
+  "btn.help":              "? Help",
   "btn.backup":            "Backup",
   "btn.import":            "Import",
   "btn.clear_all":         "Clear All",
@@ -193,6 +194,10 @@
   "modal.analyzer.info_box": "This analyzer will automatically extract song structure, update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix & Influences across all tabs.",
   "modal.backup.title":      "📦 Backup History",
   "modal.backup.security":   "⚠ Security Note: Only include your API key in a backup if you are storing it securely. Never share backups containing API keys publicly.",
+
+  "modal.lyrics_too_long.title": "⚠ Lyrics Too Long",
+  "btn.shorten_manually":        "Manually Shorten",
+  "btn.shorten_ai":              "Have the AI Shorten",
 
   "ph.model_filter":          "Filter models…"
 }
