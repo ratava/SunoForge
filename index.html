@@ -1893,7 +1893,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260321-002</span>
+                <span class="version" id="version">Version: <br />20260322-001</span>
             </div>
         </header>
 
@@ -2652,7 +2652,7 @@ Legal permission has been sought for the use of the name Suno
                     <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">Write My Song</button>
                     <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">Copy to Suno</button>
                     <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">Reset</button>
-                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge/Wiki', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">Help</button>
+                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge/wiki', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">Help</button>
                 </div>
 
                 <div class="right-tabs">
@@ -3071,6 +3071,7 @@ Legal permission has been sought for the use of the name Suno
                 if (hidden) hidden.value = defaultId || "";
                 const labelEl = document.getElementById("model-select-label");
                 if (labelEl && defaultLabel) labelEl.textContent = defaultLabel;
+                updateApiBarSummary();
             }
 
             // Toggle the custom model dropdown open/closed
@@ -7953,16 +7954,14 @@ Legal permission has been sought for the use of the name Suno
                     // Extract JSON data
                     const jsonMarker = "--- SUNOFORGE HISTORY BACKUP ---";
 
-                    // Normalize line breaks (handle old backups with literal \n)
-                    const normalizedContent = content.replace(/\\n/g, "\n");
-                    const jsonIndex = normalizedContent.indexOf(jsonMarker);
+                    const jsonIndex = content.indexOf(jsonMarker);
 
                     if (jsonIndex === -1) {
                         throw new Error("Invalid backup file format - marker not found");
                     }
 
                     // Extract everything after the marker
-                    let jsonText = normalizedContent.substring(jsonIndex + jsonMarker.length);
+                    let jsonText = content.substring(jsonIndex + jsonMarker.length);
 
                     // Remove all leading whitespace and newlines
                     jsonText = jsonText.replace(/^\s+/, "");
