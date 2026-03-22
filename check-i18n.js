@@ -9,7 +9,7 @@ const fs = require('fs');
 const en = require('./lang/en.json');
 const html = fs.readFileSync('./index.html', 'utf8');
 
-const LOCALES = ['de', 'fr', 'nl', 'es', 'pt', 'ru', 'ja', 'ko', 'zh-hans', 'zh-hant'];
+const LOCALES = ['de', 'fr', 'it', 'nl', 'es', 'pt', 'ru', 'ja', 'ko', 'zh-hans', 'zh-hant'];
 const localeData = {};
 LOCALES.forEach(function(l) { localeData[l] = require('./lang/' + l + '.json'); });
 
