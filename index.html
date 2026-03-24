@@ -1966,7 +1966,7 @@ Legal permission has been sought for the use of the name Suno
                 <!-- SETTINGS TAB -->
                 <div class="left-panel-content" id="lpanel-settings">
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.song_language">Song Language</label>
+                        <div class="field-label" data-i18n="lbl.song_language">Song Language</div>
                         <select id="song-language" onchange="onSongLanguageChange(this)">
                             <option value="English">English</option>
                             <option value="German">German</option>
@@ -1985,19 +1985,19 @@ Legal permission has been sought for the use of the name Suno
                         <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="localStorage.setItem('sf_song_lang_custom', this.value)" />
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.song_title">Song Title</label>
+                        <div class="field-label" data-i18n="lbl.song_title">Song Title</div>
                         <input type="text" id="title" placeholder="e.g. Dust &amp; Thunder" data-i18n-ph="ph.title" />
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.concept">Concept / Story</label>
+                        <div class="field-label" data-i18n="lbl.concept">Concept / Story</div>
                         <textarea id="concept" rows="3" placeholder="What is this song about?" data-i18n-ph="ph.concept"></textarea>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.special_inst">Special AI Instructions</label>
+                        <div class="field-label" data-i18n="lbl.special_inst">Special AI Instructions</div>
                         <textarea id="special-instructions" rows="3" placeholder="Optional special instructions to the AI" data-i18n-ph="ph.special_inst"></textarea>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.genre_selection">Genre Selection</label>
+                        <div class="field-label" data-i18n="lbl.genre_selection">Genre Selection</div>
 
                         <!-- Selected Genres Display -->
                         <div id="selected-genres-display" class="selected-genres-row" style="display: none; margin-bottom: 8px">
@@ -2033,7 +2033,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.mood">Mood</label>
+                        <div class="field-label" data-i18n="lbl.mood">Mood</div>
                         <div class="tag-row" id="mood-tags">
                             <div class="tag" data-val="Gritty, defiant, cathartic">Raw & Defiant</div>
                             <div class="tag" data-val="Melancholic, longing, introspective">Melancholic</div>
@@ -2054,7 +2054,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.goal">Goal</label>
+                        <div class="field-label" data-i18n="lbl.goal">Goal</div>
                         <div class="tag-row" id="goal-tags">
                             <div class="tag" data-val="Background Music">Background Music</div>
                             <div class="tag" data-val="Dance Floor Banger">Dance Floor Banger</div>
@@ -2081,7 +2081,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.rhythm">Rhythm</label>
+                        <div class="field-label" data-i18n="lbl.rhythm">Rhythm</div>
                         <div class="tag-row" id="rhythm-tags">
                             <div class="tag" data-val="Triplet">Triplet</div>
                             <div class="tag" data-val="Swing">Swing</div>
@@ -2103,7 +2103,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.groove_feel">Groove Feel</label>
+                        <div class="field-label" data-i18n="lbl.groove_feel">Groove Feel</div>
                         <div class="tag-row" id="groove-tags">
                             <div class="tag" data-val="Funky">Funky</div>
                             <div class="tag" data-val="Smooth">Smooth</div>
@@ -2126,7 +2126,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.perspective">Perspective</label>
+                        <div class="field-label" data-i18n="lbl.perspective">Perspective</div>
                         <div class="tag-row" id="pov-tags">
                             <div class="tag" data-val="first person (I/me)">First Person</div>
                             <div class="tag" data-val="second person (you)">Second Person</div>
@@ -2144,7 +2144,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.rhyme_scheme">Rhyme Scheme</label>
+                        <div class="field-label" data-i18n="lbl.rhyme_scheme">Rhyme Scheme</div>
                         <div class="tag-row" id="rhyme-tags">
                             <div class="tag" data-val="AABB (couplets)">AABB</div>
                             <div class="tag" data-val="ABAB (alternating)">ABAB</div>
@@ -2177,7 +2177,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.tempo">Tempo</label>
+                        <div class="field-label" data-i18n="lbl.tempo">Tempo</div>
                         <select id="tempo-mode" onchange="toggleTempoMode()">
                             <option value="ai" selected>Auto (let AI choose)</option>
                             <option value="custom">Specific BPM / Range</option>
@@ -2195,7 +2195,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.song_duration">Song Duration</label>
+                        <div class="field-label" data-i18n="lbl.song_duration">Song Duration</div>
                         <select id="duration-mode" onchange="toggleDurationMode()">
                             <option value="none" selected>Auto (let AI choose)</option>
                             <option value="custom">Specific Duration</option>
@@ -2226,7 +2226,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.musical_key">Musical Key</label>
+                        <div class="field-label" data-i18n="lbl.musical_key">Musical Key</div>
                         <select id="musical-key">
                             <option value="Auto">Auto (let AI choose)</option>
                             <option value="C major">C major</option>
@@ -2256,7 +2256,7 @@ Legal permission has been sought for the use of the name Suno
                         </select>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.time_signature">Time Signature</label>
+                        <div class="field-label" data-i18n="lbl.time_signature">Time Signature</div>
                         <select id="time-signature" onchange="toggleTimeSignatureMode()">
                             <option value="Auto" selected>Auto (let AI choose)</option>
                             <option value="4/4">4/4 (Common time)</option>
@@ -2275,7 +2275,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.verse_length">Verse Length</label>
+                        <div class="field-label" data-i18n="lbl.verse_length">Verse Length</div>
                         <select id="verse-length-select">
                             <option value="" selected>Follow Structure</option>
                             <option value="4 Bars">4 Bars</option>
@@ -2284,7 +2284,7 @@ Legal permission has been sought for the use of the name Suno
                         </select>
                     </div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.chorus_length">Chorus Length</label>
+                        <div class="field-label" data-i18n="lbl.chorus_length">Chorus Length</div>
                         <select id="chorus-length-select">
                             <option value="" selected>Follow Structure</option>
                             <option value="4 Bars">4 Bars</option>
@@ -2298,7 +2298,7 @@ Legal permission has been sought for the use of the name Suno
                 <!-- VOCAL TAB -->
                 <div class="left-panel-content" id="lpanel-vocal" style="display: none">
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.lead_vocal">Lead Vocal Type</label>
+                        <div class="field-label" data-i18n="lbl.lead_vocal">Lead Vocal Type</div>
                         <div class="tag-row" id="vocal-type-tags">
                             <div class="tag active" data-val="Single Male" onclick="selectVocalType(this)">Single Male</div>
                             <div class="tag" data-val="Single Female" onclick="selectVocalType(this)">Single Female</div>
@@ -2317,7 +2317,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
 
                     <div class="field-group" id="choir-enable-container" style="margin-top: 16px">
-                        <label class="field-label">
+                        <label class="field-label" for="choir-enabled">
                             <input type="checkbox" id="choir-enabled" onchange="toggleChoir(this.checked)" style="width: auto; margin-right: 6px" />
                             <span data-i18n="lbl.choir_backing">Add Choir/Backing Vocals</span>
                         </label>
@@ -2332,7 +2332,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="left-panel-content" id="lpanel-structure" style="display: none">
                     <div class="info-box" data-i18n="hint.structure">Choose a song structure for your selected genre. The AI will follow this flow exactly.</div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.custom_structure">Build a custom structure from scratch</label>
+                        <div class="field-label" data-i18n="lbl.custom_structure">Build a custom structure from scratch</div>
                         <div class="custom-structure-builder">
                             <div class="info-box green" data-i18n="hint.structure_builder">
                                 Click any structure block to append it to your custom flow. Re-click blocks to repeat sections. Use the step controls to move, remove, undo, or clear. Add chord progressions and section-specific instructions (e.g., whispered, building intensity) using the input
@@ -2364,7 +2364,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group">
-                        <label class="field-label">Structure for: <span id="struct-genre-label" style="color: var(--accent); font-weight: 700"></span></label>
+                        <div class="field-label">Structure for: <span id="struct-genre-label" style="color: var(--accent); font-weight: 700"></span></div>
                         <div class="structure-list" id="structure-list"></div>
                     </div>
                 </div>
@@ -2373,7 +2373,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="left-panel-content" id="lpanel-sound" style="display: none">
                     <div class="info-box" data-i18n="hint.sound_tab">Shape the production sound. Each selection is woven into the production notes and lyrics direction the AI generates.</div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.era_decade">Era / Decade</label>
+                        <div class="field-label" data-i18n="lbl.era_decade">Era / Decade</div>
                         <div class="tag-row" id="era-tags">
                             <div class="tag multi" data-val="1920s-40s (pre-war, big band era)">1920s-40s</div>
                             <div class="tag multi" data-val="1950s (early rock, doo-wop, jump blues)">1950s</div>
@@ -2395,7 +2395,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.instruments">Instruments</label>
+                        <div class="field-label" data-i18n="lbl.instruments">Instruments</div>
                         <div class="tag-row" id="instruments-tags">
                             <div class="tag multi" data-val="Acoustic Guitar">Acoustic Guitar</div>
                             <div class="tag multi" data-val="Nylon Guitar">Nylon Guitar</div>
@@ -2458,7 +2458,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.inst_focus">Instrumentation Focus</label>
+                        <div class="field-label" data-i18n="lbl.inst_focus">Instrumentation Focus</div>
                         <div class="tag-row" id="inst-tags">
                             <div class="tag multi" data-val="Acoustic only - no electric instruments">Acoustic</div>
                             <div class="tag multi" data-val="Full band - guitar, bass, drums, keys">Full Band</div>
@@ -2479,7 +2479,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.bass">Bass</label>
+                        <div class="field-label" data-i18n="lbl.bass">Bass</div>
                         <div class="tag-row" id="bass-tags">
                             <div class="tag" data-val="Deep Sub-Bass">Deep Sub-Bass</div>
                             <div class="tag" data-val="808 Bass">808 Bass</div>
@@ -2508,7 +2508,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.spatial_effects">Spatial / Effects</label>
+                        <div class="field-label" data-i18n="lbl.spatial_effects">Spatial / Effects</div>
                         <div class="tag-row" id="spatial-tags">
                             <div class="tag multi" data-val="Reverb-Heavy">Reverb-Heavy</div>
                             <div class="tag multi" data-val="Delay Effects">Delay Effects</div>
@@ -2542,7 +2542,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.exclusions">Exclusions</label>
+                        <div class="field-label" data-i18n="lbl.exclusions">Exclusions</div>
                         <input type="text" id="instrument-exclude" placeholder="Comma-separated instrument and styles to exclude (e.g. banjo, trap, country)" data-i18n-ph="ph.exclusions" />
                         <div
                             style="
@@ -2560,7 +2560,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.production_style">Production Style</label>
+                        <div class="field-label" data-i18n="lbl.production_style">Production Style</div>
                         <div class="tag-row" id="prodstyle-tags">
                             <div class="tag multi" data-val="Raw & live - minimal overdubs, room sound, first-take energy">Raw & Live</div>
                             <div class="tag multi active" data-val="Polished studio - multi-layered, produced, radio-ready">Polished Studio</div>
@@ -2581,7 +2581,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.mix_character">Mix Character</label>
+                        <div class="field-label" data-i18n="lbl.mix_character">Mix Character</div>
                         <div class="tag-row" id="mix-tags">
                             <div class="tag multi" data-val="Warm analog - tape saturation, soft highs, rounded transients">Warm Analog</div>
                             <div class="tag multi active" data-val="Crisp digital - clean, precise, wide stereo, no tape hiss, no analogue hiss">Crisp Digital</div>
@@ -2612,7 +2612,7 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <div class="section-divider"></div>
                     <div class="field-group">
-                        <label class="field-label" style="display: flex; align-items: flex-start; gap: 4px; justify-content: flex-start; align-self: flex-start; padding-bottom: 4px">
+                        <label class="field-label" for="enable-influences-checkbox" style="display: flex; align-items: flex-start; gap: 4px; justify-content: flex-start; align-self: flex-start; padding-bottom: 4px">
                             <input type="checkbox" id="enable-influences-checkbox" style="flex-shrink: 0" />
                             <span data-i18n="lbl.suggest_influences">Suggest Influences</span>
                         </label>
@@ -2630,7 +2630,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="left-panel-content" id="lpanel-lyrics" style="display: none">
                     <div class="info-box" data-i18n="hint.lyrics_tab">Provide your own lyrics for the AI to work with.</div>
                     <div class="field-group">
-                        <label class="field-label" data-i18n="lbl.lyrics_ai_action">What should the AI do with your lyrics?</label>
+                        <div class="field-label" data-i18n="lbl.lyrics_ai_action">What should the AI do with your lyrics?</div>
                         <div class="tag-row" id="aimode-tags">
                             <div class="tag active" data-val="complete" data-i18n="aimode.complete">Complete the song</div>
                             <div class="tag" data-val="rewrite" data-i18n="aimode.rewrite">Rewrite / improve</div>
@@ -2640,7 +2640,7 @@ Legal permission has been sought for the use of the name Suno
                         </div>
                     </div>
                     <div class="field-group" style="flex: 1; display: flex; flex-direction: column">
-                        <label class="field-label" data-i18n="lbl.your_lyrics">Your Lyrics</label>
+                        <div class="field-label" data-i18n="lbl.your_lyrics">Your Lyrics</div>
                         <textarea id="lyrics-input" style="flex: 1; min-height: 0" data-i18n-ph="ph.lyrics_input" placeholder="Paste or type your lyrics here...&#10;&#10;Label sections like:&#10;[Verse]&#10;Your verse here...&#10;&#10;[Chorus]&#10;Your chorus..."></textarea>
                     </div>
                 </div>
@@ -2756,6 +2756,23 @@ Legal permission has been sought for the use of the name Suno
             </div>
         </div>
 
+        <div class="modal-overlay" id="keepmode-warning-modal" style="display: none" onclick="closeKeepModeWarningModal(event, false)">
+            <div class="modal confirm-modal" style="max-width: 560px">
+                <div class="modal-title">Keep Mode Warning</div>
+                <div style="padding: 0 24px 16px; font-size: 13px; color: var(--text); font-family: 'Space Mono', monospace; line-height: 1.6; white-space: pre-line">
+                    Your lyrics do not appear to include clear section identifiers like [Verse], [Chorus], or [Bridge].
+
+                    Keep mode depends on clear section headers to preserve section directions and lyric placement exactly as entered.
+
+                    Continue anyway?
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveKeepModeWarning(false)">Cancel</button>
+                    <button class="btn-primary" onclick="resolveKeepModeWarning(true)">Continue</button>
+                </div>
+            </div>
+        </div>
+
         <div class="modal-overlay" id="settings-confirm-modal" style="display: none" onclick="closeSettingsConfirm(event, false)">
             <div class="modal confirm-modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
                 <div class="modal-title" data-i18n="modal.settings.title">Confirm Settings Update</div>
@@ -2809,7 +2826,7 @@ Legal permission has been sought for the use of the name Suno
                         This will export all <strong id="backup-song-count">0</strong> songs in your history to a single backup file.
                     </div>
                     <div class="field-group">
-                        <label class="field-label" style="display: flex; align-items: flex-start; gap: 6px; cursor: pointer">
+                        <label class="field-label" for="backup-include-api" style="display: flex; align-items: flex-start; gap: 6px; cursor: pointer">
                             <input type="checkbox" id="backup-include-api" style="margin-top: 2px; width: auto" />
                             <span data-i18n="lbl.backup_include_key">Include API Key in backup</span>
                         </label>
@@ -4468,6 +4485,12 @@ Legal permission has been sought for the use of the name Suno
             }
 
             function selectMainGenre(genre) {
+                const isSameMainGenre = currentMainGenreSelection && currentMainGenreSelection.id === genre.id;
+                if (isSameMainGenre) {
+                    cancelGenreSelection();
+                    return;
+                }
+
                 currentMainGenreSelection = genre;
                 currentSubGenreSelection = null;
 
@@ -4503,6 +4526,14 @@ Legal permission has been sought for the use of the name Suno
             }
 
             function selectSubGenre(subGenre) {
+                const isSameSubGenre = currentSubGenreSelection && currentSubGenreSelection.id === subGenre.id;
+                if (isSameSubGenre) {
+                    currentSubGenreSelection = null;
+                    document.querySelectorAll("#genre-sub-tags .tag").forEach((t) => t.classList.remove("active"));
+                    document.getElementById("add-genre-btn").disabled = true;
+                    return;
+                }
+
                 currentSubGenreSelection = subGenre;
 
                 // Update UI
@@ -4932,14 +4963,12 @@ Legal permission has been sought for the use of the name Suno
                         content += `--- LYRICS ---\n`;
                         currentSong.sections.forEach((s) => {
                             const strippedLines = stripAllLeadingMetaTags(s.lines || "");
-                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
+                            const metaTagLines = collectSectionMetaTags(s)
+                                .map((tag) => `\n[${tag}]`)
+                                .join("");
 
                             content += `\n[${s.type}]`;
-                            if (s.direction) content += `\n[${s.direction}]`;
-                            // Only output instructions if different from direction (avoid duplication)
-                            if (cleanedInstructions && cleanedInstructions !== s.direction) {
-                                content += `\n[${cleanedInstructions}]`;
-                            }
+                            content += metaTagLines;
                             content += `\n${strippedLines}\n`;
                         });
                     }
@@ -4967,7 +4996,9 @@ Legal permission has been sought for the use of the name Suno
                 const g = document.getElementById(id);
                 g.querySelectorAll(".tag").forEach((t) => {
                     t.addEventListener("click", () => {
+                        const wasActive = t.classList.contains("active");
                         g.querySelectorAll(".tag").forEach((x) => x.classList.remove("active"));
+                        if (wasActive) return;
                         t.classList.add("active");
                         if (id === "rhyme-tags") clearCustomRhyme();
                         if (id === "mood-tags") clearCustomSingleValue("mood-custom-row", "mood-custom-tag");
@@ -5185,15 +5216,6 @@ Legal permission has been sought for the use of the name Suno
             }
             function removeCustomSingleValue(rowId, tagId, groupId) {
                 clearCustomSingleValue(rowId, tagId);
-                const group = document.getElementById(groupId);
-                if (!group || group.querySelector(".tag.active")) return;
-                const first = group.querySelector(".tag");
-                if (!first) return;
-                first.classList.add("active");
-                if (groupId === "genre-tags") {
-                    currentGenreKey = first.dataset.key || "rock";
-                    buildStructureList(currentGenreKey);
-                }
             }
             function setCustomSingleValue(rowId, tagId, prefix, value) {
                 const row = document.getElementById(rowId);
@@ -5317,7 +5339,7 @@ Legal permission has been sought for the use of the name Suno
                                         <div class="choir-header">Choir/Backing Vocals</div>
                                         <div class="vocal-profile-row">
                                             <div class="vocal-profile-field">
-                                                <label>Gender</label>
+                                                <label for="choir-gender">Gender</label>
                                                 <select id="choir-gender">
                                                     <option value="Male">Male</option>
                                                     <option value="Female">Female</option>
@@ -5325,7 +5347,7 @@ Legal permission has been sought for the use of the name Suno
                                                 </select>
                                             </div>
                                             <div class="vocal-profile-field">
-                                                <label>Size</label>
+                                                <label for="choir-size">Size</label>
                                                 <select id="choir-size">
                                                     <option value="Small (Vocal Ensemble)">Small (Vocal Ensemble)</option>
                                                     <option value="Medium (Chamber)" selected>Medium (Chamber)</option>
@@ -5335,7 +5357,7 @@ Legal permission has been sought for the use of the name Suno
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
-                                            <label>Vocal Range (optional)</label>
+                                            <div class="field-label">Vocal Range (optional)</div>
                                             <div class="vocal-style-tags" id="choir-range-tags">
                                                 <div class="tag multi" data-val="Bass">Bass</div>
                                                 <div class="tag multi" data-val="Baritone">Baritone</div>
@@ -5347,7 +5369,7 @@ Legal permission has been sought for the use of the name Suno
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
-                                            <label>Accent (optional)</label>
+                                            <div class="field-label">Accent (optional)</div>
                                             <div class="accent-chips" id="choir-accent-tags">
                                                 <div class="tag multi" data-val="American">American</div>
                                                 <div class="tag multi" data-val="Australian">Australian</div>
@@ -5372,7 +5394,7 @@ Legal permission has been sought for the use of the name Suno
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
-                                            <label>Style (optional)</label>
+                                            <div class="field-label">Style (optional)</div>
                                             <div class="vocal-style-tags" id="choir-style-tags">
                                                 <div class="tag multi" data-val="Clean">Clean</div>
                                                 <div class="tag multi" data-val="Gritty">Gritty</div>
@@ -5475,15 +5497,15 @@ Legal permission has been sought for the use of the name Suno
                                         <div class="vocal-profile-header">${profile.label}</div>
                                         <div class="vocal-profile-row">
                                             <div class="vocal-profile-field">
-                                                <label>Gender</label>
-                                                <select class="vp-gender" data-idx="${idx}">
+                                                <label for="vp-gender-${idx}">Gender</label>
+                                                <select id="vp-gender-${idx}" name="vp-gender-${idx}" class="vp-gender" data-idx="${idx}">
                                                     <option value="Male" ${profile.gender === "Male" ? "selected" : ""}>Male</option>
                                                     <option value="Female" ${profile.gender === "Female" ? "selected" : ""}>Female</option>
                                                 </select>
                                             </div>
                                             <div class="vocal-profile-field">
-                                                <label>Range</label>
-                                                <select class="vp-range" data-idx="${idx}">
+                                                <label for="vp-range-${idx}">Range</label>
+                                                <select id="vp-range-${idx}" name="vp-range-${idx}" class="vp-range" data-idx="${idx}">
                                                     <option value="">Not specified</option>
                                                     ${
                                                         profile.gender === "Male"
@@ -5508,16 +5530,16 @@ Legal permission has been sought for the use of the name Suno
                                                 </select>
                                             </div>
                                             <div class="vocal-profile-field" id="vp-custom-range-row-${idx}" style="display: none; margin-top: 4px">
-                                                <label>Custom Range</label>
+                                                <label for="vp-custom-range-input-${idx}">Custom Range</label>
                                                 <div class="custom-input-row" style="margin-top: 0">
-                                                    <input type="text" id="vp-custom-range-input-${idx}" placeholder="e.g. Low Baritone, High Tenor..." onkeydown="if (event.key === 'Enter') confirmCustomRange(${idx});" />
+                                                    <input type="text" id="vp-custom-range-input-${idx}" name="vp-custom-range-input-${idx}" placeholder="e.g. Low Baritone, High Tenor..." onkeydown="if (event.key === 'Enter') confirmCustomRange(${idx});" />
                                                     <button class="custom-input-confirm" onclick="confirmCustomRange(${idx})">Set</button>
                                                     <button class="custom-input-cancel" onclick="cancelCustomRange(${idx})">Cancel</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
-                                            <label>Accent (optional)</label>
+                                            <div class="field-label">Accent (optional)</div>
                                             <div class="accent-chips" id="vp-accent-${idx}">
                                                 <div class="tag multi" data-val="American">American</div>
                                                 <div class="tag multi" data-val="Australian">Australian</div>
@@ -5542,7 +5564,7 @@ Legal permission has been sought for the use of the name Suno
                                             </div>
                                         </div>
                                         <div class="vocal-profile-field">
-                                            <label>Style (optional)</label>
+                                            <div class="field-label">Style (optional)</div>
                                             <div class="vocal-style-tags" id="vp-style-${idx}">
                                                 <div class="tag multi" data-val="Clean">Clean</div>
                                                 <div class="tag multi" data-val="Gritty">Gritty</div>
@@ -6227,12 +6249,12 @@ Legal permission has been sought for the use of the name Suno
                                                     <button class="custom-structure-step-btn" type="button" onclick="removeCustomStructurePoint(${idx})">x</button>
                                                 </div>
                                                 <div class="custom-structure-step-chords">
-                                                    <input type="text" placeholder="Chords (e.g., Em-C-G-D)" value="${escapeAttr(stepChords)}"
+                                                       <input type="text" name="custom-step-chords-${idx}" placeholder="Chords (e.g., Em-C-G-D)" value="${escapeAttr(stepChords)}"
                                                            onchange="updateStructureStepChords(${idx}, this.value)"
                                                            onclick="event.stopPropagation()" />
                                                 </div>
                                                 <div class="custom-structure-step-instructions">
-                                                    <input type="text" placeholder="Section instructions (e.g., whispered, building intensity)" value="${escapeAttr(stepInstructions)}"
+                                                       <input type="text" name="custom-step-instructions-${idx}" placeholder="Section instructions (e.g., whispered, building intensity)" value="${escapeAttr(stepInstructions)}"
                                                            onchange="updateStructureStepInstructions(${idx}, this.value)"
                                                            onclick="event.stopPropagation()" />
                                                 </div>
@@ -6547,11 +6569,11 @@ Legal permission has been sought for the use of the name Suno
             function buildSectionRows() {
                 const c = document.getElementById("section-rows");
                 if (!c || c.children.length > 0) return;
-                c.innerHTML = SECTION_LABELS.map(
-                    (l) => `
+                                c.innerHTML = SECTION_LABELS.map(
+                                        (l, idx) => `
                     <div class="section-lyric-row">
                       <div class="section-lyric-label">${l}<span>optional</span></div>
-                      <textarea rows="3" placeholder="Leave blank for AI..." data-section="${l}"></textarea>
+                      <textarea rows="3" name="section-lyrics-${idx}" placeholder="Leave blank for AI..." data-section="${l}"></textarea>
                     </div>`,
                 ).join("");
             }
@@ -7048,6 +7070,90 @@ Legal permission has been sought for the use of the name Suno
 
                 return lines.join("\n").trim();
             }
+            function normalizeMetaLineForCompare(value) {
+                return String(value || "")
+                    .trim()
+                    .replace(/^\[|\]$/g, "")
+                    .replace(/\s+/g, " ")
+                    .replace(/[.]+$/g, "")
+                    .toLowerCase();
+            }
+            function areSameMetaLine(a, b) {
+                const aa = normalizeMetaLineForCompare(a);
+                const bb = normalizeMetaLineForCompare(b);
+                return !!aa && aa === bb;
+            }
+            function extractSectionMetaAndBody(rawText, fallbackSectionType = "") {
+                const lines = String(stripLeadingStyleMetaTag(rawText || ""))
+                    .replace(/\r/g, "")
+                    .split("\n");
+
+                while (lines.length && !lines[0].trim()) lines.shift();
+
+                if (lines.length) {
+                    const firstMatch = lines[0].trim().match(/^\[([^\]]+)\]$/);
+                    const canonicalType = firstMatch ? extractCanonicalSectionType(firstMatch[1]) : "";
+                    if (
+                        canonicalType &&
+                        normalizeLooseSectionType(canonicalType) === normalizeLooseSectionType(fallbackSectionType || canonicalType)
+                    ) {
+                        lines.shift();
+                        while (lines.length && !lines[0].trim()) lines.shift();
+                    }
+                }
+
+                let direction = "";
+                let instructions = "";
+                while (lines.length) {
+                    const trimmed = lines[0].trim();
+                    const tagMatch = trimmed.match(/^\[([^\]]+)\]$/);
+                    if (!tagMatch) break;
+                    const content = tagMatch[1].trim();
+                    if (!direction) {
+                        direction = content;
+                    } else if (!instructions && !areSameMetaLine(content, direction)) {
+                        instructions = content;
+                    }
+                    lines.shift();
+                    while (lines.length && !lines[0].trim()) lines.shift();
+                }
+
+                return {
+                    direction,
+                    instructions,
+                    lines: lines.join("\n").trim(),
+                };
+            }
+            function collectSectionMetaTags(section) {
+                const tags = [];
+                if (!section) return tags;
+
+                const addTag = (value) => {
+                    const cleaned = String(value || "")
+                        .replace(/^\[|\]$/g, "")
+                        .trim();
+                    if (!cleaned) return;
+                    if (tags.some((existing) => areSameMetaLine(existing, cleaned))) return;
+                    tags.push(cleaned);
+                };
+
+                if (Array.isArray(section.metaTags) && section.metaTags.length) {
+                    section.metaTags.forEach((tag) => addTag(tag));
+                    return tags;
+                }
+
+                addTag(section.direction || "");
+
+                const instructionText = String(section.instructions || "").replace(/\r/g, "");
+                const instructionChunks = instructionText
+                    .split("\n")
+                    .flatMap((line) => line.split(/\s*\|\s*/))
+                    .map((line) => line.trim())
+                    .filter(Boolean);
+                instructionChunks.forEach((chunk) => addTag(chunk));
+
+                return tags;
+            }
             function normalizeStyleMetaTag(tag) {
                 let cleaned = String(tag || "").trim();
                 if (!cleaned) return "";
@@ -7093,6 +7199,331 @@ Legal permission has been sought for the use of the name Suno
                     song.sections[0].lines = stripLeadingStyleMetaTag(song.sections[0].lines);
                     if (styleMetaTag) song.sections[0].lines = `${styleMetaTag}\n${song.sections[0].lines}`.trim();
                 }
+            }
+            function buildAssembledLyricsPrompt(song) {
+                if (!song || !Array.isArray(song.sections)) return "";
+
+                const sp = song.soundProfile;
+                const tempoPreference = formatTempoPreference(song.tempoPreference || "AI Choose");
+                const vocalConfig = song.vocalProfiles ? formatVocalProfilesForPrompt(song.vocalProfiles) : song.vocalGender ? formatVocalGenderValue(song.vocalGender) : "Not specified";
+                const verseLength = formatLengthPreference(song.verseLength);
+                const chorusLength = formatLengthPreference(song.chorusLength);
+                const styleLines = [];
+                if (vocalConfig && vocalConfig !== "Not specified") styleLines.push(`Vocal: ${vocalConfig}`);
+                if (song.mood) styleLines.push(`Mood: ${song.mood}`);
+                if (song.goal && song.goal !== "Not specified") styleLines.push(`Goal: ${song.goal}`);
+                if (song.rhythm && song.rhythm !== "AI Choose") styleLines.push(`Rhythm: ${song.rhythm}`);
+                if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleLines.push(`Groove Feel: ${song.grooveFeel}`);
+                if (song.pov) styleLines.push(`Perspective: ${song.pov}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (verseLength && verseLength !== "Follow Structure") styleLines.push(`Verse Length: ${verseLength}`);
+                if (chorusLength && chorusLength !== "Follow Structure") styleLines.push(`Chorus Length: ${chorusLength}`);
+                if (sp?.eras?.length) styleLines.push(`Era: ${sp.eras.join(", ")}`);
+                if (sp?.styles?.length) styleLines.push(`Production style: ${sp.styles.join(", ")}`);
+                if (sp?.instruments?.length) styleLines.push(`Instruments: ${sp.instruments.join(", ")}`);
+                if (sp?.insts?.length) styleLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
+                if (sp?.bass && sp.bass !== "AI Choose") styleLines.push(`Bass: ${sp.bass}`);
+                if (sp?.spatial?.length) styleLines.push(`Spatial/Effects: ${sp.spatial.join(", ")}`);
+                if (sp?.mixes?.length) {
+                    styleLines.push("");
+                    styleLines.push(`Mix: ${sp.mixes.join(", ")}`);
+                }
+                if (song.production) {
+                    styleLines.push("");
+                    styleLines.push(`Production notes: ${song.production}`);
+                }
+                if (song.chords?.progression) {
+                    styleLines.push("");
+                    styleLines.push(`Chord progression: ${song.chords.progression}`);
+                }
+
+                const styleMetaTag = styleLines.length ? normalizeStyleMetaTag(styleLines.join("\n")) : "";
+                const sections = song.sections.map((s) => {
+                    const strippedLines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(s.lines || ""));
+                    const metaTagLines = collectSectionMetaTags(s)
+                        .map((tag) => `\n[${tag}]`)
+                        .join("");
+                    return `\n[${s.type}]${metaTagLines}\n${strippedLines}`;
+                });
+
+                return normalizeLyricsText(removeDoubleBrackets([styleMetaTag, ...sections].join("\n")));
+            }
+            function extractLeadingStyleMetaTag(text) {
+                const lines = String(text || "").replace(/\r/g, "").split("\n");
+                while (lines.length && !lines[0].trim()) lines.shift();
+                if (!lines.length || !/^\[style:/i.test(lines[0].trim())) {
+                    return { styleMetaTag: "", body: lines.join("\n").trim() };
+                }
+
+                const metaLines = [];
+                let currentLine = lines.shift();
+                let remainder = currentLine.replace(/^\[style:\s*/i, "");
+                if (remainder.trim().endsWith("]")) {
+                    metaLines.push(remainder.replace(/\]\s*$/, ""));
+                } else {
+                    metaLines.push(remainder);
+                    while (lines.length) {
+                        currentLine = lines.shift();
+                        if (currentLine.trim().endsWith("]")) {
+                            metaLines.push(currentLine.replace(/\]\s*$/, ""));
+                            break;
+                        }
+                        metaLines.push(currentLine);
+                    }
+                }
+
+                while (lines.length && !lines[0].trim()) lines.shift();
+                return {
+                    styleMetaTag: normalizeStyleMetaTag(metaLines.join("\n").trim()),
+                    body: lines.join("\n").trim(),
+                };
+            }
+            function parseLyricsPromptSections(text, existingSections = []) {
+                const lines = String(text || "")
+                    .replace(/\r/g, "")
+                    .split("\n");
+                const sections = [];
+                let currentSection = null;
+                const existingSectionNames = new Set(
+                    (existingSections || [])
+                        .map((section) => normalizeSectionTypeForMatch(section?.type))
+                        .filter(Boolean),
+                );
+                const parserEvents = [];
+
+                const finalizeCurrent = () => {
+                    if (!currentSection) return;
+                    currentSection.lines = currentSection.lines.join("\n").trim();
+                    if (currentSection.type || currentSection.lines) sections.push(currentSection);
+                    currentSection = null;
+                };
+
+                lines.forEach((rawLine) => {
+                    const line = rawLine.trim();
+                    const sectionMatch = line.match(/^\[(.+?)\]$/);
+                    if (sectionMatch) {
+                        const sectionContent = sectionMatch[1].trim();
+                        const canonicalSectionType = extractCanonicalSectionType(sectionContent);
+                        const normalizedSectionType = normalizeSectionTypeForMatch(sectionContent);
+                        const isKnownSection = !!canonicalSectionType || existingSectionNames.has(normalizedSectionType);
+
+                        if (currentSection && !isKnownSection) {
+                            parserEvents.push({ type: "meta", value: sectionContent, section: currentSection.type || "Lyrics" });
+                            if (!currentSection.direction) currentSection.direction = sectionContent;
+                            else if (!currentSection.instructions) currentSection.instructions = sectionContent;
+                            else currentSection.lines.push(rawLine);
+                            return;
+                        }
+
+                        if (isKnownSection) {
+                            finalizeCurrent();
+                            parserEvents.push({ type: "section", value: sectionContent });
+                            currentSection = {
+                                type: canonicalSectionType || sectionContent,
+                                lines: [],
+                                direction: "",
+                                instructions: "",
+                                userProvided: existingSections[sections.length]?.userProvided || false,
+                            };
+                            return;
+                        }
+                    }
+
+                    if (!currentSection) {
+                        currentSection = {
+                            type: "Lyrics",
+                            lines: [],
+                            direction: "",
+                            instructions: "",
+                            userProvided: existingSections[sections.length]?.userProvided || false,
+                        };
+                    }
+                    currentSection.lines.push(rawLine);
+                });
+
+                finalizeCurrent();
+                debugLog("LYRICS_SHORTEN_PARSE", "Parsed AI-shortened lyrics prompt", {
+                    existingSections: (existingSections || []).map((section) => section?.type || ""),
+                    parsedSections: sections.map((section) => section.type),
+                    parserEvents,
+                });
+                return sections.filter((section) => section.type || section.lines);
+            }
+            function validateShortenedPromptSections(parsedSections, existingSections = []) {
+                const toStructureKey = (sectionType) => {
+                    const raw = String(sectionType || "").trim();
+                    if (!raw) return "";
+                    const canonical = extractCanonicalSectionType(raw);
+                    if (canonical) return normalizeSectionTypeForMatch(canonical);
+                    return normalizeLooseSectionType(raw);
+                };
+                const expected = (existingSections || []).map((section) => toStructureKey(section?.type)).filter(Boolean);
+                const actual = (parsedSections || []).map((section) => toStructureKey(section?.type)).filter(Boolean);
+                if (!expected.length) return { valid: true };
+                if (expected.length !== actual.length) {
+                    return {
+                        valid: false,
+                        reason: `Section count changed from ${expected.length} to ${actual.length}.`,
+                        expected,
+                        actual,
+                    };
+                }
+                for (let index = 0; index < expected.length; index++) {
+                    if (expected[index] !== actual[index]) {
+                        return {
+                            valid: false,
+                            reason: `Section ${index + 1} changed from "${existingSections[index]?.type || expected[index]}" to "${parsedSections[index]?.type || actual[index]}".`,
+                            expected,
+                            actual,
+                        };
+                    }
+                }
+                return { valid: true, expected, actual };
+            }
+            function applyStyleMetaTagToSong(song, styleMetaTag) {
+                if (!song) return;
+
+                song.style_meta_tag = normalizeStyleMetaTag(styleMetaTag || "");
+                const innerText = String(song.style_meta_tag || "")
+                    .replace(/^\[Style:\s*/i, "")
+                    .replace(/\]$/, "")
+                    .trim();
+                if (!innerText) return;
+
+                const soundProfile = song.soundProfile || {};
+                innerText.split("\n").forEach((rawLine) => {
+                    const line = rawLine.trim();
+                    if (!line) return;
+                    if (line.startsWith("Mood: ")) song.mood = line.substring(6).trim();
+                    else if (line.startsWith("Goal: ")) song.goal = line.substring(6).trim();
+                    else if (line.startsWith("Rhythm: ")) song.rhythm = line.substring(8).trim();
+                    else if (line.startsWith("Groove Feel: ")) song.grooveFeel = line.substring(13).trim();
+                    else if (line.startsWith("Perspective: ")) song.pov = line.substring(13).trim();
+                    else if (line.startsWith("Tempo Preference: ")) song.tempoPreference = line.substring(18).trim();
+                    else if (line.startsWith("Duration: ")) song.durationPreference = line.substring(10).trim();
+                    else if (line.startsWith("Verse Length: ")) song.verseLength = line.substring(14).trim();
+                    else if (line.startsWith("Chorus Length: ")) song.chorusLength = line.substring(15).trim();
+                    else if (line.startsWith("Era: ")) soundProfile.eras = line.substring(5).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (/^Production style: /i.test(line)) soundProfile.styles = line.substring(line.indexOf(":") + 1).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Instruments: ")) soundProfile.instruments = line.substring(13).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Instrumentation: ")) soundProfile.insts = line.substring(17).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Bass: ")) soundProfile.bass = line.substring(6).trim();
+                    else if (line.startsWith("Spatial/Effects: ")) soundProfile.spatial = line.substring(17).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Mix: ")) soundProfile.mixes = line.substring(5).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Production notes: ")) song.production = line.substring(18).trim();
+                    else if (line.startsWith("Chord progression: ")) {
+                        song.chords = song.chords || {};
+                        song.chords.progression = line.substring(19).trim();
+                    }
+                });
+                song.soundProfile = soundProfile;
+            }
+            async function shortenLyricsPromptWithAI(song) {
+                const cleanedLyrics = removeDoubleBrackets(buildAssembledLyricsPrompt(song));
+                if (!cleanedLyrics) return { updated: false, length: 0 };
+
+                const prompt = `You are a professional songwriter and producer with deep expertise in all genres. Also you are master in Suno prompts. Here is a Suno lyric prompt which is longer than the allowed 5000 characters. Without altering the Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Production style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects: or Mix: lines, shorten the lyric prompt to no greater than 5000 characters by doing the following in order of preference.
+1. Shorten lyrical repetition or repeated filler while preserving section labels, structure, and the core meaning.
+2. Tighten section direction and instruction tags.
+3. Shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, Production notes, and Chord progression only as much as necessary.
+Do not add, remove, rename, merge, split, or reorder any lyric sections. The returned prompt must preserve the exact same section headers and section order as the supplied prompt.
+Return the result in the same format as the supplied Suno Lyric Prompt.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "shortened_lyrics_prompt":"Full Suno lyric prompt, 5000 characters or fewer",
+  "character_count": 4987
+}
+
+SUNO LYRIC PROMPT:
+"""
+${cleanedLyrics}
+"""`;
+
+                debugLog("LYRICS_SHORTEN_REQUEST", "Sending shorten request to AI", {
+                    promptLength: prompt.length,
+                    sourceLyricsLength: cleanedLyrics.length,
+                    sourceSections: (song.sections || []).map((section) => section?.type || ""),
+                    prompt,
+                });
+                console.log("=== SENDING SHORTEN REQUEST TO AI ===");
+                console.log("Shorten prompt length:", prompt.length, "characters");
+                console.log("Source lyrics length:", cleanedLyrics.length, "characters");
+                console.log("Source sections:", (song.sections || []).map((section) => section?.type || ""));
+                console.log("Full shorten prompt:", prompt);
+                console.log("=====================================");
+
+                const response = await callAI(prompt);
+                const raw = response.text.replace(/```json|```/g, "").trim();
+
+                debugLog("LYRICS_SHORTEN_RESPONSE", "Received shorten response from AI", {
+                    responseLength: raw.length,
+                    rawResponse: raw,
+                });
+                console.log("=== RECEIVED SHORTEN RESPONSE FROM AI ===");
+                console.log("Raw shorten response length:", raw.length, "characters");
+                console.log("Raw shorten response:", raw);
+                console.log("========================================");
+
+                let parsed;
+                try {
+                    parsed = JSON.parse(raw);
+                } catch {
+                    parsed = { shortened_lyrics_prompt: raw };
+                }
+
+                debugLog("LYRICS_SHORTEN_PARSED", "Parsed shorten response", {
+                    parsed,
+                    reportedCharacterCount: parsed?.character_count,
+                });
+                console.log("=== PARSED SHORTEN RESPONSE ===");
+                console.log("Parsed shorten payload:", parsed);
+                console.log("================================");
+
+                const shortenedPrompt = normalizeLyricsText(removeDoubleBrackets(String(parsed.shortened_lyrics_prompt || "").trim()));
+                if (!shortenedPrompt) throw new Error("AI did not return a shortened lyrics prompt.");
+
+                const { styleMetaTag, body } = extractLeadingStyleMetaTag(shortenedPrompt);
+                const parsedSections = parseLyricsPromptSections(body, song.sections || []);
+                if (!parsedSections.length) throw new Error("AI returned a shortened prompt, but no lyric sections could be parsed from it.");
+                const validation = validateShortenedPromptSections(parsedSections, song.sections || []);
+                debugLog("LYRICS_SHORTEN_VALIDATE", "Validated shortened section structure", validation);
+                console.log("=== SHORTEN SECTION VALIDATION ===");
+                console.log("Validation result:", validation);
+                console.log("==================================");
+                if (!validation.valid) {
+                    debugLog("LYRICS_SHORTEN_SECTION_MISMATCH", "AI-shortened lyrics changed the section structure", validation);
+                    throw new Error(`AI shortening changed the section structure. ${validation.reason} No new, removed, renamed, merged, or reordered sections are allowed.`);
+                }
+
+                applyStyleMetaTagToSong(song, styleMetaTag);
+                song.sections = parsedSections;
+                song.settings = song.settings || {};
+                song.settings.userLyrics = { mode: "bulk", content: body };
+                song.settings.aiMode = "keep";
+
+                const lyricsInput = document.getElementById("lyrics-input");
+                if (lyricsInput) lyricsInput.value = body;
+
+                currentSong = song;
+                renderSongCard(song);
+                renderChordsCard(song);
+                saveToHistory(song);
+
+                debugLog("LYRICS_SHORTEN_APPLIED", "Applied shortened lyrics to current song", {
+                    shortenedLength: shortenedPrompt.length,
+                    finalSections: (song.sections || []).map((section) => section?.type || ""),
+                });
+                console.log("=== APPLIED SHORTENED LYRICS ===");
+                console.log("Shortened prompt length:", shortenedPrompt.length, "characters");
+                console.log("Final sections:", (song.sections || []).map((section) => section?.type || ""));
+                console.log("================================");
+
+                return { updated: true, length: shortenedPrompt.length };
+            }
+            function showLyricsStillTooLongWarning(len) {
+                document.getElementById("validation-modal-msg").textContent = `The AI-shortened lyric prompt is still ${len.toLocaleString()} characters long, which exceeds Suno's 5,000-character limit. You will need to reduce the prompt manually.`;
+                document.getElementById("validation-modal").style.display = "flex";
             }
 
             // ========================================================================
@@ -7206,55 +7637,10 @@ Legal permission has been sought for the use of the name Suno
             }
 
             let submitConfirmResolver = null;
+            let keepModeWarningResolver = null;
             let _lyricsTooLongResolver = null;
             function calcAssembledLyricsLength(song) {
-                if (!Array.isArray(song.sections)) return 0;
-
-                // Build the same [Style: ...] meta tag that exportSong prepends,
-                // so the length check matches what actually gets pasted into Suno.
-                const sp = song.soundProfile;
-                const tempoPreference = formatTempoPreference(song.tempoPreference || "AI Choose");
-                const vocalConfig = song.vocalProfiles ? formatVocalProfilesForPrompt(song.vocalProfiles) : song.vocalGender ? formatVocalGenderValue(song.vocalGender) : "Not specified";
-                const verseLength = formatLengthPreference(song.verseLength);
-                const chorusLength = formatLengthPreference(song.chorusLength);
-                const styleLines = [];
-                if (vocalConfig && vocalConfig !== "Not specified") styleLines.push(`Vocal: ${vocalConfig}`);
-                if (song.mood) styleLines.push(`Mood: ${song.mood}`);
-                if (song.goal && song.goal !== "Not specified") styleLines.push(`Goal: ${song.goal}`);
-                if (song.rhythm && song.rhythm !== "AI Choose") styleLines.push(`Rhythm: ${song.rhythm}`);
-                if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleLines.push(`Groove Feel: ${song.grooveFeel}`);
-                if (song.pov) styleLines.push(`Perspective: ${song.pov}`);
-                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleLines.push(`Tempo Preference: ${tempoPreference}`);
-                if (verseLength && verseLength !== "Follow Structure") styleLines.push(`Verse Length: ${verseLength}`);
-                if (chorusLength && chorusLength !== "Follow Structure") styleLines.push(`Chorus Length: ${chorusLength}`);
-                if (sp?.eras?.length) styleLines.push(`Era: ${sp.eras.join(", ")}`);
-                if (sp?.styles?.length) styleLines.push(`Production style: ${sp.styles.join(", ")}`);
-                if (sp?.instruments?.length) styleLines.push(`Instruments: ${sp.instruments.join(", ")}`);
-                if (sp?.insts?.length) styleLines.push(`Instrumentation: ${sp.insts.join(", ")}`);
-                if (sp?.bass && sp.bass !== "AI Choose") styleLines.push(`Bass: ${sp.bass}`);
-                if (sp?.spatial?.length) styleLines.push(`Spatial/Effects: ${sp.spatial.join(", ")}`);
-                if (sp?.mixes?.length) {
-                    styleLines.push("");
-                    styleLines.push(`Mix: ${sp.mixes.join(", ")}`);
-                }
-                if (song.production) {
-                    styleLines.push("");
-                    styleLines.push(`Production notes: ${song.production}`);
-                }
-                if (song.chords?.progression) {
-                    styleLines.push("");
-                    styleLines.push(`Chord progression: ${song.chords.progression}`);
-                }
-                const styleMetaTag = styleLines.length ? normalizeStyleMetaTag(styleLines.join("\n")) : "";
-
-                const sections = song.sections.map((s) => {
-                    // Strip the style meta tag that applySunoStylePromptData prepended to section 0
-                    const strippedLines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(s.lines || ""));
-                    const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
-                    const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                    return `\n[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${strippedLines}`;
-                });
-                return normalizeLyricsText(removeDoubleBrackets([styleMetaTag, ...sections].join("\n"))).length;
+                return buildAssembledLyricsPrompt(song).length;
             }
             function openLyricsTooLongModal(len) {
                 const excess = len - 5000;
@@ -7282,6 +7668,21 @@ Legal permission has been sought for the use of the name Suno
                 return new Promise((resolve) => {
                     submitConfirmResolver = resolve;
                 });
+            }
+            function openKeepModeWarningModal() {
+                document.getElementById("keepmode-warning-modal").style.display = "flex";
+                return new Promise((resolve) => {
+                    keepModeWarningResolver = resolve;
+                });
+            }
+            function resolveKeepModeWarning(accepted) {
+                document.getElementById("keepmode-warning-modal").style.display = "none";
+                const resolver = keepModeWarningResolver;
+                keepModeWarningResolver = null;
+                if (resolver) resolver(accepted);
+            }
+            function closeKeepModeWarningModal(event, accepted) {
+                if (event.target.id === "keepmode-warning-modal") resolveKeepModeWarning(accepted);
             }
             function resolveSubmitConfirm(accepted) {
                 document.getElementById("submit-confirm-modal").style.display = "none";
@@ -7312,11 +7713,49 @@ Legal permission has been sought for the use of the name Suno
             function normalizeLooseSectionType(value) {
                 return normalizeSectionTypeForMatch(value).replace(/\s+(\d+|[ivxlcdm]+)$/i, "");
             }
+            function toDisplaySectionBase(base) {
+                const normalized = String(base || "").toLowerCase().replace(/\s+/g, " ").trim();
+                const map = {
+                    intro: "Intro",
+                    outro: "Outro",
+                    verse: "Verse",
+                    "pre-chorus": "Pre-Chorus",
+                    "post-chorus": "Post-Chorus",
+                    chorus: "Chorus",
+                    hook: "Hook",
+                    refrain: "Refrain",
+                    bridge: "Bridge",
+                    interlude: "Interlude",
+                    instrumental: "Instrumental",
+                    solo: "Solo",
+                    "guitar solo": "Guitar Solo",
+                    breakdown: "Breakdown",
+                    drop: "Drop",
+                    build: "Build",
+                    coda: "Coda",
+                    tag: "Tag",
+                    turnaround: "Turnaround",
+                };
+                return map[normalized] || normalized;
+            }
+            function extractCanonicalSectionType(label) {
+                const raw = String(label || "")
+                    .trim()
+                    .replace(/^[\[]|[\]]$/g, "")
+                    .replace(/\s+/g, " ");
+                if (!raw) return "";
+
+                const headerMatch = raw.match(
+                    /^(intro|outro|verse|pre-chorus|post-chorus|chorus|hook|refrain|bridge|interlude|instrumental|guitar solo|solo|breakdown|drop|build|coda|tag|turnaround)(?:\s+(\d+|[ivxlcdm]+))?(?:\s*(?:[:.-].*)|\s+\d+\s*bars?\b.*)?$/i,
+                );
+                if (!headerMatch) return "";
+
+                const base = toDisplaySectionBase(headerMatch[1]);
+                const suffix = (headerMatch[2] || "").trim();
+                return suffix ? `${base} ${suffix}` : base;
+            }
             function isLikelySectionTag(label) {
-                const cleaned = normalizeSectionTypeForMatch(label);
-                if (!cleaned) return false;
-                if (/^(style|mood|prompt|voice|vocal|singer|male vocal|female vocal|duet|harmonies|adlibs?)$/.test(cleaned)) return false;
-                return /(intro|verse|pre-chorus|pre chorus|chorus|hook|post-chorus|post chorus|refrain|bridge|outro|interlude|instrumental|solo|breakdown|drop|build|coda|tag|turnaround)/i.test(cleaned);
+                return !!extractCanonicalSectionType(label);
             }
             // Parse bulk lyrics text into structured sections
             // Handles section tags like [Verse], [Chorus], chord progressions, and instructions
@@ -7348,10 +7787,11 @@ Legal permission has been sought for the use of the name Suno
                 lines.forEach((line) => {
                     const trimmed = line.trim();
                     const match = trimmed.match(/^\[([^\]]+)\]$/);
-                    if (match && isLikelySectionTag(match[1])) {
+                    const canonicalSectionType = match ? extractCanonicalSectionType(match[1]) : "";
+                    if (canonicalSectionType) {
                         sawSectionTag = true;
                         pushCurrent();
-                        current = { type: match[1].trim(), lines: [] };
+                        current = { type: canonicalSectionType, lines: [] };
                         // If this is the first section tag and we have preamble, add it to this section
                         if (preambleLines.length > 0) {
                             current.lines.push(...preambleLines);
@@ -7381,6 +7821,60 @@ Legal permission has been sought for the use of the name Suno
                 }
 
                 return sections.filter((section) => section.lines.trim());
+            }
+            function parseKeepModeSectionsFromBulkLyrics(text) {
+                const lines = String(text || "")
+                    .replace(/\r/g, "")
+                    .split("\n");
+
+                const sections = [];
+                let current = null;
+
+                const pushCurrent = () => {
+                    if (!current || !current.type) {
+                        current = null;
+                        return;
+                    }
+                    const directionTags = current.directionTags.filter(Boolean);
+                    sections.push({
+                        type: current.type,
+                        direction: directionTags[0] || "",
+                        instructions: directionTags.slice(1).join("\n"),
+                        metaTags: directionTags,
+                        lines: current.lyricLines.join("\n").trim(),
+                        userProvided: true,
+                    });
+                    current = null;
+                };
+
+                lines.forEach((rawLine) => {
+                    const trimmed = rawLine.trim();
+                    const bracketMatch = trimmed.match(/^\[([^\]]+)\]$/);
+                    const canonicalSectionType = bracketMatch ? extractCanonicalSectionType(bracketMatch[1]) : "";
+
+                    if (canonicalSectionType) {
+                        pushCurrent();
+                        const verboseText = bracketMatch[1].trim();
+                        const verboseSuffix = verboseText.slice(canonicalSectionType.length).trim();
+                        current = { type: canonicalSectionType, directionTags: verboseSuffix ? [verboseSuffix] : [], lyricLines: [] };
+                        return;
+                    }
+
+                    if (!current) return;
+
+                    if (bracketMatch) {
+                        current.directionTags.push(bracketMatch[1].trim());
+                        return;
+                    }
+
+                    current.lyricLines.push(rawLine);
+                });
+
+                pushCurrent();
+                return sections;
+            }
+            function hasClearKeepModeSectionIdentifiers(text) {
+                return parseKeepModeSectionsFromBulkLyrics(text).length > 0;
             }
             function buildPreservedUserSections(userLyrics) {
                 if (!userLyrics) return [];
@@ -7413,12 +7907,15 @@ Legal permission has been sought for the use of the name Suno
 
                 let searchStart = 0;
                 preservedSections.forEach((preservedSection) => {
+                    const preservedMeta = extractSectionMetaAndBody(preservedSection.lines, preservedSection.type);
                     const matchIndex = findGeneratedSectionIndex(merged, preservedSection.type, searchStart);
                     if (matchIndex >= 0) {
                         merged[matchIndex] = {
                             ...merged[matchIndex],
-                            type: merged[matchIndex].type || preservedSection.type,
-                            lines: preservedSection.lines,
+                            type: preservedSection.type || merged[matchIndex].type,
+                            direction: preservedMeta.direction || merged[matchIndex].direction || "",
+                            instructions: preservedMeta.instructions || merged[matchIndex].instructions || "",
+                            lines: preservedMeta.lines,
                             userProvided: true,
                         };
                         searchStart = matchIndex + 1;
@@ -7426,9 +7923,27 @@ Legal permission has been sought for the use of the name Suno
                     }
 
                     const insertIndex = Math.min(searchStart, merged.length);
-                    merged.splice(insertIndex, 0, { ...preservedSection });
+                    merged.splice(insertIndex, 0, {
+                        ...preservedSection,
+                        direction: preservedMeta.direction,
+                        instructions: preservedMeta.instructions,
+                        lines: preservedMeta.lines,
+                    });
                     searchStart = insertIndex + 1;
                 });
+
+                if (!merged.some((section) => section?.userProvided)) {
+                    return preservedSections.map((preservedSection) => {
+                        const preservedMeta = extractSectionMetaAndBody(preservedSection.lines, preservedSection.type);
+                        return {
+                            type: preservedSection.type,
+                            direction: preservedMeta.direction,
+                            instructions: preservedMeta.instructions,
+                            lines: preservedMeta.lines,
+                            userProvided: true,
+                        };
+                    });
+                }
 
                 return merged;
             }
@@ -7500,8 +8015,12 @@ Legal permission has been sought for the use of the name Suno
                     lyricsInput = currentSong.sections
                         .map((s) => {
                             const sectionHeader = `[${s.type}]`;
+                            const metaTagLines = collectSectionMetaTags(s)
+                                .map((tag) => `[${tag}]`)
+                                .join("\n");
                             const sectionLines = stripAllLeadingMetaTags(s.lines || "").trim();
-                            return sectionLines ? `${sectionHeader}\n${sectionLines}` : "";
+                            const sectionPrefix = metaTagLines ? `${sectionHeader}\n${metaTagLines}` : sectionHeader;
+                            return sectionLines ? `${sectionPrefix}\n${sectionLines}` : sectionPrefix;
                         })
                         .filter(Boolean)
                         .join("\n\n");
@@ -8493,32 +9012,8 @@ Legal permission has been sought for the use of the name Suno
                     styleDetailsLines.push(`Chord progression: ${song.chords.progression}`);
                 }
 
-                const exportLyricsMetaTag = styleDetailsLines.length ? normalizeStyleMetaTag(styleDetailsLines.join("\n")) : "";
                 exportStylePromptText = song.suno_style_prompt || "--";
-
-                const exportSections = song.sections.map((s, idx) => {
-                    const originalLines = s.lines || "";
-                    const strippedLines = stripAllLeadingMetaTags(originalLines);
-
-                    // Strip meta tags from instructions field (AI sometimes puts full meta block here)
-                    const rawInstructions = s.instructions || "";
-                    const cleanedInstructions = stripAllLeadingMetaTags(rawInstructions).trim();
-
-                    debugLog("EXPORT_SECTION", `Building export for section ${idx} (${s.type})`, {
-                        originalLines: originalLines,
-                        strippedLines: strippedLines,
-                        direction: s.direction,
-                        rawInstructions: rawInstructions,
-                        cleanedInstructions: cleanedInstructions,
-                        charsStripped: originalLines.length - strippedLines.length,
-                    });
-
-                    // Only output cleaned instructions if it has content and differs from direction
-                    const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                    return `\n[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${strippedLines}`;
-                });
-
-                exportLyricsText = normalizeLyricsText(removeDoubleBrackets([exportLyricsMetaTag || "", ...exportSections].join("\n")));
+                exportLyricsText = buildAssembledLyricsPrompt(song);
                 debugLog("EXPORT_COMPLETE", "Export lyrics built", {
                     totalLength: exportLyricsText.length,
                     preview: exportLyricsText.substring(0, 500),
@@ -8853,9 +9348,10 @@ Legal permission has been sought for the use of the name Suno
                 const formattedLyrics = normalizeLyricsText(
                     currentSong.sections
                         .map((s) => {
-                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
-                            const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                            return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
+                            const metaTagLines = collectSectionMetaTags(s)
+                                .map((tag) => `\n[${tag}]`)
+                                .join("");
+                            return `[${s.type}]${metaTagLines}\n${stripAllLeadingMetaTags(s.lines)}`;
                         })
                         .join("\n\n"),
                 );
@@ -9035,19 +9531,11 @@ Legal permission has been sought for the use of the name Suno
                         const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "Regen")}</button>`;
                         const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t("btn.edit", "Edit")}</button>`;
                         const actionBtns = `<span id="section-actions-${i}">${regenBtn}${editBtn}</span>`;
-                        return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${actionBtns}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(sec.lines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
+                        const displayLines = stripAllLeadingMetaTags(stripLeadingSectionTag(stripLeadingStyleMetaTag(sec.lines || "")));
+                        return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${actionBtns}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(displayLines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
                     })
                     .join('<div class="sec-div"></div>');
-                // Only output instructions if different from direction to avoid duplication
-                const allLyrics = normalizeLyricsText(
-                    song.sections
-                        .map((s) => {
-                            const cleanedInstructions = stripAllLeadingMetaTags(s.instructions || "").trim();
-                            const instructionsLine = cleanedInstructions && cleanedInstructions !== s.direction ? "\n[" + cleanedInstructions + "]" : "";
-                            return `[${s.type}]${s.direction ? "\n[" + s.direction.replace(/^\[|\]$/g, "").trim() + "]" : ""}${instructionsLine}\n${stripAllLeadingMetaTags(s.lines)}`;
-                        })
-                        .join("\n\n"),
-                );
+                const allLyrics = buildAssembledLyricsPrompt(song);
                 const sunoStylePrompt = song.suno_style_prompt || "--";
                 const card = document.createElement("div");
                 card.className = "output-card";
@@ -9108,6 +9596,7 @@ Legal permission has been sought for the use of the name Suno
             // Generate Song - Main AI generation function
             // ========================================================================
             async function generateSong() {
+                const enablePostGenerationLengthChecks = true;
                 const titleInput = document.getElementById("title").value.trim();
                 const title = titleInput || "";
                 const conceptRaw = document.getElementById("concept").value.trim();
@@ -9132,6 +9621,9 @@ Legal permission has been sought for the use of the name Suno
                 const soundProfile = buildSoundProfile();
                 const userLyrics = getUserLyrics();
                 const aiMode = activeLeftTab === "lyrics" ? getActive("aimode-tags") : null;
+                const isKeepMode = aiMode === "keep" && userLyrics?.mode === "bulk";
+                const keepModeSections = isKeepMode ? parseKeepModeSectionsFromBulkLyrics(userLyrics.content) : [];
+                const keepModeHasClearSections = !isKeepMode || keepModeSections.length > 0;
 
                 // Validate: at least a genre or concept must be provided
                 if (!genre && !conceptRaw) {
@@ -9140,9 +9632,12 @@ Legal permission has been sought for the use of the name Suno
                     return;
                 }
 
-                const confirmed = await openSubmitConfirm(
-                    buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics, songLanguage }),
-                );
+                if (isKeepMode && !keepModeHasClearSections) {
+                    const proceedAfterWarning = await openKeepModeWarningModal();
+                    if (!proceedAfterWarning) return;
+                }
+                const submissionSummary = buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics, songLanguage });
+                const confirmed = await openSubmitConfirm(submissionSummary);
                 if (!confirmed) return;
 
                 const genBtn = document.getElementById("gen-btn");
@@ -9385,7 +9880,7 @@ Legal permission has been sought for the use of the name Suno
 
                         // Clean up section lines to remove any meta tags that will be re-added during export
                         // This prevents duplication when the AI preserves user-provided lyrics with meta tags
-                        if (song.sections && Array.isArray(song.sections)) {
+                        if (!isKeepMode && song.sections && Array.isArray(song.sections)) {
                             song.sections.forEach((section, idx) => {
                                 if (section.lines) {
                                     const originalLines = section.lines;
@@ -9432,7 +9927,7 @@ Legal permission has been sought for the use of the name Suno
 
                         // Clean up any section tags and direction tags that AI may have included in the lines
                         // These will be re-added during export from the type and direction fields
-                        if (Array.isArray(song.sections)) {
+                        if (!isKeepMode && Array.isArray(song.sections)) {
                             song.sections.forEach((section) => {
                                 if (section.lines) {
                                     section.lines = stripAllLeadingMetaTags(section.lines);
@@ -9474,7 +9969,20 @@ Legal permission has been sought for the use of the name Suno
                                 });
                             }
                         }
-                        song.sections = mergePreservedLyricsSections(song.sections, userLyrics, aiMode);
+                        if (isKeepMode) {
+                            song.sections = keepModeSections.map((section) => ({ ...section }));
+                            debugLog("KEEP_MODE_OVERRIDE", "Keep mode active: using lyrics from Lyrics tab as source of truth", {
+                                sectionCount: song.sections.length,
+                                sections: song.sections.map((section) => ({
+                                    type: section.type,
+                                    direction: section.direction,
+                                    instructions: section.instructions,
+                                    linesLength: (section.lines || "").length,
+                                })),
+                            });
+                        } else {
+                            song.sections = mergePreservedLyricsSections(song.sections, userLyrics, aiMode);
+                        }
                         song.soundProfile = soundProfile;
                         applySunoStylePromptData(song);
                         loadCard.remove();
@@ -9483,15 +9991,55 @@ Legal permission has been sought for the use of the name Suno
                         renderChordsCard(song);
                         saveToHistory(song);
 
-                        const assembledLen = calcAssembledLyricsLength(song);
-                        if (assembledLen > 5000) {
-                            const choice = await openLyricsTooLongModal(assembledLen);
-                            if (choice === "ai") {
-                                const excess = assembledLen - 5000;
-                                const newMax = Math.max(1000, 4500 - excess);
-                                await runGeneration(newMax, excess);
-                                return;
+                        if (enablePostGenerationLengthChecks) {
+                            const assembledLen = calcAssembledLyricsLength(song);
+                            if (assembledLen > 5000) {
+                                debugLog("LYRICS_SHORTEN_ACTION", "Assembled lyrics exceeded limit; opening shorten choice modal", {
+                                    assembledLength: assembledLen,
+                                    limit: 5000,
+                                });
+                                console.log("[SHORTEN ACTION] Lyrics exceed limit:", assembledLen, "Opening shorten-choice modal.");
+                                const choice = await openLyricsTooLongModal(assembledLen);
+                                debugLog("LYRICS_SHORTEN_ACTION", "User selected shorten flow option", { choice });
+                                console.log("[SHORTEN ACTION] User choice:", choice);
+                                if (choice === "ai") {
+                                    const shortenCard = document.createElement("div");
+                                    shortenCard.className = "output-card";
+                                    shortenCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">Shortening your song...</div>`;
+                                    panel.insertBefore(shortenCard, panel.firstChild);
+                                    debugLog("LYRICS_SHORTEN_ACTION", "Inserted shortening status card", {});
+                                    console.log("[SHORTEN ACTION] Inserted 'Shortening your song...' status card.");
+                                    try {
+                                        const shortened = await shortenLyricsPromptWithAI(song);
+                                        debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow completed", shortened);
+                                        console.log("[SHORTEN ACTION] Shorten result:", shortened);
+                                        if (shortened.updated && shortened.length > 5000) {
+                                            debugLog("LYRICS_SHORTEN_ACTION", "Shortened result still exceeds limit; showing warning", {
+                                                shortenedLength: shortened.length,
+                                                limit: 5000,
+                                            });
+                                            console.log("[SHORTEN ACTION] Shortened lyrics still exceed limit:", shortened.length, "Showing warning modal.");
+                                            showLyricsStillTooLongWarning(shortened.length);
+                                        }
+                                    } catch (shortenErr) {
+                                        debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow failed", {
+                                            error: shortenErr?.message || String(shortenErr),
+                                        });
+                                        console.log("[SHORTEN ACTION] Shorten flow failed:", shortenErr);
+                                        document.getElementById("validation-modal-msg").textContent = shortenErr.message;
+                                        document.getElementById("validation-modal").style.display = "flex";
+                                    } finally {
+                                        shortenCard.remove();
+                                        debugLog("LYRICS_SHORTEN_ACTION", "Removed shortening status card", {});
+                                        console.log("[SHORTEN ACTION] Removed shortening status card.");
+                                    }
+                                }
                             }
+                        } else {
+                            debugLog("LYRICS_SHORTEN_ACTION", "Post-generation length checks are disabled for this run", {
+                                assembledLength: calcAssembledLyricsLength(song),
+                                limit: 5000,
+                            });
                         }
                     } catch (err) {
                         loadCard.remove();
@@ -9574,6 +10122,8 @@ Legal permission has been sought for the use of the name Suno
             window.handleImportFile = handleImportFile;
             window.resolveSubmitConfirm = resolveSubmitConfirm;
             window.closeSubmitConfirm = closeSubmitConfirm;
+            window.resolveKeepModeWarning = resolveKeepModeWarning;
+            window.closeKeepModeWarningModal = closeKeepModeWarningModal;
             window.resolveSettingsConfirm = resolveSettingsConfirm;
             window.closeSettingsConfirm = closeSettingsConfirm;
             window.openResetConfirm = openResetConfirm;
