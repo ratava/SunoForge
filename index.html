@@ -1514,10 +1514,8 @@ Legal permission has been sought for the use of the name Suno
                 max-width: 90vw;
             }
             .modal.export-modal {
-                width: 70vw;
-                height: 70vh;
-                max-width: 90vw;
-                max-height: 90vh;
+                width: auto;
+                max-width: 480px;
                 display: flex;
                 flex-direction: column;
             }
@@ -1541,10 +1539,6 @@ Legal permission has been sought for the use of the name Suno
                 overflow-y: auto;
                 white-space: pre-wrap;
                 margin-bottom: 14px;
-            }
-            .modal.export-modal .modal-preview {
-                max-height: 58vh;
-                flex: 1;
             }
             .modal.confirm-modal .modal-preview {
                 max-height: none;
@@ -1918,7 +1912,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260326-001</span>
+                <span class="version" id="version">Version: <br />20260326-002</span>
             </div>
         </header>
 
@@ -2763,7 +2757,6 @@ Legal permission has been sought for the use of the name Suno
         <div class="modal-overlay" id="export-modal" style="display: none" onclick="closeExport(event)">
             <div class="modal export-modal">
                 <div class="modal-title" data-i18n="modal.export.title">Export Song</div>
-                <div class="modal-preview" id="export-preview"></div>
                 <div class="modal-actions">
                     <button class="btn-export-green" id="copy-title-btn" onclick="copySongTitleExport()" data-i18n="btn.copy_song_title">Copy Song Title</button>
                     <button class="btn-export-green" id="copy-style-btn" onclick="copyStylePromptExport()" data-i18n="btn.copy_style_prompt">Copy Style Prompt</button>
@@ -9238,8 +9231,6 @@ ${cleanedLyrics}
                 exportLines.push(``, `--- PRODUCTION NOTES ---`, song.production, ``, `--- CHORD PROGRESSION ---`, song.chords?.progression || "--", ``, `--- LYRICS ---`, exportLyricsText, ``, ``, `--- SUNOFORGE JSON DATA ---`, JSON.stringify(jsonExportData, null, 2));
 
                 exportText = exportLines.join("\n");
-                document.getElementById("export-preview").textContent = exportText;
-
                 // Show/hide exclusions button based on whether there are exclusions
                 const exclusionsBtn = document.getElementById("copy-exclusions-btn");
                 if (exclusionsBtn) {
