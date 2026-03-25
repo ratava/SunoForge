@@ -1918,7 +1918,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260325-001</span>
+                <span class="version" id="version">Version: <br />20260326-001</span>
             </div>
         </header>
 
@@ -1939,13 +1939,17 @@ Legal permission has been sought for the use of the name Suno
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">Google AI Studio Key:</span>
-                    <input type="password" id="api-key-input" placeholder="AIza..." />
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="new-password" />
+                    </form>
                     <button class="api-bar-save" onclick="saveApiKey()">Save</button>
                     <span class="api-status missing" id="api-status">not set</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">OpenRouter Key:</span>
-                    <input type="password" id="openrouter-key-input" placeholder="sk-or-..." />
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="password" id="openrouter-key-input" placeholder="sk-or-..." autocomplete="new-password" />
+                    </form>
                     <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
                     <span class="api-status missing" id="openrouter-status">not set</span>
                 </div>
@@ -1958,7 +1962,9 @@ Legal permission has been sought for the use of the name Suno
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">Local LLM Auth Key:</span>
-                    <input type="password" id="custom-server-key-input" placeholder="sk-... (optional)" style="max-width: 280px" />
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="password" id="custom-server-key-input" placeholder="sk-... (optional)" style="max-width: 280px" autocomplete="new-password" />
+                    </form>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label" data-i18n="api.model_label">Model:</span>
@@ -7215,6 +7221,8 @@ Legal permission has been sought for the use of the name Suno
                         .replace(/^\[|\]$/g, "")
                         .trim();
                     if (!cleaned) return;
+                    // Skip if it duplicates the section type (AI sometimes includes [type] in instructions)
+                    if (areSameMetaLine(cleaned, section.type)) return;
                     if (tags.some((existing) => areSameMetaLine(existing, cleaned))) return;
                     tags.push(cleaned);
                 };
@@ -9581,11 +9589,13 @@ ${cleanedLyrics}
                         const userBadge = sec.userProvided ? `<span class="user-badge">yours</span>` : "";
                         const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "Regen")}</button>`;
                         const actionBtns = `<span id="section-actions-${i}">${regenBtn}</span>`;
-                        let editableText = `[${sec.type}]`;
-                        if (sec.direction && sec.direction.trim()) {
-                            editableText += `\n[${sec.direction.replace(/^\[|\]$/g, "").trim()}]`;
-                        }
-                        editableText += `\n${stripAllLeadingMetaTags(sec.lines || "")}`;
+                        // Build the full exportable content for this section so the
+                        // textarea always matches exactly what will go to Suno.
+                        const sectionMetaTags = collectSectionMetaTags(sec);
+                        const metaLines = sectionMetaTags.map((tag) => `[${tag}]`).join("\n");
+                        let editableText = `[${sec.type}]` + (metaLines ? `\n${metaLines}` : "");
+                        const lyricsBody = stripAllLeadingMetaTags(sec.lines || "").trim();
+                        if (lyricsBody) editableText += `\n${lyricsBody}`;
                         return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span><span id="section-type-label-${i}">${escapeHtml(sec.type)}</span>${userBadge}</span>${actionBtns}</div><textarea id="section-textarea-${i}" class="section-edit-ta" spellcheck="false">${escapeHtml(editableText)}</textarea></div>`;
                     })
                     .join('<div class="sec-div"></div>');
@@ -9641,21 +9651,29 @@ ${cleanedLyrics}
                         this.style.height = this.scrollHeight + "px";
                         const rawLines = this.value.split("\n");
                         let sectionType = currentSong.sections[idx].type;
-                        let direction = "";
+                        const metaTags = []; // all bracket lines after the type tag
                         const lyricLines = [];
+                        let firstLine = true;
                         for (let i = 0; i < rawLines.length; i++) {
                             const trimmed = rawLines[i].trim();
                             const match = trimmed.match(/^\[([^\]]+)\]$/);
-                            if (match && i === 0 && isLikelySectionTag(match[1])) {
+                            if (match && firstLine && isLikelySectionTag(match[1])) {
                                 sectionType = match[1].trim();
-                            } else if (match && !isLikelySectionTag(match[1])) {
-                                direction = match[1].trim();
-                            } else if (trimmed) {
+                                firstLine = false;
+                            } else if (match) {
+                                metaTags.push(match[1].trim());
+                                firstLine = false;
+                            } else {
+                                if (trimmed) firstLine = false;
                                 lyricLines.push(rawLines[i]);
                             }
                         }
                         currentSong.sections[idx].type = sectionType;
-                        currentSong.sections[idx].direction = direction;
+                        // Store in metaTags so collectSectionMetaTags uses them directly.
+                        // Keep direction/instructions in sync for backward-compat with export paths.
+                        currentSong.sections[idx].metaTags = metaTags;
+                        currentSong.sections[idx].direction = metaTags[0] || "";
+                        currentSong.sections[idx].instructions = metaTags.slice(1).join("\n");
                         currentSong.sections[idx].lines = lyricLines.join("\n").trim();
                         const typeLabel = document.getElementById("section-type-label-" + idx);
                         if (typeLabel) {
@@ -10067,10 +10085,19 @@ ${cleanedLyrics}
                                         .trim();
                                 }
                                 if (section.instructions) {
+                                    // Strip brackets per-line (not the whole string) so multi-line
+                                    // instructions like "[Intro]\n[desc]\n[detail]" are not mangled.
+                                    // collectSectionMetaTags > addTag handles per-tag bracket stripping.
                                     section.instructions = section.instructions
-                                        .trim()
-                                        .replace(/^\[|\]$/g, "")
-                                        .trim();
+                                        .split("\n")
+                                        .map((line) =>
+                                            line
+                                                .trim()
+                                                .replace(/^\[|\]$/g, "")
+                                                .trim(),
+                                        )
+                                        .filter(Boolean)
+                                        .join("\n");
                                 }
                             });
 
