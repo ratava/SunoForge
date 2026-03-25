@@ -1227,8 +1227,8 @@ Legal permission has been sought for the use of the name Suno
                 line-height: 1.75;
             }
             .char-count {
-                font-size: 9px;
-                color: var(--text-muted);
+                font-size: 16px;
+                color: var(--accent);
                 font-family: "Space Mono", monospace;
                 margin-top: 5px;
             }
@@ -1348,6 +1348,30 @@ Legal permission has been sought for the use of the name Suno
                 font-style: italic;
                 font-family: "Space Mono", monospace;
                 margin-top: 3px;
+            }
+            .section-edit-ta {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                font-family: "Space Mono", monospace;
+                font-size: 12px;
+                line-height: 1.85;
+                color: var(--text);
+                background: transparent;
+                border: 1px solid transparent;
+                border-radius: 4px;
+                padding: 2px 4px;
+                margin: 2px -4px 0;
+                resize: none;
+                outline: none;
+                transition:
+                    border-color 0.15s,
+                    background 0.15s;
+            }
+            .section-edit-ta:focus {
+                border-color: var(--border);
+                background: var(--surface3);
+                outline: none;
             }
             .sec-div {
                 height: 1px;
@@ -1894,7 +1918,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260322-003</span>
+                <span class="version" id="version">Version: <br />20260325-001</span>
             </div>
         </header>
 
@@ -2305,6 +2329,7 @@ Legal permission has been sought for the use of the name Suno
                             <div class="tag" data-val="Male Duo" onclick="selectVocalType(this)">Male Duo</div>
                             <div class="tag" data-val="Female Duo" onclick="selectVocalType(this)">Female Duo</div>
                             <div class="tag" data-val="Male & Female Duo" onclick="selectVocalType(this)">Male & Female Duo</div>
+                            <div class="tag" data-val="Choir/Ensemble" onclick="selectVocalType(this)">Choir/Ensemble</div>
                             <div class="tag" data-val="Instrumental" onclick="selectVocalType(this)">Instrumental</div>
                         </div>
                     </div>
@@ -2759,12 +2784,8 @@ Legal permission has been sought for the use of the name Suno
         <div class="modal-overlay" id="keepmode-warning-modal" style="display: none" onclick="closeKeepModeWarningModal(event, false)">
             <div class="modal confirm-modal" style="max-width: 560px">
                 <div class="modal-title">Keep Mode Warning</div>
-                <div style="padding: 0 24px 16px; font-size: 13px; color: var(--text); font-family: 'Space Mono', monospace; line-height: 1.6; white-space: pre-line">
-                    Your lyrics do not appear to include clear section identifiers like [Verse], [Chorus], or [Bridge].
-
-                    Keep mode depends on clear section headers to preserve section directions and lyric placement exactly as entered.
-
-                    Continue anyway?
+                <div style="padding: 0 24px 16px; font-size: 13px; color: var(--text); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6; white-space: pre-line">
+                    Your lyrics do not appear to include clear section identifiers like [Verse], [Chorus], or [Bridge]. Keep mode depends on clear section headers to preserve section directions and lyric placement exactly as entered. Continue anyway?
                 </div>
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="resolveKeepModeWarning(false)">Cancel</button>
@@ -3146,6 +3167,49 @@ Legal permission has been sought for the use of the name Suno
             function escapeHtml(unsafe) {
                 if (unsafe === null || unsafe === undefined) return "";
                 return String(unsafe).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            // Parses AI-returned JSON that may contain literal newlines/tabs inside string values.
+            // Walks character-by-character so it only escapes control characters that appear
+            // inside a JSON string literal, leaving the structural punctuation untouched.
+            function safeParseJSON(text) {
+                let out = "";
+                let inString = false;
+                let escaped = false;
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text[i];
+                    if (escaped) {
+                        out += ch;
+                        escaped = false;
+                        continue;
+                    }
+                    if (ch === "\\") {
+                        escaped = true;
+                        out += ch;
+                        continue;
+                    }
+                    if (ch === '"') {
+                        inString = !inString;
+                        out += ch;
+                        continue;
+                    }
+                    if (inString) {
+                        if (ch === "\n") {
+                            out += "\\n";
+                            continue;
+                        }
+                        if (ch === "\r") {
+                            out += "\\r";
+                            continue;
+                        }
+                        if (ch === "\t") {
+                            out += "\\t";
+                            continue;
+                        }
+                    }
+                    out += ch;
+                }
+                return JSON.parse(out);
             }
 
             // Security: Sanitize for attribute values
@@ -5315,10 +5379,19 @@ Legal permission has been sought for the use of the name Suno
                 document.querySelectorAll("#vocal-type-tags .tag").forEach((t) => t.classList.remove("active"));
                 el.classList.add("active");
                 const isInstrumental = el.dataset.val === "Instrumental";
-                document.getElementById("vocal-profiles-container").style.display = isInstrumental ? "none" : "block";
-                document.getElementById("choir-enable-container").style.display = isInstrumental ? "none" : "block";
-                document.getElementById("vocal-config-info").style.display = isInstrumental ? "none" : "block";
+                const isChoirEnsemble = el.dataset.val === "Choir/Ensemble";
+                const hideProfiles = isInstrumental || isChoirEnsemble;
+                document.getElementById("vocal-profiles-container").style.display = hideProfiles ? "none" : "block";
+                document.getElementById("choir-enable-container").style.display = hideProfiles ? "none" : "block";
+                document.getElementById("vocal-config-info").style.display = hideProfiles ? "none" : "block";
                 document.getElementById("instrumental-info").style.display = isInstrumental ? "block" : "none";
+                const choirBuilderContainer = document.getElementById("choir-builder-container");
+                if (isChoirEnsemble) {
+                    choirBuilderContainer.style.display = "block";
+                    buildChoirBuilder();
+                } else if (!document.getElementById("choir-enabled")?.checked) {
+                    choirBuilderContainer.style.display = "none";
+                }
                 buildVocalProfiles();
             }
 
@@ -5336,7 +5409,7 @@ Legal permission has been sought for the use of the name Suno
                 const container = document.getElementById("choir-builder-container");
                 container.innerHTML = `
                                     <div class="choir-builder">
-                                        <div class="choir-header">Choir/Backing Vocals</div>
+                                        <div class="choir-header">Ensemble/Backing Vocals</div>
                                         <div class="vocal-profile-row">
                                             <div class="vocal-profile-field">
                                                 <label for="choir-gender">Gender</label>
@@ -5415,8 +5488,7 @@ Legal permission has been sought for the use of the name Suno
                                                 <div class="tag multi" data-val="Vocalization">Vocalization</div>
                                                 <div class="tag multi" data-val="Robotic">Robotic</div>
                                                 <div class="tag multi" data-val="Autotuned">Autotuned</div>
-                                                <div class="tag multi" data-val="Pitched Vocals">Pitched Vocals/div>
-                                                
+                                                <div class="tag multi" data-val="Pitched Vocals">Pitched Vocals</div>
                                                 <button class="tag-add-btn" onclick="showCustomInput('choir-style-tags', 'choir-style-custom-input-row')">+ Custom</button>
                                             </div>
                                             <div class="custom-input-row" id="choir-style-custom-input-row" style="display: none; margin-top: 4px">
@@ -5435,7 +5507,9 @@ Legal permission has been sought for the use of the name Suno
             }
 
             function getChoirConfig() {
-                const enabled = document.getElementById("choir-enabled")?.checked || false;
+                const vocalType = document.querySelector("#vocal-type-tags .tag.active")?.dataset.val || "Single Male";
+                const isChoirEnsemble = vocalType === "Choir/Ensemble";
+                const enabled = isChoirEnsemble || document.getElementById("choir-enabled")?.checked || false;
                 if (!enabled) return null;
 
                 const gender = document.getElementById("choir-gender")?.value || "Both";
@@ -5463,8 +5537,8 @@ Legal permission has been sought for the use of the name Suno
                 const container = document.getElementById("vocal-profiles-container");
                 container.innerHTML = "";
 
-                // Skip building profiles for instrumental tracks
-                if (vocalType === "Instrumental") {
+                // Skip building profiles for instrumental/choir-only tracks
+                if (vocalType === "Instrumental" || vocalType === "Choir/Ensemble") {
                     return;
                 }
 
@@ -5674,6 +5748,14 @@ Legal permission has been sought for the use of the name Suno
             function formatVocalProfilesForPrompt(vocalData) {
                 if (!vocalData || vocalData.type === "Instrumental") {
                     return "Instrumental (no vocals)";
+                }
+                if (vocalData.type === "Choir/Ensemble") {
+                    if (!vocalData.choir) return "Choir/Ensemble";
+                    const choirParts = [`Choir/Ensemble: ${vocalData.choir.gender}`, vocalData.choir.size];
+                    if (vocalData.choir.ranges && vocalData.choir.ranges.length) choirParts.push(`ranges: ${vocalData.choir.ranges.join(", ")}`);
+                    if (vocalData.choir.accents && vocalData.choir.accents.length) choirParts.push(`${vocalData.choir.accents.join("/")} accent`);
+                    if (vocalData.choir.styles && vocalData.choir.styles.length) choirParts.push(vocalData.choir.styles.join(", "));
+                    return choirParts.join(", ");
                 }
                 if (!vocalData.profiles || vocalData.profiles.length === 0) {
                     return "Not specified";
@@ -6039,64 +6121,67 @@ Legal permission has been sought for the use of the name Suno
                 }
 
                 // Apply choir configuration if provided
-                if (vocalConfig.choir && vocalConfig.choir.enabled) {
-                    const choirCheckbox = document.getElementById("choir-enabled");
-                    if (choirCheckbox) {
-                        choirCheckbox.checked = true;
-                        toggleChoir(true);
-
-                        setTimeout(() => {
-                            if (vocalConfig.choir.gender) {
-                                const genderSelect = document.getElementById("choir-gender");
-                                if (genderSelect) genderSelect.value = vocalConfig.choir.gender;
-                            }
-
-                            if (vocalConfig.choir.size) {
-                                const sizeSelect = document.getElementById("choir-size");
-                                if (sizeSelect) sizeSelect.value = vocalConfig.choir.size;
-                            }
-
-                            if (vocalConfig.choir.ranges && vocalConfig.choir.ranges.length > 0) {
-                                const rangeContainer = document.getElementById("choir-range-tags");
-                                if (rangeContainer) {
-                                    vocalConfig.choir.ranges.forEach((range) => {
-                                        const rangeTag = rangeContainer.querySelector(`.tag[data-val="${range}"]`);
-                                        if (rangeTag) rangeTag.classList.add("active");
-                                    });
-                                }
-                            }
-
-                            if (vocalConfig.choir.accents && vocalConfig.choir.accents.length > 0) {
-                                const accentContainer = document.getElementById("choir-accent-tags");
-                                if (accentContainer) {
-                                    accentContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
-                                    vocalConfig.choir.accents.forEach((accent) => {
-                                        const presetTag = accentContainer.querySelector(`.tag[data-val="${accent}"]`);
-                                        if (presetTag) {
-                                            presetTag.classList.add("active");
-                                        } else {
-                                            addCustomTagToRow("choir-accent-tags", accent);
-                                        }
-                                    });
-                                }
-                            }
-
-                            if (vocalConfig.choir.styles && vocalConfig.choir.styles.length > 0) {
-                                const styleContainer = document.getElementById("choir-style-tags");
-                                if (styleContainer) {
-                                    styleContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
-                                    vocalConfig.choir.styles.forEach((style) => {
-                                        const presetTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
-                                        if (presetTag) {
-                                            presetTag.classList.add("active");
-                                        } else {
-                                            addCustomTagToRow("choir-style-tags", style);
-                                        }
-                                    });
-                                }
-                            }
-                        }, 150);
+                if (vocalConfig.choir && (vocalConfig.choir.enabled || vocalConfig.type === "Choir/Ensemble")) {
+                    if (vocalConfig.type !== "Choir/Ensemble") {
+                        // For non-ensemble types, enable the backing choir checkbox
+                        const choirCheckbox = document.getElementById("choir-enabled");
+                        if (choirCheckbox) {
+                            choirCheckbox.checked = true;
+                            toggleChoir(true);
+                        }
                     }
+                    // Choir/Ensemble: builder already shown by selectVocalType above
+                    setTimeout(() => {
+                        if (vocalConfig.choir.gender) {
+                            const genderSelect = document.getElementById("choir-gender");
+                            if (genderSelect) genderSelect.value = vocalConfig.choir.gender;
+                        }
+
+                        if (vocalConfig.choir.size) {
+                            const sizeSelect = document.getElementById("choir-size");
+                            if (sizeSelect) sizeSelect.value = vocalConfig.choir.size;
+                        }
+
+                        if (vocalConfig.choir.ranges && vocalConfig.choir.ranges.length > 0) {
+                            const rangeContainer = document.getElementById("choir-range-tags");
+                            if (rangeContainer) {
+                                vocalConfig.choir.ranges.forEach((range) => {
+                                    const rangeTag = rangeContainer.querySelector(`.tag[data-val="${range}"]`);
+                                    if (rangeTag) rangeTag.classList.add("active");
+                                });
+                            }
+                        }
+
+                        if (vocalConfig.choir.accents && vocalConfig.choir.accents.length > 0) {
+                            const accentContainer = document.getElementById("choir-accent-tags");
+                            if (accentContainer) {
+                                accentContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+                                vocalConfig.choir.accents.forEach((accent) => {
+                                    const presetTag = accentContainer.querySelector(`.tag[data-val="${accent}"]`);
+                                    if (presetTag) {
+                                        presetTag.classList.add("active");
+                                    } else {
+                                        addCustomTagToRow("choir-accent-tags", accent);
+                                    }
+                                });
+                            }
+                        }
+
+                        if (vocalConfig.choir.styles && vocalConfig.choir.styles.length > 0) {
+                            const styleContainer = document.getElementById("choir-style-tags");
+                            if (styleContainer) {
+                                styleContainer.querySelectorAll(".tag-custom").forEach((el) => el.remove());
+                                vocalConfig.choir.styles.forEach((style) => {
+                                    const presetTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
+                                    if (presetTag) {
+                                        presetTag.classList.add("active");
+                                    } else {
+                                        addCustomTagToRow("choir-style-tags", style);
+                                    }
+                                });
+                            }
+                        }
+                    }, 150);
                 }
             }
 
@@ -6569,8 +6654,8 @@ Legal permission has been sought for the use of the name Suno
             function buildSectionRows() {
                 const c = document.getElementById("section-rows");
                 if (!c || c.children.length > 0) return;
-                                c.innerHTML = SECTION_LABELS.map(
-                                        (l, idx) => `
+                c.innerHTML = SECTION_LABELS.map(
+                    (l, idx) => `
                     <div class="section-lyric-row">
                       <div class="section-lyric-label">${l}<span>optional</span></div>
                       <textarea rows="3" name="section-lyrics-${idx}" placeholder="Leave blank for AI..." data-section="${l}"></textarea>
@@ -6648,7 +6733,7 @@ Legal permission has been sought for the use of the name Suno
                   "mix_keys": ["mix-character labels if detected; preset or custom"],
                   "influences": ["up to 3 artist names if style references are detected"],
                   "vocal_config": {
-                    "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Instrumental; omit if not detected",
+                    "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Choir/Ensemble | Instrumental; omit if not detected",
                     "profiles": [{"gender": "Male or Female", "range": "Bass, Baritone, Tenor, Countertenor, Contralto, Mezzo-Soprano, Soprano", "accents": [], "styles": []}]
                   },
                   "structure_name": "detected song structure name if identifiable from lyrics; otherwise empty string",
@@ -6685,7 +6770,7 @@ Legal permission has been sought for the use of the name Suno
                         responseLength: raw.length,
                         rawResponse: raw,
                     });
-                    const analysis = JSON.parse(raw);
+                    const analysis = safeParseJSON(raw);
                     debugLog("ANALYZER_PARSED", "Parsed analysis result", analysis);
                     // This ensures customStructureOption gets the correct genreKey
                     if (analysis.genre_key || analysis.genre_label) {
@@ -6867,7 +6952,7 @@ Legal permission has been sought for the use of the name Suno
                     "mix_keys": ["one or more mix-character labels; preset or custom"],
                     "influences": ["up to 3 artist names"],
                     "vocal_config": {
-                        "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Instrumental",
+                        "type": "one of: Single Male | Single Female | Male Duo | Female Duo | Male & Female Duo | Choir/Ensemble | Instrumental",
                         "profiles": [
                             {
                                 "gender": "Male or Female",
@@ -6905,7 +6990,7 @@ Legal permission has been sought for the use of the name Suno
                     console.log("Prompt sent to AI:", prompt);
                     const response = await callAI(prompt);
                     const raw = response.text.replace(/```json|```/g, "").trim();
-                    const s = JSON.parse(raw);
+                    const s = safeParseJSON(raw);
                     console.log("AI response parsed as JSON:", s);
 
                     applyGenreSetting(s.genre_key || currentGenreKey || "rock", s.genre_label || "");
@@ -7093,10 +7178,7 @@ Legal permission has been sought for the use of the name Suno
                 if (lines.length) {
                     const firstMatch = lines[0].trim().match(/^\[([^\]]+)\]$/);
                     const canonicalType = firstMatch ? extractCanonicalSectionType(firstMatch[1]) : "";
-                    if (
-                        canonicalType &&
-                        normalizeLooseSectionType(canonicalType) === normalizeLooseSectionType(fallbackSectionType || canonicalType)
-                    ) {
+                    if (canonicalType && normalizeLooseSectionType(canonicalType) === normalizeLooseSectionType(fallbackSectionType || canonicalType)) {
                         lines.shift();
                         while (lines.length && !lines[0].trim()) lines.shift();
                     }
@@ -7243,13 +7325,17 @@ Legal permission has been sought for the use of the name Suno
                     const metaTagLines = collectSectionMetaTags(s)
                         .map((tag) => `\n[${tag}]`)
                         .join("");
-                    return `\n[${s.type}]${metaTagLines}\n${strippedLines}`;
+                    const raw = `[${s.type}]${metaTagLines}\n${strippedLines}`;
+                    return normalizeLyricsText(raw);
                 });
 
-                return normalizeLyricsText(removeDoubleBrackets([styleMetaTag, ...sections].join("\n")));
+                const allParts = [styleMetaTag, ...sections].filter(Boolean);
+                return removeDoubleBrackets(allParts.join("\n\n")).trim();
             }
             function extractLeadingStyleMetaTag(text) {
-                const lines = String(text || "").replace(/\r/g, "").split("\n");
+                const lines = String(text || "")
+                    .replace(/\r/g, "")
+                    .split("\n");
                 while (lines.length && !lines[0].trim()) lines.shift();
                 if (!lines.length || !/^\[style:/i.test(lines[0].trim())) {
                     return { styleMetaTag: "", body: lines.join("\n").trim() };
@@ -7284,11 +7370,7 @@ Legal permission has been sought for the use of the name Suno
                     .split("\n");
                 const sections = [];
                 let currentSection = null;
-                const existingSectionNames = new Set(
-                    (existingSections || [])
-                        .map((section) => normalizeSectionTypeForMatch(section?.type))
-                        .filter(Boolean),
-                );
+                const existingSectionNames = new Set((existingSections || []).map((section) => normalizeSectionTypeForMatch(section?.type)).filter(Boolean));
                 const parserEvents = [];
 
                 const finalizeCurrent = () => {
@@ -7403,13 +7485,43 @@ Legal permission has been sought for the use of the name Suno
                     else if (line.startsWith("Duration: ")) song.durationPreference = line.substring(10).trim();
                     else if (line.startsWith("Verse Length: ")) song.verseLength = line.substring(14).trim();
                     else if (line.startsWith("Chorus Length: ")) song.chorusLength = line.substring(15).trim();
-                    else if (line.startsWith("Era: ")) soundProfile.eras = line.substring(5).split(",").map((value) => value.trim()).filter(Boolean);
-                    else if (/^Production style: /i.test(line)) soundProfile.styles = line.substring(line.indexOf(":") + 1).split(",").map((value) => value.trim()).filter(Boolean);
-                    else if (line.startsWith("Instruments: ")) soundProfile.instruments = line.substring(13).split(",").map((value) => value.trim()).filter(Boolean);
-                    else if (line.startsWith("Instrumentation: ")) soundProfile.insts = line.substring(17).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Era: "))
+                        soundProfile.eras = line
+                            .substring(5)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
+                    else if (/^Production style: /i.test(line))
+                        soundProfile.styles = line
+                            .substring(line.indexOf(":") + 1)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
+                    else if (line.startsWith("Instruments: "))
+                        soundProfile.instruments = line
+                            .substring(13)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
+                    else if (line.startsWith("Instrumentation: "))
+                        soundProfile.insts = line
+                            .substring(17)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
                     else if (line.startsWith("Bass: ")) soundProfile.bass = line.substring(6).trim();
-                    else if (line.startsWith("Spatial/Effects: ")) soundProfile.spatial = line.substring(17).split(",").map((value) => value.trim()).filter(Boolean);
-                    else if (line.startsWith("Mix: ")) soundProfile.mixes = line.substring(5).split(",").map((value) => value.trim()).filter(Boolean);
+                    else if (line.startsWith("Spatial/Effects: "))
+                        soundProfile.spatial = line
+                            .substring(17)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
+                    else if (line.startsWith("Mix: "))
+                        soundProfile.mixes = line
+                            .substring(5)
+                            .split(",")
+                            .map((value) => value.trim())
+                            .filter(Boolean);
                     else if (line.startsWith("Production notes: ")) song.production = line.substring(18).trim();
                     else if (line.startsWith("Chord progression: ")) {
                         song.chords = song.chords || {};
@@ -7449,7 +7561,10 @@ ${cleanedLyrics}
                 console.log("=== SENDING SHORTEN REQUEST TO AI ===");
                 console.log("Shorten prompt length:", prompt.length, "characters");
                 console.log("Source lyrics length:", cleanedLyrics.length, "characters");
-                console.log("Source sections:", (song.sections || []).map((section) => section?.type || ""));
+                console.log(
+                    "Source sections:",
+                    (song.sections || []).map((section) => section?.type || ""),
+                );
                 console.log("Full shorten prompt:", prompt);
                 console.log("=====================================");
 
@@ -7467,7 +7582,7 @@ ${cleanedLyrics}
 
                 let parsed;
                 try {
-                    parsed = JSON.parse(raw);
+                    parsed = safeParseJSON(raw);
                 } catch {
                     parsed = { shortened_lyrics_prompt: raw };
                 }
@@ -7516,7 +7631,10 @@ ${cleanedLyrics}
                 });
                 console.log("=== APPLIED SHORTENED LYRICS ===");
                 console.log("Shortened prompt length:", shortenedPrompt.length, "characters");
-                console.log("Final sections:", (song.sections || []).map((section) => section?.type || ""));
+                console.log(
+                    "Final sections:",
+                    (song.sections || []).map((section) => section?.type || ""),
+                );
                 console.log("================================");
 
                 return { updated: true, length: shortenedPrompt.length };
@@ -7714,7 +7832,10 @@ ${cleanedLyrics}
                 return normalizeSectionTypeForMatch(value).replace(/\s+(\d+|[ivxlcdm]+)$/i, "");
             }
             function toDisplaySectionBase(base) {
-                const normalized = String(base || "").toLowerCase().replace(/\s+/g, " ").trim();
+                const normalized = String(base || "")
+                    .toLowerCase()
+                    .replace(/\s+/g, " ")
+                    .trim();
                 const map = {
                     intro: "Intro",
                     outro: "Outro",
@@ -7745,9 +7866,7 @@ ${cleanedLyrics}
                     .replace(/\s+/g, " ");
                 if (!raw) return "";
 
-                const headerMatch = raw.match(
-                    /^(intro|outro|verse|pre-chorus|post-chorus|chorus|hook|refrain|bridge|interlude|instrumental|guitar solo|solo|breakdown|drop|build|coda|tag|turnaround)(?:\s+(\d+|[ivxlcdm]+))?(?:\s*(?:[:.-].*)|\s+\d+\s*bars?\b.*)?$/i,
-                );
+                const headerMatch = raw.match(/^(intro|outro|verse|pre-chorus|post-chorus|chorus|hook|refrain|bridge|interlude|instrumental|guitar solo|solo|breakdown|drop|build|coda|tag|turnaround)(?:\s+(\d+|[ivxlcdm]+))?(?:\s*(?:[:.-].*)|\s+\d+\s*bars?\b.*)?$/i);
                 if (!headerMatch) return "";
 
                 const base = toDisplaySectionBase(headerMatch[1]);
@@ -8075,15 +8194,14 @@ ${cleanedLyrics}
                     return;
                 }
 
-                // Set vocal type
+                // Set vocal type - use selectVocalType to correctly handle visibility,
+                // choir builder construction, and Choir/Ensemble mode
                 const typeTag = document.querySelector(`#vocal-type-tags .tag[data-val="${vocalProfilesData.type}"]`);
                 if (typeTag) {
-                    document.querySelectorAll("#vocal-type-tags .tag").forEach((t) => t.classList.remove("active"));
-                    typeTag.classList.add("active");
+                    selectVocalType(typeTag);
+                } else {
+                    buildVocalProfiles();
                 }
-
-                // Build profiles
-                buildVocalProfiles();
 
                 // Restore each profile's settings
                 if (vocalProfilesData.profiles && vocalProfilesData.profiles.length) {
@@ -8151,8 +8269,13 @@ ${cleanedLyrics}
 
                 // Restore choir if present
                 if (vocalProfilesData.choir) {
-                    document.getElementById("choir-enabled").checked = true;
-                    toggleChoir(true);
+                    const isChoirEnsemble = vocalProfilesData.type === "Choir/Ensemble";
+                    if (!isChoirEnsemble) {
+                        // For other types, enable the backing choir checkbox
+                        document.getElementById("choir-enabled").checked = true;
+                        toggleChoir(true);
+                    }
+                    // For Choir/Ensemble the builder was already shown by selectVocalType above
 
                     // Wait for choir builder to be created then restore values
                     setTimeout(() => {
@@ -8183,6 +8306,19 @@ ${cleanedLyrics}
                                     } else {
                                         // Custom accent
                                         addCustomTagToRow("choir-accent-tags", accent);
+                                    }
+                                });
+                            }
+                        }
+                        if (vocalProfilesData.choir.styles && vocalProfilesData.choir.styles.length) {
+                            const styleContainer = document.getElementById("choir-style-tags");
+                            if (styleContainer) {
+                                vocalProfilesData.choir.styles.forEach((style) => {
+                                    const styleTag = styleContainer.querySelector(`.tag[data-val="${style}"]`);
+                                    if (styleTag) {
+                                        styleTag.classList.add("active");
+                                    } else {
+                                        addCustomTagToRow("choir-style-tags", style);
                                     }
                                 });
                             }
@@ -8312,7 +8448,7 @@ ${cleanedLyrics}
                         history = [];
                         return;
                     }
-                    const parsed = JSON.parse(raw);
+                    const parsed = safeParseJSON(raw);
                     history = Array.isArray(parsed) ? parsed : [];
                 } catch (err) {
                     console.warn("Could not load song history:", err);
@@ -9221,7 +9357,7 @@ ${cleanedLyrics}
                         responseLength: raw.length,
                         rawResponse: raw,
                     });
-                    const parsed = JSON.parse(raw);
+                    const parsed = safeParseJSON(raw);
                     debugLog("SECTION_REGEN_PARSED", `Parsed regenerated section: ${sec.type}`, parsed);
                     currentSong.sections[idx].lines = stripAllLeadingMetaTags(stripLeadingStyleMetaTag(parsed.lines));
                     currentSong.sections[idx].direction = parsed.direction
@@ -9246,91 +9382,6 @@ ${cleanedLyrics}
             // Edit Section Functions
             // Allows manual editing of lyric sections
             // ========================================================================
-            function editSection(idx) {
-                if (!currentSong) return;
-                const sec = currentSong.sections[idx];
-                const lineDiv = document.getElementById(`lyric-line-${idx}`);
-                const dirDiv = document.getElementById(`lyric-dir-${idx}`);
-                const actionsSpan = document.getElementById(`section-actions-${idx}`);
-
-                // Store original values for cancel
-                lineDiv.dataset.originalLines = sec.lines;
-                dirDiv.dataset.originalDir = sec.direction || "";
-                lineDiv.dataset.originalType = sec.type || "";
-
-                // Build full Suno format with section tag and direction tags
-                let editableText = `[${sec.type}]`;
-                if (sec.direction && sec.direction.trim()) {
-                    editableText += `\n[${sec.direction.replace(/^\[|\]$/g, "").trim()}]`;
-                }
-                editableText += `\n${stripAllLeadingMetaTags(sec.lines)}`;
-
-                lineDiv.innerHTML = `<textarea id="edit-lyrics-${idx}" style="width: 100%; min-height: 120px; font-family: 'Space Mono', monospace; font-size: 12px; background: var(--surface3); border: 1px solid var(--accent); border-radius: 6px; padding: 10px; color: var(--text); resize: vertical;">${escapeHtml(editableText)}</textarea>`;
-                dirDiv.style.display = "none";
-
-                // Replace action buttons with Save/Cancel
-                actionsSpan.innerHTML = `<button class="btn-regen" onclick="saveEditedSection(${idx})" style="background: var(--accent3); color: #0e0c0a;">${_t("btn.save_edit", "\u2713 Save")}</button><button class="btn-regen" onclick="cancelEditSection(${idx})">${_t("btn.cancel_edit", "\u2715 Cancel")}</button>`;
-            }
-
-            function saveEditedSection(idx) {
-                if (!currentSong) return;
-                const textarea = document.getElementById(`edit-lyrics-${idx}`);
-                const rawText = textarea.value.trim();
-
-                // Parse the edited text to extract section type, direction tags, and lyrics
-                const lines = rawText.split("\n");
-                let sectionType = currentSong.sections[idx].type; // Default to existing
-                let direction = "";
-                let lyricLines = [];
-
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    const match = line.match(/^\[([^\]]+)\]$/);
-
-                    if (match && i === 0 && isLikelySectionTag(match[1])) {
-                        // First line is a section tag
-                        sectionType = match[1].trim();
-                    } else if (match && !isLikelySectionTag(match[1])) {
-                        // It's a direction tag
-                        direction = match[1].trim();
-                    } else if (line) {
-                        // It's a lyric line
-                        lyricLines.push(line);
-                    }
-                }
-
-                // Update the current song with parsed values
-                currentSong.sections[idx].type = sectionType;
-                currentSong.sections[idx].direction = direction;
-                currentSong.sections[idx].lines = lyricLines.join("\n").trim();
-
-                // Re-render the entire card to exit edit mode
-                renderSongCard(currentSong);
-            }
-
-            function cancelEditSection(idx) {
-                if (!currentSong) return;
-                const lineDiv = document.getElementById(`lyric-line-${idx}`);
-                const dirDiv = document.getElementById(`lyric-dir-${idx}`);
-                const actionsSpan = document.getElementById(`section-actions-${idx}`);
-                const sec = currentSong.sections[idx];
-
-                // Restore original display
-                lineDiv.innerHTML = escapeHtml(lineDiv.dataset.originalLines || sec.lines);
-                dirDiv.innerHTML = escapeHtml(dirDiv.dataset.originalDir || sec.direction || "");
-                dirDiv.style.display = "";
-
-                // Restore action buttons
-                const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${idx},this)">Regen</button>`;
-                const editBtn = `<button class="btn-regen" onclick="editSection(${idx})">Edit</button>`;
-                actionsSpan.innerHTML = `${regenBtn}${editBtn}`;
-            }
-
-            // Make edit functions globally accessible for inline onclick handlers
-            window.editSection = editSection;
-            window.saveEditedSection = saveEditedSection;
-            window.cancelEditSection = cancelEditSection;
-
             // Copy generated lyrics back to Lyrics tab
             function copyLyricsToTab() {
                 if (!currentSong || !currentSong.sections || currentSong.sections.length === 0) {
@@ -9344,17 +9395,17 @@ ${cleanedLyrics}
             }
             function confirmCopyLyricsToTab() {
                 closeLyricsCopyConfirm();
-                // Format lyrics with section tags, direction, and instructions (same as allLyrics)
-                const formattedLyrics = normalizeLyricsText(
-                    currentSong.sections
-                        .map((s) => {
-                            const metaTagLines = collectSectionMetaTags(s)
-                                .map((tag) => `\n[${tag}]`)
-                                .join("");
-                            return `[${s.type}]${metaTagLines}\n${stripAllLeadingMetaTags(s.lines)}`;
-                        })
-                        .join("\n\n"),
-                );
+                // Format lyrics per section (normalize each section individually so the regex
+                // never sees section boundaries — s.type is the reliable section header).
+                const formattedLyrics = currentSong.sections
+                    .map((s) => {
+                        const strippedLines = stripAllLeadingMetaTags(s.lines || "");
+                        const metaTagLines = collectSectionMetaTags(s)
+                            .map((tag) => `\n[${tag}]`)
+                            .join("");
+                        return normalizeLyricsText(`[${s.type}]${metaTagLines}\n${strippedLines}`);
+                    })
+                    .join("\n\n");
 
                 // Populate the lyrics input
                 const lyricsInput = document.getElementById("lyrics-input");
@@ -9529,10 +9580,13 @@ ${cleanedLyrics}
                         const cls = sectionClass(sec.type, sec.userProvided);
                         const userBadge = sec.userProvided ? `<span class="user-badge">yours</span>` : "";
                         const regenBtn = sec.userProvided ? "" : `<button class="btn-regen" onclick="regenSection(${i},this)">${_t("btn.regen", "Regen")}</button>`;
-                        const editBtn = `<button class="btn-regen" onclick="editSection(${i})">${_t("btn.edit", "Edit")}</button>`;
-                        const actionBtns = `<span id="section-actions-${i}">${regenBtn}${editBtn}</span>`;
-                        const displayLines = stripAllLeadingMetaTags(stripLeadingSectionTag(stripLeadingStyleMetaTag(sec.lines || "")));
-                        return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span>${escapeHtml(sec.type)}${userBadge}</span>${actionBtns}</div><div class="lyric-line" id="lyric-line-${i}">${escapeHtml(displayLines)}</div><div class="lyric-direction" id="lyric-dir-${i}">${escapeHtml(sec.direction || "")}</div></div>`;
+                        const actionBtns = `<span id="section-actions-${i}">${regenBtn}</span>`;
+                        let editableText = `[${sec.type}]`;
+                        if (sec.direction && sec.direction.trim()) {
+                            editableText += `\n[${sec.direction.replace(/^\[|\]$/g, "").trim()}]`;
+                        }
+                        editableText += `\n${stripAllLeadingMetaTags(sec.lines || "")}`;
+                        return `<div class="lyric-section" id="section-${i}"><div class="lyric-label ${cls}"><span><span id="section-type-label-${i}">${escapeHtml(sec.type)}</span>${userBadge}</span>${actionBtns}</div><textarea id="section-textarea-${i}" class="section-edit-ta" spellcheck="false">${escapeHtml(editableText)}</textarea></div>`;
                     })
                     .join('<div class="sec-div"></div>');
                 const allLyrics = buildAssembledLyricsPrompt(song);
@@ -9562,15 +9616,64 @@ ${cleanedLyrics}
                       <div class="prod-grid"><div><div class="prod-body">${escapeHtml(song.production)}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
                     </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "Copy to Lyrics Tab")}</button><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "Copy to Lyrics Tab")}</button><span id="lyrics-char-count" class="char-count" style="margin-top:0;margin-left:4px;">${allLyrics.length} characters</span><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
                       <div class="lyrics-content">${lyricsHtml}</div>
                     </div>`;
                 panel.insertBefore(card, panel.firstChild);
                 switchRTab("output");
+                requestAnimationFrame(function () {
+                    initSectionTextareas(song);
+                });
 
                 // Show export button when song is rendered
                 const exportBtn = document.getElementById("export-btn");
                 if (exportBtn) exportBtn.style.display = "block";
+            }
+
+            function initSectionTextareas(song) {
+                song.sections.forEach(function (sec, idx) {
+                    const ta = document.getElementById("section-textarea-" + idx);
+                    if (!ta) return;
+                    ta.style.height = "auto";
+                    ta.style.height = ta.scrollHeight + "px";
+                    ta.addEventListener("input", function () {
+                        this.style.height = "auto";
+                        this.style.height = this.scrollHeight + "px";
+                        const rawLines = this.value.split("\n");
+                        let sectionType = currentSong.sections[idx].type;
+                        let direction = "";
+                        const lyricLines = [];
+                        for (let i = 0; i < rawLines.length; i++) {
+                            const trimmed = rawLines[i].trim();
+                            const match = trimmed.match(/^\[([^\]]+)\]$/);
+                            if (match && i === 0 && isLikelySectionTag(match[1])) {
+                                sectionType = match[1].trim();
+                            } else if (match && !isLikelySectionTag(match[1])) {
+                                direction = match[1].trim();
+                            } else if (trimmed) {
+                                lyricLines.push(rawLines[i]);
+                            }
+                        }
+                        currentSong.sections[idx].type = sectionType;
+                        currentSong.sections[idx].direction = direction;
+                        currentSong.sections[idx].lines = lyricLines.join("\n").trim();
+                        const typeLabel = document.getElementById("section-type-label-" + idx);
+                        if (typeLabel) {
+                            typeLabel.textContent = sectionType;
+                            const labelDiv = typeLabel.closest(".lyric-label");
+                            if (labelDiv) labelDiv.className = "lyric-label " + sectionClass(sectionType, currentSong.sections[idx].userProvided);
+                        }
+                        const histEntry = history.find(function (s) {
+                            return s.id === currentSong.id;
+                        });
+                        if (histEntry) {
+                            histEntry.sections = currentSong.sections;
+                            persistHistory();
+                        }
+                        const charCountEl = document.getElementById("lyrics-char-count");
+                        if (charCountEl) charCountEl.textContent = buildAssembledLyricsPrompt(currentSong).length + " chars";
+                    });
+                });
             }
 
             function renderChordsCard(song) {
@@ -9636,7 +9739,30 @@ ${cleanedLyrics}
                     const proceedAfterWarning = await openKeepModeWarningModal();
                     if (!proceedAfterWarning) return;
                 }
-                const submissionSummary = buildSubmissionSummary({ title, concept, specialInstructions, genre, mood, goal, rhythm, grooveFeel, rhyme, tempo, duration, selectedMusicalKey, selectedTimeSignature, pov, accent, verseLength, chorusLength, struct, soundProfile, aiMode, userLyrics, songLanguage });
+                const submissionSummary = buildSubmissionSummary({
+                    title,
+                    concept,
+                    specialInstructions,
+                    genre,
+                    mood,
+                    goal,
+                    rhythm,
+                    grooveFeel,
+                    rhyme,
+                    tempo,
+                    duration,
+                    selectedMusicalKey,
+                    selectedTimeSignature,
+                    pov,
+                    accent,
+                    verseLength,
+                    chorusLength,
+                    struct,
+                    soundProfile,
+                    aiMode,
+                    userLyrics,
+                    songLanguage,
+                });
                 const confirmed = await openSubmitConfirm(submissionSummary);
                 if (!confirmed) return;
 
@@ -9847,7 +9973,7 @@ ${cleanedLyrics}
                         console.log("Raw response:", raw);
                         console.log("=======================");
 
-                        const song = JSON.parse(raw);
+                        const song = safeParseJSON(raw);
 
                         // Log what we parsed from the AI response
                         debugLog("SONG_GENERATION_PARSED", "Parsed song response", {
