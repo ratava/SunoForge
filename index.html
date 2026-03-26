@@ -12,13 +12,14 @@ Legal permission has been sought for the use of the name Suno
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai; img-src 'self' data:; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://accounts.google.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com; img-src 'self' data:; frame-src 'self' https://accounts.google.com; base-uri 'self'; form-action 'self';"
         />
         <title>SunoForge</title>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
         <script type="importmap">
             { "imports": { "@google/genai": "https://esm.sh/@google/genai" } }
         </script>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
         <style>
             :root {
                 --bg: #0e0c0a;
@@ -85,23 +86,47 @@ Legal permission has been sought for the use of the name Suno
                 gap: 4px;
                 max-width: 350px;
             }
-            .version {
-                font-size: 12px;
-                font-family: "Space Mono", monospace;
-                color: var(--text-muted);
-                user-select: all;
-                cursor: text;
-                text-align: right;
-                white-space: nowrap;
+            footer.app-footer {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 10px 24px;
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                font-size: 0.75rem;
+                color: var(--text-dim);
             }
-            .disclaimer {
+            footer.app-footer .footer-disclaimer {
                 font-size: 9px;
                 font-weight: bold;
                 color: var(--error);
-                max-width: 350px;
-                line-height: 1.3;
                 opacity: 0.7;
-                text-align: right;
+                line-height: 1.3;
+                flex: 1;
+            }
+            footer.app-footer .footer-right {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-shrink: 0;
+            }
+            footer.app-footer a {
+                color: var(--accent);
+                text-decoration: none;
+                font-family: "Space Mono", monospace;
+                font-size: 0.7rem;
+            }
+            footer.app-footer a:hover {
+                text-decoration: underline;
+            }
+            footer.app-footer .footer-version {
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                white-space: nowrap;
+                user-select: all;
+                cursor: text;
             }
 
             .main {
@@ -1706,6 +1731,7 @@ Legal permission has been sought for the use of the name Suno
                 display: flex;
                 align-items: center;
                 gap: 6px;
+                flex-wrap: wrap;
             }
             .api-bar input {
                 flex: 1;
@@ -1831,6 +1857,26 @@ Legal permission has been sought for the use of the name Suno
                 font-weight: 700;
                 cursor: pointer;
             }
+            .drive-login-btn {
+                padding: 4px 10px;
+                background: var(--accent);
+                border: none;
+                border-radius: 5px;
+                color: #0e0c0a;
+                font-size: 12px;
+                font-family: "Syne", sans-serif;
+                font-weight: 700;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .drive-login-logo {
+                width: 20px;
+                height: 20px;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
             .api-status {
                 font-size: 9px;
                 font-family: "Space Mono", monospace;
@@ -1841,6 +1887,9 @@ Legal permission has been sought for the use of the name Suno
             }
             .api-status.missing {
                 color: var(--error);
+            }
+            .api-status.warn {
+                color: var(--accent);
             }
             .api-bar-toggle {
                 display: flex;
@@ -1888,6 +1937,12 @@ Legal permission has been sought for the use of the name Suno
                 margin-right: 8px;
                 flex-shrink: 0;
             }
+            .api-inline-note {
+                font-size: 10px;
+                color: var(--text-dim);
+                font-family: "Space Mono", monospace;
+                line-height: 1.45;
+            }
         </style>
     </head>
     <body>
@@ -1911,8 +1966,6 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hans">简体中文</option>
                     <option value="zh-hant">繁體中文</option>
                 </select>
-                <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260326-002</span>
             </div>
         </header>
 
@@ -1974,6 +2027,28 @@ Legal permission has been sought for the use of the name Suno
                     </div>
                     <span class="api-model-warning" data-i18n="api.cost_warning">SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
                 </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label" data-i18n="api.storage_label">Storage:</span>
+                    <select id="storage-provider-select" onchange="setStorageProvider(this.value)">
+                        <option value="local" data-i18n-opt="api.storage_local">Browser local storage</option>
+                        <option value="drive" data-i18n-opt="api.storage_drive">Google Drive</option>
+                    </select>
+                    <span class="api-status missing" id="storage-provider-status">local only</span>
+                </div>
+                <div class="api-bar-row" id="drive-storage-actions-row" style="display: none">
+                    <span class="api-bar-label" data-i18n="api.drive_actions_label">Drive Sync:</span>
+                    <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()">
+                        <img src="images/GoogleDrive.png" alt="Google Drive" class="drive-login-logo" />
+                        <span data-i18n="btn.login_drive">Log In</span>
+                    </button>
+                    <button class="api-bar-save" onclick="connectDriveStorage()" data-i18n="btn.connect_drive">Connect</button>
+                    <button class="api-bar-save" onclick="syncDriveStorageNow()" style="background: var(--success); color: #0e0c0a" data-i18n="btn.sync_now">Sync Now</button>
+                    <button class="api-bar-save" onclick="disconnectDriveStorage()" style="background: var(--surface3); color: var(--text)" data-i18n="btn.disconnect_drive">Disconnect</button>
+                    <span class="api-status missing" id="drive-storage-status">not connected</span>
+                </div>
+                <div class="api-bar-row" id="drive-storage-hint-row" style="display: none">
+                    <span class="api-inline-note" data-i18n="api.drive_hint">Google Drive storage saves your song history and settings to a private app data folder in your Google account. Only SunoForge can access this data. API keys remain local to this browser.</span>
+                </div>
             </div>
         </div>
 
@@ -2006,7 +2081,7 @@ Legal permission has been sought for the use of the name Suno
                             <option value="Chinese (Cantonese)">Chinese (Cantonese)</option>
                             <option value="custom" data-i18n-opt="btn.lang_custom">Custom...</option>
                         </select>
-                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="localStorage.setItem('sf_song_lang_custom', this.value)" />
+                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="saveSongLanguageCustom(this.value)" />
                     </div>
                     <div class="field-group">
                         <div class="field-label" data-i18n="lbl.song_title">Song Title</div>
@@ -2892,6 +2967,10 @@ Legal permission has been sought for the use of the name Suno
                         const v = t(el.dataset.i18nPh);
                         if (v !== el.dataset.i18nPh) el.placeholder = v;
                     });
+                    document.querySelectorAll("[data-i18n-opt]").forEach((el) => {
+                        const v = t(el.dataset.i18nOpt);
+                        if (v !== el.dataset.i18nOpt) el.textContent = v;
+                    });
                     const s = document.getElementById("lang-select");
                     if (s) s.value = _locale;
                 };
@@ -2916,6 +2995,9 @@ Legal permission has been sought for the use of the name Suno
                     document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
                         if (el.dataset.i18nPhEn !== undefined) el.placeholder = el.dataset.i18nPhEn;
                     });
+                    document.querySelectorAll("[data-i18n-opt]").forEach((el) => {
+                        if (el.dataset.i18nOptEn !== undefined) el.textContent = el.dataset.i18nOptEn;
+                    });
                     apply();
                     localStorage.setItem("sf_locale", _locale);
                 };
@@ -2926,6 +3008,9 @@ Legal permission has been sought for the use of the name Suno
                     });
                     document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
                         el.dataset.i18nPhEn = el.placeholder;
+                    });
+                    document.querySelectorAll("[data-i18n-opt]").forEach((el) => {
+                        el.dataset.i18nOptEn = el.textContent;
                     });
                     const saved = localStorage.getItem("sf_locale") || "en";
                     if (saved !== "en") await switchLocale(saved);
@@ -2948,10 +3033,419 @@ Legal permission has been sought for the use of the name Suno
             let customServerAddress = localStorage.getItem("custom_server_address") || "";
             let customModels = JSON.parse(localStorage.getItem("custom_models") || "[]"); // manually-added model IDs
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
+            const STORAGE_PROVIDER_KEY = "sf_storage_provider";
+            const STORAGE_PROVIDER_LOCAL = "local";
+            const STORAGE_PROVIDER_DRIVE = "drive";
+            // Google OAuth client ID (public — security relies on authorized origins, not this value)
+            const DRIVE_CLIENT_ID = ["480861081290-pdu3ielsecd27iliiafl6kqbb3tp17qc", "apps.googleusercontent.com"].join(".");
+            const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
+            const DRIVE_HISTORY_FILE = "sunoforge-history.json";
+            const DRIVE_SETTINGS_FILE = "sunoforge-settings.json";
+            const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
+
+            let storageProvider = localStorage.getItem(STORAGE_PROVIDER_KEY) || STORAGE_PROVIDER_LOCAL;
+            const driveClientId = DRIVE_CLIENT_ID;
+            let driveAccessToken = null;
+            let driveTokenExpiresAt = 0;
+            let driveTokenClient = null;
+            let driveSyncTimer = null;
+            let driveSyncInFlight = null;
+            let lastDriveSyncAt = null;
 
             // i18n shorthand helpers — delegate through the global engine
             const _t = (k, fb) => window.I18N.t(k, fb);
             const _fmt = (k, fb, ...a) => window.I18N.fmt(k, fb, ...a);
+
+            function getStoredSetting(key, fallback = "") {
+                const value = localStorage.getItem(key);
+                return value === null ? fallback : value;
+            }
+
+            function setStoredSetting(key, value) {
+                if (value === null || value === undefined || value === "") {
+                    localStorage.removeItem(key);
+                    return;
+                }
+                localStorage.setItem(key, String(value));
+            }
+
+            function buildSyncedSettingsPayload() {
+                return {
+                    version: 1,
+                    savedAt: new Date().toISOString(),
+                    selected_model: selectedModel || getStoredSetting("selected_model", "gemini-3.1-flash-lite-preview"),
+                    sf_locale: getStoredSetting("sf_locale", "en"),
+                    sf_song_lang: getStoredSetting("sf_song_lang", "English"),
+                    sf_song_lang_custom: getStoredSetting("sf_song_lang_custom", ""),
+                };
+            }
+
+            function applySyncedSettingsPayload(payload, options = {}) {
+                if (!payload || typeof payload !== "object") return;
+
+                if (payload.selected_model) {
+                    selectedModel = payload.selected_model;
+                    setStoredSetting("selected_model", payload.selected_model);
+                }
+                if (payload.sf_locale) {
+                    setStoredSetting("sf_locale", payload.sf_locale);
+                }
+                if (payload.sf_song_lang) {
+                    setStoredSetting("sf_song_lang", payload.sf_song_lang);
+                }
+                if (payload.sf_song_lang_custom !== undefined) {
+                    setStoredSetting("sf_song_lang_custom", payload.sf_song_lang_custom);
+                }
+
+                if (options.applyUi) {
+                    applyStoredSongLanguagePreference();
+                    refreshCombinedModelList();
+                    updateApiBarSummary();
+                }
+            }
+
+            function escapeDriveQueryValue(value) {
+                return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+            }
+
+            function mergeHistoryCollections(base, incoming) {
+                const combined = [...(Array.isArray(base) ? base : []), ...(Array.isArray(incoming) ? incoming : [])].filter(Boolean);
+                const uniqueMap = new Map();
+
+                combined.forEach((song, idx) => {
+                    const key = `${song?.title || ""}|${song?.genre || ""}`;
+                    const existing = uniqueMap.get(key);
+                    const existingDate = new Date(existing?.savedAt || 0).getTime();
+                    const candidateDate = new Date(song?.savedAt || 0).getTime();
+                    const normalized = { ...song, id: song?.id || Date.now() + idx, savedAt: song?.savedAt || new Date().toISOString() };
+                    if (!existing || candidateDate >= existingDate) uniqueMap.set(key, normalized);
+                });
+
+                return Array.from(uniqueMap.values()).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+            }
+
+            function getDriveStatusLabel() {
+                if (storageProvider !== STORAGE_PROVIDER_DRIVE) return _t("status.storage_local", "local only");
+                if (driveAccessToken && Date.now() < driveTokenExpiresAt - 60000) return _t("status.drive_connected", "connected");
+                return _t("status.drive_disconnected", "not connected");
+            }
+
+            function setDriveSyncStatus(state) {
+                // state: 'syncing' | 'ok' | 'failed'
+                const driveStatus = document.getElementById("drive-storage-status");
+                if (!driveStatus) return;
+                if (state === "syncing") {
+                    driveStatus.textContent = _t("status.drive_syncing", "syncing\u2026");
+                    driveStatus.className = "api-status warn";
+                } else if (state === "ok") {
+                    const now = new Date();
+                    const hhmm = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                    driveStatus.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                    driveStatus.className = "api-status ok";
+                } else if (state === "failed") {
+                    driveStatus.textContent = _t("status.drive_sync_failed", "sync failed");
+                    driveStatus.className = "api-status missing";
+                }
+            }
+
+            function updateStorageControls() {
+                const providerSelect = document.getElementById("storage-provider-select");
+                const providerStatus = document.getElementById("storage-provider-status");
+                const actionRow = document.getElementById("drive-storage-actions-row");
+                const hintRow = document.getElementById("drive-storage-hint-row");
+                const driveStatus = document.getElementById("drive-storage-status");
+
+                if (providerSelect) providerSelect.value = storageProvider;
+
+                const usingDrive = storageProvider === STORAGE_PROVIDER_DRIVE;
+                if (actionRow) actionRow.style.display = usingDrive ? "flex" : "none";
+                if (hintRow) hintRow.style.display = usingDrive ? "flex" : "none";
+
+                if (providerStatus) {
+                    providerStatus.textContent = usingDrive ? _t("status.storage_drive", "Drive sync") : _t("status.storage_local", "local only");
+                    providerStatus.className = `api-status ${usingDrive ? "ok" : "missing"}`;
+                }
+
+                if (driveStatus) {
+                    const isConnected = !!driveAccessToken && Date.now() < driveTokenExpiresAt - 60000;
+                    if (lastDriveSyncAt && isConnected) {
+                        const hhmm = lastDriveSyncAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                        driveStatus.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                    } else {
+                        driveStatus.textContent = getDriveStatusLabel();
+                    }
+                    driveStatus.className = `api-status ${isConnected ? "ok" : "warn"}`;
+                }
+            }
+
+            function persistSyncedSettings() {
+                setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                scheduleDriveSync();
+            }
+
+            async function waitForGoogleIdentityServices() {
+                if (window.google?.accounts?.oauth2) return;
+                await new Promise((resolve, reject) => {
+                    const started = Date.now();
+                    const timer = setInterval(() => {
+                        if (window.google?.accounts?.oauth2) {
+                            clearInterval(timer);
+                            resolve();
+                            return;
+                        }
+                        if (Date.now() - started > 10000) {
+                            clearInterval(timer);
+                            reject(new Error(_t("alert.drive_gis_unavailable", "Google Identity Services did not load.")));
+                        }
+                    }, 100);
+                });
+            }
+
+            async function ensureDriveTokenClient() {
+                await waitForGoogleIdentityServices();
+                if (!driveTokenClient) {
+                    driveTokenClient = google.accounts.oauth2.initTokenClient({
+                        client_id: DRIVE_CLIENT_ID,
+                        scope: DRIVE_SCOPE,
+                        callback: () => {},
+                    });
+                }
+            }
+
+            async function ensureDriveAccessToken(interactive = false, options = {}) {
+                const forcePrompt = !!options.forcePrompt;
+                if (!forcePrompt && driveAccessToken && Date.now() < driveTokenExpiresAt - 60000) {
+                    return driveAccessToken;
+                }
+
+                await ensureDriveTokenClient();
+
+                return await new Promise((resolve, reject) => {
+                    driveTokenClient.callback = (response) => {
+                        if (!response || response.error) {
+                            const message = response?.error_description || response?.error || _t("alert.drive_auth_failed", "Google Drive authorization failed.");
+                            reject(new Error(message));
+                            return;
+                        }
+                        driveAccessToken = response.access_token;
+                        driveTokenExpiresAt = Date.now() + (response.expires_in || 3600) * 1000;
+                        updateStorageControls();
+                        resolve(driveAccessToken);
+                    };
+
+                    try {
+                        // Login button should always show the Google account + consent UI.
+                        driveTokenClient.requestAccessToken({ prompt: interactive ? "select_account consent" : "" });
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+            }
+
+            async function driveApiRequest(url, init = {}, options = {}) {
+                const token = await ensureDriveAccessToken(!!options.interactive);
+                const headers = new Headers(init.headers || {});
+                headers.set("Authorization", `Bearer ${token}`);
+
+                const response = await fetch(url, { ...init, headers });
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(`Drive API ${response.status}: ${message.slice(0, 240)}`);
+                }
+
+                if (options.responseType === "text") {
+                    return await response.text();
+                }
+
+                if (response.status === 204) return null;
+                const text = await response.text();
+                return text ? safeParseJSON(text) : null;
+            }
+
+            async function findDriveAppFile(fileName, interactive = false) {
+                const query = encodeURIComponent(`name='${escapeDriveQueryValue(fileName)}'`);
+                const result = await driveApiRequest(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name,modifiedTime)&pageSize=10&q=${query}`, {}, { interactive });
+                return result?.files?.[0] || null;
+            }
+
+            async function readDriveJsonFile(fileName, interactive = false) {
+                const existing = await findDriveAppFile(fileName, interactive);
+                if (!existing?.id) return null;
+                const text = await driveApiRequest(`https://www.googleapis.com/drive/v3/files/${existing.id}?alt=media`, {}, { interactive, responseType: "text" });
+                return text ? safeParseJSON(text) : null;
+            }
+
+            async function writeDriveJsonFile(fileName, payload, interactive = false) {
+                const existing = await findDriveAppFile(fileName, interactive);
+                const bodyText = JSON.stringify(payload, null, 2);
+
+                if (existing?.id) {
+                    await driveApiRequest(
+                        `https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=media`,
+                        {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: bodyText,
+                        },
+                        { interactive },
+                    );
+                    return existing.id;
+                }
+
+                const boundary = `sunoforge-${Date.now()}`;
+                const multipartBody =
+                    `--${boundary}\r\n` +
+                    `Content-Type: application/json; charset=UTF-8\r\n\r\n` +
+                    `${JSON.stringify({ name: fileName, parents: ["appDataFolder"], mimeType: "application/json" })}\r\n` +
+                    `--${boundary}\r\n` +
+                    `Content-Type: application/json; charset=UTF-8\r\n\r\n` +
+                    `${bodyText}\r\n` +
+                    `--${boundary}--`;
+
+                const created = await driveApiRequest(
+                    "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": `multipart/related; boundary=${boundary}` },
+                        body: multipartBody,
+                    },
+                    { interactive },
+                );
+                return created?.id || null;
+            }
+
+            async function hydrateDriveState(interactive = false) {
+                const [remoteSettings, remoteHistory] = await Promise.all([readDriveJsonFile(DRIVE_SETTINGS_FILE, interactive), readDriveJsonFile(DRIVE_HISTORY_FILE, interactive)]);
+
+                if (remoteSettings) {
+                    applySyncedSettingsPayload(remoteSettings);
+                }
+
+                if (remoteHistory?.songs && Array.isArray(remoteHistory.songs)) {
+                    history = mergeHistoryCollections(history, remoteHistory.songs);
+                    persistHistory();
+                }
+            }
+
+            async function syncDriveAppState(options = {}) {
+                const interactive = !!options.interactive;
+                const showAlert = !!options.showAlert;
+
+                if (storageProvider !== STORAGE_PROVIDER_DRIVE) return;
+
+                if (driveSyncInFlight) {
+                    return driveSyncInFlight;
+                }
+
+                driveSyncInFlight = (async () => {
+                    setDriveSyncStatus("syncing");
+                    await ensureDriveAccessToken(interactive);
+                    await hydrateDriveState(interactive);
+                    await writeDriveJsonFile(DRIVE_HISTORY_FILE, { version: 1, savedAt: new Date().toISOString(), songs: history }, interactive);
+                    await writeDriveJsonFile(DRIVE_SETTINGS_FILE, buildSyncedSettingsPayload(), interactive);
+                    lastDriveSyncAt = new Date();
+                    updateStorageControls();
+                    if (showAlert) {
+                        alert(_t("alert.drive_sync_success", "Google Drive sync completed."));
+                    }
+                })();
+
+                try {
+                    await driveSyncInFlight;
+                } finally {
+                    driveSyncInFlight = null;
+                }
+            }
+
+            function scheduleDriveSync() {
+                if (storageProvider !== STORAGE_PROVIDER_DRIVE || !driveAccessToken) return;
+                clearTimeout(driveSyncTimer);
+                driveSyncTimer = setTimeout(() => {
+                    syncDriveAppState().catch((err) => {
+                        console.warn("Drive sync failed:", err);
+                        setDriveSyncStatus("failed");
+                    });
+                }, 500);
+            }
+
+            function setStorageProvider(provider) {
+                storageProvider = provider === STORAGE_PROVIDER_DRIVE ? STORAGE_PROVIDER_DRIVE : STORAGE_PROVIDER_LOCAL;
+                setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                updateStorageControls();
+                persistSyncedSettings();
+            }
+
+            async function connectDriveStorage() {
+                try {
+                    storageProvider = STORAGE_PROVIDER_DRIVE;
+                    setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                    updateStorageControls();
+                    await syncDriveAppState({ interactive: true, showAlert: true });
+                    applyStoredSongLanguagePreference();
+                    renderHistory();
+                } catch (err) {
+                    console.error("Drive connect failed:", err);
+                    updateStorageControls();
+                    alert(_fmt("alert.drive_connect_failed", "Could not connect to Google Drive.\n\nError: {0}", err.message));
+                }
+            }
+
+            async function loginDriveStorage() {
+                try {
+                    storageProvider = STORAGE_PROVIDER_DRIVE;
+                    setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                    driveTokenClient = null;
+                    await ensureDriveAccessToken(true, { forcePrompt: true });
+                    updateStorageControls();
+                } catch (err) {
+                    console.error("Drive login failed:", err);
+                    updateStorageControls();
+                    alert(_fmt("alert.drive_login_failed", "Could not log in to Google Drive.\n\nError: {0}", err.message));
+                }
+            }
+
+            async function syncDriveStorageNow() {
+                try {
+                    await syncDriveAppState({ interactive: true, showAlert: true });
+                    applyStoredSongLanguagePreference();
+                    renderHistory();
+                } catch (err) {
+                    console.error("Drive sync failed:", err);
+                    updateStorageControls();
+                    alert(_fmt("alert.drive_sync_failed", "Google Drive sync failed.\n\nError: {0}", err.message));
+                }
+            }
+
+            function disconnectDriveStorage() {
+                if (driveAccessToken && window.google?.accounts?.oauth2?.revoke) {
+                    try {
+                        google.accounts.oauth2.revoke(driveAccessToken, () => {});
+                    } catch (err) {
+                        console.warn("Drive revoke failed:", err);
+                    }
+                }
+                driveAccessToken = null;
+                driveTokenExpiresAt = 0;
+                updateStorageControls();
+            }
+
+            function applyStoredSongLanguagePreference() {
+                const savedLang = localStorage.getItem("sf_song_lang");
+                const customLang = localStorage.getItem("sf_song_lang_custom") || "";
+                if (savedLang) {
+                    applySongLanguageSetting(savedLang);
+                    const customInput = document.getElementById("song-language-custom");
+                    if (customInput && savedLang === "custom") {
+                        customInput.style.display = "";
+                        customInput.value = customLang;
+                    }
+                }
+            }
+
+            function saveSongLanguageCustom(value) {
+                setStoredSetting("sf_song_lang_custom", value.trim());
+                persistSyncedSettings();
+            }
 
             // Unified AI call — routes to Google GenAI or OpenRouter REST based on selected model's provider
             async function callAI(prompt) {
@@ -3159,6 +3653,7 @@ Legal permission has been sought for the use of the name Suno
                     el.classList.toggle("active", el.dataset.value === id);
                 });
                 updateApiBarSummary();
+                persistSyncedSettings();
             }
 
             // Security: HTML escape utility to prevent XSS attacks
@@ -5333,6 +5828,11 @@ Legal permission has been sought for the use of the name Suno
                 const custom = document.getElementById("song-language-custom");
                 custom.style.display = sel.value === "custom" ? "" : "none";
                 localStorage.setItem("sf_song_lang", sel.value);
+                if (sel.value !== "custom") {
+                    localStorage.removeItem("sf_song_lang_custom");
+                    if (custom) custom.value = "";
+                }
+                persistSyncedSettings();
             }
             function applySongLanguageSetting(lang) {
                 if (!lang) return;
@@ -8430,16 +8930,15 @@ ${cleanedLyrics}
 
             // ========================================================================
             // History Management
-            // Saves and restores song configurations to/from localStorage
+            // Saves and restores song configurations to/from local cache and optional Drive sync
             // ========================================================================
-            const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
-
             function persistHistory() {
                 try {
                     localStorage.setItem(SONG_HISTORY_STORAGE_KEY, JSON.stringify(history));
                 } catch (err) {
                     console.warn("Could not save song history:", err);
                 }
+                scheduleDriveSync();
             }
 
             function loadHistoryFromStorage() {
@@ -8636,14 +9135,14 @@ ${cleanedLyrics}
                     // Parse the JSON with error handling
                     let backupData;
                     try {
-                        backupData = JSON.parse(jsonText);
+                        backupData = safeParseJSON(jsonText);
                     } catch (parseError) {
                         // Try to fix common issues: remove problematic control characters
                         // Keep: tab (0x09), newline (0x0A), carriage return (0x0D)
                         // Remove: other control chars (0x00-0x08, 0x0B, 0x0C, 0x0E-0x1F)
                         const cleanedText = jsonText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
                         try {
-                            backupData = JSON.parse(cleanedText);
+                            backupData = safeParseJSON(cleanedText);
                         } catch (cleanError) {
                             throw new Error("Invalid JSON in backup file: " + parseError.message);
                         }
@@ -10210,6 +10709,12 @@ ${cleanedLyrics}
             window.saveOpenRouterKey = saveOpenRouterKey;
             window.saveCustomServer = saveCustomServer;
             window.fetchCustomServerModels = fetchCustomServerModels;
+            window.setStorageProvider = setStorageProvider;
+            window.loginDriveStorage = loginDriveStorage;
+            window.connectDriveStorage = connectDriveStorage;
+            window.syncDriveStorageNow = syncDriveStorageNow;
+            window.disconnectDriveStorage = disconnectDriveStorage;
+            window.saveSongLanguageCustom = saveSongLanguageCustom;
             window.toggleApiBar = toggleApiBar;
             window.toggleDebugMode = toggleDebugMode;
             window.switchLTab = switchLTab;
@@ -10296,34 +10801,27 @@ ${cleanedLyrics}
             // ========================================================================
             // Initialization
             // ========================================================================
-            loadHistoryFromStorage();
-            renderHistory();
-            renderStructureBuilderPalette();
-            renderCustomStructureDraft();
-            toggleTempoMode();
-            toggleDurationMode();
-            updateTempoRange();
-            updateDurationRange();
-            buildStructureList("rock");
-
-            // Restore song language preference from localStorage
-            (function () {
-                const savedLang = localStorage.getItem("sf_song_lang");
-                if (savedLang) {
-                    const langSel = document.getElementById("song-language");
-                    if (langSel) {
-                        langSel.value = savedLang;
-                        if (savedLang === "custom") {
-                            const customInput = document.getElementById("song-language-custom");
-                            customInput.style.display = "";
-                            customInput.value = localStorage.getItem("sf_song_lang_custom") || "";
-                        }
+            async function initializeApp() {
+                loadHistoryFromStorage();
+                if (storageProvider === STORAGE_PROVIDER_DRIVE && driveClientId) {
+                    try {
+                        await syncDriveAppState({ interactive: false, showAlert: false });
+                    } catch (err) {
+                        console.warn("Initial Drive hydrate skipped:", err);
                     }
                 }
-            })();
 
-            // Sync Song Language when UI locale changes
-            (function () {
+                renderHistory();
+                renderStructureBuilderPalette();
+                renderCustomStructureDraft();
+                toggleTempoMode();
+                toggleDurationMode();
+                updateTempoRange();
+                updateDurationRange();
+                buildStructureList("rock");
+                applyStoredSongLanguagePreference();
+                updateStorageControls();
+
                 const LOCALE_TO_LANG = { en: "English", de: "German", fr: "French", es: "Spanish", pt: "Portuguese", nl: "Dutch", ru: "Russian", ja: "Japanese", ko: "Korean", "zh-hans": "Chinese (Mandarin)", "zh-hant": "Chinese (Cantonese)" };
                 document.getElementById("lang-select")?.addEventListener("change", function () {
                     const mapped = LOCALE_TO_LANG[this.value];
@@ -10331,27 +10829,39 @@ ${cleanedLyrics}
                         applySongLanguageSetting(mapped);
                         localStorage.setItem("sf_song_lang", mapped);
                     }
+                    persistSyncedSettings();
                 });
-            })();
 
-            // i18n: programmatically tag repeated generic buttons, then activate saved locale
-            (function _i18nTagRepeated() {
-                document.querySelectorAll("button.custom-input-confirm").forEach((btn) => {
-                    if (!btn.dataset.i18n) btn.dataset.i18n = btn.textContent.trim() === "Set" ? "btn.set" : "btn.add";
-                });
-                document.querySelectorAll("button.custom-input-cancel").forEach((btn) => {
-                    if (!btn.dataset.i18n) btn.dataset.i18n = "btn.cancel_x";
-                });
-                document.querySelectorAll("button.tag-add-btn").forEach((btn) => {
-                    if (btn.dataset.i18n) return;
-                    const txt = btn.textContent.trim();
-                    if (txt === "+ Custom") btn.dataset.i18n = "btn.custom";
-                    else if (txt === "+ Add") btn.dataset.i18n = "btn.add_influence";
-                    else if (txt === "+ Custom Genre") btn.dataset.i18n = "btn.add_custom_genre";
-                    else if (txt === "+ Add Block") btn.dataset.i18n = "btn.add_block";
-                });
-            })();
-            window.I18N.init();
+                (function _i18nTagRepeated() {
+                    document.querySelectorAll("button.custom-input-confirm").forEach((btn) => {
+                        if (!btn.dataset.i18n) btn.dataset.i18n = btn.textContent.trim() === "Set" ? "btn.set" : "btn.add";
+                    });
+                    document.querySelectorAll("button.custom-input-cancel").forEach((btn) => {
+                        if (!btn.dataset.i18n) btn.dataset.i18n = "btn.cancel_x";
+                    });
+                    document.querySelectorAll("button.tag-add-btn").forEach((btn) => {
+                        if (btn.dataset.i18n) return;
+                        const txt = btn.textContent.trim();
+                        if (txt === "+ Custom") btn.dataset.i18n = "btn.custom";
+                        else if (txt === "+ Add") btn.dataset.i18n = "btn.add_influence";
+                        else if (txt === "+ Custom Genre") btn.dataset.i18n = "btn.add_custom_genre";
+                        else if (txt === "+ Add Block") btn.dataset.i18n = "btn.add_block";
+                    });
+                })();
+
+                await window.I18N.init();
+                updateStorageControls();
+            }
+
+            initializeApp();
         </script>
+
+        <footer class="app-footer">
+            <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the &ldquo;Suno Trademarks&rdquo;)</span>
+            <div class="footer-right">
+                <a href="Privacy_Policy.html" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a>
+                <span class="footer-version" id="version">20260326-008</span>
+            </div>
+        </footer>
     </body>
 </html>
