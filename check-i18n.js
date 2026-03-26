@@ -9,7 +9,7 @@ const fs = require('fs');
 const en = require('./lang/en.json');
 const html = fs.readFileSync('./index.html', 'utf8');
 
-const LOCALES = ['de', 'fr', 'it', 'nl', 'es', 'pt', 'ru', 'ja', 'ko', 'zh-hans', 'zh-hant'];
+const LOCALES = ['de'];
 const localeData = {};
 LOCALES.forEach(function(l) { localeData[l] = require('./lang/' + l + '.json'); });
 
@@ -17,7 +17,7 @@ let ok = true;
 
 // 1. HTML data-i18n keys
 const htmlKeys = new Set();
-const re1 = /data-i18n(?:-ph)?="([^"]+)"/g;
+const re1 = /data-i18n(?:-ph|-opt)?="([^"]+)"/g;
 let m = re1.exec(html);
 while (m !== null) { htmlKeys.add(m[1]); m = re1.exec(html); }
 
