@@ -1987,6 +1987,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="api-bar-row">
                     <span class="api-bar-label">Google AI Studio Key:</span>
                     <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
                         <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="new-password" />
                     </form>
                     <button class="api-bar-save" onclick="saveApiKey()">Save</button>
@@ -1995,6 +1996,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="api-bar-row">
                     <span class="api-bar-label">OpenRouter Key:</span>
                     <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
                         <input type="password" id="openrouter-key-input" placeholder="sk-or-..." autocomplete="new-password" />
                     </form>
                     <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
@@ -2010,6 +2012,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="api-bar-row">
                     <span class="api-bar-label">Local LLM Auth Key:</span>
                     <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
                         <input type="password" id="custom-server-key-input" placeholder="sk-... (optional)" style="max-width: 280px" autocomplete="new-password" />
                     </form>
                 </div>
@@ -2031,7 +2034,7 @@ Legal permission has been sought for the use of the name Suno
                     <span class="api-bar-label" data-i18n="api.storage_label">Storage:</span>
                     <select id="storage-provider-select" onchange="setStorageProvider(this.value)">
                         <option value="local" data-i18n-opt="api.storage_local">Browser local storage</option>
-                        <option value="drive" data-i18n-opt="api.storage_drive">Google Drive</option>
+                        <option value="drive" data-i18n-opt="api.storage_drive">Store in Google Drive</option>
                     </select>
                     <span class="api-status missing" id="storage-provider-status">local only</span>
                 </div>
@@ -2039,7 +2042,7 @@ Legal permission has been sought for the use of the name Suno
                     <span class="api-bar-label" data-i18n="api.drive_actions_label">Drive Sync:</span>
                     <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()">
                         <img src="images/GoogleDrive.png" alt="Google Drive" class="drive-login-logo" />
-                        <span data-i18n="btn.login_drive">Log In</span>
+                        <span data-i18n="btn.login_drive">Log In to Google Drive</span>
                     </button>
                     <button class="api-bar-save" onclick="connectDriveStorage()" data-i18n="btn.connect_drive">Connect</button>
                     <button class="api-bar-save" onclick="syncDriveStorageNow()" style="background: var(--success); color: #0e0c0a" data-i18n="btn.sync_now">Sync Now</button>
