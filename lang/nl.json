@@ -15,6 +15,7 @@
   "api.openrouter_label": "OpenRouter-sleutel:",
   "api.model_label": "Model:",
   "api.cost_warning": "SunoForge is niet aansprakelijk voor kosten die worden gemaakt met het geselecteerde model. Zorg ervoor dat u een gratis model gebruikt of een geldig factureringsaccount heeft.",
+  "hint.tagline": "SUNOFORGE IS ONTWORPEN OM JE SUNO-STIJL EN/OF TEKSTEN TE VERBETEREN<br />VOOR EEN MEER GESTRUCTUREERDE EN HOGERE KWALITEIT<br />SUNO-LIEDGENERATIE",
   "hint.disclaimer": "SunoForge is op geen enkele manier gelieerd aan Suno of de eigenaren van Suno.ai. De naam en logo's van Suno zijn handelsmerken van Suno (gezamenlijk de \"Suno-handelsmerken\").",
   "footer.privacy": "Privacybeleid",
   "hint.tempo_tip": "Tempo is een richtlijn — de AI kan het iets aanpassen aan het genre en de sfeer.",

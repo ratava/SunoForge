@@ -62,6 +62,21 @@ Legal permission has been sought for the use of the name Suno
                 background: var(--surface);
                 gap: 12px;
                 justify-content: space-between;
+                position: relative;
+            }
+            .header-tagline {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                font-size: 16px;
+                font-weight: 400;
+                color: var(--text);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                line-height: 1.1;
+                pointer-events: none;
+                user-select: none;
             }
             .logo {
                 display: flex;
@@ -1967,6 +1982,7 @@ Legal permission has been sought for the use of the name Suno
                 <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
             <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">DEBUG MODE</div>
+            <div class="header-tagline" data-i18n="hint.tagline">SUNOFORGE IS DESIGNED TO IMPROVE YOUR SUNO STYLE AND/OR LYRICS<br />TO OBTAIN A MORE STRUCTURED AND HIGHER QUALITY<br />SUNO SONG GENERATION</div>
             <div class="header-right">
                 <select id="lang-select" onchange="window.I18N.switchLocale(this.value)" title="Language / Sprache">
                     <option value="en">English</option>
@@ -1993,6 +2009,7 @@ Legal permission has been sought for the use of the name Suno
                     <span class="api-status missing" id="api-bar-sum-google">Google</span>
                     <span class="api-status missing" id="api-bar-sum-or">OR</span>
                     <span class="api-status missing" id="api-bar-sum-custom">LLM</span>
+                    <span class="api-status missing" id="api-bar-sum-drive" style="display: none">Drive</span>
                 </div>
                 <span id="api-bar-chevron">▼</span>
             </div>
@@ -3062,12 +3079,24 @@ Legal permission has been sought for the use of the name Suno
             const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
             const DRIVE_HISTORY_FILE = "sunoforge-history.json";
             const DRIVE_SETTINGS_FILE = "sunoforge-settings.json";
+            const DRIVE_SESSION_TOKEN_KEY = "sf_drive_session";
             const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
 
             let storageProvider = localStorage.getItem(STORAGE_PROVIDER_KEY) || STORAGE_PROVIDER_LOCAL;
             const driveClientId = DRIVE_CLIENT_ID;
             let driveAccessToken = null;
             let driveTokenExpiresAt = 0;
+
+            // Restore token from sessionStorage so page reload doesn't force a new OAuth popup
+            (function () {
+                try {
+                    const saved = JSON.parse(sessionStorage.getItem(DRIVE_SESSION_TOKEN_KEY) || "null");
+                    if (saved && saved.token && saved.expiresAt && Date.now() < saved.expiresAt - 60000) {
+                        driveAccessToken = saved.token;
+                        driveTokenExpiresAt = saved.expiresAt;
+                    }
+                } catch (_) {}
+            })();
             let driveTokenClient = null;
             let driveSyncTimer = null;
             let driveSyncInFlight = null;
@@ -3197,6 +3226,8 @@ Legal permission has been sought for the use of the name Suno
                     }
                     driveStatus.className = `api-status ${isConnected ? "ok" : "warn"}`;
                 }
+
+                updateApiBarSummary();
             }
 
             function persistSyncedSettings() {
@@ -3250,6 +3281,10 @@ Legal permission has been sought for the use of the name Suno
                         }
                         driveAccessToken = response.access_token;
                         driveTokenExpiresAt = Date.now() + (response.expires_in || 3600) * 1000;
+                        // Persist so page reload can restore token without a new OAuth popup
+                        try {
+                            sessionStorage.setItem(DRIVE_SESSION_TOKEN_KEY, JSON.stringify({ token: driveAccessToken, expiresAt: driveTokenExpiresAt }));
+                        } catch (_) {}
                         updateStorageControls();
                         resolve(driveAccessToken);
                     };
@@ -3447,6 +3482,9 @@ Legal permission has been sought for the use of the name Suno
                 }
                 driveAccessToken = null;
                 driveTokenExpiresAt = 0;
+                try {
+                    sessionStorage.removeItem(DRIVE_SESSION_TOKEN_KEY);
+                } catch (_) {}
                 updateStorageControls();
             }
 
@@ -3905,6 +3943,7 @@ Legal permission has been sought for the use of the name Suno
                 const sg = document.getElementById("api-bar-sum-google");
                 const so = document.getElementById("api-bar-sum-or");
                 const sc = document.getElementById("api-bar-sum-custom");
+                const sd = document.getElementById("api-bar-sum-drive");
                 if (sg) {
                     sg.textContent = "Google";
                     sg.className = "api-status " + (googleOk ? "ok" : "missing");
@@ -3916,6 +3955,24 @@ Legal permission has been sought for the use of the name Suno
                 if (sc) {
                     sc.textContent = "LLM";
                     sc.className = "api-status " + (csOk ? "ok" : "missing");
+                }
+                if (sd) {
+                    const usingDrive = storageProvider === STORAGE_PROVIDER_DRIVE;
+                    sd.style.display = usingDrive ? "" : "none";
+                    if (usingDrive) {
+                        const driveConnected = !!driveAccessToken && Date.now() < driveTokenExpiresAt - 60000;
+                        if (driveConnected && lastDriveSyncAt) {
+                            const hhmm = lastDriveSyncAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                            sd.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                            sd.className = "api-status ok";
+                        } else if (driveConnected) {
+                            sd.textContent = _t("status.drive_connected", "Drive");
+                            sd.className = "api-status ok";
+                        } else {
+                            sd.textContent = _t("status.drive_disconnected", "Drive");
+                            sd.className = "api-status warn";
+                        }
+                    }
                 }
             }
 

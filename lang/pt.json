@@ -15,6 +15,7 @@
   "api.openrouter_label": "Chave do OpenRouter:",
   "api.model_label": "Modelo:",
   "api.cost_warning": "O SunoForge não é responsável por quaisquer custos incorridos com o modelo selecionado. Certifique-se de usar um modelo gratuito ou ter uma conta de faturação válida.",
+  "hint.tagline": "O SUNOFORGE FOI CONCEBIDO PARA MELHORAR O SEU ESTILO E/OU LETRAS SUNO<br />PARA OBTER UMA GERAÇÃO DE MÚISAS SUNO<br />MAIS ESTRUTURADA E DE MAIOR QUALIDADE",
   "hint.disclaimer": "O SunoForge não tem qualquer afiliação com o Suno ou com os proprietários do Suno.ai. O nome e os logotipos do Suno são marcas registadas do Suno (coletivamente as «Marcas Suno»).",
   "footer.privacy": "Política de privacidade",
   "hint.tempo_tip": "O andamento é um guia — a IA pode ajustá-lo ligeiramente para corresponder ao género e ao mood.",

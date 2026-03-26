@@ -15,6 +15,7 @@
   "api.openrouter_label": "Chiave OpenRouter:",
   "api.model_label": "Modello:",
   "api.cost_warning": "SunoForge non è responsabile di eventuali costi sostenuti con il modello selezionato. Assicurati di utilizzare un modello gratuito o di avere un account di fatturazione valido.",
+  "hint.tagline": "SUNOFORGE È PROGETTATO PER MIGLIORARE IL TUO STILE E/O LE TUE LIRICHE SUNO<br />PER OTTENERE UNA GENERAZIONE DI CANZONI SUNO<br />PIÙ STRUTTURATA E DI QUALITÀ SUPERIORE",
   "hint.disclaimer": "SunoForge non è in alcun modo affiliata con Suno o con i proprietari di Suno.ai. Il nome e i loghi Suno sono marchi commerciali riservati di Suno (collettivamente i \"Marchi Suno\").",
   "footer.privacy": "Informativa sulla privacy",
   "hint.tempo_tip": "Il tempo è indicativo — l'IA potrebbe adattarlo leggermente per corrispondere al genere o all'umore.",

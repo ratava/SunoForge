@@ -15,6 +15,7 @@
   "api.openrouter_label": "OpenRouter キー：",
   "api.model_label": "モデル：",
   "api.cost_warning": "SunoForgeは、選択したモデルの使用によって発生したコストについて一切責任を負いません。無料モデルを使用しているか、有効な請求アカウントをお持ちであることを確認してください。",
+  "hint.tagline": "SUNOFORGEはSunoのスタイルおよび/または歌詞を改善するために設計されています<br />より構造化された高品質の<br />Sunoソング生成を実現するために",
   "hint.disclaimer": "SunoForgeはSunoまたはSuno.aiの所有者とは一切関係ありません。Sunoの名称およびロゴはSunoの商標です（総称して「Suno商標」）。",
   "footer.privacy": "プライバシーポリシー",
   "hint.tempo_tip": "テンポはガイドです — AIはジャンルとムードに合わせて若干調整することがあります。",

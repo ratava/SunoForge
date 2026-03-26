@@ -15,6 +15,7 @@
   "api.openrouter_label": "OpenRouter 키:",
   "api.model_label": "모델:",
   "api.cost_warning": "SunoForge는 선택한 모델 사용으로 발생한 비용에 대해 책임지지 않습니다. 무료 모델을 사용하거나 유효한 결제 계정이 있는지 확인하세요.",
+  "hint.tagline": "SUNOFORGE는 SUNO 스타일 및/또는 가사를 개선하도록 설계되었습니다<br />더욱 구조적이고 고품질의<br />SUNO 노래 생성을 얻기 위해",
   "hint.disclaimer": "SunoForge는 Suno 또는 Suno.ai의 소유자와 어떠한 관계도 없습니다. Suno의 이름과 로고는 Suno의 상표입니다(총칭하여 \"Suno 상표\").",  "footer.privacy": "개인정보 처리방침",  "hint.tempo_tip": "템포는 가이드입니다 — AI가 장르와 분위기에 맞게 약간 조정할 수 있습니다.",
   "hint.vocal_config": "보컬 특성을 구성합니다. 지정되지 않은 필드는 송 엔진이 자동으로 선택합니다.",
   "hint.instrumental": "보컬 없는 인스트루멘탈 트랙입니다. 가사 대신 섹션 레이블과 연주 지시사항이 제공됩니다.",

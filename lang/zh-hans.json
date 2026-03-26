@@ -13,6 +13,7 @@
   "api.openrouter_label": "OpenRouter 密钥：",
   "api.model_label": "模型：",
   "api.cost_warning": "SunoForge 不对使用所选模型产生的任何费用负责。请确保您使用的是免费模型或拥有有效的计费账户。",
+  "hint.tagline": "SUNOFORGE 旨在改进您的 SUNO 风格和/或歌词<br />以获得更具结构化和更高质量的<br />SUNO 歌曲生成",
   "hint.disclaimer": "SunoForge 与 Suno 或 Suno.ai 的所有者没有任何关联。Suno 的名称和标志是 Suno 的商标（统称为\"Suno 商标\"）。",
   "footer.privacy": "隐私政策",
   "hint.tempo_tip": "节奏仅供参考 — AI 可能会根据风格和情绪略作调整。",
