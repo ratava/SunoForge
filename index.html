@@ -1949,7 +1949,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260326-001</span>
+                <span class="version" id="version">Version: <br />20260326-002</span>
             </div>
         </header>
 
@@ -3025,18 +3025,15 @@ Legal permission has been sought for the use of the name Suno
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
             const STORAGE_PROVIDER_KEY = "sf_storage_provider";
             const DRIVE_CLIENT_ID_KEY = "google_drive_client_id";
-            const DRIVE_FOLDER_ID_KEY = "google_drive_folder_id";
             const STORAGE_PROVIDER_LOCAL = "local";
             const STORAGE_PROVIDER_DRIVE = "drive";
-            const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
-            const DRIVE_FOLDER_NAME = "SunoForge";
+            const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
             const DRIVE_HISTORY_FILE = "sunoforge-history.json";
             const DRIVE_SETTINGS_FILE = "sunoforge-settings.json";
             const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
 
             let storageProvider = localStorage.getItem(STORAGE_PROVIDER_KEY) || STORAGE_PROVIDER_LOCAL;
             let driveClientId = localStorage.getItem(DRIVE_CLIENT_ID_KEY) || "";
-            let driveFolderId = localStorage.getItem(DRIVE_FOLDER_ID_KEY) || "";
             let driveAccessToken = null;
             let driveTokenExpiresAt = 0;
             let driveTokenClient = null;
@@ -3259,53 +3256,21 @@ Legal permission has been sought for the use of the name Suno
                 return text ? safeParseJSON(text) : null;
             }
 
-            async function findDriveFolderByName(name, interactive = false) {
-                const query = encodeURIComponent(`mimeType='application/vnd.google-apps.folder' and name='${escapeDriveQueryValue(name)}' and 'root' in parents and trashed=false`);
-                const result = await driveApiRequest(`https://www.googleapis.com/drive/v3/files?fields=files(id,name)&pageSize=10&q=${query}`, {}, { interactive });
-                return result?.files?.[0] || null;
-            }
-
-            async function ensureDriveFolder(interactive = false) {
-                if (driveFolderId) return driveFolderId;
-
-                const existing = await findDriveFolderByName(DRIVE_FOLDER_NAME, interactive);
-                if (existing?.id) {
-                    driveFolderId = existing.id;
-                    setStoredSetting(DRIVE_FOLDER_ID_KEY, driveFolderId);
-                    return driveFolderId;
-                }
-
-                const created = await driveApiRequest(
-                    "https://www.googleapis.com/drive/v3/files?fields=id,name",
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ name: DRIVE_FOLDER_NAME, mimeType: "application/vnd.google-apps.folder", parents: ["root"] }),
-                    },
-                    { interactive }
-                );
-                driveFolderId = created.id;
-                setStoredSetting(DRIVE_FOLDER_ID_KEY, driveFolderId);
-                return driveFolderId;
-            }
-
-            async function findDriveFileInFolder(fileName, folderId, interactive = false) {
-                const query = encodeURIComponent(`name='${escapeDriveQueryValue(fileName)}' and '${escapeDriveQueryValue(folderId)}' in parents and trashed=false`);
-                const result = await driveApiRequest(`https://www.googleapis.com/drive/v3/files?fields=files(id,name,modifiedTime)&pageSize=10&q=${query}`, {}, { interactive });
+            async function findDriveAppFile(fileName, interactive = false) {
+                const query = encodeURIComponent(`name='${escapeDriveQueryValue(fileName)}'`);
+                const result = await driveApiRequest(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name,modifiedTime)&pageSize=10&q=${query}`, {}, { interactive });
                 return result?.files?.[0] || null;
             }
 
             async function readDriveJsonFile(fileName, interactive = false) {
-                const folderId = await ensureDriveFolder(interactive);
-                const existing = await findDriveFileInFolder(fileName, folderId, interactive);
+                const existing = await findDriveAppFile(fileName, interactive);
                 if (!existing?.id) return null;
                 const text = await driveApiRequest(`https://www.googleapis.com/drive/v3/files/${existing.id}?alt=media`, {}, { interactive, responseType: "text" });
                 return text ? safeParseJSON(text) : null;
             }
 
             async function writeDriveJsonFile(fileName, payload, interactive = false) {
-                const folderId = await ensureDriveFolder(interactive);
-                const existing = await findDriveFileInFolder(fileName, folderId, interactive);
+                const existing = await findDriveAppFile(fileName, interactive);
                 const bodyText = JSON.stringify(payload, null, 2);
 
                 if (existing?.id) {
@@ -3316,7 +3281,7 @@ Legal permission has been sought for the use of the name Suno
                             headers: { "Content-Type": "application/json" },
                             body: bodyText,
                         },
-                        { interactive }
+                        { interactive },
                     );
                     return existing.id;
                 }
@@ -3325,7 +3290,7 @@ Legal permission has been sought for the use of the name Suno
                 const multipartBody =
                     `--${boundary}\r\n` +
                     `Content-Type: application/json; charset=UTF-8\r\n\r\n` +
-                    `${JSON.stringify({ name: fileName, parents: [folderId], mimeType: "application/json" })}\r\n` +
+                    `${JSON.stringify({ name: fileName, parents: ["appDataFolder"], mimeType: "application/json" })}\r\n` +
                     `--${boundary}\r\n` +
                     `Content-Type: application/json; charset=UTF-8\r\n\r\n` +
                     `${bodyText}\r\n` +
@@ -3338,7 +3303,7 @@ Legal permission has been sought for the use of the name Suno
                         headers: { "Content-Type": `multipart/related; boundary=${boundary}` },
                         body: multipartBody,
                     },
-                    { interactive }
+                    { interactive },
                 );
                 return created?.id || null;
             }
@@ -3429,7 +3394,9 @@ Legal permission has been sought for the use of the name Suno
                     if (clientInput) {
                         clientInput.focus();
                         clientInput.style.outline = "2px solid var(--warning, #c97c2e)";
-                        setTimeout(() => { clientInput.style.outline = ""; }, 2500);
+                        setTimeout(() => {
+                            clientInput.style.outline = "";
+                        }, 2500);
                     }
                     return;
                 }
