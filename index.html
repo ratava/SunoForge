@@ -1840,13 +1840,15 @@ Legal permission has been sought for the use of the name Suno
                 cursor: pointer;
             }
             .drive-login-btn {
+                font-size: 12px;
+                color: var(--accent);
                 display: inline-flex;
                 align-items: center;
                 gap: 6px;
             }
             .drive-login-logo {
-                width: 14px;
-                height: 14px;
+                width: 20px;
+                height: 20px;
                 object-fit: contain;
                 flex-shrink: 0;
             }
@@ -3410,6 +3412,12 @@ Legal permission has been sought for the use of the name Suno
                 try {
                     storageProvider = STORAGE_PROVIDER_DRIVE;
                     setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                    const latestClientId = (document.getElementById("drive-client-id-input")?.value || driveClientId || "").trim();
+                    if (!latestClientId) {
+                        updateStorageControls();
+                        document.getElementById("drive-client-id-input")?.focus();
+                        return;
+                    }
                     await ensureDriveAccessToken(true);
                     updateStorageControls();
                     alert(_t("alert.drive_login_success", "Google Drive login successful."));
