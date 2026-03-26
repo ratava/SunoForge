@@ -205,6 +205,5 @@
   "alert.drive_sync_failed": "Echec de la synchronisation Google Drive.\\n\\nErreur : {0}",
   "alert.drive_sync_success": "Synchronisation Google Drive terminee.",
   "btn.login_drive": "Se connecter",
-  "alert.drive_login_success": "Connexion a Google Drive reussie.",
   "alert.drive_login_failed": "Impossible de se connecter a Google Drive.\n\nErreur : {0}"
 }

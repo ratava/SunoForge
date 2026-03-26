@@ -205,6 +205,5 @@
   "alert.drive_sync_failed": "Google Drive 동기화에 실패했습니다.\\n\\n오류: {0}",
   "alert.drive_sync_success": "Google Drive 동기화가 완료되었습니다.",
   "btn.login_drive": "로그인",
-  "alert.drive_login_success": "Google Drive 로그인에 성공했습니다.",
   "alert.drive_login_failed": "Google Drive에 로그인할 수 없습니다.\n\n오류: {0}"
 }

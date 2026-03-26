@@ -201,7 +201,6 @@
   "alert.drive_missing_client_id": "Geben Sie zuerst eine Google OAuth-Client-ID für den Drive-Sync ein.",
   "alert.drive_gis_unavailable": "Google Identity Services konnten nicht geladen werden.",
   "alert.drive_auth_failed": "Google-Drive-Autorisierung fehlgeschlagen.",
-  "alert.drive_login_success": "Google-Drive-Anmeldung erfolgreich.",
   "alert.drive_login_failed": "Anmeldung bei Google Drive fehlgeschlagen.\n\nFehler: {0}",
   "alert.drive_connect_failed": "Verbindung zu Google Drive fehlgeschlagen.\n\nFehler: {0}",
   "alert.drive_sync_failed": "Google-Drive-Synchronisierung fehlgeschlagen.\n\nFehler: {0}",

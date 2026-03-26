@@ -205,6 +205,5 @@
   "alert.drive_sync_failed": "La sincronizacion con Google Drive fallo.\\n\\nError: {0}",
   "alert.drive_sync_success": "Sincronizacion con Google Drive completada.",
   "btn.login_drive": "Iniciar sesion",
-  "alert.drive_login_success": "Inicio de sesion en Google Drive correcto.",
   "alert.drive_login_failed": "No se pudo iniciar sesion en Google Drive.\n\nError: {0}"
 }

@@ -201,7 +201,6 @@
   "alert.drive_missing_client_id": "Enter a Google OAuth client ID for Drive sync first.",
   "alert.drive_gis_unavailable": "Google Identity Services did not load.",
   "alert.drive_auth_failed": "Google Drive authorization failed.",
-  "alert.drive_login_success": "Google Drive login successful.",
   "alert.drive_login_failed": "Could not log in to Google Drive.\n\nError: {0}",
   "alert.drive_connect_failed": "Could not connect to Google Drive.\n\nError: {0}",
   "alert.drive_sync_failed": "Google Drive sync failed.\n\nError: {0}",

@@ -1840,8 +1840,15 @@ Legal permission has been sought for the use of the name Suno
                 cursor: pointer;
             }
             .drive-login-btn {
+                padding: 4px 10px;
+                background: var(--accent);
+                border: none;
+                border-radius: 5px;
+                color: #0e0c0a;
                 font-size: 12px;
-                color: var(--accent);
+                font-family: "Syne", sans-serif;
+                font-weight: 700;
+                cursor: pointer;
                 display: inline-flex;
                 align-items: center;
                 gap: 6px;
@@ -2019,7 +2026,7 @@ Legal permission has been sought for the use of the name Suno
                 </div>
                 <div class="api-bar-row" id="drive-storage-actions-row" style="display: none">
                     <span class="api-bar-label" data-i18n="api.drive_actions_label">Drive Sync:</span>
-                    <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()" style="background: var(--warning); color: #0e0c0a">
+                    <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()">
                         <img src="images/GoogleDrive.png" alt="Google Drive" class="drive-login-logo" />
                         <span data-i18n="btn.login_drive">Log In</span>
                     </button>
@@ -3202,8 +3209,9 @@ Legal permission has been sought for the use of the name Suno
                 }
             }
 
-            async function ensureDriveAccessToken(interactive = false) {
-                if (driveAccessToken && Date.now() < driveTokenExpiresAt - 60000) {
+            async function ensureDriveAccessToken(interactive = false, options = {}) {
+                const forcePrompt = !!options.forcePrompt;
+                if (!forcePrompt && driveAccessToken && Date.now() < driveTokenExpiresAt - 60000) {
                     return driveAccessToken;
                 }
 
@@ -3223,7 +3231,8 @@ Legal permission has been sought for the use of the name Suno
                     };
 
                     try {
-                        driveTokenClient.requestAccessToken({ prompt: interactive ? "consent" : "" });
+                        // Login button should always show the Google account + consent UI.
+                        driveTokenClient.requestAccessToken({ prompt: interactive ? "select_account consent" : "" });
                     } catch (err) {
                         reject(err);
                     }
@@ -3409,18 +3418,32 @@ Legal permission has been sought for the use of the name Suno
             }
 
             async function loginDriveStorage() {
+                const clientInput = document.getElementById("drive-client-id-input");
+                const latestClientId = (clientInput?.value || driveClientId || "").trim();
+
+                // If no client ID is available, open the API bar and highlight the input
+                // so the user can enter it — do not show any alert or prompt.
+                if (!latestClientId) {
+                    toggleApiBar(true);
+                    updateStorageControls();
+                    if (clientInput) {
+                        clientInput.focus();
+                        clientInput.style.outline = "2px solid var(--warning, #c97c2e)";
+                        setTimeout(() => { clientInput.style.outline = ""; }, 2500);
+                    }
+                    return;
+                }
+
                 try {
                     storageProvider = STORAGE_PROVIDER_DRIVE;
                     setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
-                    const latestClientId = (document.getElementById("drive-client-id-input")?.value || driveClientId || "").trim();
-                    if (!latestClientId) {
-                        updateStorageControls();
-                        document.getElementById("drive-client-id-input")?.focus();
-                        return;
-                    }
-                    await ensureDriveAccessToken(true);
+                    // Auto-save whatever is typed in the field before starting OAuth
+                    driveClientId = latestClientId;
+                    setStoredSetting(DRIVE_CLIENT_ID_KEY, driveClientId);
+                    if (clientInput && clientInput.value !== driveClientId) clientInput.value = driveClientId;
+                    driveTokenClient = null;
+                    await ensureDriveAccessToken(true, { forcePrompt: true });
                     updateStorageControls();
-                    alert(_t("alert.drive_login_success", "Google Drive login successful."));
                 } catch (err) {
                     console.error("Drive login failed:", err);
                     updateStorageControls();

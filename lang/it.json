@@ -205,6 +205,5 @@
   "alert.drive_sync_failed": "Sincronizzazione Google Drive non riuscita.\\n\\nErrore: {0}",
   "alert.drive_sync_success": "Sincronizzazione Google Drive completata.",
   "btn.login_drive": "Accedi",
-  "alert.drive_login_success": "Accesso a Google Drive riuscito.",
   "alert.drive_login_failed": "Impossibile accedere a Google Drive.\n\nErrore: {0}"
 }
