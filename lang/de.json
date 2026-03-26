@@ -15,6 +15,7 @@
   "api.model_label": "Modell:",
   "api.cost_warning": "SunoForge übernimmt keine Haftung für Kosten, die durch das gewählte Modell entstehen. Stellen Sie sicher, dass Sie ein kostenloses Modell verwenden oder ein gültiges Abrechnungskonto haben.",
   "hint.disclaimer": "SunoForge steht in keiner Verbindung zu Suno oder den Eigentümern von Suno.ai. Der Name und die Logos von Suno sind Marken von Suno (zusammen die „Suno-Marken“).",
+  "footer.privacy": "Datenschutzrichtlinie",
   "hint.tempo_tip": "Das Tempo dient als Richtwert — die KI kann es leicht anpassen, um Genre und Stimmung zu entsprechen.",
   "hint.vocal_config": "Konfigurieren Sie die Gesangseigenschaften. Nicht ausgefüllte Felder werden automatisch von der Song-Engine gewählt.",
   "hint.instrumental": "Instrumentaler Track ohne Gesang. Statt Texten werden Abschnittsbezeichnungen und Spielanweisungen bereitgestellt.",

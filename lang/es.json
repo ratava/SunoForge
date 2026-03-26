@@ -15,6 +15,7 @@
   "api.model_label": "Modelo:",
   "api.cost_warning": "SunoForge no se hace responsable de los costes derivados del modelo seleccionado. Asegúrese de usar un modelo gratuito o tener una cuenta de facturación válida.",
   "hint.disclaimer": "SunoForge no tiene ninguna afiliación con Suno ni con los propietarios de Suno.ai. El nombre y los logotipos de Suno son marcas comerciales de Suno (colectivamente las «Marcas Suno»).",
+  "footer.privacy": "Política de privacidad",
   "hint.tempo_tip": "El tempo es una guía: la IA puede ajustarlo ligeramente para adaptarse al género y al estado de ánimo.",
   "hint.vocal_config": "Configure las características vocales. Los campos no especificados serán elegidos automáticamente por el motor de canciones.",
   "hint.instrumental": "Pista instrumental sin voces. Se proporcionarán etiquetas de sección e indicaciones de interpretación en lugar de letra.",
