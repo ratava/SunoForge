@@ -205,5 +205,13 @@
   "alert.drive_sync_failed": "Google Drive 同步失敗。\\n\\n錯誤: {0}",
   "alert.drive_sync_success": "Google Drive 同步已完成。",
   "btn.login_drive": "登入",
-  "alert.drive_login_failed": "無法登入 Google Drive。\n\n錯誤：{0}"
+  "alert.drive_login_failed": "無法登入 Google Drive。\n\n錯誤：{0}",
+  "lbl.presets": "歌曲預設",
+  "ph.preset_name": "預設名稱…",
+  "ph.preset_select": "— 選擇預設 —",
+  "btn.save_preset": "保存預設",
+  "btn.load_preset": "載入",
+  "btn.delete_preset": "刪除",
+  "alert.preset_name_required": "請輸入預設名稱。",
+  "alert.preset_delete_confirm": "刪除預設「{0}」？"
 }

@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "Google Drive の同期に失敗しました。\\n\\nエラー: {0}",
   "alert.drive_sync_success": "Google Drive の同期が完了しました。",
   "btn.login_drive": "ログイン",
-  "alert.drive_login_failed": "Google Driveにログインできませんでした。\n\nエラー: {0}"
+  "alert.drive_login_failed": "Google Driveにログインできませんでした。\n\nエラー: {0}",
+  "lbl.presets": "ソングプリセット",
+  "ph.preset_name": "プリセット名…",
+  "ph.preset_select": "— プリセットを選択 —",
+  "btn.save_preset": "プリセットを保存",
+  "btn.load_preset": "読み込む",
+  "btn.delete_preset": "削除",
+  "alert.preset_name_required": "プリセット名を入力してください。",
+  "alert.preset_delete_confirm": "プリセット \"{0}\" を削除しますか？"
 }

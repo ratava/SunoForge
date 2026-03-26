@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "Google Drive-synchronisatie mislukt.\\n\\nFout: {0}",
   "alert.drive_sync_success": "Google Drive-synchronisatie voltooid.",
   "btn.login_drive": "Inloggen",
-  "alert.drive_login_failed": "Kan niet inloggen bij Google Drive.\n\nFout: {0}"
+  "alert.drive_login_failed": "Kan niet inloggen bij Google Drive.\n\nFout: {0}",
+  "lbl.presets": "Song-presets",
+  "ph.preset_name": "Presetnaam\u2026",
+  "ph.preset_select": "\u2014 selecteer preset \u2014",
+  "btn.save_preset": "Preset opslaan",
+  "btn.load_preset": "Laden",
+  "btn.delete_preset": "Verwijderen",
+  "alert.preset_name_required": "Voer een presetnaam in.",
+  "alert.preset_delete_confirm": "Preset \"{0}\" verwijderen?"
 }

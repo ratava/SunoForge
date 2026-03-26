@@ -207,5 +207,13 @@
   "alert.drive_connect_failed": "Verbindung zu Google Drive fehlgeschlagen.\n\nFehler: {0}",
   "alert.drive_sync_failed": "Google-Drive-Synchronisierung fehlgeschlagen.\n\nFehler: {0}",
   "alert.drive_sync_success": "Google-Drive-Synchronisierung abgeschlossen.",
-  "ph.model_filter": "Modelle filtern…"
+  "ph.model_filter": "Modelle filtern…",
+  "lbl.presets": "Song-Vorlagen",
+  "ph.preset_name": "Vorlagenname…",
+  "ph.preset_select": "— Vorlage wählen —",
+  "btn.save_preset": "Vorlage speichern",
+  "btn.load_preset": "Laden",
+  "btn.delete_preset": "Löschen",
+  "alert.preset_name_required": "Bitte gib einen Vorlagennamen ein.",
+  "alert.preset_delete_confirm": "Vorlage \"{0}\" löschen?"
 }

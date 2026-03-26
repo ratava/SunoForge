@@ -207,5 +207,13 @@
   "alert.drive_connect_failed": "Could not connect to Google Drive.\n\nError: {0}",
   "alert.drive_sync_failed": "Google Drive sync failed.\n\nError: {0}",
   "alert.drive_sync_success": "Google Drive sync completed.",
-  "ph.model_filter": "Filter models…"
+  "ph.model_filter": "Filter models…",
+  "lbl.presets": "Song Presets",
+  "ph.preset_name": "Preset name…",
+  "ph.preset_select": "— select preset —",
+  "btn.save_preset": "Save Preset",
+  "btn.load_preset": "Load",
+  "btn.delete_preset": "Delete",
+  "alert.preset_name_required": "Please enter a preset name.",
+  "alert.preset_delete_confirm": "Delete preset \"{0}\"?"
 }

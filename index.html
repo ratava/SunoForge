@@ -201,6 +201,15 @@ Legal permission has been sought for the use of the name Suno
                 background: var(--border);
                 margin: 2px 0;
             }
+            .preset-row {
+                display: flex;
+                gap: 6px;
+                align-items: center;
+            }
+            .preset-row select,
+            .preset-row input[type="text"] {
+                min-width: 0;
+            }
             .section-header {
                 font-size: 12px;
                 font-weight: 700;
@@ -2430,6 +2439,23 @@ Legal permission has been sought for the use of the name Suno
                             <option value="32 Bars">32 Bars</option>
                         </select>
                     </div>
+
+                    <!-- PRESETS SECTION -->
+                    <div class="section-divider" style="margin: 16px 0 12px"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.presets">Song Presets</div>
+                        <div class="preset-row">
+                            <input type="text" id="preset-name-input" placeholder="Preset name…" data-i18n-ph="ph.preset_name" style="flex: 1; min-width: 0" />
+                            <button class="btn-sm" onclick="savePreset()" data-i18n="btn.save_preset">Save Preset</button>
+                        </div>
+                        <div class="preset-row">
+                            <select id="preset-select" style="flex: 1; min-width: 0" onchange="onPresetSelectChange()">
+                                <option value="" data-i18n-opt="ph.preset_select">— select preset —</option>
+                            </select>
+                            <button class="btn-sm" id="preset-load-btn" onclick="loadPreset()" disabled data-i18n="btn.load_preset">Load</button>
+                            <button class="btn-sm danger" id="preset-delete-btn" onclick="deletePreset()" disabled data-i18n="btn.delete_preset">Delete</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- VOCAL TAB -->
@@ -3079,6 +3105,8 @@ Legal permission has been sought for the use of the name Suno
             const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
             const DRIVE_HISTORY_FILE = "sunoforge-history.json";
             const DRIVE_SETTINGS_FILE = "sunoforge-settings.json";
+            const DRIVE_PRESETS_FILE = "sunoforge-presets.json";
+            const PRESETS_STORAGE_KEY = "sf_presets";
             const DRIVE_SESSION_TOKEN_KEY = "sf_drive_session";
             const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
 
@@ -3101,6 +3129,7 @@ Legal permission has been sought for the use of the name Suno
             let driveSyncTimer = null;
             let driveSyncInFlight = null;
             let lastDriveSyncAt = null;
+            let songPresets = [];
 
             // i18n shorthand helpers — delegate through the global engine
             const _t = (k, fb) => window.I18N.t(k, fb);
@@ -3124,6 +3153,7 @@ Legal permission has been sought for the use of the name Suno
                     version: 1,
                     savedAt: new Date().toISOString(),
                     selected_model: selectedModel || getStoredSetting("selected_model", "gemini-3.1-flash-lite-preview"),
+                    active_api_provider: activeApiProvider || getStoredSetting("active_api_provider", "google"),
                     sf_locale: getStoredSetting("sf_locale", "en"),
                     sf_song_lang: getStoredSetting("sf_song_lang", "English"),
                     sf_song_lang_custom: getStoredSetting("sf_song_lang_custom", ""),
@@ -3137,6 +3167,10 @@ Legal permission has been sought for the use of the name Suno
                     selectedModel = payload.selected_model;
                     setStoredSetting("selected_model", payload.selected_model);
                 }
+                if (payload.active_api_provider) {
+                    activeApiProvider = payload.active_api_provider;
+                    setStoredSetting("active_api_provider", payload.active_api_provider);
+                }
                 if (payload.sf_locale) {
                     setStoredSetting("sf_locale", payload.sf_locale);
                 }
@@ -3149,6 +3183,15 @@ Legal permission has been sought for the use of the name Suno
 
                 if (options.applyUi) {
                     applyStoredSongLanguagePreference();
+                    // Apply locale if it was synced from Drive
+                    const locale = getStoredSetting("sf_locale", "");
+                    if (locale) {
+                        const sel = document.getElementById("lang-select");
+                        if (sel && sel.value !== locale) {
+                            sel.value = locale;
+                            window.I18N?.switchLocale?.(locale);
+                        }
+                    }
                     refreshCombinedModelList();
                     updateApiBarSummary();
                 }
@@ -3371,15 +3414,24 @@ Legal permission has been sought for the use of the name Suno
             }
 
             async function hydrateDriveState(interactive = false) {
-                const [remoteSettings, remoteHistory] = await Promise.all([readDriveJsonFile(DRIVE_SETTINGS_FILE, interactive), readDriveJsonFile(DRIVE_HISTORY_FILE, interactive)]);
+                const [remoteSettings, remoteHistory, remotePresets] = await Promise.all([readDriveJsonFile(DRIVE_SETTINGS_FILE, interactive), readDriveJsonFile(DRIVE_HISTORY_FILE, interactive), readDriveJsonFile(DRIVE_PRESETS_FILE, interactive)]);
 
                 if (remoteSettings) {
-                    applySyncedSettingsPayload(remoteSettings);
+                    // Drive settings take precedence — apply to both memory/localStorage and UI
+                    applySyncedSettingsPayload(remoteSettings, { applyUi: true });
                 }
 
                 if (remoteHistory?.songs && Array.isArray(remoteHistory.songs)) {
                     history = mergeHistoryCollections(history, remoteHistory.songs);
                     persistHistory();
+                }
+
+                if (remotePresets?.presets && Array.isArray(remotePresets.presets)) {
+                    songPresets = mergePresetsCollections(songPresets, remotePresets.presets);
+                    try {
+                        localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(songPresets));
+                    } catch (_) {}
+                    renderPresets();
                 }
             }
 
@@ -3399,6 +3451,7 @@ Legal permission has been sought for the use of the name Suno
                     await hydrateDriveState(interactive);
                     await writeDriveJsonFile(DRIVE_HISTORY_FILE, { version: 1, savedAt: new Date().toISOString(), songs: history }, interactive);
                     await writeDriveJsonFile(DRIVE_SETTINGS_FILE, buildSyncedSettingsPayload(), interactive);
+                    await writeDriveJsonFile(DRIVE_PRESETS_FILE, { version: 1, savedAt: new Date().toISOString(), presets: songPresets }, interactive);
                     lastDriveSyncAt = new Date();
                     updateStorageControls();
                     if (showAlert) {
@@ -3963,7 +4016,7 @@ Legal permission has been sought for the use of the name Suno
                         const driveConnected = !!driveAccessToken && Date.now() < driveTokenExpiresAt - 60000;
                         if (driveConnected && lastDriveSyncAt) {
                             const hhmm = lastDriveSyncAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                            sd.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                            sd.textContent = _fmt("status.drive_synced", "Synced {0}", hhmm);
                             sd.className = "api-status ok";
                         } else if (driveConnected) {
                             sd.textContent = _t("status.drive_connected", "Drive");
@@ -9013,6 +9066,121 @@ ${cleanedLyrics}
             }
 
             // ========================================================================
+            // Song Presets
+            // Saves and restores named setting snapshots (title / concept / lyrics excluded)
+            // ========================================================================
+
+            function loadPresetsFromStorage() {
+                try {
+                    const raw = localStorage.getItem(PRESETS_STORAGE_KEY);
+                    songPresets = raw ? safeParseJSON(raw) || [] : [];
+                    if (!Array.isArray(songPresets)) songPresets = [];
+                } catch (_) {
+                    songPresets = [];
+                }
+                renderPresets();
+            }
+
+            function persistPresets() {
+                try {
+                    localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(songPresets));
+                } catch (err) {
+                    console.warn("Could not save presets:", err);
+                }
+                scheduleDriveSync();
+            }
+
+            function mergePresetsCollections(base, incoming) {
+                const combined = [...(Array.isArray(base) ? base : []), ...(Array.isArray(incoming) ? incoming : [])];
+                const seen = new Set();
+                const merged = [];
+                for (const p of combined) {
+                    if (!p?.id || seen.has(p.id)) continue;
+                    seen.add(p.id);
+                    merged.push(p);
+                }
+                return merged.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+            }
+
+            function renderPresets() {
+                const sel = document.getElementById("preset-select");
+                if (!sel) return;
+                const prev = sel.value;
+                sel.innerHTML = `<option value="">${_t("ph.preset_select", "\u2014 select preset \u2014")}</option>`;
+                for (const p of songPresets) {
+                    const opt = document.createElement("option");
+                    opt.value = p.id;
+                    opt.textContent = p.name;
+                    sel.appendChild(opt);
+                }
+                if (prev && songPresets.find((p) => p.id === prev)) sel.value = prev;
+                onPresetSelectChange();
+            }
+
+            function onPresetSelectChange() {
+                const sel = document.getElementById("preset-select");
+                const loadBtn = document.getElementById("preset-load-btn");
+                const delBtn = document.getElementById("preset-delete-btn");
+                const hasSelection = !!sel?.value;
+                if (loadBtn) loadBtn.disabled = !hasSelection;
+                if (delBtn) delBtn.disabled = !hasSelection;
+            }
+
+            function savePreset() {
+                const nameInput = document.getElementById("preset-name-input");
+                const name = (nameInput?.value || "").trim();
+                if (!name) {
+                    alert(_t("alert.preset_name_required", "Please enter a preset name."));
+                    nameInput?.focus();
+                    return;
+                }
+                const snap = captureCurrentSettingsSnapshot();
+                delete snap.title;
+                delete snap.concept;
+                delete snap.userLyrics;
+                const preset = { id: String(Date.now()), name, createdAt: new Date().toISOString(), settings: snap };
+                songPresets.push(preset);
+                persistPresets();
+                renderPresets();
+                const sel = document.getElementById("preset-select");
+                if (sel) {
+                    sel.value = preset.id;
+                    onPresetSelectChange();
+                }
+                if (nameInput) nameInput.value = "";
+            }
+
+            function loadPreset() {
+                const sel = document.getElementById("preset-select");
+                const id = sel?.value;
+                if (!id) return;
+                const preset = songPresets.find((p) => p.id === id);
+                if (!preset) return;
+                const titleEl = document.getElementById("title");
+                const conceptEl = document.getElementById("concept");
+                const lyricsEl = document.getElementById("lyrics-input");
+                const savedTitle = titleEl?.value || "";
+                const savedConcept = conceptEl?.value || "";
+                const savedLyrics = lyricsEl?.value || "";
+                applyHistorySettings({ settings: { ...preset.settings, title: "", concept: "", userLyrics: null } });
+                if (titleEl) titleEl.value = savedTitle;
+                if (conceptEl) conceptEl.value = savedConcept;
+                if (lyricsEl) lyricsEl.value = savedLyrics;
+            }
+
+            function deletePreset() {
+                const sel = document.getElementById("preset-select");
+                const id = sel?.value;
+                if (!id) return;
+                const preset = songPresets.find((p) => p.id === id);
+                if (!preset) return;
+                if (!confirm(_fmt("alert.preset_delete_confirm", 'Delete preset "{0}"?', preset.name))) return;
+                songPresets = songPresets.filter((p) => p.id !== id);
+                persistPresets();
+                renderPresets();
+            }
+
+            // ========================================================================
             // History Management
             // Saves and restores song configurations to/from local cache and optional Drive sync
             // ========================================================================
@@ -10881,12 +11049,18 @@ ${cleanedLyrics}
             window.filterModelOptions = filterModelOptions;
             window.modelFilterKeydown = modelFilterKeydown;
             window.onSongLanguageChange = onSongLanguageChange;
+            // Presets
+            window.savePreset = savePreset;
+            window.loadPreset = loadPreset;
+            window.deletePreset = deletePreset;
+            window.onPresetSelectChange = onPresetSelectChange;
 
             // ========================================================================
             // Initialization
             // ========================================================================
             async function initializeApp() {
                 loadHistoryFromStorage();
+                loadPresetsFromStorage();
                 if (storageProvider === STORAGE_PROVIDER_DRIVE && driveClientId) {
                     try {
                         await syncDriveAppState({ interactive: false, showAlert: false });

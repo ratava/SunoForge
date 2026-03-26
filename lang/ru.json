@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "Синхронизация с Google Drive не удалась.\\n\\nОшибка: {0}",
   "alert.drive_sync_success": "Синхронизация с Google Drive завершена.",
   "btn.login_drive": "Войти",
-  "alert.drive_login_failed": "Не удалось выполнить вход в Google Drive.\n\nОшибка: {0}"
+  "alert.drive_login_failed": "Не удалось выполнить вход в Google Drive.\n\nОшибка: {0}",
+  "lbl.presets": "Пресеты песни",
+  "ph.preset_name": "Название пресета…",
+  "ph.preset_select": "— выберите пресет —",
+  "btn.save_preset": "Сохранить пресет",
+  "btn.load_preset": "Загрузить",
+  "btn.delete_preset": "Удалить",
+  "alert.preset_name_required": "Пожалуйста, введите название пресета.",
+  "alert.preset_delete_confirm": "Удалить пресет \"{0}\"?"
 }

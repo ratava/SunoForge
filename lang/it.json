@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "Sincronizzazione Google Drive non riuscita.\\n\\nErrore: {0}",
   "alert.drive_sync_success": "Sincronizzazione Google Drive completata.",
   "btn.login_drive": "Accedi",
-  "alert.drive_login_failed": "Impossibile accedere a Google Drive.\n\nErrore: {0}"
+  "alert.drive_login_failed": "Impossibile accedere a Google Drive.\n\nErrore: {0}",
+  "lbl.presets": "Preimpostazioni",
+  "ph.preset_name": "Nome preimpostazione\u2026",
+  "ph.preset_select": "\u2014 seleziona preimpostazione \u2014",
+  "btn.save_preset": "Salva preimpostazione",
+  "btn.load_preset": "Carica",
+  "btn.delete_preset": "Elimina",
+  "alert.preset_name_required": "Inserisci un nome per la preimpostazione.",
+  "alert.preset_delete_confirm": "Eliminare la preimpostazione \"{0}\"?"
 }

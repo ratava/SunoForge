@@ -203,5 +203,13 @@
   "alert.drive_sync_failed": "Echec de la synchronisation Google Drive.\\n\\nErreur : {0}",
   "alert.drive_sync_success": "Synchronisation Google Drive terminee.",
   "btn.login_drive": "Se connecter",
-  "alert.drive_login_failed": "Impossible de se connecter a Google Drive.\n\nErreur : {0}"
+  "alert.drive_login_failed": "Impossible de se connecter a Google Drive.\n\nErreur : {0}",
+  "lbl.presets": "Pr\u00e9r\u00e9glages",
+  "ph.preset_name": "Nom du pr\u00e9r\u00e9glage\u2026",
+  "ph.preset_select": "\u2014 s\u00e9lectionner un pr\u00e9r\u00e9glage \u2014",
+  "btn.save_preset": "Enregistrer le pr\u00e9r\u00e9glage",
+  "btn.load_preset": "Charger",
+  "btn.delete_preset": "Supprimer",
+  "alert.preset_name_required": "Veuillez entrer un nom pour le pr\u00e9r\u00e9glage.",
+  "alert.preset_delete_confirm": "Supprimer le pr\u00e9r\u00e9glage \"{0}\" ?"
 }

@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "A sincronizacao com o Google Drive falhou.\\n\\nErro: {0}",
   "alert.drive_sync_success": "Sincronizacao com o Google Drive concluida.",
   "btn.login_drive": "Entrar",
-  "alert.drive_login_failed": "Nao foi possivel entrar no Google Drive.\n\nErro: {0}"
+  "alert.drive_login_failed": "Nao foi possivel entrar no Google Drive.\n\nErro: {0}",
+  "lbl.presets": "Predefini\u00e7\u00f5es",
+  "ph.preset_name": "Nome da predefini\u00e7\u00e3o\u2026",
+  "ph.preset_select": "\u2014 selecionar predefini\u00e7\u00e3o \u2014",
+  "btn.save_preset": "Guardar predefini\u00e7\u00e3o",
+  "btn.load_preset": "Carregar",
+  "btn.delete_preset": "Eliminar",
+  "alert.preset_name_required": "Introduz um nome para a predefini\u00e7\u00e3o.",
+  "alert.preset_delete_confirm": "Eliminar a predefini\u00e7\u00e3o \"{0}\"?"
 }

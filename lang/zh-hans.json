@@ -205,5 +205,13 @@
   "alert.drive_sync_failed": "Google Drive 同步失败。\\n\\n错误: {0}",
   "alert.drive_sync_success": "Google Drive 同步已完成。",
   "btn.login_drive": "登录",
-  "alert.drive_login_failed": "无法登录 Google Drive。\n\n错误：{0}"
+  "alert.drive_login_failed": "无法登录 Google Drive。\n\n错误：{0}",
+  "lbl.presets": "歌曲预设",
+  "ph.preset_name": "预设名称…",
+  "ph.preset_select": "— 选择预设 —",
+  "btn.save_preset": "保存预设",
+  "btn.load_preset": "加载",
+  "btn.delete_preset": "删除",
+  "alert.preset_name_required": "请输入预设名称。",
+  "alert.preset_delete_confirm": "删除预设"{0}"？"
 }

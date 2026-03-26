@@ -205,5 +205,13 @@
   "alert.drive_sync_failed": "Google Drive 동기화에 실패했습니다.\\n\\n오류: {0}",
   "alert.drive_sync_success": "Google Drive 동기화가 완료되었습니다.",
   "btn.login_drive": "로그인",
-  "alert.drive_login_failed": "Google Drive에 로그인할 수 없습니다.\n\n오류: {0}"
+  "alert.drive_login_failed": "Google Drive에 로그인할 수 없습니다.\n\n오류: {0}",
+  "lbl.presets": "노래 프리셋",
+  "ph.preset_name": "프리셋 이름…",
+  "ph.preset_select": "— 프리셋 선택 —",
+  "btn.save_preset": "프리셋 저장",
+  "btn.load_preset": "불러오기",
+  "btn.delete_preset": "삭제",
+  "alert.preset_name_required": "프리셋 이름을 입력하세요.",
+  "alert.preset_delete_confirm": "프리셋 \"{0}\"을(를) 삭제하시겠습니까?"
 }

@@ -207,5 +207,13 @@
   "alert.drive_sync_failed": "La sincronizacion con Google Drive fallo.\\n\\nError: {0}",
   "alert.drive_sync_success": "Sincronizacion con Google Drive completada.",
   "btn.login_drive": "Iniciar sesion",
-  "alert.drive_login_failed": "No se pudo iniciar sesion en Google Drive.\n\nError: {0}"
+  "alert.drive_login_failed": "No se pudo iniciar sesion en Google Drive.\n\nError: {0}",
+  "lbl.presets": "Preajustes",
+  "ph.preset_name": "Nombre del preajuste\u2026",
+  "ph.preset_select": "\u2014 seleccionar preajuste \u2014",
+  "btn.save_preset": "Guardar preajuste",
+  "btn.load_preset": "Cargar",
+  "btn.delete_preset": "Eliminar",
+  "alert.preset_name_required": "Introduce un nombre para el preajuste.",
+  "alert.preset_delete_confirm": "\u00bfEliminar el preajuste \"{0}\"?"
 }
