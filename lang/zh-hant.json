@@ -203,5 +203,8 @@
   "alert.drive_auth_failed": "Google Drive 授權失敗。",
   "alert.drive_connect_failed": "無法連線至 Google Drive。\\n\\n錯誤: {0}",
   "alert.drive_sync_failed": "Google Drive 同步失敗。\\n\\n錯誤: {0}",
-  "alert.drive_sync_success": "Google Drive 同步已完成。"
+  "alert.drive_sync_success": "Google Drive 同步已完成。",
+  "btn.login_drive": "登入",
+  "alert.drive_login_success": "Google Drive 登入成功。",
+  "alert.drive_login_failed": "無法登入 Google Drive。\n\n錯誤：{0}"
 }

@@ -203,5 +203,8 @@
   "alert.drive_auth_failed": "Google Drive の認証に失敗しました。",
   "alert.drive_connect_failed": "Google Drive に接続できませんでした。\\n\\nエラー: {0}",
   "alert.drive_sync_failed": "Google Drive の同期に失敗しました。\\n\\nエラー: {0}",
-  "alert.drive_sync_success": "Google Drive の同期が完了しました。"
+  "alert.drive_sync_success": "Google Drive の同期が完了しました。",
+  "btn.login_drive": "ログイン",
+  "alert.drive_login_success": "Google Driveへのログインが成功しました。",
+  "alert.drive_login_failed": "Google Driveにログインできませんでした。\n\nエラー: {0}"
 }

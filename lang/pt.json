@@ -203,5 +203,8 @@
   "alert.drive_auth_failed": "A autorizacao do Google Drive falhou.",
   "alert.drive_connect_failed": "Nao foi possivel conectar ao Google Drive.\\n\\nErro: {0}",
   "alert.drive_sync_failed": "A sincronizacao com o Google Drive falhou.\\n\\nErro: {0}",
-  "alert.drive_sync_success": "Sincronizacao com o Google Drive concluida."
+  "alert.drive_sync_success": "Sincronizacao com o Google Drive concluida.",
+  "btn.login_drive": "Entrar",
+  "alert.drive_login_success": "Login no Google Drive realizado com sucesso.",
+  "alert.drive_login_failed": "Nao foi possivel entrar no Google Drive.\n\nErro: {0}"
 }

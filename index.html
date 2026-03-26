@@ -1839,6 +1839,17 @@ Legal permission has been sought for the use of the name Suno
                 font-weight: 700;
                 cursor: pointer;
             }
+            .drive-login-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .drive-login-logo {
+                width: 14px;
+                height: 14px;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
             .api-status {
                 font-size: 9px;
                 font-family: "Space Mono", monospace;
@@ -2006,6 +2017,10 @@ Legal permission has been sought for the use of the name Suno
                 </div>
                 <div class="api-bar-row" id="drive-storage-actions-row" style="display: none">
                     <span class="api-bar-label" data-i18n="api.drive_actions_label">Drive Sync:</span>
+                    <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()" style="background: var(--warning); color: #0e0c0a">
+                        <img src="images/GoogleDrive.png" alt="Google Drive" class="drive-login-logo" />
+                        <span data-i18n="btn.login_drive">Log In</span>
+                    </button>
                     <button class="api-bar-save" onclick="connectDriveStorage()" data-i18n="btn.connect_drive">Connect</button>
                     <button class="api-bar-save" onclick="syncDriveStorageNow()" style="background: var(--success); color: #0e0c0a" data-i18n="btn.sync_now">Sync Now</button>
                     <button class="api-bar-save" onclick="disconnectDriveStorage()" style="background: var(--surface3); color: var(--text)" data-i18n="btn.disconnect_drive">Disconnect</button>
@@ -3388,6 +3403,20 @@ Legal permission has been sought for the use of the name Suno
                     console.error("Drive connect failed:", err);
                     updateStorageControls();
                     alert(_fmt("alert.drive_connect_failed", "Could not connect to Google Drive.\n\nError: {0}", err.message));
+                }
+            }
+
+            async function loginDriveStorage() {
+                try {
+                    storageProvider = STORAGE_PROVIDER_DRIVE;
+                    setStoredSetting(STORAGE_PROVIDER_KEY, storageProvider);
+                    await ensureDriveAccessToken(true);
+                    updateStorageControls();
+                    alert(_t("alert.drive_login_success", "Google Drive login successful."));
+                } catch (err) {
+                    console.error("Drive login failed:", err);
+                    updateStorageControls();
+                    alert(_fmt("alert.drive_login_failed", "Could not log in to Google Drive.\n\nError: {0}", err.message));
                 }
             }
 
@@ -10700,6 +10729,7 @@ ${cleanedLyrics}
             window.fetchCustomServerModels = fetchCustomServerModels;
             window.setStorageProvider = setStorageProvider;
             window.saveDriveClientId = saveDriveClientId;
+            window.loginDriveStorage = loginDriveStorage;
             window.connectDriveStorage = connectDriveStorage;
             window.syncDriveStorageNow = syncDriveStorageNow;
             window.disconnectDriveStorage = disconnectDriveStorage;

@@ -203,5 +203,8 @@
   "alert.drive_auth_failed": "Google Drive-autorisatie is mislukt.",
   "alert.drive_connect_failed": "Kan geen verbinding maken met Google Drive.\\n\\nFout: {0}",
   "alert.drive_sync_failed": "Google Drive-synchronisatie mislukt.\\n\\nFout: {0}",
-  "alert.drive_sync_success": "Google Drive-synchronisatie voltooid."
+  "alert.drive_sync_success": "Google Drive-synchronisatie voltooid.",
+  "btn.login_drive": "Inloggen",
+  "alert.drive_login_success": "Google Drive-aanmelding geslaagd.",
+  "alert.drive_login_failed": "Kan niet inloggen bij Google Drive.\n\nFout: {0}"
 }
