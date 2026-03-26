@@ -10,6 +10,7 @@
   "nav.history": "履歴",
   "nav.export": "エクスポート",
   "api.no_key_hint": "SunoForgeを使用するには、<strong>Google AI Studio</strong>（より安価）および/または<strong>OpenRouter</strong>（より多くのモデル / より高価）のAPIキー、または<strong>ローカルOpenAI互換LLMサーバー</strong>のアドレスを入力してください。",
+  "api.get_key": "取得方法は？",
   "api.google_label": "Google AI Studio キー：",
   "api.openrouter_label": "OpenRouter キー：",
   "api.model_label": "モデル：",

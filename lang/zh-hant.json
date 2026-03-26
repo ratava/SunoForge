@@ -10,6 +10,7 @@
   "nav.history": "歷史",
   "nav.export": "匯出",
   "api.no_key_hint": "請輸入 <strong>Google AI Studio</strong>（較便宜）API 金鑰及/或 <strong>OpenRouter</strong>（更多模型 / 較貴）API 金鑰或 <strong>本地 OpenAI 相容 LLM 伺服器</strong>地址以使用 SunoForge。",
+  "api.get_key": "如何取得？",
   "api.google_label": "Google AI Studio 金鑰：",
   "api.openrouter_label": "OpenRouter 金鑰：",
   "api.model_label": "模型：",

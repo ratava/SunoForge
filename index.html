@@ -57,7 +57,7 @@ Legal permission has been sought for the use of the name Suno
             .header {
                 display: flex;
                 align-items: center;
-                padding: 14px 24px;
+                padding: 34px 34px;
                 border-bottom: 1px solid var(--border);
                 background: var(--surface);
                 gap: 12px;
@@ -1857,6 +1857,22 @@ Legal permission has been sought for the use of the name Suno
                 font-weight: 700;
                 cursor: pointer;
             }
+            .api-get-key-link {
+                padding: 3px 9px;
+                background: transparent;
+                border: 1px solid var(--accent);
+                border-radius: 5px;
+                color: var(--accent);
+                font-size: 11px;
+                font-family: "Syne", sans-serif;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+            .api-get-key-link:hover {
+                background: color-mix(in srgb, var(--accent) 15%, transparent);
+            }
             .drive-login-btn {
                 padding: 4px 10px;
                 background: var(--accent);
@@ -1988,18 +2004,20 @@ Legal permission has been sought for the use of the name Suno
                     <span class="api-bar-label">Google AI Studio Key:</span>
                     <form onsubmit="return false;" style="display: contents">
                         <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
-                        <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="new-password" />
+                        <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="new-password" style="width: 50%; flex: none" />
                     </form>
                     <button class="api-bar-save" onclick="saveApiKey()">Save</button>
+                    <a id="api-key-get-link" class="api-get-key-link" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" data-i18n="api.get_key">How do I get one?</a>
                     <span class="api-status missing" id="api-status">not set</span>
                 </div>
                 <div class="api-bar-row">
                     <span class="api-bar-label">OpenRouter Key:</span>
                     <form onsubmit="return false;" style="display: contents">
                         <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
-                        <input type="password" id="openrouter-key-input" placeholder="sk-or-..." autocomplete="new-password" />
+                        <input type="password" id="openrouter-key-input" placeholder="sk-or-..." autocomplete="new-password" style="width: 50%; flex: none" />
                     </form>
                     <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
+                    <a id="openrouter-get-link" class="api-get-key-link" href="https://openrouter.ai/workspaces/default/keys" target="_blank" rel="noopener" data-i18n="api.get_key">How do I get one?</a>
                     <span class="api-status missing" id="openrouter-status">not set</span>
                 </div>
                 <div class="api-bar-row">
@@ -3729,6 +3747,7 @@ Legal permission has been sought for the use of the name Suno
                     aiClient = null;
                     st.textContent = "not set";
                     st.className = "api-status missing";
+                    document.getElementById("api-key-get-link").style.display = "";
                     if (activeApiProvider === "google") {
                         activeApiProvider = localStorage.getItem("openrouter_api_key") ? "openrouter" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
@@ -3745,6 +3764,7 @@ Legal permission has been sought for the use of the name Suno
                 document.getElementById("api-no-key-hint").style.display = "none";
                 st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
+                document.getElementById("api-key-get-link").style.display = "none";
                 fetchGoogleModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
@@ -3759,6 +3779,7 @@ Legal permission has been sought for the use of the name Suno
                     refreshCombinedModelList();
                     st.textContent = "not set";
                     st.className = "api-status missing";
+                    document.getElementById("openrouter-get-link").style.display = "";
                     if (activeApiProvider === "openrouter") {
                         activeApiProvider = localStorage.getItem("gemini_api_key") ? "google" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
@@ -3773,6 +3794,7 @@ Legal permission has been sought for the use of the name Suno
                 document.getElementById("api-no-key-hint").style.display = "none";
                 st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
+                document.getElementById("openrouter-get-link").style.display = "none";
                 fetchOpenRouterModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
@@ -3909,6 +3931,7 @@ Legal permission has been sought for the use of the name Suno
                     const st = document.getElementById("api-status");
                     st.textContent = _t("status.ready", "ready");
                     st.className = "api-status ok";
+                    document.getElementById("api-key-get-link").style.display = "none";
                     // Fetch models asynchronously after DOM is ready
                     fetchGoogleModels(saved);
                 }
@@ -3919,6 +3942,7 @@ Legal permission has been sought for the use of the name Suno
                     const ost = document.getElementById("openrouter-status");
                     ost.textContent = _t("status.ready", "ready");
                     ost.className = "api-status ok";
+                    document.getElementById("openrouter-get-link").style.display = "none";
                     if (!saved) activeApiProvider = "openrouter";
                     fetchOpenRouterModels(orKey);
                 }

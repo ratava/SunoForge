@@ -10,6 +10,7 @@
   "nav.history": "Historial",
   "nav.export": "Exportar",
   "api.no_key_hint": "Proporcione una clave API de <strong>Google AI Studio</strong> (más barata) y/o una clave API de <strong>OpenRouter</strong> (más modelos / más cara) o una dirección de un <strong>servidor LLM compatible con OpenAI</strong> local para usar SunoForge.",
+  "api.get_key": "¿Cómo obtengo uno?",
   "api.google_label": "Clave de Google AI Studio:",
   "api.openrouter_label": "Clave de OpenRouter:",
   "api.model_label": "Modelo:",
