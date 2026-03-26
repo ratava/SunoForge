@@ -1949,7 +1949,7 @@ Legal permission has been sought for the use of the name Suno
                     <option value="zh-hant">繁體中文</option>
                 </select>
                 <span class="disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")</span>
-                <span class="version" id="version">Version: <br />20260326-007</span>
+                <span class="version" id="version">Version: <br />20260326-008</span>
             </div>
         </header>
 
@@ -3035,6 +3035,7 @@ Legal permission has been sought for the use of the name Suno
             let driveTokenClient = null;
             let driveSyncTimer = null;
             let driveSyncInFlight = null;
+            let lastDriveSyncAt = null;
 
             // i18n shorthand helpers — delegate through the global engine
             const _t = (k, fb) => window.I18N.t(k, fb);
@@ -3114,6 +3115,24 @@ Legal permission has been sought for the use of the name Suno
                 return _t("status.drive_disconnected", "not connected");
             }
 
+            function setDriveSyncStatus(state) {
+                // state: 'syncing' | 'ok' | 'failed'
+                const driveStatus = document.getElementById("drive-storage-status");
+                if (!driveStatus) return;
+                if (state === "syncing") {
+                    driveStatus.textContent = _t("status.drive_syncing", "syncing\u2026");
+                    driveStatus.className = "api-status warn";
+                } else if (state === "ok") {
+                    const now = new Date();
+                    const hhmm = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                    driveStatus.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                    driveStatus.className = "api-status ok";
+                } else if (state === "failed") {
+                    driveStatus.textContent = _t("status.drive_sync_failed", "sync failed");
+                    driveStatus.className = "api-status missing";
+                }
+            }
+
             function updateStorageControls() {
                 const providerSelect = document.getElementById("storage-provider-select");
                 const providerStatus = document.getElementById("storage-provider-status");
@@ -3134,7 +3153,12 @@ Legal permission has been sought for the use of the name Suno
 
                 if (driveStatus) {
                     const isConnected = !!driveAccessToken && Date.now() < driveTokenExpiresAt - 60000;
-                    driveStatus.textContent = getDriveStatusLabel();
+                    if (lastDriveSyncAt && isConnected) {
+                        const hhmm = lastDriveSyncAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                        driveStatus.textContent = _fmt("status.drive_synced", "synced {0}", hhmm);
+                    } else {
+                        driveStatus.textContent = getDriveStatusLabel();
+                    }
                     driveStatus.className = `api-status ${isConnected ? "ok" : "warn"}`;
                 }
             }
@@ -3299,10 +3323,12 @@ Legal permission has been sought for the use of the name Suno
                 }
 
                 driveSyncInFlight = (async () => {
+                    setDriveSyncStatus("syncing");
                     await ensureDriveAccessToken(interactive);
                     await hydrateDriveState(interactive);
                     await writeDriveJsonFile(DRIVE_HISTORY_FILE, { version: 1, savedAt: new Date().toISOString(), songs: history }, interactive);
                     await writeDriveJsonFile(DRIVE_SETTINGS_FILE, buildSyncedSettingsPayload(), interactive);
+                    lastDriveSyncAt = new Date();
                     updateStorageControls();
                     if (showAlert) {
                         alert(_t("alert.drive_sync_success", "Google Drive sync completed."));
@@ -3322,7 +3348,7 @@ Legal permission has been sought for the use of the name Suno
                 driveSyncTimer = setTimeout(() => {
                     syncDriveAppState().catch((err) => {
                         console.warn("Drive sync failed:", err);
-                        updateStorageControls();
+                        setDriveSyncStatus("failed");
                     });
                 }, 500);
             }
