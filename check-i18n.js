@@ -2,12 +2,13 @@
  * SunoForge i18n key coverage checker.
  * Run: node check-i18n.js
  * Checks that every data-i18n / data-i18n-ph key used in index.html
- * and every _t() / _fmt() key used in JS are present in lang/en.json.
+ * and every _t() / _fmt() key used in JS (index.html + app.js) are present in lang/en.json.
  * Also checks that all non-English locale files have all keys from lang/en.json.
  */
 const fs = require('fs');
 const en = require('./lang/en.json');
 const html = fs.readFileSync('./index.html', 'utf8');
+const appJs = fs.existsSync('./app.js') ? fs.readFileSync('./app.js', 'utf8') : '';
 
 const LOCALES = ['de'];
 const localeData = {};
@@ -26,11 +27,13 @@ htmlKeys.forEach(function(k) { if (!en[k]) htmlMissing.push(k); });
 console.log('HTML i18n keys: ' + htmlKeys.size + '  Missing from en.json: ' + htmlMissing.length);
 htmlMissing.forEach(function(k) { console.log('  MISSING: ' + k); ok = false; });
 
-// 2. JS _t() / _fmt() keys
+// 2. JS _t() / _fmt() keys (index.html + app.js) — matches both single & double quoted keys
 const jsKeys = new Set();
-const re2 = /_(?:t|fmt)\('([^']+)'/g;
+const re2 = /_(?:t|fmt)\(['"]([^'"]+)['"]/g;
 m = re2.exec(html);
 while (m !== null) { jsKeys.add(m[1]); m = re2.exec(html); }
+m = re2.exec(appJs);
+while (m !== null) { jsKeys.add(m[1]); m = re2.exec(appJs); }
 
 const jsMissing = [];
 jsKeys.forEach(function(k) { if (!en[k]) jsMissing.push(k); });
