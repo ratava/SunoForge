@@ -3092,6 +3092,7 @@ Legal permission has been sought for the use of the name Suno
             let aiClient = null;
             let activeApiProvider = localStorage.getItem("active_api_provider") || "google"; // "google" | "openrouter" | "custom"
             let selectedModel = localStorage.getItem("selected_model") || "gemini-3.1-flash-lite-preview";
+            let modelChangedLocally = false; // set when user picks a model; cleared after Drive write so Drive can't clobber the fresh choice
             let modelProviderMap = {}; // maps model ID → "google" | "openrouter" | "custom"
             let googleModels = []; // cached list from last successful Google fetch
             let openrouterModels = []; // cached list from last successful OpenRouter fetch
@@ -3164,11 +3165,13 @@ Legal permission has been sought for the use of the name Suno
             function applySyncedSettingsPayload(payload, options = {}) {
                 if (!payload || typeof payload !== "object") return;
 
-                if (payload.selected_model) {
+                // Skip overwriting model/provider if the user changed them locally since the last
+                // Drive write — the correct value is about to be pushed TO Drive, not pulled FROM it.
+                if (payload.selected_model && !modelChangedLocally) {
                     selectedModel = payload.selected_model;
                     setStoredSetting("selected_model", payload.selected_model);
                 }
-                if (payload.active_api_provider) {
+                if (payload.active_api_provider && !modelChangedLocally) {
                     activeApiProvider = payload.active_api_provider;
                     setStoredSetting("active_api_provider", payload.active_api_provider);
                 }
@@ -3452,6 +3455,7 @@ Legal permission has been sought for the use of the name Suno
                     await hydrateDriveState(interactive);
                     await writeDriveJsonFile(DRIVE_HISTORY_FILE, { version: 1, savedAt: new Date().toISOString(), songs: history }, interactive);
                     await writeDriveJsonFile(DRIVE_SETTINGS_FILE, buildSyncedSettingsPayload(), interactive);
+                    modelChangedLocally = false; // local model is now safely in Drive; allow future syncs to apply remote changes
                     await writeDriveJsonFile(DRIVE_PRESETS_FILE, { version: 1, savedAt: new Date().toISOString(), presets: songPresets }, interactive);
                     lastDriveSyncAt = new Date();
                     updateStorageControls();
@@ -3761,6 +3765,7 @@ Legal permission has been sought for the use of the name Suno
                 localStorage.setItem("selected_model", id);
                 activeApiProvider = modelProviderMap[id] || activeApiProvider;
                 localStorage.setItem("active_api_provider", activeApiProvider);
+                modelChangedLocally = true; // protect this selection from being overwritten by the Drive hydrate step
                 document.getElementById("model-select-dropdown").style.display = "none";
                 document.querySelectorAll("#model-select-list .model-option").forEach((el) => {
                     el.classList.toggle("active", el.dataset.value === id);
