@@ -15,6 +15,17 @@ Legal permission has been sought for the use of the name Suno
             content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://accounts.google.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com; img-src 'self' data:; frame-src 'self' https://accounts.google.com; base-uri 'self'; form-action 'self';"
         />
         <title>SunoForge</title>
+        <script>
+            // Redirect touch/small-screen devices to the mobile UI
+            (function () {
+                var ua = navigator.userAgent || "";
+                var isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(ua) || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+                if (isMobile) {
+                    var dest = "mobile.html" + window.location.search + window.location.hash;
+                    window.location.replace(dest);
+                }
+            })();
+        </script>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
         <script type="importmap">
             { "imports": { "@google/genai": "https://esm.sh/@google/genai" } }
