@@ -35,7 +35,8 @@ Legal permission has been sought for the use of the name Suno
             }
 
             /* 2. Constrain entire page to viewport — no scroll on body */
-            html, body {
+            html,
+            body {
                 height: 100dvh;
                 max-height: 100dvh;
                 overflow: hidden;
@@ -45,8 +46,12 @@ Legal permission has been sought for the use of the name Suno
             }
 
             /* 3. Thinner scrollbar on mobile */
-            ::-webkit-scrollbar { width: 3px; }
-            ::-webkit-scrollbar-thumb { border-radius: 2px; }
+            ::-webkit-scrollbar {
+                width: 3px;
+            }
+            ::-webkit-scrollbar-thumb {
+                border-radius: 2px;
+            }
 
             /* 4. Larger touch targets for form elements */
             textarea,
@@ -57,7 +62,10 @@ Legal permission has been sought for the use of the name Suno
                 -webkit-appearance: none;
                 appearance: none;
             }
-            textarea:focus, input:focus { border-color: var(--accent3); }
+            textarea:focus,
+            input:focus {
+                border-color: var(--accent3);
+            }
             select {
                 font-size: 13px;
                 -webkit-appearance: none;
@@ -66,7 +74,9 @@ Legal permission has been sought for the use of the name Suno
                 background-position: right 10px center;
                 padding-right: 28px;
             }
-            select:focus { border-color: var(--accent3); }
+            select:focus {
+                border-color: var(--accent3);
+            }
 
             /* 5. Field label — uppercase on mobile */
             .field-label {
@@ -76,7 +86,9 @@ Legal permission has been sought for the use of the name Suno
             }
 
             /* 6. Section header smaller */
-            .section-header { font-size: 10px; }
+            .section-header {
+                font-size: 10px;
+            }
 
             /* ── HEADER ──────────────────────────────────────────────── */
             .header {
@@ -85,14 +97,18 @@ Legal permission has been sought for the use of the name Suno
                 flex-shrink: 0;
                 position: relative;
             }
-            .logo-icon img { height: 30px; }
+            .logo-icon img {
+                height: 30px;
+            }
             .logo-text {
                 font-size: 14px;
                 font-weight: 800;
                 letter-spacing: -0.3px;
                 white-space: nowrap;
             }
-            .header-tagline { display: none !important; }
+            .header-tagline {
+                display: none !important;
+            }
             .header-right {
                 margin-left: auto;
                 flex-direction: row;
@@ -120,13 +136,17 @@ Legal permission has been sought for the use of the name Suno
                 gap: 0;
                 padding: 0;
             }
-            .api-bar-row { padding: 5px 10px; }
+            .api-bar-row {
+                padding: 5px 10px;
+            }
             .api-bar input[type="password"],
             .api-bar input[type="text"] {
                 font-size: 11px;
                 padding: 5px 7px;
             }
-            .api-bar-label { font-size: 10px; }
+            .api-bar-label {
+                font-size: 10px;
+            }
             /* Toggle collapses to a simple text button on mobile */
             .api-bar-toggle {
                 width: 100%;
@@ -142,11 +162,19 @@ Legal permission has been sought for the use of the name Suno
                 justify-content: center;
                 gap: 0;
             }
-            .api-bar-toggle-info { display: none; }
-            #api-bar-chevron { display: none; }
+            .api-bar-toggle-info {
+                display: none;
+            }
+            #api-bar-chevron {
+                display: none;
+            }
 
             /* ── MODEL SELECT — full-width fixed sheet on mobile ─────── */
-            .model-select-wrap { position: static; min-width: 0; flex: 1; }
+            .model-select-wrap {
+                position: static;
+                min-width: 0;
+                flex: 1;
+            }
             .model-select-dropdown {
                 position: fixed !important;
                 top: auto !important;
@@ -157,16 +185,24 @@ Legal permission has been sought for the use of the name Suno
                 z-index: 200;
                 border-radius: 8px;
                 overflow: hidden;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             }
-            .model-select-list { max-height: 50dvh; }
+            .model-select-list {
+                max-height: 50dvh;
+            }
             .model-option {
                 padding: 10px 12px;
                 border-bottom: 1px solid var(--border);
                 white-space: normal;
             }
-            .model-option:last-child { border-bottom: none; }
-            .model-option-provider { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+            .model-option:last-child {
+                border-bottom: none;
+            }
+            .model-option-provider {
+                font-size: 9px;
+                color: var(--text-dim);
+                margin-top: 2px;
+            }
 
             /* ── MAIN LAYOUT ─────────────────────────────────────────── */
             .main {
@@ -189,13 +225,17 @@ Legal permission has been sought for the use of the name Suno
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            .left-tabs { display: none !important; }
+            .left-tabs {
+                display: none !important;
+            }
 
             body.m-view-settings .panel-left,
-            body.m-view-vocal    .panel-left,
+            body.m-view-vocal .panel-left,
             body.m-view-structure .panel-left,
-            body.m-view-sound    .panel-left,
-            body.m-view-lyrics   .panel-left { display: flex; }
+            body.m-view-sound .panel-left,
+            body.m-view-lyrics .panel-left {
+                display: flex;
+            }
 
             .left-panel-content {
                 flex-direction: column;
@@ -211,12 +251,18 @@ Legal permission has been sought for the use of the name Suno
                 overflow: hidden;
             }
             body.m-view-settings .panel-right,
-            body.m-view-vocal    .panel-right,
+            body.m-view-vocal .panel-right,
             body.m-view-structure .panel-right,
-            body.m-view-sound    .panel-right,
-            body.m-view-lyrics   .panel-right { flex: 0; height: 0; overflow: hidden; }
+            body.m-view-sound .panel-right,
+            body.m-view-lyrics .panel-right {
+                flex: 0;
+                height: 0;
+                overflow: hidden;
+            }
 
-            .right-tabs { display: none !important; }
+            .right-tabs {
+                display: none !important;
+            }
 
             .right-content {
                 flex-direction: column;
@@ -266,18 +312,48 @@ Legal permission has been sought for the use of the name Suno
                 cursor: pointer;
                 white-space: nowrap;
             }
-            #copy-to-suno-btn { flex: 0 0 auto; padding: 9px 10px; font-size: 11px; white-space: nowrap; }
-            #help-btn { display: none !important; }
-            #reset-btn { flex: 0 0 auto; padding: 9px 8px; font-size: 10px; }
+            #copy-to-suno-btn {
+                flex: 0 0 auto;
+                padding: 9px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            #help-btn {
+                display: none !important;
+            }
+            #reset-btn {
+                flex: 0 0 auto;
+                padding: 9px 8px;
+                font-size: 10px;
+            }
 
             /* ── OUTPUT CARD tweaks ───────────────────────────────────── */
-            .card-header { padding: 12px 14px 10px; }
-            .card-title { font-size: 19px; line-height: 1.2; }
-            .card-subtitle { font-size: 11px; }
-            .card-meta { font-size: 11px; margin-top: 4px; }
-            .card-actions { flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-            .genre-badge { padding: 2px 7px; margin-top: 4px; }
-            .block { padding: 10px 14px; }
+            .card-header {
+                padding: 12px 14px 10px;
+            }
+            .card-title {
+                font-size: 19px;
+                line-height: 1.2;
+            }
+            .card-subtitle {
+                font-size: 11px;
+            }
+            .card-meta {
+                font-size: 11px;
+                margin-top: 4px;
+            }
+            .card-actions {
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+            }
+            .genre-badge {
+                padding: 2px 7px;
+                margin-top: 4px;
+            }
+            .block {
+                padding: 10px 14px;
+            }
             .block-header {
                 display: block;
                 font-size: 10px;
@@ -287,24 +363,54 @@ Legal permission has been sought for the use of the name Suno
                 letter-spacing: 1px;
                 margin-bottom: 8px;
             }
-            .lyric-direction { font-size: 11px; margin-bottom: 2px; }
-            .struct-opt { padding: 10px 12px; margin-bottom: 6px; }
-            .struct-name { font-size: 13px; }
-            .struct-flow { font-size: 11px; margin-top: 3px; }
-            .struct-desc { font-size: 11px; margin-top: 2px; }
-            .hist-meta { font-size: 10px; }
-            .chord-card { padding: 7px 10px; min-width: 64px; }
-            .chord-name { font-size: 16px; }
-            .sound-pill { font-size: 11px; }
-            .prod-grid { grid-template-columns: 1fr 1fr; }
-            .lmode-btn { padding: 7px 4px; font-size: 11px; }
+            .lyric-direction {
+                font-size: 11px;
+                margin-bottom: 2px;
+            }
+            .struct-opt {
+                padding: 10px 12px;
+                margin-bottom: 6px;
+            }
+            .struct-name {
+                font-size: 13px;
+            }
+            .struct-flow {
+                font-size: 11px;
+                margin-top: 3px;
+            }
+            .struct-desc {
+                font-size: 11px;
+                margin-top: 2px;
+            }
+            .hist-meta {
+                font-size: 10px;
+            }
+            .chord-card {
+                padding: 7px 10px;
+                min-width: 64px;
+            }
+            .chord-name {
+                font-size: 16px;
+            }
+            .sound-pill {
+                font-size: 11px;
+            }
+            .prod-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .lmode-btn {
+                padding: 7px 4px;
+                font-size: 11px;
+            }
             .section-edit-ta {
                 background: var(--surface2);
                 border: 1px solid var(--border);
                 border-radius: 6px;
                 padding: 8px;
             }
-            .hist-item { padding: 11px 12px; }
+            .hist-item {
+                padding: 11px 12px;
+            }
 
             /* ── VOCAL PROFILE ROW — single column on mobile ─────────── */
             .vocal-profile-row {
@@ -316,10 +422,14 @@ Legal permission has been sought for the use of the name Suno
                 gap: 8px;
                 margin-bottom: 8px;
             }
-            .vocal-profile-header { color: var(--accent4); }
+            .vocal-profile-header {
+                color: var(--accent4);
+            }
 
             /* ── FOOTER hidden ───────────────────────────────────────── */
-            footer.app-footer { display: none !important; }
+            footer.app-footer {
+                display: none !important;
+            }
 
             /* ── MOBILE OUTPUT SUB-TABS ──────────────────────────────── */
             .mobile-output-tabs {
@@ -331,9 +441,11 @@ Legal permission has been sought for the use of the name Suno
                 margin-bottom: 12px;
                 flex-shrink: 0;
             }
-            body.m-view-output  .mobile-output-tabs,
-            body.m-view-chords  .mobile-output-tabs,
-            body.m-view-history .mobile-output-tabs { display: flex; }
+            body.m-view-output .mobile-output-tabs,
+            body.m-view-chords .mobile-output-tabs,
+            body.m-view-history .mobile-output-tabs {
+                display: flex;
+            }
             .mobile-otab {
                 flex: 1;
                 padding: 7px 4px;
@@ -347,7 +459,10 @@ Legal permission has been sought for the use of the name Suno
                 border: none;
                 font-family: "Syne", sans-serif;
             }
-            .mobile-otab.active { background: var(--surface3); color: var(--text); }
+            .mobile-otab.active {
+                background: var(--surface3);
+                color: var(--text);
+            }
 
             /* ── MOBILE BOTTOM NAV ───────────────────────────────────── */
             .mobile-nav {
@@ -357,7 +472,9 @@ Legal permission has been sought for the use of the name Suno
                 display: flex;
                 align-items: stretch;
                 position: fixed;
-                bottom: 0; left: 0; right: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 z-index: 100;
             }
             .m-nav-btn {
@@ -381,35 +498,74 @@ Legal permission has been sought for the use of the name Suno
                 -webkit-tap-highlight-color: transparent;
                 transition: color 0.12s;
             }
-            .m-nav-icon { font-size: 17px; line-height: 1; }
-            .m-nav-btn.active { color: var(--accent); }
+            .m-nav-icon {
+                font-size: 17px;
+                line-height: 1;
+            }
+            .m-nav-btn.active {
+                color: var(--accent);
+            }
             .m-nav-btn.active::after {
                 content: "";
                 position: absolute;
-                top: 0; left: 6px; right: 6px;
+                top: 0;
+                left: 6px;
+                right: 6px;
                 height: 2px;
                 background: var(--accent);
                 border-radius: 0 0 2px 2px;
             }
-            .m-nav-btn[data-view="vocal"].active       { color: var(--accent4); }
-            .m-nav-btn[data-view="vocal"].active::after  { background: var(--accent4); }
-            .m-nav-btn[data-view="structure"].active       { color: var(--accent2); }
-            .m-nav-btn[data-view="structure"].active::after  { background: var(--accent2); }
-            .m-nav-btn[data-view="sound"].active       { color: var(--accent6); }
-            .m-nav-btn[data-view="sound"].active::after  { background: var(--accent6); }
-            .m-nav-btn[data-view="lyrics"].active       { color: var(--accent3); }
-            .m-nav-btn[data-view="lyrics"].active::after  { background: var(--accent3); }
-            .m-nav-btn[data-view="output"].active       { color: var(--accent5); }
-            .m-nav-btn[data-view="output"].active::after  { background: var(--accent5); }
+            .m-nav-btn[data-view="vocal"].active {
+                color: var(--accent4);
+            }
+            .m-nav-btn[data-view="vocal"].active::after {
+                background: var(--accent4);
+            }
+            .m-nav-btn[data-view="structure"].active {
+                color: var(--accent2);
+            }
+            .m-nav-btn[data-view="structure"].active::after {
+                background: var(--accent2);
+            }
+            .m-nav-btn[data-view="sound"].active {
+                color: var(--accent6);
+            }
+            .m-nav-btn[data-view="sound"].active::after {
+                background: var(--accent6);
+            }
+            .m-nav-btn[data-view="lyrics"].active {
+                color: var(--accent3);
+            }
+            .m-nav-btn[data-view="lyrics"].active::after {
+                background: var(--accent3);
+            }
+            .m-nav-btn[data-view="output"].active {
+                color: var(--accent5);
+            }
+            .m-nav-btn[data-view="output"].active::after {
+                background: var(--accent5);
+            }
 
             /* ── MODAL overrides for mobile ──────────────────────────── */
-            .modal.export-modal { max-width: 92vw; }
-            .modal.confirm-modal { width: 92vw; max-width: 640px; }
-            .modal-preview { max-height: 260px; }
+            .modal.export-modal {
+                max-width: 92vw;
+            }
+            .modal.confirm-modal {
+                width: 92vw;
+                max-width: 640px;
+            }
+            .modal-preview {
+                max-height: 260px;
+            }
 
             /* ── MISC MOBILE-ONLY CLASSES ────────────────────────────── */
-            .selected-genres-row { min-height: 38px; }
-            .custom-structure-builder { gap: 8px; padding: 8px; }
+            .selected-genres-row {
+                min-height: 38px;
+            }
+            .custom-structure-builder {
+                gap: 8px;
+                padding: 8px;
+            }
             .genre-structure-header {
                 font-size: 10px;
                 font-weight: 700;
@@ -420,10 +576,25 @@ Legal permission has been sought for the use of the name Suno
                 border-bottom: 1px solid var(--border);
                 margin-bottom: 6px;
             }
-            #section-lyrics-row { display: none; flex-direction: column; gap: 10px; }
-            .preset-row input, .preset-row select { flex: 1; min-width: 0; }
-            .api-inline-note { display: none; }
-            #api-no-key-hint { padding: 8px 12px; font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
+            #section-lyrics-row {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .preset-row input,
+            .preset-row select {
+                flex: 1;
+                min-width: 0;
+            }
+            .api-inline-note {
+                display: none;
+            }
+            #api-no-key-hint {
+                padding: 8px 12px;
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+            }
             .export-text {
                 width: 100%;
                 background: var(--surface2);
@@ -436,26 +607,77 @@ Legal permission has been sought for the use of the name Suno
                 height: 200px;
                 resize: none;
             }
-            .influence-chips-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+            .influence-chips-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 4px;
+            }
             .influence-chip {
-                display: flex; align-items: center; gap: 4px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
                 padding: 4px 8px;
-                background: rgba(136,112,192,0.12);
-                border: 1px solid rgba(136,112,192,0.3);
+                background: rgba(136, 112, 192, 0.12);
+                border: 1px solid rgba(136, 112, 192, 0.3);
                 border-radius: 14px;
-                font-size: 11px; color: var(--accent6);
+                font-size: 11px;
+                color: var(--accent6);
                 font-family: "Space Mono", monospace;
             }
-            .influence-chip-remove { cursor: pointer; opacity: 0.6; font-size: 13px; line-height: 1; }
-            .key-info-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; }
-            .key-info-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-            .key-info-row:last-child { margin-bottom: 0; }
-            .key-info-k { font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
-            .key-info-v { font-size: 11px; color: var(--text); font-family: "Space Mono", monospace; font-weight: 700; }
-            .about-modal-content { font-size: 12px; color: var(--text-muted); font-family: "Space Mono", monospace; line-height: 1.7; }
-            .range-slider-wrap { display: flex; align-items: center; gap: 8px; }
-            .range-slider-wrap input[type="range"] { flex: 1; accent-color: var(--accent3); }
-            .range-val { font-size: 11px; font-family: "Space Mono", monospace; color: var(--text-muted); min-width: 28px; text-align: right; }
+            .influence-chip-remove {
+                cursor: pointer;
+                opacity: 0.6;
+                font-size: 13px;
+                line-height: 1;
+            }
+            .key-info-box {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                padding: 10px 12px;
+            }
+            .key-info-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+            .key-info-row:last-child {
+                margin-bottom: 0;
+            }
+            .key-info-k {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+            }
+            .key-info-v {
+                font-size: 11px;
+                color: var(--text);
+                font-family: "Space Mono", monospace;
+                font-weight: 700;
+            }
+            .about-modal-content {
+                font-size: 12px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+                line-height: 1.7;
+            }
+            .range-slider-wrap {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .range-slider-wrap input[type="range"] {
+                flex: 1;
+                accent-color: var(--accent3);
+            }
+            .range-val {
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                min-width: 28px;
+                text-align: right;
+            }
         </style>
     </head>
     <body class="m-view-settings">
