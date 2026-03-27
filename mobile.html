@@ -1,11 +1,28 @@
+<!-- SunoForge is copyright © Brent Wesley https://github.com/ratava all rights reserved.
+SunoForge is released under Creative Commons Attribution-NonCommercial 4.0 International https://creativecommons.org/licenses/by-nc/4.0/
+SunoForge or any of its parts can be used for non-commercial purposes only and Attribution must be given back to this project. Removal of this header is expressly forbidden.
+SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the "Suno Trademarks")
+Legal permission has been sought for the use of the name Suno
+-->
+
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <title>SunoForge Mobile Mockup</title>
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://accounts.google.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com; img-src 'self' data:; frame-src 'self' https://accounts.google.com; base-uri 'self'; form-action 'self';"
+        />
+        <title>SunoForge</title>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+        <script type="importmap">
+            { "imports": { "@google/genai": "https://esm.sh/@google/genai" } }
+        </script>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <script src="i18n.js"></script>
         <style>
+            /* ── CSS VARIABLES (identical to desktop) ─────────────────── */
             :root {
                 --bg: #0e0c0a;
                 --surface: #141210;
@@ -21,358 +38,44 @@
                 --text: #f3f0ed;
                 --text-muted: #b3a79a;
                 --text-dim: #9a9080;
-                --text-field: #0f5a8d;
+                --text-field: #569dcc;
                 --success: #7ab87a;
                 --error: #c05050;
                 --nav-h: 58px;
+                --action-h: 54px;
                 --header-h: 52px;
-                --api-h: 36px;
             }
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            body {
+            html, body {
+                height: 100dvh;
+                max-height: 100dvh;
+                overflow: hidden;
                 background: var(--bg);
                 color: var(--text);
                 font-family: "Syne", sans-serif;
-                height: 100dvh;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
+                -webkit-text-size-adjust: 100%;
             }
 
-            /* ─── HEADER ─────────────────────────────── */
-            .header {
-                height: var(--header-h);
-                background: var(--surface);
-                border-bottom: 1px solid var(--border);
-                display: flex;
-                align-items: center;
-                padding: 0 14px;
-                gap: 10px;
-                flex-shrink: 0;
-                position: relative;
-            }
-            .logo {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 15px;
-                font-weight: 800;
-            }
-            .logo img {
-                height: 30px;
-            }
-            .header-center {
-                flex: 1;
-                text-align: center;
-                font-size: 9px;
-                font-weight: 700;
-                color: var(--text-muted);
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                line-height: 1.3;
-                pointer-events: none;
-            }
-            .header-right {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .icon-btn {
-                width: 32px;
-                height: 32px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            /* ── REUSED COMPONENT STYLES ──────────────────────────────── */
+            ::-webkit-scrollbar { width: 3px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+            textarea, input[type="text"], input[type="password"], input[type="number"] {
                 background: var(--surface2);
                 border: 1px solid var(--border);
                 border-radius: 7px;
-                font-size: 14px;
-                cursor: pointer;
-                color: var(--text-muted);
-                flex-shrink: 0;
-            }
-            .icon-btn.active {
-                border-color: var(--accent);
-                color: var(--accent);
-            }
-
-            /* ─── API STRIP ───────────────────────────── */
-            .api-strip {
-                height: var(--api-h);
-                background: var(--surface2);
-                border-bottom: 1px solid var(--border);
-                display: flex;
-                align-items: center;
-                padding: 0 12px;
-                gap: 8px;
-                flex-shrink: 0;
-                cursor: pointer;
-            }
-            .api-strip-label {
-                font-size: 10px;
-                font-family: "Space Mono", monospace;
-                color: var(--text-muted);
-                white-space: nowrap;
-            }
-            .api-strip-model {
-                flex: 1;
-                font-size: 10px;
-                font-family: "Space Mono", monospace;
-                color: var(--text-dim);
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .api-status {
-                font-size: 8px;
-                font-family: "Space Mono", monospace;
-                white-space: nowrap;
-                padding: 2px 5px;
-                border-radius: 3px;
-            }
-            .api-status.ok {
-                color: var(--success);
-            }
-            .api-status.missing {
-                color: var(--error);
-            }
-            .api-status.warn {
-                color: var(--accent);
-            }
-            .chevron {
-                font-size: 9px;
-                color: var(--text-dim);
-            }
-
-            /* API expanded panel */
-            .api-expanded {
-                background: var(--surface2);
-                border-bottom: 1px solid var(--border);
-                padding: 10px 12px;
-                display: none;
-                flex-direction: column;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-            .api-expanded.open {
-                display: flex;
-            }
-            .api-row {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            }
-            .api-row-label {
-                font-size: 10px;
-                font-family: "Space Mono", monospace;
-                color: var(--text-muted);
-                white-space: nowrap;
-                min-width: 60px;
-            }
-            .api-row input {
-                flex: 1;
-                background: var(--surface3);
-                border: 1px solid var(--border);
-                border-radius: 5px;
                 color: var(--text);
                 font-family: "Space Mono", monospace;
-                font-size: 11px;
-                padding: 5px 7px;
-                outline: none;
-                min-width: 0;
-            }
-            .api-row .btn-save {
-                padding: 4px 9px;
-                background: var(--accent);
-                border: none;
-                border-radius: 5px;
-                color: #0e0c0a;
-                font-size: 11px;
-                font-family: "Syne", sans-serif;
-                font-weight: 700;
-                cursor: pointer;
-                white-space: nowrap;
-            }
-            .model-select-btn {
-                flex: 1;
-                padding: 5px 8px;
-                background: var(--surface3);
-                border: 1px solid var(--border);
-                border-radius: 5px;
-                color: var(--text);
-                font-family: "Space Mono", monospace;
-                font-size: 10px;
-                text-align: left;
-                cursor: pointer;
-                min-width: 0;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            /* ─── SCROLLABLE CONTENT AREA ─────────────── */
-            .screen-area {
-                flex: 1;
-                overflow-y: auto;
-                overflow-x: hidden;
-                -webkit-overflow-scrolling: touch;
-            }
-            .screen {
-                display: none;
-                padding: 14px;
-                padding-bottom: 70px;
-            }
-            .screen.active {
-                display: block;
-            }
-
-            /* ─── GENERATE BUTTON BAR ─────────────────── */
-            .gen-bar {
-                position: fixed;
-                bottom: var(--nav-h);
-                left: 0;
-                right: 0;
-                padding: 8px 12px;
-                background: var(--bg);
-                border-top: 1px solid var(--border);
-                display: flex;
-                gap: 6px;
-                z-index: 20;
-            }
-            .btn-gen {
-                flex: 1;
-                padding: 12px 8px;
-                background: linear-gradient(135deg, var(--accent), var(--accent3));
-                border: none;
-                border-radius: 8px;
-                color: #0e0c0a;
-                font-family: "Syne", sans-serif;
                 font-size: 13px;
-                font-weight: 800;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
+                padding: 8px 10px;
+                width: 100%;
+                outline: none;
+                -webkit-appearance: none;
             }
-            .btn-gen.analyze {
-                flex: 0 0 auto;
-                padding: 12px 14px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                font-size: 12px;
-            }
-            .btn-gen.export {
-                flex: 0 0 auto;
-                padding: 12px 14px;
-                background: linear-gradient(135deg, var(--accent2), #5a7e50);
-                font-size: 12px;
-            }
-
-            /* ─── BOTTOM NAV ──────────────────────────── */
-            .bottom-nav {
-                height: var(--nav-h);
-                background: var(--surface);
-                border-top: 1px solid var(--border);
-                display: flex;
-                align-items: stretch;
-                flex-shrink: 0;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                z-index: 30;
-            }
-            .nav-tab {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 3px;
-                cursor: pointer;
-                border: none;
-                background: none;
-                color: var(--text-muted);
-                font-family: "Syne", sans-serif;
-                font-size: 8px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.04em;
-                padding: 6px 2px 4px;
-                position: relative;
-                transition: color 0.15s;
-                -webkit-tap-highlight-color: transparent;
-            }
-            .nav-tab .nav-icon {
-                font-size: 18px;
-                line-height: 1;
-            }
-            .nav-tab.active {
-                color: var(--accent);
-            }
-            .nav-tab.active::after {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 8px;
-                right: 8px;
-                height: 2px;
-                background: var(--accent);
-                border-radius: 0 0 2px 2px;
-            }
-            .nav-tab:nth-child(2).active {
-                color: var(--accent4);
-            }
-            .nav-tab:nth-child(2).active::after {
-                background: var(--accent4);
-            }
-            .nav-tab:nth-child(3).active {
-                color: var(--accent2);
-            }
-            .nav-tab:nth-child(3).active::after {
-                background: var(--accent2);
-            }
-            .nav-tab:nth-child(4).active {
-                color: var(--accent6);
-            }
-            .nav-tab:nth-child(4).active::after {
-                background: var(--accent6);
-            }
-            .nav-tab:nth-child(5).active {
-                color: var(--accent3);
-            }
-            .nav-tab:nth-child(5).active::after {
-                background: var(--accent3);
-            }
-            .nav-tab:nth-child(6).active {
-                color: var(--accent5);
-            }
-            .nav-tab:nth-child(6).active::after {
-                background: var(--accent5);
-            }
-
-            /* ─── SHARED FIELD STYLES ─────────────────── */
-            .field-group {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            .field-label {
-                font-size: 11px;
-                font-weight: 700;
-                color: var(--text-field);
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            textarea,
-            input[type="text"],
-            input[type="password"],
+            textarea:focus, input:focus { border-color: var(--accent3); }
             select {
                 background: var(--surface2);
                 border: 1px solid var(--border);
@@ -380,48 +83,29 @@
                 color: var(--text);
                 font-family: "Space Mono", monospace;
                 font-size: 13px;
-                padding: 9px 10px;
+                padding: 8px 10px;
                 width: 100%;
                 outline: none;
                 -webkit-appearance: none;
-                resize: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b3a79a'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+                padding-right: 28px;
             }
-            textarea:focus,
-            input:focus,
-            select:focus {
-                border-color: var(--accent);
-            }
-            .section-divider {
-                height: 1px;
-                background: var(--border);
-                margin: 14px 0;
-            }
-            .section-header {
-                font-size: 10px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                color: var(--text-muted);
-                margin-bottom: 8px;
-            }
-            .info-box {
-                background: rgba(110, 143, 170, 0.08);
-                border: 1px solid rgba(110, 143, 170, 0.2);
-                border-radius: 7px;
-                padding: 9px 11px;
+            select:focus { border-color: var(--accent3); }
+
+            .field-group { display: flex; flex-direction: column; gap: 6px; }
+            .field-label {
                 font-size: 11px;
-                color: var(--accent3);
-                font-family: "Space Mono", monospace;
-                line-height: 1.6;
+                font-weight: 700;
+                color: var(--text-field);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
             }
 
-            /* ─── TAGS ────────────────────────────────── */
-            .tag-row {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
             .tag {
+                display: inline-flex;
+                align-items: center;
                 padding: 6px 11px;
                 border-radius: 20px;
                 font-size: 12px;
@@ -430,35 +114,20 @@
                 border: 1px solid var(--border);
                 background: var(--surface2);
                 color: var(--text-muted);
-                transition: all 0.15s;
                 user-select: none;
+                -webkit-tap-highlight-color: transparent;
+                transition: border-color 0.1s, color 0.1s, background 0.1s;
             }
-            .tag.active {
-                background: rgba(201, 124, 46, 0.12);
-                border-color: var(--accent);
-                color: var(--accent);
-            }
-            .tag.active.g4 {
-                background: rgba(160, 96, 144, 0.12);
-                border-color: var(--accent4);
-                color: var(--accent4);
-            }
-            .tag.active.g2 {
-                background: rgba(122, 158, 110, 0.12);
-                border-color: var(--accent2);
-                color: var(--accent2);
-            }
-            .tag.active.g6 {
-                background: rgba(136, 112, 192, 0.12);
-                border-color: var(--accent6);
-                color: var(--accent6);
-            }
-            .tag.multi.active {
-                background: rgba(110, 143, 170, 0.12);
-                border-color: var(--accent3);
-                color: var(--accent3);
-            }
+            .tag.active, .tag.selected-g1.active { background: rgba(201,124,46,.12); border-color: var(--accent); color: var(--accent); }
+            .tag.selected-g2.active { background: rgba(122,158,110,.12); border-color: var(--accent2); color: var(--accent2); }
+            .tag.selected-g3.active { background: rgba(46,118,201,.12); border-color: var(--accent3); color: var(--accent3); }
+            .tag.selected-g4.active { background: rgba(160,96,144,.12); border-color: var(--accent4); color: var(--accent4); }
+            .tag.selected-g5.active { background: rgba(200,80,80,.12); border-color: var(--accent5); color: var(--accent5); }
+            .tag.selected-g6.active { background: rgba(136,112,192,.12); border-color: var(--accent6); color: var(--accent6); }
+            .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
             .tag-add-btn {
+                display: inline-flex;
+                align-items: center;
                 padding: 6px 11px;
                 border-radius: 20px;
                 font-size: 12px;
@@ -470,47 +139,30 @@
                 font-family: "Syne", sans-serif;
             }
 
-            /* ─── SETTINGS SCREEN SPECIFICS ────────────── */
-            .genre-chips {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                padding: 8px;
-                background: var(--surface2);
-                border-radius: 8px;
-                border: 1px solid var(--border);
-                min-height: 40px;
-            }
-            .genre-chip {
-                padding: 5px 10px;
-                border-radius: 16px;
-                font-size: 12px;
+            .btn-primary {
+                padding: 9px 18px;
+                background: var(--accent3);
+                border: none;
+                border-radius: 7px;
+                color: #fff;
+                font-family: "Syne", sans-serif;
+                font-size: 13px;
                 font-weight: 700;
-                background: rgba(201, 124, 46, 0.15);
-                border: 1px solid var(--accent);
-                color: var(--accent);
-                display: flex;
-                align-items: center;
-                gap: 5px;
+                cursor: pointer;
             }
-            .genre-empty {
-                font-size: 11px;
-                color: var(--text-dim);
-                font-family: "Space Mono", monospace;
-                align-self: center;
-            }
-            .preset-row {
-                display: flex;
-                gap: 6px;
-                align-items: center;
-            }
-            .preset-row input,
-            .preset-row select {
-                flex: 1;
-                min-width: 0;
+            .btn-secondary {
+                padding: 9px 18px;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                color: var(--text-muted);
+                font-family: "Syne", sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
             }
             .btn-sm {
-                padding: 7px 10px;
+                padding: 6px 10px;
                 background: var(--surface2);
                 border: 1px solid var(--border);
                 border-radius: 6px;
@@ -520,98 +172,405 @@
                 font-weight: 700;
                 cursor: pointer;
                 white-space: nowrap;
+            }
+            .section-header {
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+            }
+            .info-box {
+                background: rgba(46,118,201,.08);
+                border: 1px solid rgba(46,118,201,.2);
+                border-radius: 7px;
+                padding: 9px 11px;
+                font-size: 11px;
+                color: var(--accent3);
+                font-family: "Space Mono", monospace;
+                line-height: 1.6;
+            }
+            .error-box {
+                background: rgba(192,80,80,.08);
+                border: 1px solid rgba(192,80,80,.25);
+                border-radius: 7px;
+                padding: 9px 11px;
+                font-size: 12px;
+                color: var(--error);
+                font-family: "Space Mono", monospace;
+            }
+            .api-status { font-size: 11px; font-family: "Space Mono", monospace; }
+            .api-status.ok    { color: var(--success); }
+            .api-status.missing { color: var(--error); }
+            .api-status.warn  { color: var(--accent); }
+
+            /* ── HEADER ──────────────────────────────────────────────── */
+            .header {
+                height: var(--header-h);
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                padding: 0 12px;
+                gap: 8px;
+                flex-shrink: 0;
+                position: relative;
+            }
+            .logo { display: flex; align-items: center; gap: 8px; }
+            .logo-icon img { height: 30px; }
+            .logo-text {
+                font-size: 14px;
+                font-weight: 800;
+                letter-spacing: -0.3px;
+                white-space: nowrap;
+            }
+            .header-tagline { display: none !important; }
+            .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+            .lang-select-wrap { display: flex; align-items: center; gap: 5px; }
+            #lang-select { font-size: 11px; padding: 4px 24px 4px 7px; width: auto; min-width: 0; }
+
+            /* version badge compact */
+            .version-badge {
+                font-size: 9px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-dim);
+                white-space: nowrap;
+            }
+
+            /* ── API BAR ─────────────────────────────────────────────── */
+            .api-bar {
+                background: var(--surface2);
+                border-bottom: 1px solid var(--border);
                 flex-shrink: 0;
             }
-            .btn-sm.danger {
-                color: var(--error);
-                border-color: var(--error);
+            .api-bar-row {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 5px 10px;
             }
-
-            /* ─── VOCAL SCREEN ────────────────────────── */
-            .vocal-profile-box {
+            .api-bar-label {
+                font-size: 10px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                white-space: nowrap;
+            }
+            .api-bar-row input[type="password"],
+            .api-bar-row input[type="text"] {
+                font-size: 11px;
+                padding: 5px 7px;
+                flex: 1;
+                min-width: 100px;
+            }
+            .api-bar-row .btn-sm { flex-shrink: 0; }
+            .api-bar-toggle {
+                width: 100%;
+                background: none;
+                border: none;
+                border-top: 1px solid var(--border);
+                color: var(--text-dim);
+                font-size: 10px;
+                font-family: "Space Mono", monospace;
+                padding: 4px;
+                cursor: pointer;
+                text-align: center;
+            }
+            .api-bar-summary {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 5px 10px;
+                cursor: pointer;
+                min-height: 30px;
+            }
+            .api-bar-summary-model {
+                font-size: 10px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            /* model dropdown */
+            .model-select-wrap { position: relative; flex: 1; min-width: 0; }
+            .model-select-label { display: block; }
+            .model-select-dropdown {
+                display: none;
+                position: fixed;
+                left: 10px; right: 10px;
+                z-index: 200;
                 background: var(--surface2);
                 border: 1px solid var(--border);
-                border-radius: 9px;
-                padding: 12px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(0,0,0,.5);
+            }
+            .model-select-filter {
+                padding: 8px 10px;
+                border-bottom: 1px solid var(--border);
+            }
+            .model-select-filter input { font-size: 12px; padding: 6px 8px; }
+            .model-select-list { max-height: 50dvh; overflow-y: auto; }
+            .model-option {
+                padding: 10px 12px;
+                font-size: 12px;
+                font-family: "Space Mono", monospace;
+                color: var(--text);
+                cursor: pointer;
+                border-bottom: 1px solid var(--border);
+            }
+            .model-option:last-child { border-bottom: none; }
+            .model-option.active { color: var(--accent); background: rgba(201,124,46,.06); }
+            .model-option:hover { background: var(--surface3); }
+            .model-option-provider { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+
+            /* drive UI */
+            .drive-storage-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+            .drive-storage-row img { height: 16px; }
+
+            /* ── MAIN + PANELS ───────────────────────────────────────── */
+            .main {
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
-            }
-            .vpb-header {
-                font-size: 12px;
-                font-weight: 700;
-                color: var(--accent4);
-            }
-            .vpb-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .vpb-field label {
-                font-size: 10px;
-                color: var(--text-dim);
-                font-weight: 600;
-                display: block;
-                margin-bottom: 3px;
-            }
-            .vpb-field select {
-                font-size: 12px;
-                padding: 6px 8px;
+                height: calc(100dvh - var(--header-h) - var(--action-h) - var(--nav-h));
+                overflow: hidden;
             }
 
-            /* ─── STRUCTURE SCREEN ────────────────────── */
-            .struct-opt {
-                padding: 10px 12px;
-                border-radius: 9px;
-                border: 1px solid var(--border);
-                background: var(--surface2);
-                cursor: pointer;
-                transition: all 0.15s;
-                margin-bottom: 6px;
+            /* Left panel: full-width scrollable, hidden by default */
+            .left-panel {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
-            .struct-opt.active {
-                border-color: var(--accent);
-                background: rgba(201, 124, 46, 0.06);
-            }
-            .struct-name {
-                font-size: 13px;
-                font-weight: 700;
-                color: var(--text);
-            }
-            .struct-flow {
-                font-size: 11px;
-                color: var(--accent);
-                font-family: "Space Mono", monospace;
-                margin-top: 3px;
-            }
-            .struct-desc {
-                font-size: 11px;
-                color: var(--text-muted);
-                font-family: "Space Mono", monospace;
-                margin-top: 2px;
-                line-height: 1.4;
-            }
-            .struct-genre-header {
-                font-size: 10px;
-                font-weight: 700;
-                color: var(--accent);
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-                padding: 10px 0 5px;
-                border-bottom: 1px solid var(--border);
-                margin-bottom: 6px;
-            }
+            /* Desktop left tab buttons: hidden, replaced by mobile bottom nav */
+            .ltabs { display: none !important; }
 
-            /* ─── OUTPUT SCREEN ───────────────────────── */
-            .output-tabs {
+            /* Show left panel for left-view states */
+            body.m-view-settings .left-panel,
+            body.m-view-vocal    .left-panel,
+            body.m-view-structure .left-panel,
+            body.m-view-sound    .left-panel,
+            body.m-view-lyrics   .left-panel { display: flex; }
+
+            /* Left panel content */
+            .lpanel { display: none; flex-direction: column; gap: 14px; padding: 12px; }
+            .lpanel.active { display: flex; }
+
+            /* Right panel: always in DOM (action-panel is inside it and needs to be fixed) */
+            .right-panel {
+                width: 100%;
+                height: 100%;
                 display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            body.m-view-settings .right-panel,
+            body.m-view-vocal    .right-panel,
+            body.m-view-structure .right-panel,
+            body.m-view-sound    .right-panel,
+            body.m-view-lyrics   .right-panel { height: 0; overflow: hidden; }
+
+            /* Desktop right tab buttons: hidden, replaced by mobile sub-nav in output area */
+            .rtabs { display: none !important; }
+
+            /* Tab content */
+            .rtab-content { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding: 10px; gap: 10px; }
+            body.m-view-output  #tab-output  { display: flex; }
+            body.m-view-chords  #tab-chords  { display: flex; }
+            body.m-view-history #tab-history { display: flex; }
+
+            /* ── ACTION PANEL (fixed bottom, above nav) ──────────────── */
+            .action-panel {
+                position: fixed !important;
+                bottom: var(--nav-h) !important;
+                left: 0 !important; right: 0 !important;
+                background: var(--bg) !important;
+                border-top: 1px solid var(--border) !important;
+                padding: 7px 10px !important;
+                z-index: 90 !important;
+                display: flex !important;
+                flex-wrap: nowrap;
+                gap: 5px;
+                align-items: center;
+                height: var(--action-h);
+            }
+            .btn-gen {
+                flex: 1;
+                padding: 9px 6px;
+                background: linear-gradient(135deg, var(--accent), var(--accent3));
+                border: none;
+                border-radius: 8px;
+                color: #0e0c0a;
+                font-family: "Syne", sans-serif;
+                font-size: 12px;
+                font-weight: 800;
+                cursor: pointer;
+                text-align: center;
+                white-space: nowrap;
+            }
+            .btn-analyze {
+                flex: 0 0 auto;
+                padding: 9px 10px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                border: none;
+                border-radius: 8px;
+                color: #fff;
+                font-family: "Syne", sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            #copy-to-suno-btn { flex: 0 0 auto; padding: 9px 10px; font-size: 11px; white-space: nowrap; }
+            #help-btn { display: none !important; }
+            #reset-btn { flex: 0 0 auto; padding: 9px 8px; font-size: 10px; }
+
+            /* ── OUTPUT CARD ─────────────────────────────────────────── */
+            .output-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 11px;
+                overflow: hidden;
+                margin-bottom: 10px;
+            }
+            .card-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
+            .card-title { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.4px; line-height: 1.2; }
+            .card-subtitle { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-style: italic; line-height: 1.4; }
+            .card-meta { font-family: "Space Mono", monospace; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+            .card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+            .genre-badge {
+                display: inline-block;
+                padding: 2px 7px;
+                border-radius: 11px;
+                font-size: 9px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-top: 4px;
+            }
+            .block { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+            .block:last-child { border-bottom: none; }
+            .block-header { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+            .lyric-section { margin-bottom: 12px; }
+            .lyric-label {
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .lyric-label.verse   { color: var(--text-dim); }
+            .lyric-label.chorus  { color: var(--accent); }
+            .lyric-label.bridge  { color: var(--accent2); }
+            .lyric-label.prechorus { color: var(--accent4); }
+            .lyric-label.outro   { color: var(--text-muted); }
+            .lyric-line { font-size: 12px; color: var(--text); font-family: "Space Mono", monospace; line-height: 1.85; white-space: pre-line; }
+            .lyric-direction { font-size: 11px; color: var(--text-muted); font-style: italic; font-family: "Space Mono", monospace; margin-bottom: 2px; }
+            .section-edit-ta { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: "Space Mono", monospace; font-size: 12px; padding: 8px; resize: none; outline: none; }
+            .btn-regen, .btn-copy-section { padding: 3px 8px; background: var(--surface3); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 9px; font-family: "Space Mono", monospace; cursor: pointer; }
+
+            /* History */
+            .hist-item { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 11px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+            .hist-title { font-size: 13px; font-weight: 700; color: var(--text); }
+            .hist-meta { font-size: 10px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 3px; }
+            .hist-actions { display: flex; gap: 5px; flex-shrink: 0; }
+
+            /* Chord grid */
+            .chord-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+            .chord-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 7px 10px; min-width: 64px; }
+            .chord-name { font-size: 16px; font-weight: 800; color: var(--accent); font-family: "Space Mono", monospace; }
+            .chord-role { font-size: 9px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 2px; text-transform: uppercase; }
+
+            /* Sound pills */
+            .sound-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+            .sound-pill { padding: 3px 9px; border-radius: 12px; font-size: 11px; font-family: "Space Mono", monospace; font-weight: 700; }
+            .sp-era   { background: rgba(201,124,46,.1);  color: var(--accent);  border: 1px solid rgba(201,124,46,.25); }
+            .sp-style { background: rgba(46,118,201,.1);  color: var(--accent3); border: 1px solid rgba(46,118,201,.25); }
+            .sp-inst  { background: rgba(122,158,110,.1); color: var(--accent2); border: 1px solid rgba(122,158,110,.25); }
+            .sp-mix   { background: rgba(160,96,144,.1);  color: var(--accent4); border: 1px solid rgba(160,96,144,.25); }
+            .sp-inf   { background: rgba(136,112,192,.1); color: var(--accent6); border: 1px solid rgba(136,112,192,.25); }
+
+            /* Prod grid (3-col on mobile becomes 2-col) */
+            .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+            /* Selected genres row */
+            .selected-genres-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); min-height: 38px; }
+
+            /* Custom structure builder */
+            .custom-structure-builder { display: flex; flex-direction: column; gap: 8px; }
+            .csb-palette { display: flex; flex-wrap: wrap; gap: 5px; }
+            .csb-sequence { display: flex; flex-wrap: wrap; gap: 5px; min-height: 36px; background: rgba(255,255,255,.02); border: 1px dashed var(--border); border-radius: 7px; padding: 7px; }
+            .csb-step { padding: 4px 9px; border-radius: 5px; font-size: 11px; font-family: "Space Mono", monospace; background: var(--surface3); border: 1px solid var(--border); cursor: pointer; color: var(--text); }
+
+            /* Modals */
+            .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+            .modal-overlay[style*="flex"] { display: flex; }
+            .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; max-width: 480px; width: 100%; max-height: 85dvh; overflow-y: auto; }
+            .modal h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
+            .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; flex-wrap: wrap; }
+
+            /* Presets */
+            .preset-row { display: flex; gap: 6px; align-items: center; }
+            .preset-row input, .preset-row select { flex: 1; min-width: 0; }
+
+            /* Lyrics mode toggle */
+            .lyrics-mode-toggle { display: flex; gap: 3px; background: var(--surface2); border-radius: 7px; padding: 3px; }
+            .lmode-btn { flex: 1; padding: 7px 4px; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-muted); border: none; background: none; font-family: "Syne", sans-serif; text-align: center; }
+            .lmode-btn.active { background: var(--surface3); color: var(--text); }
+            #section-lyrics-row { display: none; flex-direction: column; gap: 10px; }
+
+            /* Structure list */
+            .struct-opt { padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; margin-bottom: 6px; }
+            .struct-opt.active { border-color: var(--accent); background: rgba(201,124,46,.06); }
+            .struct-name { font-size: 13px; font-weight: 700; color: var(--text); }
+            .struct-flow { font-size: 11px; color: var(--accent); font-family: "Space Mono", monospace; margin-top: 3px; }
+            .struct-desc { font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 2px; line-height: 1.4; }
+            .genre-structure-header { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; padding: 10px 0 5px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+
+            /* vocal profile rows */
+            .vocal-profile-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+            .vocal-profile-header { font-size: 12px; font-weight: 700; color: var(--accent4); }
+
+            /* Range slider */
+            .range-slider-wrap { display: flex; align-items: center; gap: 8px; }
+            .range-slider-wrap input[type="range"] { flex: 1; accent-color: var(--accent3); }
+            .range-val { font-size: 11px; font-family: "Space Mono", monospace; color: var(--text-muted); min-width: 28px; text-align: right; }
+
+            /* Output empty state */
+            .output-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-muted); text-align: center; padding: 50px 20px; }
+            .empty-icon { font-size: 36px; opacity: .2; }
+            .empty-label { font-size: 14px; font-weight: 700; }
+            .empty-sub { font-size: 12px; font-family: "Space Mono", monospace; color: var(--text-dim); line-height: 1.6; max-width: 240px; }
+
+            /* Export modal */
+            .export-text { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-family: "Space Mono", monospace; font-size: 11px; padding: 10px; height: 200px; resize: none; }
+
+            /* app-footer hidden on mobile */
+            .app-footer { display: none !important; }
+
+            /* ── CUSTOM OUTPUT SUB-TABS (replaces desktop .rtabs on mobile) ─── */
+            .mobile-output-tabs {
+                display: none;
                 gap: 0;
                 background: var(--surface2);
                 border-radius: 8px;
                 padding: 3px;
-                margin-bottom: 14px;
+                margin-bottom: 12px;
+                flex-shrink: 0;
             }
-            .otab {
+            body.m-view-output .mobile-output-tabs,
+            body.m-view-chords .mobile-output-tabs,
+            body.m-view-history .mobile-output-tabs { display: flex; }
+            .mobile-otab {
                 flex: 1;
                 padding: 7px 4px;
                 border-radius: 6px;
@@ -623,1090 +582,1193 @@
                 background: none;
                 border: none;
                 font-family: "Syne", sans-serif;
-                transition: all 0.15s;
             }
-            .otab.active {
-                background: var(--surface3);
-                color: var(--text);
-            }
-            .output-card {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: 11px;
-                overflow: hidden;
-                margin-bottom: 12px;
-            }
-            .card-header {
-                padding: 14px 16px 10px;
-                border-bottom: 1px solid var(--border);
-            }
-            .card-title {
-                font-size: 20px;
-                font-weight: 800;
-                color: var(--accent);
-                letter-spacing: -0.4px;
-            }
-            .card-subtitle {
-                font-size: 11px;
-                color: var(--text-dim);
-                margin-top: 3px;
-                font-style: italic;
-                line-height: 1.4;
-            }
-            .card-meta {
-                font-family: "Space Mono", monospace;
-                font-size: 11px;
-                color: var(--text-muted);
-                margin-top: 5px;
-            }
-            .card-actions {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                margin-top: 8px;
-            }
-            .block {
-                padding: 12px 16px;
-                border-bottom: 1px solid var(--border);
-            }
-            .block:last-child {
-                border-bottom: none;
-            }
-            .block-header {
-                font-size: 10px;
-                font-weight: 700;
-                color: var(--text-muted);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 8px;
-            }
-            .lyric-section {
-                margin-bottom: 14px;
-            }
-            .lyric-label {
-                font-size: 12px;
-                font-weight: 700;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-                margin-bottom: 5px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .lyric-label.verse {
-                color: var(--text-dim);
-            }
-            .lyric-label.chorus {
-                color: var(--accent);
-            }
-            .lyric-label.bridge {
-                color: var(--accent2);
-            }
-            .lyric-label.prechorus {
-                color: var(--accent4);
-            }
-            .lyric-label.outro {
-                color: var(--text-muted);
-            }
-            .lyric-line {
-                font-size: 12px;
-                color: var(--text);
-                font-family: "Space Mono", monospace;
-                line-height: 1.85;
-                white-space: pre-line;
-            }
-            .lyric-direction {
-                font-size: 11px;
-                color: var(--text-muted);
-                font-style: italic;
-                font-family: "Space Mono", monospace;
-                margin-bottom: 3px;
-            }
-            .btn-regen {
-                padding: 2px 8px;
-                background: var(--surface3);
-                border: 1px solid var(--border);
-                border-radius: 4px;
-                color: var(--text-muted);
-                font-size: 9px;
-                font-family: "Space Mono", monospace;
-                cursor: pointer;
-            }
-            .genre-badge {
-                display: inline-block;
-                padding: 2px 7px;
-                border-radius: 11px;
-                font-size: 9px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-top: 4px;
-                background: rgba(122, 184, 122, 0.15);
-                color: var(--accent2);
-                border: 1px solid rgba(122, 184, 122, 0.3);
-            }
-            .chord-grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 7px;
-            }
-            .chord-card {
-                background: var(--surface2);
-                border: 1px solid var(--border);
-                border-radius: 7px;
-                padding: 7px 10px;
-                min-width: 72px;
-            }
-            .chord-name {
-                font-size: 15px;
-                font-weight: 800;
-                color: var(--accent);
-                font-family: "Space Mono", monospace;
-            }
-            .chord-role {
-                font-size: 9px;
-                color: var(--text-muted);
-                font-family: "Space Mono", monospace;
-                margin-top: 2px;
-                text-transform: uppercase;
-            }
-            .chord-prog {
-                font-size: 11px;
-                color: var(--text-dim);
-                font-family: "Space Mono", monospace;
-                margin-top: 8px;
-                line-height: 1.6;
-            }
-            .key-box {
-                background: var(--surface2);
-                border-radius: 7px;
-                padding: 10px 12px;
-            }
-            .key-item {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 6px;
-            }
-            .key-item:last-child {
-                margin-bottom: 0;
-            }
-            .key-k {
-                font-size: 11px;
-                color: var(--text-muted);
-                font-family: "Space Mono", monospace;
-            }
-            .key-v {
-                font-size: 11px;
-                color: var(--text);
-                font-family: "Space Mono", monospace;
-                font-weight: 700;
-            }
-            .sound-pills {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 5px;
-                margin-top: 5px;
-            }
-            .sound-pill {
-                padding: 3px 9px;
-                border-radius: 12px;
-                font-size: 11px;
-                font-family: "Space Mono", monospace;
-                font-weight: 700;
-            }
-            .sp-era {
-                background: rgba(201, 124, 46, 0.1);
-                color: var(--accent);
-                border: 1px solid rgba(201, 124, 46, 0.25);
-            }
-            .sp-inst {
-                background: rgba(110, 143, 170, 0.1);
-                color: var(--accent3);
-                border: 1px solid rgba(110, 143, 170, 0.25);
-            }
-            .sp-mix {
-                background: rgba(160, 96, 144, 0.1);
-                color: var(--accent4);
-                border: 1px solid rgba(160, 96, 144, 0.25);
-            }
+            .mobile-otab.active { background: var(--surface3); color: var(--text); }
 
-            /* ─── HISTORY ─────────────────────────────── */
-            .hist-item {
+            /* ── MOBILE BOTTOM NAV ───────────────────────────────────── */
+            .mobile-nav {
+                height: var(--nav-h);
                 background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: 9px;
-                padding: 12px 13px;
-                margin-bottom: 7px;
+                border-top: 1px solid var(--border);
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
+                align-items: stretch;
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+                z-index: 100;
             }
-            .hist-title {
-                font-size: 13px;
-                font-weight: 700;
-                color: var(--text);
-            }
-            .hist-meta {
-                font-size: 10px;
-                color: var(--text-muted);
-                font-family: "Space Mono", monospace;
-                margin-top: 3px;
-            }
-            .hist-actions {
-                display: flex;
-                gap: 5px;
-                flex-shrink: 0;
-            }
-
-            /* ─── EMPTY STATE ─────────────────────────── */
-            .output-empty {
+            .m-nav-btn {
+                flex: 1;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 10px;
-                color: var(--text-muted);
-                text-align: center;
-                padding: 60px 20px;
-            }
-            .empty-icon {
-                font-size: 40px;
-                opacity: 0.2;
-            }
-            .empty-label {
-                font-size: 14px;
-                font-weight: 700;
-            }
-            .empty-sub {
-                font-size: 12px;
-                font-family: "Space Mono", monospace;
-                color: var(--text-dim);
-                line-height: 1.6;
-                max-width: 240px;
-            }
-
-            /* ─── LYRICS MODE TOGGLE ──────────────────── */
-            .lmode-toggle {
-                display: flex;
                 gap: 3px;
-                background: var(--surface2);
-                border-radius: 7px;
-                padding: 3px;
-            }
-            .lmode-btn {
-                flex: 1;
-                padding: 7px 4px;
-                border-radius: 5px;
-                font-size: 11px;
-                font-weight: 700;
                 cursor: pointer;
-                color: var(--text-muted);
                 border: none;
                 background: none;
+                color: var(--text-muted);
                 font-family: "Syne", sans-serif;
-                text-align: center;
+                font-size: 7.5px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .04em;
+                padding: 4px 2px 2px;
+                position: relative;
+                -webkit-tap-highlight-color: transparent;
+                transition: color .12s;
             }
-            .lmode-btn.active {
-                background: var(--surface3);
-                color: var(--text);
+            .m-nav-icon { font-size: 17px; line-height: 1; }
+            .m-nav-btn.active { color: var(--accent); }
+            .m-nav-btn.active::after {
+                content: "";
+                position: absolute;
+                top: 0; left: 6px; right: 6px;
+                height: 2px;
+                background: var(--accent);
+                border-radius: 0 0 2px 2px;
             }
+            .m-nav-btn[data-view="vocal"].active   { color: var(--accent4); }
+            .m-nav-btn[data-view="vocal"].active::after { background: var(--accent4); }
+            .m-nav-btn[data-view="structure"].active { color: var(--accent2); }
+            .m-nav-btn[data-view="structure"].active::after { background: var(--accent2); }
+            .m-nav-btn[data-view="sound"].active   { color: var(--accent6); }
+            .m-nav-btn[data-view="sound"].active::after { background: var(--accent6); }
+            .m-nav-btn[data-view="lyrics"].active  { color: var(--accent3); }
+            .m-nav-btn[data-view="lyrics"].active::after { background: var(--accent3); }
+            .m-nav-btn[data-view="output"].active  { color: var(--accent5); }
+            .m-nav-btn[data-view="output"].active::after { background: var(--accent5); }
 
-            /* ─── SCROLLBAR ───────────────────────────── */
-            ::-webkit-scrollbar {
-                width: 3px;
-            }
-            ::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            ::-webkit-scrollbar-thumb {
-                background: var(--border);
-                border-radius: 2px;
-            }
+            /* ── MISC OVERRIDES ──────────────────────────────────────── */
+            /* Influence chips row */
+            .influence-chips-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+            .influence-chip { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(136,112,192,.12); border: 1px solid rgba(136,112,192,.3); border-radius: 14px; font-size: 11px; color: var(--accent6); font-family: "Space Mono", monospace; }
+            .influence-chip-remove { cursor: pointer; opacity: .6; font-size: 13px; line-height: 1; }
+
+            /* api-no-key-hint */
+            #api-no-key-hint { padding: 8px 12px; font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
+
+            /* Hide desktop-only API inline notes */
+            .api-inline-note { display: none; }
+
+            /* Key info box */
+            .key-info-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; }
+            .key-info-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+            .key-info-row:last-child { margin-bottom: 0; }
+            .key-info-k { font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
+            .key-info-v { font-size: 11px; color: var(--text); font-family: "Space Mono", monospace; font-weight: 700; }
+
+            /* about modal */
+            .about-modal-content { font-size: 12px; color: var(--text-muted); font-family: "Space Mono", monospace; line-height: 1.7; }
+
+            /* custom input row */
+            .custom-input-row { display: flex; gap: 6px; }
+            .custom-input-row input { flex: 1; }
         </style>
     </head>
-    <body>
-        <!-- ═══ HEADER ═══ -->
+    <body class="m-view-settings">
         <header class="header">
-            <div class="logo">
-                <img src="images/logo.webp" alt="SunoForge" />
-                <span>SUNOFORGE</span>
+            <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
+                <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
-            <div class="header-center">AI SONG<br />COMPOSER</div>
+            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">DEBUG MODE</div>
+            <div class="header-tagline" data-i18n="hint.tagline">SUNOFORGE IS DESIGNED TO IMPROVE YOUR SUNO STYLE AND/OR LYRICS<br />TO OBTAIN A MORE STRUCTURED AND HIGHER QUALITY<br />SUNO SONG GENERATION</div>
             <div class="header-right">
-                <div class="icon-btn" title="Language">🌐</div>
-                <div class="icon-btn active" title="API Settings" onclick="toggleApi()">⚙</div>
+                <select id="lang-select" onchange="window.I18N.switchLocale(this.value)" title="Language / Sprache">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="zh-hans">简体中文</option>
+                    <option value="zh-hant">繁體中文</option>
+                </select>
             </div>
         </header>
 
-        <!-- ═══ API STRIP ═══ -->
-        <div class="api-strip" onclick="toggleApi()">
-            <span class="api-bar-label" style="font-size: 10px; font-family: &quot;Space Mono&quot;, monospace; color: var(--text-muted)">API &amp; Model</span>
-            <span class="api-strip-model">gemini-3.1-flash-lite-preview (Google)</span>
-            <span class="api-status ok">Google ✓</span>
-            <span class="api-status missing">OR ✗</span>
-            <span class="chevron" id="api-chevron">▼</span>
+        <div class="api-bar">
+            <div class="api-bar-toggle" id="api-bar-toggle" onclick="toggleApiBar()">
+                <div class="api-bar-toggle-info">
+                    <span class="api-bar-label" style="white-space: nowrap">API &amp; Model</span>
+                    <span class="api-bar-summary-model" id="api-bar-summary-model"></span>
+                    <span class="api-status missing" id="api-bar-sum-google">Google</span>
+                    <span class="api-status missing" id="api-bar-sum-or">OR</span>
+                    <span class="api-status missing" id="api-bar-sum-custom">LLM</span>
+                    <span class="api-status missing" id="api-bar-sum-drive" style="display: none">Drive</span>
+                </div>
+                <span id="api-bar-chevron">▼</span>
+            </div>
+            <div id="api-bar-body" style="display: none; flex-direction: column; gap: 5px">
+                <div class="api-bar-row" id="api-no-key-hint">
+                    <span class="api-no-key-hint" data-i18n="api.no_key_hint">Please provide either a <strong>Google AI Studio</strong> (cheaper) API key and/or an <strong>OpenRouter</strong> API key (more models / more expensive) to use SunoForge.</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Google AI Studio Key:</span>
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
+                        <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="new-password" style="width: 50%; flex: none" />
+                    </form>
+                    <button class="api-bar-save" onclick="saveApiKey()">Save</button>
+                    <a id="api-key-get-link" class="api-get-key-link" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" data-i18n="api.get_key">How do I get one?</a>
+                    <span class="api-status missing" id="api-status">not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">OpenRouter Key:</span>
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
+                        <input type="password" id="openrouter-key-input" placeholder="sk-or-..." autocomplete="new-password" style="width: 50%; flex: none" />
+                    </form>
+                    <button class="api-bar-save" onclick="saveOpenRouterKey()">Save</button>
+                    <a id="openrouter-get-link" class="api-get-key-link" href="https://openrouter.ai/workspaces/default/keys" target="_blank" rel="noopener" data-i18n="api.get_key">How do I get one?</a>
+                    <span class="api-status missing" id="openrouter-status">not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Local LLM Server:</span>
+                    <input type="text" id="custom-server-input" placeholder="http://localhost:1234" style="max-width: 280px" />
+                    <button class="api-bar-save" onclick="saveCustomServer()">Save</button>
+                    <button class="api-bar-save" onclick="fetchCustomServerModels()" style="background: var(--success); color: #0e0c0a">Fetch Models</button>
+                    <span class="api-status missing" id="custom-server-status">not set</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label">Local LLM Auth Key:</span>
+                    <form onsubmit="return false;" style="display: contents">
+                        <input type="text" name="username" autocomplete="username" style="display: none" aria-hidden="true" />
+                        <input type="password" id="custom-server-key-input" placeholder="sk-... (optional)" style="max-width: 280px" autocomplete="new-password" />
+                    </form>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label" data-i18n="api.model_label">Model:</span>
+                    <input type="hidden" id="model-select" value="gemini-3.1-flash-lite-preview" />
+                    <div class="model-select-wrap" id="model-select-wrap">
+                        <button type="button" class="model-select-btn" id="model-select-btn" onclick="toggleModelDropdown(event)">
+                            <span id="model-select-label">gemini-3.1-flash-lite-preview (Google)</span>
+                        </button>
+                        <div class="model-select-dropdown" id="model-select-dropdown" style="display: none">
+                            <input type="text" class="model-select-filter" id="model-select-filter" data-i18n-ph="ph.model_filter" placeholder="Filter models…" oninput="filterModelOptions(this.value)" onkeydown="modelFilterKeydown(event)" autocomplete="off" />
+                            <div class="model-select-list" id="model-select-list"></div>
+                        </div>
+                    </div>
+                    <span class="api-model-warning" data-i18n="api.cost_warning">SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
+                </div>
+                <div class="api-bar-row">
+                    <span class="api-bar-label" data-i18n="api.storage_label">Storage:</span>
+                    <select id="storage-provider-select" onchange="setStorageProvider(this.value)">
+                        <option value="local" data-i18n-opt="api.storage_local">Browser local storage</option>
+                        <option value="drive" data-i18n-opt="api.storage_drive">Store in Google Drive</option>
+                    </select>
+                    <span class="api-status missing" id="storage-provider-status">local only</span>
+                </div>
+                <div class="api-bar-row" id="drive-storage-actions-row" style="display: none">
+                    <span class="api-bar-label" data-i18n="api.drive_actions_label">Drive Sync:</span>
+                    <button class="api-bar-save drive-login-btn" onclick="loginDriveStorage()">
+                        <img src="images/GoogleDrive.png" alt="Google Drive" class="drive-login-logo" />
+                        <span data-i18n="btn.login_drive">Log In to Google Drive</span>
+                    </button>
+                    <button class="api-bar-save" onclick="connectDriveStorage()" data-i18n="btn.connect_drive">Connect</button>
+                    <button class="api-bar-save" onclick="syncDriveStorageNow()" style="background: var(--success); color: #0e0c0a" data-i18n="btn.sync_now">Sync Now</button>
+                    <button class="api-bar-save" onclick="disconnectDriveStorage()" style="background: var(--surface3); color: var(--text)" data-i18n="btn.disconnect_drive">Disconnect</button>
+                    <span class="api-status missing" id="drive-storage-status">not connected</span>
+                </div>
+                <div class="api-bar-row" id="drive-storage-hint-row" style="display: none">
+                    <span class="api-inline-note" data-i18n="api.drive_hint">Google Drive storage saves your song history and settings to a private app data folder in your Google account. Only SunoForge can access this data. API keys remain local to this browser.</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ═══ API EXPANDED ═══ -->
-        <div class="api-expanded" id="api-expanded">
-            <div class="api-row">
-                <span class="api-row-label">GeminiKey</span>
-                <input type="password" placeholder="AIza..." value="••••••••••••••" />
-                <button class="btn-save">Save</button>
-                <span class="api-status ok">✓</span>
-            </div>
-            <div class="api-row">
-                <span class="api-row-label">OpenRouter</span>
-                <input type="password" placeholder="sk-or-v1-..." />
-                <button class="btn-save">Save</button>
-                <span class="api-status missing">✗</span>
-            </div>
-            <div class="api-row">
-                <span class="api-row-label">Model</span>
-                <button class="model-select-btn">gemini-3.1-flash-lite-preview (Google) ▾</button>
-            </div>
-            <div class="api-row">
-                <span class="api-row-label">Storage</span>
-                <select style="flex: 1; font-size: 11px; padding: 5px 7px">
-                    <option>Browser local storage</option>
-                    <option>Store in Google Drive</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- ═══ SCROLLABLE SCREENS ═══ -->
-        <div class="screen-area">
-            <!-- ── SETTINGS SCREEN ── -->
-            <div class="screen active" id="screen-settings">
-                <div class="field-group">
-                    <div class="field-label">Song Language</div>
-                    <select>
-                        <option selected>English</option>
-                        <option>German</option>
-                        <option>French</option>
-                        <option>Spanish</option>
-                        <option>Japanese</option>
-                    </select>
+        <div class="main">
+            <div class="panel-left">
+                <div class="left-tabs">
+                    <button class="ltab active" id="ltab-settings" onclick="switchLTab('settings')" data-i18n="nav.settings">Settings</button>
+                    <button class="ltab" id="ltab-vocal" onclick="switchLTab('vocal')" data-i18n="nav.vocal">Vocal</button>
+                    <button class="ltab" id="ltab-structure" onclick="switchLTab('structure')" data-i18n="nav.structure">Structure</button>
+                    <button class="ltab" id="ltab-sound" onclick="switchLTab('sound')" data-i18n="nav.sound">Sound</button>
+                    <button class="ltab" id="ltab-lyrics" onclick="switchLTab('lyrics')" data-i18n="nav.lyrics">Lyrics</button>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Song Title</div>
-                    <input type="text" placeholder="e.g. Dust &amp; Thunder" />
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Concept / Story</div>
-                    <textarea rows="3" placeholder="What is this song about?"></textarea>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Special AI Instructions</div>
-                    <textarea rows="2" placeholder="Optional special instructions to the AI…"></textarea>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Genre</div>
-                    <div class="genre-chips">
-                        <div class="genre-chip">Rock <span style="opacity: 0.5">·</span> Blues Rock <span style="cursor: pointer; opacity: 0.5">×</span></div>
-                        <span class="genre-empty">+ tap to add genre</span>
+                <!-- SETTINGS TAB -->
+                <div class="left-panel-content" id="lpanel-settings">
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.song_language">Song Language</div>
+                        <select id="song-language" onchange="onSongLanguageChange(this)">
+                            <option value="English">English</option>
+                            <option value="German">German</option>
+                            <option value="French">French</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Dutch">Dutch</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Portuguese">Portuguese</option>
+                            <option value="Russian">Russian</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Korean">Korean</option>
+                            <option value="Chinese (Mandarin)">Chinese (Mandarin)</option>
+                            <option value="Chinese (Cantonese)">Chinese (Cantonese)</option>
+                            <option value="custom" data-i18n-opt="btn.lang_custom">Custom...</option>
+                        </select>
+                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="saveSongLanguageCustom(this.value)" />
                     </div>
-                    <div class="tag-row" style="margin-top: 8px">
-                        <div class="tag active">Rock</div>
-                        <div class="tag">Pop</div>
-                        <div class="tag">Folk</div>
-                        <div class="tag">Jazz</div>
-                        <div class="tag">R&amp;B</div>
-                        <div class="tag">Electronic</div>
-                        <div class="tag">Hip-Hop</div>
-                        <div class="tag">Country</div>
-                        <div class="tag">Metal</div>
-                        <div class="tag">Classical</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.song_title">Song Title</div>
+                        <input type="text" id="title" placeholder="e.g. Dust &amp; Thunder" data-i18n-ph="ph.title" />
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Mood</div>
-                    <div class="tag-row">
-                        <div class="tag active">Raw &amp; Defiant</div>
-                        <div class="tag">Melancholic</div>
-                        <div class="tag">Anthemic</div>
-                        <div class="tag">Dark &amp; Brooding</div>
-                        <div class="tag">Soulful &amp; Warm</div>
-                        <div class="tag">Joyful</div>
-                        <div class="tag">Playful &amp; Loose</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.concept">Concept / Story</div>
+                        <textarea id="concept" rows="3" placeholder="What is this song about?" data-i18n-ph="ph.concept"></textarea>
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Goal</div>
-                    <div class="tag-row">
-                        <div class="tag">Background Music</div>
-                        <div class="tag active">Dance Floor Banger</div>
-                        <div class="tag">Meditation</div>
-                        <div class="tag">Workout</div>
-                        <div class="tag">Focus/Study</div>
-                        <div class="tag">Party</div>
-                        <div class="tag">Cinematic</div>
-                        <div class="tag">Storytelling</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.special_inst">Special AI Instructions</div>
+                        <textarea id="special-instructions" rows="3" placeholder="Optional special instructions to the AI" data-i18n-ph="ph.special_inst"></textarea>
                     </div>
-                </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.genre_selection">Genre Selection</div>
 
-                <div class="section-divider"></div>
+                        <!-- Selected Genres Display -->
+                        <div id="selected-genres-display" class="selected-genres-row" style="display: none; margin-bottom: 8px">
+                            <!-- Selected genre chips will appear here -->
+                        </div>
 
-                <div class="field-group">
-                    <div class="field-label">Rhythm</div>
-                    <div class="tag-row">
-                        <div class="tag">Triplet</div>
-                        <div class="tag active">Swing</div>
-                        <div class="tag">Syncopated</div>
-                        <div class="tag">Minimal</div>
-                        <div class="tag">Groove-Based</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                        <!-- Main Genre Selector -->
+                        <div class="genre-selector-label" style="font-size: 11px; color: var(--accent); margin-bottom: 4px; font-weight: 600" data-i18n="lbl.genre_select_main">Select Main Genre:</div>
+                        <div class="tag-row" id="genre-main-tags">
+                            <!-- Main genre tags will be dynamically populated -->
+                        </div>
+
+                        <!-- Sub-Genre Selector (appears when main genre selected) -->
+                        <div id="subgenre-section" style="display: none; margin-top: 8px">
+                            <div class="genre-selector-label" style="font-size: 11px; color: var(--accent); margin-bottom: 4px; font-weight: 600">Select Sub-Genre for <span id="current-main-genre-name" style="color: var(--accent)"></span>:</div>
+                            <div class="tag-row" id="genre-sub-tags">
+                                <!-- Sub-genre tags will be dynamically populated -->
+                            </div>
+                            <div style="margin-top: 8px; display: flex; gap: 6px">
+                                <button class="genre-add-btn" onclick="addSelectedGenre()" id="add-genre-btn" disabled>+ Add this Genre</button>
+                                <button class="genre-cancel-btn" onclick="cancelGenreSelection()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Genre Input -->
+                        <div style="margin-top: 8px">
+                            <button class="tag-add-btn" onclick="showCustomGenreInput()">+ Custom Genre</button>
+                        </div>
+                        <div class="custom-input-row" id="genre-custom-input-row" style="display: none; margin-top: 6px">
+                            <input type="text" id="genre-custom-input" placeholder="e.g. Dream Pop, Shoegaze, etc." data-i18n-ph="ph.genre_custom" onkeydown="if (event.key === 'Enter') confirmCustomGenre();" />
+                            <button class="custom-input-confirm" onclick="confirmCustomGenre()">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomGenreInput()">x</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Groove Feel</div>
-                    <div class="tag-row">
-                        <div class="tag active">Funky</div>
-                        <div class="tag">Smooth</div>
-                        <div class="tag">Driving</div>
-                        <div class="tag">Tight</div>
-                        <div class="tag">Bouncy</div>
-                        <div class="tag">Laid-back</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.mood">Mood</div>
+                        <div class="tag-row" id="mood-tags">
+                            <div class="tag" data-val="Gritty, defiant, cathartic">Raw & Defiant</div>
+                            <div class="tag" data-val="Melancholic, longing, introspective">Melancholic</div>
+                            <div class="tag" data-val="Triumphant, soaring, anthemic">Anthemic</div>
+                            <div class="tag" data-val="Dark, brooding, tense">Dark & Brooding</div>
+                            <div class="tag" data-val="Warm, soulful, intimate">Soulful & Warm</div>
+                            <div class="tag" data-val="Joyful, uplifting, celebratory">Joyful</div>
+                            <div class="tag" data-val="Playful, swinging, loose">Playful & Loose</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('mood-tags', 'mood-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="mood-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="mood-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="mood-custom-input-row" style="display: none">
+                            <input type="text" id="mood-custom-input" placeholder="e.g. Melancholic yet hopeful..." data-i18n-ph="ph.mood_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('mood-tags', 'mood-custom-input', 'mood-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('mood-custom-input-row', 'mood-custom-input')">x</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Perspective</div>
-                    <div class="tag-row">
-                        <div class="tag active">First Person</div>
-                        <div class="tag">Second Person</div>
-                        <div class="tag">Third Person</div>
-                        <div class="tag">Collective</div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.goal">Goal</div>
+                        <div class="tag-row" id="goal-tags">
+                            <div class="tag" data-val="Background Music">Background Music</div>
+                            <div class="tag" data-val="Dance Floor Banger">Dance Floor Banger</div>
+                            <div class="tag" data-val="Meditation">Meditation</div>
+                            <div class="tag" data-val="Workout">Workout</div>
+                            <div class="tag" data-val="Focus/Study">Focus/Study</div>
+                            <div class="tag" data-val="Sleep">Sleep</div>
+                            <div class="tag" data-val="Party">Party</div>
+                            <div class="tag" data-val="Cinematic">Cinematic</div>
+                            <div class="tag" data-val="Gaming">Gaming</div>
+                            <div class="tag" data-val="Podcast Intro/Outro">Podcast</div>
+                            <div class="tag" data-val="TikTok/Social Media">TikTok</div>
+                            <div class="tag" data-val="Emotional Impact">Emotional</div>
+                            <div class="tag" data-val="Storytelling">Storytelling</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('goal-tags', 'goal-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="goal-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="goal-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="goal-custom-input-row" style="display: none">
+                            <input type="text" id="goal-custom-input" placeholder="e.g. Walking soundtrack..." data-i18n-ph="ph.goal_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('goal-tags', 'goal-custom-input', 'goal-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('goal-custom-input-row', 'goal-custom-input')">x</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Rhyme Scheme</div>
-                    <div class="tag-row">
-                        <div class="tag active">AABB</div>
-                        <div class="tag">ABAB</div>
-                        <div class="tag">ABCB</div>
-                        <div class="tag">AABA</div>
-                        <div class="tag">ABBA</div>
-                        <div class="tag">Free / Internal</div>
-                        <div class="tag">None</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.rhythm">Rhythm</div>
+                        <div class="tag-row" id="rhythm-tags">
+                            <div class="tag" data-val="Triplet">Triplet</div>
+                            <div class="tag" data-val="Swing">Swing</div>
+                            <div class="tag" data-val="Syncopated">Syncopated</div>
+                            <div class="tag" data-val="Polyrhythmic">Polyrhythmic</div>
+                            <div class="tag" data-val="Minimal">Minimal</div>
+                            <div class="tag" data-val="Broken">Broken</div>
+                            <div class="tag" data-val="Locked">Locked</div>
+                            <div class="tag" data-val="Groove-Based">Groove-Based</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('rhythm-tags', 'rhythm-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="rhythm-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="rhythm-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="rhythm-custom-input-row" style="display: none">
+                            <input type="text" id="rhythm-custom-input" placeholder="e.g. Shuffled, Off-beat..." data-i18n-ph="ph.rhythm_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('rhythm-tags', 'rhythm-custom-input', 'rhythm-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhythm-custom-input-row', 'rhythm-custom-input')">x</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Tempo</div>
-                    <select>
-                        <option selected>Auto (let AI choose)</option>
-                        <option>Specific BPM / Range</option>
-                    </select>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Song Duration</div>
-                    <select>
-                        <option selected>Auto (let AI choose)</option>
-                        <option>Specific Duration</option>
-                    </select>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Musical Key</div>
-                    <select>
-                        <option selected>Auto (let AI choose)</option>
-                        <option>A minor</option>
-                        <option>E minor</option>
-                        <option>G major</option>
-                    </select>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Time Signature</div>
-                    <select>
-                        <option selected>Auto (let AI choose)</option>
-                        <option>4/4</option>
-                        <option>3/4</option>
-                        <option>6/8</option>
-                    </select>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Verse Length</div>
-                    <select>
-                        <option selected>Follow Structure</option>
-                        <option>4 Bars</option>
-                        <option>8 Bars</option>
-                    </select>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Chorus Length</div>
-                    <select>
-                        <option selected>Follow Structure</option>
-                        <option>8 Bars</option>
-                        <option>16 Bars</option>
-                    </select>
-                </div>
-
-                <div class="section-divider" style="margin-top: 20px"></div>
-                <div class="section-header">Song Presets</div>
-                <div class="preset-row">
-                    <input type="text" placeholder="Preset name…" />
-                    <button class="btn-sm">Save Preset</button>
-                </div>
-                <div class="preset-row" style="margin-top: 6px">
-                    <select>
-                        <option>— select preset —</option>
-                    </select>
-                    <button class="btn-sm">Load</button>
-                    <button class="btn-sm danger">Delete</button>
-                </div>
-            </div>
-            <!-- /screen-settings -->
-
-            <!-- ── VOCAL SCREEN ── -->
-            <div class="screen" id="screen-vocal">
-                <div class="field-group">
-                    <div class="field-label">Lead Vocal Type</div>
-                    <div class="tag-row">
-                        <div class="tag active g4">Single Male</div>
-                        <div class="tag">Single Female</div>
-                        <div class="tag">Male Duo</div>
-                        <div class="tag">Female Duo</div>
-                        <div class="tag">M &amp; F Duo</div>
-                        <div class="tag">Choir / Ensemble</div>
-                        <div class="tag">Instrumental</div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.groove_feel">Groove Feel</div>
+                        <div class="tag-row" id="groove-tags">
+                            <div class="tag" data-val="Funky">Funky</div>
+                            <div class="tag" data-val="Smooth">Smooth</div>
+                            <div class="tag" data-val="Driving">Driving</div>
+                            <div class="tag" data-val="Tight">Tight</div>
+                            <div class="tag" data-val="Loose">Loose</div>
+                            <div class="tag" data-val="Bouncy">Bouncy</div>
+                            <div class="tag" data-val="Laid-back">Laid-back</div>
+                            <div class="tag" data-val="Groovy">Groovy</div>
+                            <div class="tag" data-val="Hypnotic">Hypnotic</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('groove-tags', 'groove-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="groove-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="groove-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="groove-custom-input-row" style="display: none">
+                            <input type="text" id="groove-custom-input" placeholder="e.g. Swinging, Staccato..." data-i18n-ph="ph.groove_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('groove-tags', 'groove-custom-input', 'groove-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('groove-custom-input-row', 'groove-custom-input')">x</button>
+                        </div>
                     </div>
-                </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.perspective">Perspective</div>
+                        <div class="tag-row" id="pov-tags">
+                            <div class="tag" data-val="first person (I/me)">First Person</div>
+                            <div class="tag" data-val="second person (you)">Second Person</div>
+                            <div class="tag" data-val="third person narrative">Third Person</div>
+                            <div class="tag" data-val="collective (we/us)">Collective</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('pov-tags', 'pov-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="pov-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="pov-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="pov-custom-input-row" style="display: none">
+                            <input type="text" id="pov-custom-input" placeholder="e.g. Omniscient narrator, Stream of consciousness..." data-i18n-ph="ph.pov_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('pov-tags', 'pov-custom-input', 'pov-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('pov-custom-input-row', 'pov-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.rhyme_scheme">Rhyme Scheme</div>
+                        <div class="tag-row" id="rhyme-tags">
+                            <div class="tag" data-val="AABB (couplets)">AABB</div>
+                            <div class="tag" data-val="ABAB (alternating)">ABAB</div>
+                            <div class="tag" data-val="ABCB (ballad)">ABCB</div>
+                            <div class="tag" data-val="AABA (standard)">AABA</div>
+                            <div class="tag" data-val="ABBA (enclosed)">ABBA</div>
+                            <div class="tag" data-val="AAAB (tail rhyme)">AAAB</div>
+                            <div class="tag" data-val="AAAA (monorhyme)">AAAA</div>
+                            <div class="tag" data-val="ABCB (ballad)">ABCB</div>
+                            <div class="tag" data-val="XAXA (ballade rhyme)">XAXA</div>
+                            <div class="tag" data-val="AXAA or AAXA (ballade rhyme variant)">AXAA / AAXA</div>
+                            <div class="tag" data-val="No rhymes (prose-like)">None</div>
+                            <div class="tag" data-val="AABBA (limerick rhyme)">AABBA</div>
+                            <div class="tag" data-val="ABAAB (Spenserian rhyme)">ABAAB</div>
+                            <div class="tag" data-val="ABCCBA (mirror rhyme)">ABCCBA</div>
+                            <div class="tag" data-val="AABCCB (chain rhyme)">AABCCB</div>
+                            <div class="tag" data-val="XXAXXA (terza rima rhyme)">XXAXXA</div>
+                            <div class="tag" data-val="Free verse with internal rhymes">Free / Internal</div>
+                            <div class="tag" data-val="Multisyllabic rap rhymes">Multisyllabic</div>
+                            <div class="tag" data-val="Triplet flow rap rhymes">Triplet Flow</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('rhyme-tags', 'rhyme-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="rhyme-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="rhyme-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="rhyme-custom-input-row" style="display: none">
+                            <input type="text" id="rhyme-custom-input" placeholder="e.g. ABCABC, Slant rhymes..." data-i18n-ph="ph.rhyme_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('rhyme-tags', 'rhyme-custom-input', 'rhyme-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('rhyme-custom-input-row', 'rhyme-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.tempo">Tempo</div>
+                        <select id="tempo-mode" onchange="toggleTempoMode()">
+                            <option value="ai" selected>Auto (let AI choose)</option>
+                            <option value="custom">Specific BPM / Range</option>
+                        </select>
+                        <div class="range-slider-container" id="tempo-custom-row" style="display: none">
+                            <div class="range-slider-row">
+                                <span class="range-slider-label" data-i18n="lbl.range_min">Min</span>
+                                <input type="range" id="tempo-min" min="40" max="200" value="90" step="1" oninput="updateTempoRange()" />
+                                <span class="range-slider-value" id="tempo-range-display">90 - 90 BPM</span>
+                            </div>
+                            <div class="range-slider-row">
+                                <span class="range-slider-label" data-i18n="lbl.range_max">Max</span>
+                                <input type="range" id="tempo-max" min="40" max="200" value="90" step="1" oninput="updateTempoRange()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.song_duration">Song Duration</div>
+                        <select id="duration-mode" onchange="toggleDurationMode()">
+                            <option value="none" selected>Auto (let AI choose)</option>
+                            <option value="custom">Specific Duration</option>
+                        </select>
+                        <div class="range-slider-container" id="duration-custom-row" style="display: none">
+                            <div class="range-slider-row">
+                                <span class="range-slider-label" data-i18n="lbl.range_min">Min</span>
+                                <input type="range" id="duration-min" min="60" max="480" value="180" step="30" oninput="updateDurationRange()" />
+                                <span class="range-slider-value" id="duration-range-display">3:00 - 3:00</span>
+                            </div>
+                            <div class="range-slider-row">
+                                <span class="range-slider-label" data-i18n="lbl.range_max">Max</span>
+                                <input type="range" id="duration-max" min="60" max="480" value="180" step="30" oninput="updateDurationRange()" />
+                            </div>
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 6px;
+                                font-family:
+                                    Space Mono,
+                                    monospace;
+                            "
+                            data-i18n="hint.tempo_tip"
+                        >
+                            Leave on AI Choose or enter a single BPM / range like 90-110 BPM.
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.musical_key">Musical Key</div>
+                        <select id="musical-key">
+                            <option value="Auto">Auto (let AI choose)</option>
+                            <option value="C major">C major</option>
+                            <option value="C minor">C minor</option>
+                            <option value="C#/Db major">C#/Db major</option>
+                            <option value="C#/Db minor">C#/Db minor</option>
+                            <option value="D major">D major</option>
+                            <option value="D minor">D minor</option>
+                            <option value="D#/Eb major">D#/Eb major</option>
+                            <option value="D#/Eb minor">D#/Eb minor</option>
+                            <option value="E major">E major</option>
+                            <option value="E minor">E minor</option>
+                            <option value="F major">F major</option>
+                            <option value="F minor">F minor</option>
+                            <option value="F#/Gb major">F#/Gb major</option>
+                            <option value="F#/Gb minor">F#/Gb minor</option>
+                            <option value="G major">G major</option>
+                            <option value="G minor">G minor</option>
+                            <option value="G#/Ab major">G#/Ab major</option>
+                            <option value="G#/Ab minor">G#/Ab minor</option>
+                            <option value="A major">A major</option>
+                            <option value="A minor">A minor</option>
+                            <option value="A#/Bb major">A#/Bb major</option>
+                            <option value="A#/Bb minor">A#/Bb minor</option>
+                            <option value="B major">B major</option>
+                            <option value="B minor">B minor</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.time_signature">Time Signature</div>
+                        <select id="time-signature" onchange="toggleTimeSignatureMode()">
+                            <option value="Auto" selected>Auto (let AI choose)</option>
+                            <option value="4/4">4/4 (Common time)</option>
+                            <option value="3/4">3/4 (Waltz)</option>
+                            <option value="2/4">2/4 (March)</option>
+                            <option value="6/8">6/8 (Compound duple)</option>
+                            <option value="5/4">5/4</option>
+                            <option value="7/4">7/4</option>
+                            <option value="7/8">7/8</option>
+                            <option value="9/8">9/8</option>
+                            <option value="12/8">12/8</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                        <div id="time-signature-custom-row" style="display: none; margin-top: 8px">
+                            <input type="text" id="time-signature-custom" placeholder="e.g., 7/8, 13/16, 5/8" data-i18n-ph="ph.time_sig_custom" style="width: 100%" />
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.verse_length">Verse Length</div>
+                        <select id="verse-length-select">
+                            <option value="" selected>Follow Structure</option>
+                            <option value="4 Bars">4 Bars</option>
+                            <option value="8 Bars">8 Bars</option>
+                            <option value="16 Bars">32 Bars</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.chorus_length">Chorus Length</div>
+                        <select id="chorus-length-select">
+                            <option value="" selected>Follow Structure</option>
+                            <option value="4 Bars">4 Bars</option>
+                            <option value="8 Bars">8 Bars</option>
+                            <option value="16 Bars">16 Bars</option>
+                            <option value="32 Bars">32 Bars</option>
+                        </select>
+                    </div>
 
-                <div class="info-box" style="margin-top: 12px">Configure vocal characteristics. Unspecified fields will be chosen automatically.</div>
-
-                <div class="vocal-profile-box" style="margin-top: 14px">
-                    <div class="vpb-header">Lead Voice — Male</div>
-                    <div class="vpb-grid">
-                        <div class="vpb-field">
-                            <label>Range</label>
-                            <select>
-                                <option>Auto</option>
-                                <option selected>Baritone</option>
-                                <option>Tenor</option>
-                                <option>Bass</option>
+                    <!-- PRESETS SECTION -->
+                    <div class="section-divider" style="margin: 16px 0 12px"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.presets">Song Presets</div>
+                        <div class="preset-row">
+                            <input type="text" id="preset-name-input" placeholder="Preset name…" data-i18n-ph="ph.preset_name" style="flex: 1; min-width: 0" />
+                            <button class="btn-sm" onclick="savePreset()" data-i18n="btn.save_preset">Save Preset</button>
+                        </div>
+                        <div class="preset-row">
+                            <select id="preset-select" style="flex: 1; min-width: 0" onchange="onPresetSelectChange()">
+                                <option value="" data-i18n-opt="ph.preset_select">— select preset —</option>
                             </select>
-                        </div>
-                        <div class="vpb-field">
-                            <label>Accent</label>
-                            <select>
-                                <option selected>Neutral / Auto</option>
-                                <option>American</option>
-                                <option>British</option>
-                                <option>Southern</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600">Style Tags</div>
-                        <div class="tag-row">
-                            <div class="tag active g4" style="font-size: 11px; padding: 4px 8px">Soulful</div>
-                            <div class="tag" style="font-size: 11px; padding: 4px 8px">Raspy</div>
-                            <div class="tag" style="font-size: 11px; padding: 4px 8px">Smooth</div>
-                            <div class="tag" style="font-size: 11px; padding: 4px 8px">Powerful</div>
-                            <div class="tag" style="font-size: 11px; padding: 4px 8px">Breathy</div>
-                            <div class="tag" style="font-size: 11px; padding: 4px 8px">Falsetto</div>
+                            <button class="btn-sm" id="preset-load-btn" onclick="loadPreset()" disabled data-i18n="btn.load_preset">Load</button>
+                            <button class="btn-sm danger" id="preset-delete-btn" onclick="deletePreset()" disabled data-i18n="btn.delete_preset">Delete</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <label class="field-label" style="display: flex; align-items: center; gap: 6px">
-                        <input type="checkbox" style="width: auto" />
-                        Add Choir / Backing Vocals
-                    </label>
-                </div>
-            </div>
-            <!-- /screen-vocal -->
-
-            <!-- ── STRUCTURE SCREEN ── -->
-            <div class="screen" id="screen-structure">
-                <div class="info-box">Choose a song structure. The AI will follow this flow exactly.</div>
-
-                <div class="struct-genre-header" style="margin-top: 12px">Rock</div>
-                <div class="struct-opt active">
-                    <div class="struct-name">Verse-Chorus (Standard)</div>
-                    <div class="struct-flow">Intro → V → PC → Ch → V → PC → Ch → Bridge → Ch → Outro</div>
-                    <div class="struct-desc">Classic radio-ready structure with pre-chorus build</div>
-                </div>
-                <div class="struct-opt">
-                    <div class="struct-name">AAB (Verse-Refrain)</div>
-                    <div class="struct-flow">Intro → V₁ → V₂ → Ch → V₃ → Ch → Bridge → Ch × 2 → Outro</div>
-                    <div class="struct-desc">Blues-rooted storytelling with repeated refrain</div>
-                </div>
-                <div class="struct-opt">
-                    <div class="struct-name">Simple Verse-Chorus</div>
-                    <div class="struct-flow">V → Ch → V → Ch → Bridge → Ch → Outro</div>
-                    <div class="struct-desc">Stripped-back hook-driven format</div>
-                </div>
-
-                <div class="struct-genre-header">Pop</div>
-                <div class="struct-opt">
-                    <div class="struct-name">Modern Pop</div>
-                    <div class="struct-flow">Intro → V → PC → Ch → V → PC → Ch → Bridge → Ch × 2 → Outro</div>
-                    <div class="struct-desc">Chart-ready with strong hook repetition</div>
-                </div>
-
-                <div class="section-divider"></div>
-                <div class="section-header">Custom Structure Builder</div>
-                <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 12px">
-                    <div style="font-size: 11px; color: var(--accent3); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.5; margin-bottom: 10px">Tap blocks to build a custom flow. Add chord progressions and section instructions.</div>
-                    <div class="field-group" style="margin-bottom: 8px">
-                        <input type="text" placeholder="Custom structure name…" style="font-size: 12px" />
+                <!-- VOCAL TAB -->
+                <div class="left-panel-content" id="lpanel-vocal" style="display: none">
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.lead_vocal">Lead Vocal Type</div>
+                        <div class="tag-row" id="vocal-type-tags">
+                            <div class="tag active" data-val="Single Male" onclick="selectVocalType(this)">Single Male</div>
+                            <div class="tag" data-val="Single Female" onclick="selectVocalType(this)">Single Female</div>
+                            <div class="tag" data-val="Male Duo" onclick="selectVocalType(this)">Male Duo</div>
+                            <div class="tag" data-val="Female Duo" onclick="selectVocalType(this)">Female Duo</div>
+                            <div class="tag" data-val="Male & Female Duo" onclick="selectVocalType(this)">Male & Female Duo</div>
+                            <div class="tag" data-val="Choir/Ensemble" onclick="selectVocalType(this)">Choir/Ensemble</div>
+                            <div class="tag" data-val="Instrumental" onclick="selectVocalType(this)">Instrumental</div>
+                        </div>
                     </div>
-                    <div class="tag-row" style="margin-bottom: 8px">
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Intro</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Verse</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Pre-Chorus</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Chorus</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Bridge</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Outro</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Hook</div>
-                        <div class="tag" style="font-size: 11px; padding: 4px 9px">Solo</div>
-                        <button class="tag-add-btn" style="font-size: 11px; padding: 4px 9px">+ Custom</button>
+
+                    <div class="info-box" id="vocal-config-info" style="margin-top: 8px" data-i18n="hint.vocal_config">Configure vocal characteristics. Unspecified fields will be chosen automatically by the song engine.</div>
+                    <div class="info-box" id="instrumental-info" style="margin-top: 8px; display: none" data-i18n="hint.instrumental">Instrumental track with no vocals. Section labels and performance directions will be provided instead of lyrics.</div>
+
+                    <div id="vocal-profiles-container" class="vocal-builder" style="margin-top: 12px">
+                        <!-- Vocal profiles will be dynamically inserted here -->
                     </div>
-                    <div style="min-height: 40px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border); border-radius: 7px; padding: 8px; font-size: 11px; color: var(--text-muted); font-family: &quot;Space Mono&quot;, monospace">No steps added yet…</div>
-                    <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap">
-                        <button class="btn-sm">Use Structure</button>
-                        <button class="btn-sm">Undo Last</button>
-                        <button class="btn-sm danger">Clear</button>
+
+                    <div class="field-group" id="choir-enable-container" style="margin-top: 16px">
+                        <label class="field-label" for="choir-enabled">
+                            <input type="checkbox" id="choir-enabled" onchange="toggleChoir(this.checked)" style="width: auto; margin-right: 6px" />
+                            <span data-i18n="lbl.choir_backing">Add Choir/Backing Vocals</span>
+                        </label>
                     </div>
-                </div>
-            </div>
-            <!-- /screen-structure -->
 
-            <!-- ── SOUND SCREEN ── -->
-            <div class="screen" id="screen-sound">
-                <div class="info-box">Shape the production sound. Each selection is woven into the production notes the AI generates.</div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Era / Decade</div>
-                    <div class="tag-row">
-                        <div class="tag multi">1960s</div>
-                        <div class="tag multi">1970s</div>
-                        <div class="tag multi">1980s</div>
-                        <div class="tag multi">1990s</div>
-                        <div class="tag multi">2000s</div>
-                        <div class="tag multi">2010s</div>
-                        <div class="tag multi active">Modern</div>
-                        <div class="tag multi">Timeless</div>
-                        <button class="tag-add-btn">+ Custom</button>
+                    <div id="choir-builder-container" style="display: none; margin-top: 12px">
+                        <!-- Choir builder will be inserted here -->
                     </div>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Instrumentation Focus</div>
-                    <div class="tag-row">
-                        <div class="tag multi">Acoustic</div>
-                        <div class="tag multi active">Full Band</div>
-                        <div class="tag multi">Electronic</div>
-                        <div class="tag multi">Strings-Led</div>
-                        <div class="tag multi">Horns Section</div>
-                        <div class="tag multi">Solo + Voice</div>
-                        <div class="tag multi">Heavy Guitar</div>
-                        <div class="tag multi">Hybrid Organic</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Instruments</div>
-                    <div class="tag-row">
-                        <div class="tag multi active">Electric Guitar</div>
-                        <div class="tag multi active">Bass Guitar</div>
-                        <div class="tag multi active">Drums (Acoustic)</div>
-                        <div class="tag multi">Acoustic Piano</div>
-                        <div class="tag multi">Synthesizer</div>
-                        <div class="tag multi">Saxophone</div>
-                        <div class="tag multi">String Section</div>
-                        <div class="tag multi">Hammond Organ</div>
-                        <div class="tag multi">Trumpet</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Bass</div>
-                    <div class="tag-row">
-                        <div class="tag active">Warm Bass</div>
-                        <div class="tag">Punchy Bass</div>
-                        <div class="tag">Deep Sub-Bass</div>
-                        <div class="tag">808 Bass</div>
-                        <div class="tag">Melodic Bass</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Production Style</div>
-                    <div class="tag-row">
-                        <div class="tag multi">Raw &amp; Live</div>
-                        <div class="tag multi active">Polished Studio</div>
-                        <div class="tag multi">Lo-Fi</div>
-                        <div class="tag multi">Cinematic</div>
-                        <div class="tag multi">Minimalist</div>
-                        <div class="tag multi">Experimental</div>
-                        <div class="tag multi">Bedroom / DIY</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Mix Character</div>
-                    <div class="tag-row">
-                        <div class="tag multi">Warm Analog</div>
-                        <div class="tag multi active">Crisp Digital</div>
-                        <div class="tag multi">Deep Low-End</div>
-                        <div class="tag multi">Bright &amp; Airy</div>
-                        <div class="tag multi">Vocal-Forward</div>
-                        <div class="tag multi">Dynamic &amp; Open</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Spatial / Effects</div>
-                    <div class="tag-row">
-                        <div class="tag multi active">Reverb-Heavy</div>
-                        <div class="tag multi">Delay Effects</div>
-                        <div class="tag multi active">Wide Stereo</div>
-                        <div class="tag multi">Echo</div>
-                        <div class="tag multi">Chorus</div>
-                        <div class="tag multi">Medium Distortion</div>
-                        <button class="tag-add-btn">+ Custom</button>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <div class="field-label">Exclusions</div>
-                    <input type="text" placeholder="e.g. banjo, trap, country…" />
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="field-group">
-                    <label class="field-label" style="display: flex; align-items: center; gap: 6px">
-                        <input type="checkbox" style="width: auto" />
-                        Suggest Influences
-                    </label>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-family: &quot;Space Mono&quot;, monospace">Key Influences / Sounds Like</div>
-                    <div style="display: flex; gap: 6px">
-                        <input type="text" placeholder="e.g. Hendrix, Coltrane…" />
-                        <button class="btn-sm">+ Add</button>
-                    </div>
-                </div>
-            </div>
-            <!-- /screen-sound -->
-
-            <!-- ── LYRICS SCREEN ── -->
-            <div class="screen" id="screen-lyrics">
-                <div class="info-box">Provide your own lyrics for the AI to work with.</div>
-
-                <div class="field-group" style="margin-top: 12px">
-                    <div class="field-label">What should the AI do with your lyrics?</div>
-                    <div class="tag-row" style="margin-top: 4px">
-                        <div class="tag active">Complete the song</div>
-                        <div class="tag">Rewrite / improve</div>
-                        <div class="tag">Match my style</div>
-                        <div class="tag">Fit to structure</div>
-                        <div class="tag">Keep lyrics</div>
-                        <div class="tag">Update directions</div>
-                    </div>
-                </div>
-
-                <div class="section-divider"></div>
-
-                <div class="lmode-toggle">
-                    <button class="lmode-btn active">All at once</button>
-                    <button class="lmode-btn">By section</button>
-                </div>
-
-                <div class="field-group" style="margin-top: 10px">
-                    <div class="field-label">Your Lyrics</div>
-                    <textarea rows="14" placeholder="Paste or type your lyrics here…&#10;&#10;Label sections like:&#10;[Verse]&#10;Your verse here...&#10;&#10;[Chorus]&#10;Your chorus…"></textarea>
-                </div>
-            </div>
-            <!-- /screen-lyrics -->
-
-            <!-- ── OUTPUT SCREEN ── -->
-            <div class="screen" id="screen-output">
-                <div class="output-tabs">
-                    <button class="otab active" onclick="switchOTab(this, 'out-output')">Output</button>
-                    <button class="otab" onclick="switchOTab(this, 'out-chords')">Chords</button>
-                    <button class="otab" onclick="switchOTab(this, 'out-history')">History</button>
-                </div>
-
-                <!-- Output Content -->
-                <div id="out-output">
-                    <div class="output-card">
-                        <div class="card-header">
-                            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+                <!-- STRUCTURE TAB -->
+                <div class="left-panel-content" id="lpanel-structure" style="display: none">
+                    <div class="info-box" data-i18n="hint.structure">Choose a song structure for your selected genre. The AI will follow this flow exactly.</div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.custom_structure">Build a custom structure from scratch</div>
+                        <div class="custom-structure-builder">
+                            <div class="info-box green" data-i18n="hint.structure_builder">
+                                Click any structure block to append it to your custom flow. Re-click blocks to repeat sections. Use the step controls to move, remove, undo, or clear. Add chord progressions and section-specific instructions (e.g., whispered, building intensity) using the input
+                                fields.
+                            </div>
+                            <div class="custom-structure-grid">
+                                <input type="text" id="custom-structure-name" placeholder="Custom structure name (e.g. Cinematic Slow Burn)" data-i18n-ph="ph.struct_name" />
+                                <input type="text" id="custom-structure-tag" placeholder="Short tag (e.g. Builder)" data-i18n-ph="ph.struct_tag" />
+                                <textarea id="custom-structure-desc" placeholder="Optional description for this custom structure." data-i18n-ph="ph.struct_desc"></textarea>
                                 <div>
-                                    <div class="card-title">Dust &amp; Thunder</div>
-                                    <div class="card-subtitle">"A storm-chaser who discovers the eye of the hurricane holds the answers he'd been running from."</div>
-                                    <div class="card-meta">E minor · 4/4 · 108 BPM · Straight 8ths</div>
-                                    <div class="genre-badge">Blues Rock</div>
-                                </div>
-                                <div style="flex-shrink: 0">
-                                    <div style="font-size: 9px; font-family: &quot;Space Mono&quot;, monospace; color: var(--text-muted); text-align: right">987 / 1000</div>
+                                    <div class="field-label" style="margin-bottom: 6px" data-i18n="lbl.custom_flow">Custom flow</div>
+                                    <div class="custom-structure-flow-preview" id="custom-structure-flow-preview">No custom steps yet.</div>
                                 </div>
                             </div>
-                            <div class="card-actions">
-                                <button class="btn-sm">Copy Suno</button>
-                                <button class="btn-sm">Edit Style</button>
-                                <button class="btn-sm">→ Lyrics Tab</button>
-                                <button class="btn-sm">Export</button>
+                            <div style="margin-bottom: 12px">
+                                <div class="field-label" style="margin-bottom: 6px" data-i18n="lbl.add_custom_block">Add Custom Block</div>
+                                <div style="display: flex; gap: 6px">
+                                    <input type="text" id="custom-structure-point-input" placeholder="e.g. Epic Build, Ambient Pad, Rap Verse..." style="flex: 1" data-i18n-ph="ph.struct_point" onkeydown="if (event.key === 'Enter') addCustomStructureBlock();" />
+                                    <button class="btn-sm" onclick="addCustomStructureBlock()" data-i18n="btn.add_block">+ Add Block</button>
+                                </div>
+                            </div>
+                            <div class="custom-structure-palette" id="structure-builder-palette"></div>
+                            <div class="custom-structure-sequence" id="custom-structure-sequence"></div>
+                            <div class="custom-structure-actions">
+                                <button class="btn-sm" onclick="applyCustomStructureBuilder()" data-i18n="btn.use_custom_struct">Use Custom Structure</button>
+                                <button class="btn-sm" onclick="undoCustomStructurePoint()" data-i18n="btn.undo_last">Undo Last</button>
+                                <button class="btn-sm danger" onclick="clearCustomStructureBuilder()" data-i18n="btn.clear_builder">Clear Builder</button>
                             </div>
                         </div>
-
-                        <div class="block">
-                            <div class="block-header">Style Prompt</div>
-                            <div style="font-size: 11px; color: var(--accent2); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6">Blues rock, electric guitar riffs, baritone vocals, raw &amp; defiant, warm bass, wide stereo, modern production, 108 BPM, E minor, straight 8ths</div>
-                            <div class="sound-pills">
-                                <span class="sound-pill sp-era">Modern</span>
-                                <span class="sound-pill sp-inst">Full Band</span>
-                                <span class="sound-pill sp-mix">Crisp Digital</span>
-                            </div>
-                        </div>
-
-                        <div class="block">
-                            <div class="block-header">Lyrics</div>
-                            <div class="lyric-section">
-                                <div class="lyric-label verse">
-                                    <span>Intro</span>
-                                    <button class="btn-regen">↺ Regen</button>
-                                </div>
-                                <div class="lyric-direction">(Sparse guitar, building tension)</div>
-                                <div class="lyric-line">[Intro] [Sparse guitar riff]</div>
-                            </div>
-                            <div class="lyric-section">
-                                <div class="lyric-label verse">
-                                    <span>Verse 1</span>
-                                    <button class="btn-regen">↺ Regen</button>
-                                </div>
-                                <div class="lyric-direction">(Raw, spoken-word delivery at first)</div>
-                                <div class="lyric-line">[Verse 1] I been chasing lightning, down the old Route Nine Torn maps and coffee cups, the highway's my design They said, turn back, brother, the sky's about to break But I ain't never listened — got too much at stake</div>
-                            </div>
-                            <div class="lyric-section">
-                                <div class="lyric-label chorus">
-                                    <span>Chorus</span>
-                                    <button class="btn-regen">↺ Regen</button>
-                                </div>
-                                <div class="lyric-direction">(Full band, soaring and anthemic)</div>
-                                <div class="lyric-line">[Chorus] DUST AND THUNDER — rolling through my veins Dust and thunder — washing out the stains Every scar I carry, every storm I've known Led me to the eye, where I found my way back home</div>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Structure for: <span id="struct-genre-label" style="color: var(--accent); font-weight: 700"></span></div>
+                        <div class="structure-list" id="structure-list"></div>
                     </div>
                 </div>
 
-                <!-- Chords Content -->
-                <div id="out-chords" style="display: none">
-                    <div class="output-card">
-                        <div class="card-header">
-                            <div class="card-title" style="font-size: 16px">Dust &amp; Thunder</div>
-                            <div class="card-meta">Chords &amp; Harmonic Analysis</div>
+                <!-- SOUND TAB -->
+                <div class="left-panel-content" id="lpanel-sound" style="display: none">
+                    <div class="info-box" data-i18n="hint.sound_tab">Shape the production sound. Each selection is woven into the production notes and lyrics direction the AI generates.</div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.era_decade">Era / Decade</div>
+                        <div class="tag-row" id="era-tags">
+                            <div class="tag multi" data-val="1920s-40s (pre-war, big band era)">1920s-40s</div>
+                            <div class="tag multi" data-val="1950s (early rock, doo-wop, jump blues)">1950s</div>
+                            <div class="tag multi" data-val="1960s (Motown, British Invasion, psychedelia)">1960s</div>
+                            <div class="tag multi" data-val="1970s (classic rock, funk, disco, prog)">1970s</div>
+                            <div class="tag multi" data-val="1980s (new wave, hair metal, synth-pop)">1980s</div>
+                            <div class="tag multi" data-val="1990s (grunge, alt-rock, golden-age hip-hop)">1990s</div>
+                            <div class="tag multi" data-val="2000s (emo, nu-metal, early digital)">2000s</div>
+                            <div class="tag multi" data-val="2010s (indie bloom, trap rise, bedroom pop)">2010s</div>
+                            <div class="tag multi active" data-val="Modern / 2020s (streaming-era production)">Modern</div>
+                            <div class="tag multi" data-val="Timeless / era-agnostic">Timeless</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('era-tags', 'era-custom-row')">+ Custom</button>
                         </div>
-                        <div class="block">
-                            <div class="block-header">Key Information</div>
-                            <div class="key-box">
-                                <div class="key-item"><span class="key-k">Key</span><span class="key-v">E minor</span></div>
-                                <div class="key-item"><span class="key-k">Time Sig</span><span class="key-v">4/4</span></div>
-                                <div class="key-item"><span class="key-k">Tempo</span><span class="key-v">108 BPM</span></div>
-                                <div class="key-item"><span class="key-k">Feel</span><span class="key-v">Straight 8ths</span></div>
-                            </div>
+                        <div class="custom-input-row" id="era-custom-row" style="display: none">
+                            <input type="text" id="era-custom-input" placeholder="e.g. Late 70s Krautrock..." data-i18n-ph="ph.era_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('era-tags', 'era-custom-input', 'era-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('era-tags', 'era-custom-input', 'era-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('era-custom-row', 'era-custom-input')">x</button>
                         </div>
-                        <div class="block">
-                            <div class="block-header">Chord Palette</div>
-                            <div class="chord-grid">
-                                <div class="chord-card">
-                                    <div class="chord-name">Em</div>
-                                    <div class="chord-role">Tonic</div>
-                                </div>
-                                <div class="chord-card">
-                                    <div class="chord-name">C</div>
-                                    <div class="chord-role">Subtonic</div>
-                                </div>
-                                <div class="chord-card">
-                                    <div class="chord-name">G</div>
-                                    <div class="chord-role">Mediant</div>
-                                </div>
-                                <div class="chord-card">
-                                    <div class="chord-name">D</div>
-                                    <div class="chord-role">Subtonic</div>
-                                </div>
-                                <div class="chord-card">
-                                    <div class="chord-name">Am</div>
-                                    <div class="chord-role">Subdominant</div>
-                                </div>
-                            </div>
-                            <div class="chord-prog">
-                                Verse: Em - C - G - D<br />
-                                Chorus: C - G - D - Em<br />
-                                Bridge: Am - Em - C - D
-                            </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.instruments">Instruments</div>
+                        <div class="tag-row" id="instruments-tags">
+                            <div class="tag multi" data-val="Acoustic Guitar">Acoustic Guitar</div>
+                            <div class="tag multi" data-val="Nylon Guitar">Nylon Guitar</div>
+                            <div class="tag multi" data-val="Electric Guitar">Electric Guitar</div>
+                            <div class="tag multi" data-val="Classical Guitar">Classical Guitar</div>
+                            <div class="tag multi" data-val="Steel Guitar">Steel Guitar</div>
+                            <div class="tag multi" data-val="Pedal Steel Guitar">Pedal Steel Guitar</div>
+                            <div class="tag multi" data-val="Dobro">Dobro</div>
+                            <div class="tag multi" data-val="Bass Guitar">Bass Guitar</div>
+                            <div class="tag multi" data-val="Upright Bass">Upright Bass</div>
+                            <div class="tag multi" data-val="Synth Bass">Synth Bass</div>
+                            <div class="tag multi" data-val="Acoustic Piano">Acoustic Piano</div>
+                            <div class="tag multi" data-val="Electric Piano">Electric Piano</div>
+                            <div class="tag multi" data-val="Concert Grand Piano">Concert Grand Piano</div>
+                            <div class="tag multi" data-val="Upright Piano">Upright Piano</div>
+                            <div class="tag multi" data-val="Synthesizer">Synthesizer</div>
+                            <div class="tag multi" data-val="Moog Synthesizer">Moog Synthesizer</div>
+                            <div class="tag multi" data-val="Wavetable Synth">Wavetable Synth</div>
+                            <div class="tag multi" data-val="Pad Synth">Pad Synth</div>
+                            <div class="tag multi" data-val="Lead Synth">Lead Synth</div>
+                            <div class="tag multi" data-val="Bass Synth">Bass Synth</div>
+                            <div class="tag multi" data-val="Pipe Organ">Pipe Organ</div>
+                            <div class="tag multi" data-val="Hammond Organ">Hammond Organ</div>
+                            <div class="tag multi" data-val="Electric Organ">Electric Organ</div>
+                            <div class="tag multi" data-val="Wurlitzer Organ">Wurlitzer Organ</div>
+                            <div class="tag multi" data-val="String Section">String Section</div>
+                            <div class="tag multi" data-val="String Quartet">String Quartet</div>
+                            <div class="tag multi" data-val="Violin">Violin</div>
+                            <div class="tag multi" data-val="Cello">Cello</div>
+                            <div class="tag multi" data-val="Brass Section">Brass Section</div>
+                            <div class="tag multi" data-val="Trumpet">Trumpet</div>
+                            <div class="tag multi" data-val="Trombone">Trombone</div>
+                            <div class="tag multi" data-val="French Horn">French Horn</div>
+                            <div class="tag multi" data-val="Tuba">Tuba</div>
+                            <div class="tag multi" data-val="Horns">Horns</div>
+                            <div class="tag multi" data-val="Saxophone">Saxophone</div>
+                            <div class="tag multi" data-val="Woodwind Section">Woodwind Section</div>
+                            <div class="tag multi" data-val="Clarinet">Clarinet</div>
+                            <div class="tag multi" data-val="Oboe">Oboe</div>
+                            <div class="tag multi" data-val="Flute">Flute</div>
+                            <div class="tag multi" data-val="Harp">Harp</div>
+                            <div class="tag multi" data-val="Ukulele">Ukulele</div>
+                            <div class="tag multi" data-val="Mandolin">Mandolin</div>
+                            <div class="tag multi" data-val="Banjo">Banjo</div>
+                            <div class="tag multi" data-val="Harmonica">Harmonica</div>
+                            <div class="tag multi" data-val="Vibraphone">Vibraphone</div>
+                            <div class="tag multi" data-val="Marimba">Marimba</div>
+                            <div class="tag multi" data-val="Drums (Acoustic)">Drums (Acoustic)</div>
+                            <div class="tag multi" data-val="Drums (Electronic)">Drums (Electronic)</div>
+                            <div class="tag multi" data-val="Timpani">Timpani</div>
+                            <div class="tag multi" data-val="Gong">Gong</div>
+                            <div class="tag multi" data-val="Cowbell">Cowbell</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('instruments-tags', 'instruments-custom-row')">+ Custom</button>
                         </div>
+                        <div class="custom-input-row" id="instruments-custom-row" style="display: none">
+                            <input type="text" id="instruments-custom-input" placeholder="e.g. Theremin, Didgeridoo..." data-i18n-ph="ph.instruments_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('instruments-tags', 'instruments-custom-input', 'instruments-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('instruments-custom-row', 'instruments-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.inst_focus">Instrumentation Focus</div>
+                        <div class="tag-row" id="inst-tags">
+                            <div class="tag multi" data-val="Acoustic only - no electric instruments">Acoustic</div>
+                            <div class="tag multi" data-val="Full band - guitar, bass, drums, keys">Full Band</div>
+                            <div class="tag multi" data-val="Electronic / synth-forward - pads, synths, programmed drums">Electronic</div>
+                            <div class="tag multi" data-val="Strings-led - violin, cello, viola as primary texture">Strings-Led</div>
+                            <div class="tag multi" data-val="Horns section - brass and woodwinds prominent">Horns Section</div>
+                            <div class="tag multi" data-val="Solo instrument + voice - guitar or piano only">Solo + Voice</div>
+                            <div class="tag multi" data-val="Heavy guitar-driven - distortion, power chords, riffs">Heavy Guitar</div>
+                            <div class="tag multi" data-val="Rhythm section focus - bass and drums carry the groove">Rhythm-Led</div>
+                            <div class="tag multi" data-val="Hybrid - organic instruments blended with electronics">Hybrid Organic</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('inst-tags', 'inst-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="inst-custom-row" style="display: none">
+                            <input type="text" id="inst-custom-input" placeholder="..." data-i18n-ph="ph.inst_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('inst-tags', 'inst-custom-input', 'inst-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('inst-custom-row', 'inst-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.bass">Bass</div>
+                        <div class="tag-row" id="bass-tags">
+                            <div class="tag" data-val="Deep Sub-Bass">Deep Sub-Bass</div>
+                            <div class="tag" data-val="808 Bass">808 Bass</div>
+                            <div class="tag" data-val="Warm Bass">Warm Bass</div>
+                            <div class="tag" data-val="Punchy Bass">Punchy Bass</div>
+                            <div class="tag" data-val="Clean Bass">Clean Bass</div>
+                            <div class="tag" data-val="Fuzzy Bass">Fuzzy Bass</div>
+                            <div class="tag" data-val="Melodic Bass">Melodic Bass</div>
+                            <div class="tag" data-val="Minimal Bass">Minimal Bass</div>
+                            <div class="tag" data-val="Prominent Bass">Prominent Bass</div>
+                            <div class="tag" data-val="Subtle Bass">Subtle Bass</div>
+                            <div class="tag" data-val="Filtered Bass">Filtered Bass</div>
+                            <div class="tag" data-val="Synth Bass">Synth Bass</div>
+                            <div class="tag" data-val="Acoustic Bass">Acoustic Bass</div>
+                            <div class="tag" data-val="Fretless Bass">Fretless Bass</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('bass-tags', 'bass-custom-input-row')">+ Custom</button>
+                        </div>
+                        <div class="tag-row" id="bass-custom-row" style="display: none; margin-top: 4px">
+                            <div class="tag-custom" id="bass-custom-tag"></div>
+                        </div>
+                        <div class="custom-input-row" id="bass-custom-input-row" style="display: none">
+                            <input type="text" id="bass-custom-input" placeholder="e.g. Slap bass, Distorted bass..." data-i18n-ph="ph.bass_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('bass-tags', 'bass-custom-input', 'bass-custom-input-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('bass-custom-input-row', 'bass-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.spatial_effects">Spatial / Effects</div>
+                        <div class="tag-row" id="spatial-tags">
+                            <div class="tag multi" data-val="Reverb-Heavy">Reverb-Heavy</div>
+                            <div class="tag multi" data-val="Delay Effects">Delay Effects</div>
+                            <div class="tag multi" data-val="Wide Stereo">Wide Stereo</div>
+                            <div class="tag multi" data-val="Dolby Atmos">Dolby Atmos</div>
+                            <div class="tag multi" data-val="Panning">Panning</div>
+                            <div class="tag multi" data-val="Spatial Effects">Spatial Effects</div>
+                            <div class="tag multi" data-val="Echo">Echo</div>
+                            <div class="tag multi" data-val="Chorus">Chorus</div>
+                            <div class="tag multi" data-val="Flanger">Flanger</div>
+                            <div class="tag multi" data-val="Phaser">Phaser</div>
+                            <div class="tag multi" data-val="No Distortion">No Distortion</div>
+                            <div class="tag multi" data-val="Light Distortion">Light Distortion</div>
+                            <div class="tag multi" data-val="Medium Distortion">Medium Distortion</div>
+                            <div class="tag multi" data-val="Heavy Distortion">Heavy Distortion</div>
+                            <div class="tag multi" data-val="No Compression">No Compression</div>
+                            <div class="tag multi" data-val="Light Compression">Light Compression</div>
+                            <div class="tag multi" data-val="Medium Compression">Medium Compression</div>
+                            <div class="tag multi" data-val="Heavy Compression">Heavy Compression</div>
+                            <div class="tag multi" data-val="No Modulation">No Modulation</div>
+                            <div class="tag multi" data-val="Light Modulation">Light Modulation</div>
+                            <div class="tag multi" data-val="Medium Modulation">Medium Modulation</div>
+                            <div class="tag multi" data-val="Heavy Modulation">Heavy Modulation</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('spatial-tags', 'spatial-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="spatial-custom-row" style="display: none">
+                            <input type="text" id="spatial-custom-input" placeholder="e.g. Tremolo, Ring modulation..." data-i18n-ph="ph.spatial_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('spatial-tags', 'spatial-custom-input', 'spatial-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('spatial-custom-row', 'spatial-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.exclusions">Exclusions</div>
+                        <input type="text" id="instrument-exclude" placeholder="Comma-separated instrument and styles to exclude (e.g. banjo, trap, country)" data-i18n-ph="ph.exclusions" />
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 6px;
+                                font-family:
+                                    Space Mono,
+                                    monospace;
+                            "
+                            data-i18n="hint.exclusions_tip"
+                        >
+                            These instruments will be excluded from arrangement and style prompts.
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.production_style">Production Style</div>
+                        <div class="tag-row" id="prodstyle-tags">
+                            <div class="tag multi" data-val="Raw & live - minimal overdubs, room sound, first-take energy">Raw & Live</div>
+                            <div class="tag multi active" data-val="Polished studio - multi-layered, produced, radio-ready">Polished Studio</div>
+                            <div class="tag multi" data-val="Lo-fi - tape hiss, vinyl crackle, intentional imperfection">Lo-Fi</div>
+                            <div class="tag multi" data-val="Cinematic / orchestral - sweeping arrangements, strings, brass">Cinematic</div>
+                            <div class="tag multi" data-val="Minimalist - sparse, lots of space and silence">Minimalist</div>
+                            <div class="tag multi" data-val="Experimental / avant-garde - unconventional sounds and structures">Experimental</div>
+                            <div class="tag multi" data-val="Live concert / arena - big reverb, crowd energy, anthemic">Live / Arena</div>
+                            <div class="tag multi" data-val="Bedroom / DIY - intimate, self-produced, vulnerable">Bedroom / DIY</div>
+                            <div class="tag multi" data-val="Club Ready - low-end clarity, dynamic energy">Club Ready</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('prodstyle-tags', 'prodstyle-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="prodstyle-custom-row" style="display: none">
+                            <input type="text" id="prodstyle-custom-input" placeholder="e.g. Vintage tape echo..." data-i18n-ph="ph.prodstyle_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('prodstyle-tags', 'prodstyle-custom-input', 'prodstyle-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('prodstyle-custom-row', 'prodstyle-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.mix_character">Mix Character</div>
+                        <div class="tag-row" id="mix-tags">
+                            <div class="tag multi" data-val="Warm analog - tape saturation, soft highs, rounded transients">Warm Analog</div>
+                            <div class="tag multi active" data-val="Crisp digital - clean, precise, wide stereo, no tape hiss, no analogue hiss">Crisp Digital</div>
+                            <div class="tag multi" data-val="Heavy compression - pumping, dense, loud">Heavy Compression</div>
+                            <div class="tag multi" data-val="Dynamic and open - wide dynamic range, minimal limiting">Dynamic & Open</div>
+                            <div class="tag multi" data-val="Deep low-end - bass-forward, sub-heavy mix">Deep Low-End</div>
+                            <div class="tag multi" data-val="Bright and airy - elevated highs, lots of air and shimmer">Bright & Airy</div>
+                            <div class="tag multi" data-val="Mid-forward - vocals and guitars pushed forward in the mix">Mid-Forward</div>
+                            <div class="tag multi" data-val="Wet and reverb-heavy - cavernous spaces, long tails">Wet / Reverb-Heavy</div>
+                            <div class="tag multi" data-val="Dry and intimate - close-micd, no reverb, in-your-face">Dry & Intimate</div>
+                            <div class="tag multi" data-val="Loud and punchy - high energy, impactful transients">Loud and Punchy</div>
+                            <div class="tag multi" data-val="Balanced - even frequency response, neutral character">Balanced</div>
+                            <div class="tag multi" data-val="Vocal-forward - vocals prominent, clear, upfront">Vocal-Forward</div>
+                            <div class="tag multi" data-val="Vocal-balanced - vocals blend naturally with instruments">Vocal-Balanced</div>
+                            <div class="tag multi" data-val="Instrumental-focused - instruments emphasized, vocals supportive">Instrumental-Focused</div>
+                            <div class="tag multi" data-val="Warm-mastering - smooth warmth in final master">Warm-Mastering</div>
+                            <div class="tag multi" data-val="Bright-mastering - clear, crisp highs in final master">Bright-Mastering</div>
+                            <div class="tag multi" data-val="Dark-mastering - rolled-off highs, subdued brightness">Dark-Mastering</div>
+                            <div class="tag multi" data-val="Headphone-optimized - tight stereo image, detail-focused">Headphone-Optimized</div>
+                            <div class="tag multi" data-val="Mono-compatible - maintains quality when summed to mono">Mono-Compatible</div>
+                            <button class="tag-add-btn" onclick="showCustomInput('mix-tags', 'mix-custom-row')">+ Custom</button>
+                        </div>
+                        <div class="custom-input-row" id="mix-custom-row" style="display: none">
+                            <input type="text" id="mix-custom-input" placeholder="e.g. Sidechain pumping..." data-i18n-ph="ph.mix_custom" onkeydown="if (event.key === 'Enter') confirmCustomTag('mix-tags', 'mix-custom-input', 'mix-custom-row');" />
+                            <button class="custom-input-confirm" onclick="confirmCustomTag('mix-tags', 'mix-custom-input', 'mix-custom-row')">Add</button>
+                            <button class="custom-input-cancel" onclick="hideCustomInput('mix-custom-row', 'mix-custom-input')">x</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="field-group">
+                        <label class="field-label" for="enable-influences-checkbox" style="display: flex; align-items: flex-start; gap: 4px; justify-content: flex-start; align-self: flex-start; padding-bottom: 4px">
+                            <input type="checkbox" id="enable-influences-checkbox" style="flex-shrink: 0" />
+                            <span data-i18n="lbl.suggest_influences">Suggest Influences</span>
+                        </label>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px" data-i18n="hint.influences_tip">Key Influences / Sounds Like (Must be Suno compatible)</div>
+                        <div class="influence-input-row">
+                            <input type="text" id="influence-input" placeholder="e.g. Hendrix, Coltrane..." data-i18n-ph="ph.influence" onkeydown="if (event.key === 'Enter') addInfluence();" />
+                            <button class="btn-add-inf" onclick="addInfluence()" data-i18n="btn.add_influence">+ Add</button>
+                        </div>
+                        <div class="influence-chips" id="influence-chips"></div>
+                        <div class="tag-row" style="margin-top: 6px" id="inf-suggest-tags"></div>
                     </div>
                 </div>
 
-                <!-- History Content -->
-                <div id="out-history" style="display: none">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
-                        <div class="section-header" style="margin-bottom: 0">Saved Songs</div>
-                        <div style="display: flex; gap: 5px">
-                            <button class="btn-sm">Backup</button>
-                            <button class="btn-sm">Import</button>
-                            <button class="btn-sm danger">Clear All</button>
+                <!-- LYRICS TAB -->
+                <div class="left-panel-content" id="lpanel-lyrics" style="display: none">
+                    <div class="info-box" data-i18n="hint.lyrics_tab">Provide your own lyrics for the AI to work with.</div>
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.lyrics_ai_action">What should the AI do with your lyrics?</div>
+                        <div class="tag-row" id="aimode-tags">
+                            <div class="tag active" data-val="complete" data-i18n="aimode.complete">Complete the song</div>
+                            <div class="tag" data-val="rewrite" data-i18n="aimode.rewrite">Rewrite / improve</div>
+                            <div class="tag" data-val="match" data-i18n="aimode.match">Match my style</div>
+                            <div class="tag" data-val="fit" data-i18n="aimode.fit">Fit to structure</div>
+                            <div class="tag" data-val="keep" data-i18n="aimode.keep">Keep my current lyrics</div>
+                            <div class="tag" data-val="redir" data-i18n="aimode.redir">Update directions</div>
                         </div>
                     </div>
-                    <div class="hist-item">
-                        <div>
-                            <div class="hist-title">Dust &amp; Thunder</div>
-                            <div class="hist-meta">Blues Rock · E minor · Mar 28, 2026</div>
-                        </div>
-                        <div class="hist-actions">
-                            <button class="btn-sm">Load</button>
-                            <button class="btn-sm danger">×</button>
+                    <div class="field-group" style="flex: 1; display: flex; flex-direction: column">
+                        <div class="field-label" data-i18n="lbl.your_lyrics">Your Lyrics</div>
+                        <textarea id="lyrics-input" style="flex: 1; min-height: 0" data-i18n-ph="ph.lyrics_input" placeholder="Paste or type your lyrics here...&#10;&#10;Label sections like:&#10;[Verse]&#10;Your verse here...&#10;&#10;[Chorus]&#10;Your chorus..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="panel-right">
+                <!-- ACTION PANEL -->
+                <div class="action-panel">
+                    <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-i18n="btn.analyze">Analyze</button>
+                    <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">Write My Song</button>
+                    <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">Copy to Suno</button>
+                    <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">Reset</button>
+                    <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge/wiki', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">Help</button>
+                </div>
+
+                <div class="right-tabs">
+                    <button class="rtab active" id="rtab-output" onclick="switchRTab('output')" data-i18n="nav.output">Output</button>
+                    <button class="rtab" id="rtab-chords" onclick="switchRTab('chords')" data-i18n="nav.chords">Chords</button>
+                    <button class="rtab" id="rtab-history" onclick="switchRTab('history')"><span data-i18n="nav.history">History</span> <span id="hist-count" style="opacity: 0.5"></span></button>
+                </div>
+                <div class="right-content" id="tab-output">
+                    <div class="output-empty" id="empty-state">
+                        <div class="empty-icon"></div>
+                        <div class="empty-label" data-i18n="empty.output_label">Your studio is ready</div>
+                        <div class="empty-sub" data-i18n="empty.output_sub">Configure your song on the left and hit &quot;Write My Song.&quot;</div>
+                    </div>
+                </div>
+                <div class="right-content" id="tab-chords" style="display: none">
+                    <div class="output-empty" id="chords-empty">
+                        <div class="empty-icon"></div>
+                        <div class="empty-label" data-i18n="empty.chords_label">No chords yet</div>
+                        <div class="empty-sub" data-i18n="empty.chords_sub">Generate a song first.</div>
+                    </div>
+                </div>
+                <div class="right-content" id="tab-history" style="display: none">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px">
+                        <div class="section-header" data-i18n="section.saved_songs">Saved Songs</div>
+                        <div style="display: flex; gap: 6px">
+                            <button class="btn-sm" onclick="exportHistoryBackup()" data-i18n="btn.backup">Backup</button>
+                            <button class="btn-sm" onclick="importFromFile()" data-i18n="btn.import">Import</button>
+                            <button class="btn-sm danger" onclick="clearHistory()" data-i18n="btn.clear_all">Clear All</button>
                         </div>
                     </div>
-                    <div class="hist-item">
-                        <div>
-                            <div class="hist-title">Neon Rain</div>
-                            <div class="hist-meta">Synth Pop · C minor · Mar 27, 2026</div>
-                        </div>
-                        <div class="hist-actions">
-                            <button class="btn-sm">Load</button>
-                            <button class="btn-sm danger">×</button>
-                        </div>
-                    </div>
-                    <div class="hist-item">
-                        <div>
-                            <div class="hist-title">Hollow Ground</div>
-                            <div class="hist-meta">Folk · G major · Mar 26, 2026</div>
-                        </div>
-                        <div class="hist-actions">
-                            <button class="btn-sm">Load</button>
-                            <button class="btn-sm danger">×</button>
+                    <input type="file" id="import-file-input" accept=".txt" style="display: none" onchange="handleImportFile(event)" />
+                    <div class="history-list" id="history-list">
+                        <div class="output-empty" style="padding: 30px 0">
+                            <div class="empty-label" data-i18n="empty.history_label">No songs saved yet</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- /screen-output -->
-        </div>
-        <!-- /screen-area -->
-
-        <!-- ═══ GENERATE BAR ═══ -->
-        <div class="gen-bar" id="gen-bar">
-            <button class="btn-gen analyze">🔍 Analyze</button>
-            <button class="btn-gen">✦ Write My Song</button>
-            <button class="btn-gen export">📋 Copy to Suno</button>
         </div>
 
-        <!-- ═══ BOTTOM NAV ═══ -->
-        <nav class="bottom-nav">
-            <button class="nav-tab active" onclick="switchScreen('settings', this)">
-                <span class="nav-icon">⚙</span>
-                Settings
-            </button>
-            <button class="nav-tab" onclick="switchScreen('vocal', this)">
-                <span class="nav-icon">🎤</span>
-                Vocal
-            </button>
-            <button class="nav-tab" onclick="switchScreen('structure', this)">
-                <span class="nav-icon">🎵</span>
-                Structure
-            </button>
-            <button class="nav-tab" onclick="switchScreen('sound', this)">
-                <span class="nav-icon">🎛</span>
-                Sound
-            </button>
-            <button class="nav-tab" onclick="switchScreen('lyrics', this)">
-                <span class="nav-icon">📝</span>
-                Lyrics
-            </button>
-            <button class="nav-tab" onclick="switchScreen('output', this)">
-                <span class="nav-icon">✦</span>
-                Output
-            </button>
+        <!-- Reset Confirmation Modal -->
+        <!-- Validation Modal -->
+        <div class="modal-overlay" id="validation-modal" style="display: none" onclick="if (event.target.id === 'validation-modal') closeValidationModal();">
+            <div class="modal" style="max-width: 420px">
+                <div class="modal-title" data-i18n="modal.validation.title">Required Field Missing</div>
+                <p id="validation-modal-msg" style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6"></p>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="closeValidationModal()" data-i18n="btn.ok">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="lyrics-copy-confirm-modal" style="display: none">
+            <div class="modal" style="max-width: 420px">
+                <div class="modal-title" data-i18n="modal.lyrics_copy.title">Copy to Lyrics Tab</div>
+                <p style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6" data-i18n="modal.lyrics_copy.body">This will overwrite any existing lyrics in the Lyrics tab with the generated lyrics. Continue?</p>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeLyricsCopyConfirm()" data-i18n="btn.cancel">Cancel</button>
+                    <button class="btn-primary" onclick="confirmCopyLyricsToTab()" data-i18n="btn.copy_to_lyrics">Copy to Lyrics Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="reset-confirm-modal" style="display: none">
+            <div class="modal" style="max-width: 420px">
+                <div class="modal-title" data-i18n="modal.reset.title">Reset Settings</div>
+                <p style="color: var(--text); font-size: 13px; margin: 0 0 20px 0; line-height: 1.6" data-i18n="modal.reset.body">This will clear all your current song settings and reload the page. Any unsaved work will be lost.</p>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeResetConfirm()" data-i18n="btn.cancel">Cancel</button>
+                    <button class="btn-primary" style="background: var(--error); border-color: var(--error)" onclick="confirmReset()" data-i18n="btn.reset">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="export-modal" style="display: none" onclick="closeExport(event)">
+            <div class="modal export-modal">
+                <div class="modal-title" data-i18n="modal.export.title">Export Song</div>
+                <div class="modal-actions">
+                    <button class="btn-export-green" id="copy-title-btn" onclick="copySongTitleExport()" data-i18n="btn.copy_song_title">Copy Song Title</button>
+                    <button class="btn-export-green" id="copy-style-btn" onclick="copyStylePromptExport()" data-i18n="btn.copy_style_prompt">Copy Style Prompt</button>
+                    <button class="btn-export-green" id="copy-lyrics-btn" onclick="copyLyricsExport()" data-i18n="btn.copy_lyrics_export">Copy Lyrics</button>
+                    <button class="btn-export-green" id="copy-exclusions-btn" onclick="copyExclusionsExport()" style="display: none" data-i18n="btn.copy_exclusions">Copy Exclusions</button>
+                    <button class="btn-primary" onclick="downloadTxt()" data-i18n="btn.download_txt">Download .txt</button>
+                    <button class="btn-export-orange" onclick="closeModal()" data-i18n="btn.close">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="submit-confirm-modal" style="display: none" onclick="closeSubmitConfirm(event, false)">
+            <div class="modal confirm-modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title" data-i18n="modal.submit.title">Confirm Song Request</div>
+                <div class="modal-subtitle" data-i18n="modal.submit.subtitle">Review the settings below before sending them to the AI.</div>
+                <div class="modal-preview" id="submit-confirm-preview" style="flex: 1; overflow-y: auto; min-height: 0; padding: 0 24px 24px 24px"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveSubmitConfirm(false)" data-i18n="btn.cancel">Cancel</button>
+                    <button class="btn-primary" onclick="resolveSubmitConfirm(true)" data-i18n="btn.write_my_song">Write My Song</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="keepmode-warning-modal" style="display: none" onclick="closeKeepModeWarningModal(event, false)">
+            <div class="modal confirm-modal" style="max-width: 560px">
+                <div class="modal-title">Keep Mode Warning</div>
+                <div style="padding: 0 24px 16px; font-size: 13px; color: var(--text); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6; white-space: pre-line">
+                    Your lyrics do not appear to include clear section identifiers like [Verse], [Chorus], or [Bridge]. Keep mode depends on clear section headers to preserve section directions and lyric placement exactly as entered. Continue anyway?
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveKeepModeWarning(false)">Cancel</button>
+                    <button class="btn-primary" onclick="resolveKeepModeWarning(true)">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="settings-confirm-modal" style="display: none" onclick="closeSettingsConfirm(event, false)">
+            <div class="modal confirm-modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title" data-i18n="modal.settings.title">Confirm Settings Update</div>
+                <div class="modal-subtitle" data-i18n="modal.settings.subtitle">The following settings will be applied to the form.</div>
+                <div class="modal-preview" id="settings-confirm-preview" style="flex: 1; overflow-y: auto; min-height: 0; padding: 0 24px 24px 24px"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveSettingsConfirm(false)" data-i18n="btn.cancel">Cancel</button>
+                    <button class="btn-primary" onclick="resolveSettingsConfirm(true)" data-i18n="btn.update_settings">Update Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="lyrics-too-long-modal" style="display: none">
+            <div class="modal confirm-modal" style="max-width: 460px">
+                <div class="modal-title" data-i18n="modal.lyrics_too_long.title">Lyrics Too Long</div>
+                <div id="lyrics-too-long-detail" style="padding: 0 24px 16px; font-size: 13px; color: var(--text-muted); font-family: &quot;Space Mono&quot;, monospace; line-height: 1.6; white-space: pre-line"></div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="resolveLyricsTooLong('manual')" data-i18n="btn.shorten_manually">Manually Shorten</button>
+                    <button class="btn-primary" onclick="resolveLyricsTooLong('ai')" data-i18n="btn.shorten_ai">Have the AI Shorten</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="analyzer-modal" style="display: none" onclick="closeAnalyzerModal(event)">
+            <div class="modal" style="width: 70vw; height: 70vh; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title" data-i18n="modal.analyzer.title">Style &amp; Lyrics Analyzer</div>
+                <div class="modal-subtitle" data-i18n="modal.analyzer.subtitle">Enter lyrics (with or without structure), a style description, or both to auto-configure settings.</div>
+                <div style="padding: 0 24px 24px 24px; flex: 1; display: flex; flex-direction: column; min-height: 0">
+                    <div class="info-box green" style="margin-bottom: 12px; flex-shrink: 0" data-i18n="modal.analyzer.info_box">This analyzer will automatically extract song structure, update Genre, Mood, Tempo, Era, Production, Instrumentation, Mix &amp; Influences across all tabs.</div>
+                    <textarea
+                        id="analysis-input"
+                        style="width: 100%; flex: 1; min-height: 0; font-family: &quot;Space Mono&quot;, monospace; font-size: 12px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text); padding: 12px; border-radius: 6px"
+                        data-i18n-ph="ph.analysis_input"
+                        placeholder="Examples:&#10;&#10;Option 1 - Just lyrics:&#10;[Verse]&#10;Your lyrics here...&#10;&#10;Option 2 - Just style:&#10;Sound like early Tom Waits meets Nick Cave, dark cabaret, upright bass, 1970s lo-fi&#10;&#10;Option 3 - Both lyrics and style:&#10;Style: Radiohead OK Computer era&#10;&#10;[Verse]&#10;Your verse...&#10;[Chorus]&#10;Your chorus..."
+                    ></textarea>
+                    <div id="unified-analysis-result" style="display: none; margin-top: 12px; max-height: 200px; overflow-y: auto; flex-shrink: 0"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeAnalyzerModal()" data-i18n="btn.close">Close</button>
+                    <button class="btn-primary" id="unified-analyze-btn" onclick="applyUnifiedAnalysis()" data-i18n="btn.analyze">Analyze</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup History Modal -->
+        <div class="modal-overlay" id="backup-modal" style="display: none" onclick="closeBackupModal(event)">
+            <div class="modal" style="width: 500px; max-width: 90vw">
+                <div class="modal-title" data-i18n="modal.backup.title">Backup History</div>
+                <div style="padding: 0 24px 24px 24px">
+                    <div style="margin-bottom: 16px; padding: 12px; background: rgba(201, 124, 46, 0.1); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 12px; line-height: 1.5">
+                        This will export all <strong id="backup-song-count">0</strong> songs in your history to a single backup file.
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="backup-include-api" style="display: flex; align-items: flex-start; gap: 6px; cursor: pointer">
+                            <input type="checkbox" id="backup-include-api" style="margin-top: 2px; width: auto" />
+                            <span data-i18n="lbl.backup_include_key">Include API Key in backup</span>
+                        </label>
+                        <div style="margin-top: 8px; padding: 10px; background: rgba(200, 80, 80, 0.1); border-left: 3px solid var(--accent5); border-radius: 4px; font-size: 12px; line-height: 1.5; color: var(--text-muted)" data-i18n="modal.backup.security">
+                            <strong>Security Warning:</strong> If you include your API key, it will be stored in <strong>plain text</strong> in the backup file. Only enable this if you will secure the backup file (encrypted storage, password-protected, etc.). Anyone with access to this file will
+                            have your API key.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeBackupModal()" data-i18n="btn.cancel">Cancel</button>
+                    <button class="btn-primary" onclick="confirmHistoryBackup()" data-i18n="btn.download_backup">Download Backup</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MOBILE OUTPUT SUB-TABS (injected just before tab-output) ── -->
+        <!-- Handled by JS mobileNav() - see below -->
+
+        <!-- ── MOBILE BOTTOM NAV ─────────────────────────────────────── -->
+        <nav class="mobile-nav">
+            <button class="m-nav-btn active" data-view="settings" onclick="mobileNav('settings')" data-i18n="nav.settings">Settings</button>
+            <button class="m-nav-btn" data-view="vocal" onclick="mobileNav('vocal')" data-i18n="nav.vocal">Vocal</button>
+            <button class="m-nav-btn" data-view="structure" onclick="mobileNav('structure')" data-i18n="nav.structure">Structure</button>
+            <button class="m-nav-btn" data-view="sound" onclick="mobileNav('sound')" data-i18n="nav.sound">Sound</button>
+            <button class="m-nav-btn" data-view="lyrics" onclick="mobileNav('lyrics')" data-i18n="nav.lyrics">Lyrics</button>
+            <button class="m-nav-btn" data-view="output" onclick="mobileNav('output')" data-i18n="nav.output">Output</button>
         </nav>
 
+        <script type="module" src="app.js"></script>
+
         <script>
-            function switchScreen(name, tab) {
-                document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
-                document.querySelectorAll(".nav-tab").forEach((t) => t.classList.remove("active"));
-                document.getElementById("screen-" + name).classList.add("active");
-                tab.classList.add("active");
+            // ── Mobile nav controller ──────────────────────────────────
+            // Switches the visible panel by toggling a body class.
+            // Also wires into the existing desktop tab functions exposed
+            // by app.js so the underlying data model stays consistent.
 
-                // On output screen hide the gen bar to give more space
-                const genBar = document.getElementById("gen-bar");
-                genBar.style.display = name === "output" ? "none" : "flex";
-            }
+            const M_LEFT_VIEWS  = ['settings','vocal','structure','sound','lyrics'];
+            const M_RIGHT_VIEWS = ['output','chords','history'];
+            const M_ALL_VIEWS   = [...M_LEFT_VIEWS, ...M_RIGHT_VIEWS];
 
-            function toggleApi() {
-                const panel = document.getElementById("api-expanded");
-                const chevron = document.getElementById("api-chevron");
-                const open = panel.classList.toggle("open");
-                chevron.textContent = open ? "▲" : "▼";
-            }
+            function mobileNav(view) {
+                // Update body class
+                M_ALL_VIEWS.forEach(v => document.body.classList.remove('m-view-' + v));
+                document.body.classList.add('m-view-' + view);
 
-            function switchOTab(btn, targetId) {
-                document.querySelectorAll(".otab").forEach((b) => b.classList.remove("active"));
-                btn.classList.add("active");
-                ["out-output", "out-chords", "out-history"].forEach((id) => {
-                    document.getElementById(id).style.display = id === targetId ? "block" : "none";
+                // Update bottom nav active state
+                document.querySelectorAll('.m-nav-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.view === view || (b.dataset.view === 'output' && M_RIGHT_VIEWS.includes(view)));
+                });
+
+                // Wire into the app's own tab switchers
+                if (M_LEFT_VIEWS.includes(view)) {
+                    const btn = document.getElementById('ltab-' + view);
+                    if (btn) btn.click();
+                }
+                if (view === 'output' || view === 'chords' || view === 'history') {
+                    const btn = document.getElementById('rtab-' + (view === 'output' ? 'output' : view === 'chords' ? 'chords' : 'history'));
+                    if (btn) btn.click();
+                }
+
+                // Update mobile output sub-tabs active state
+                document.querySelectorAll('.mobile-otab').forEach(b => {
+                    b.classList.toggle('active', b.dataset.view === view);
                 });
             }
+
+            // Inject mobile output sub-tabs bar above the tab content area
+            document.addEventListener('DOMContentLoaded', () => {
+                const outputTab = document.getElementById('tab-output');
+                if (outputTab && outputTab.parentElement) {
+                    const subNav = document.createElement('div');
+                    subNav.className = 'mobile-output-tabs';
+                    subNav.innerHTML =
+                        '<button class="mobile-otab active" data-view="output" onclick="mobileNav(\'output\')">Output</button>' +
+                        '<button class="mobile-otab" data-view="chords" onclick="mobileNav(\'chords\')">Chords</button>' +
+                        '<button class="mobile-otab" data-view="history" onclick="mobileNav(\'history\')">History</button>';
+                    outputTab.parentElement.insertBefore(subNav, outputTab);
+                }
+
+                // Set correct .m-nav-icon content since data-i18n only handles text
+                const icons = {settings:'⚙',vocal:'🎤',structure:'🎵',sound:'🎛',lyrics:'📝',output:'✦'};
+                document.querySelectorAll('.m-nav-btn').forEach(btn => {
+                    const view = btn.dataset.view;
+                    if (view && icons[view]) {
+                        const span = document.createElement('span');
+                        span.className = 'm-nav-icon';
+                        span.textContent = icons[view];
+                        btn.prepend(span);
+                    }
+                });
+            });
+
+            // After app.js initializes, trigger the default settings view
+            window.addEventListener('load', () => {
+                // Small delay so app.js initializeApp() has run
+                setTimeout(() => mobileNav('settings'), 80);
+            });
         </script>
+
+        <footer class="app-footer">
+            <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno.</span>
+        </footer>
     </body>
 </html>
