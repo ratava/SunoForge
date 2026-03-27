@@ -46,9 +46,16 @@ Legal permission has been sought for the use of the name Suno
                 --header-h: 52px;
             }
 
-            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-            html, body {
+            html,
+            body {
                 height: 100dvh;
                 max-height: 100dvh;
                 overflow: hidden;
@@ -56,14 +63,26 @@ Legal permission has been sought for the use of the name Suno
                 color: var(--text);
                 font-family: "Syne", sans-serif;
                 -webkit-text-size-adjust: 100%;
+                display: flex;
+                flex-direction: column;
             }
 
             /* ── REUSED COMPONENT STYLES ──────────────────────────────── */
-            ::-webkit-scrollbar { width: 3px; }
-            ::-webkit-scrollbar-track { background: transparent; }
-            ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+            ::-webkit-scrollbar {
+                width: 3px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 2px;
+            }
 
-            textarea, input[type="text"], input[type="password"], input[type="number"] {
+            textarea,
+            input[type="text"],
+            input[type="password"],
+            input[type="number"] {
                 background: var(--surface2);
                 border: 1px solid var(--border);
                 border-radius: 7px;
@@ -75,7 +94,10 @@ Legal permission has been sought for the use of the name Suno
                 outline: none;
                 -webkit-appearance: none;
             }
-            textarea:focus, input:focus { border-color: var(--accent3); }
+            textarea:focus,
+            input:focus {
+                border-color: var(--accent3);
+            }
             select {
                 background: var(--surface2);
                 border: 1px solid var(--border);
@@ -92,9 +114,15 @@ Legal permission has been sought for the use of the name Suno
                 background-position: right 10px center;
                 padding-right: 28px;
             }
-            select:focus { border-color: var(--accent3); }
+            select:focus {
+                border-color: var(--accent3);
+            }
 
-            .field-group { display: flex; flex-direction: column; gap: 6px; }
+            .field-group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
             .field-label {
                 font-size: 11px;
                 font-weight: 700;
@@ -116,15 +144,47 @@ Legal permission has been sought for the use of the name Suno
                 color: var(--text-muted);
                 user-select: none;
                 -webkit-tap-highlight-color: transparent;
-                transition: border-color 0.1s, color 0.1s, background 0.1s;
+                transition:
+                    border-color 0.1s,
+                    color 0.1s,
+                    background 0.1s;
             }
-            .tag.active, .tag.selected-g1.active { background: rgba(201,124,46,.12); border-color: var(--accent); color: var(--accent); }
-            .tag.selected-g2.active { background: rgba(122,158,110,.12); border-color: var(--accent2); color: var(--accent2); }
-            .tag.selected-g3.active { background: rgba(46,118,201,.12); border-color: var(--accent3); color: var(--accent3); }
-            .tag.selected-g4.active { background: rgba(160,96,144,.12); border-color: var(--accent4); color: var(--accent4); }
-            .tag.selected-g5.active { background: rgba(200,80,80,.12); border-color: var(--accent5); color: var(--accent5); }
-            .tag.selected-g6.active { background: rgba(136,112,192,.12); border-color: var(--accent6); color: var(--accent6); }
-            .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+            .tag.active,
+            .tag.selected-g1.active {
+                background: rgba(201, 124, 46, 0.12);
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+            .tag.selected-g2.active {
+                background: rgba(122, 158, 110, 0.12);
+                border-color: var(--accent2);
+                color: var(--accent2);
+            }
+            .tag.selected-g3.active {
+                background: rgba(46, 118, 201, 0.12);
+                border-color: var(--accent3);
+                color: var(--accent3);
+            }
+            .tag.selected-g4.active {
+                background: rgba(160, 96, 144, 0.12);
+                border-color: var(--accent4);
+                color: var(--accent4);
+            }
+            .tag.selected-g5.active {
+                background: rgba(200, 80, 80, 0.12);
+                border-color: var(--accent5);
+                color: var(--accent5);
+            }
+            .tag.selected-g6.active {
+                background: rgba(136, 112, 192, 0.12);
+                border-color: var(--accent6);
+                color: var(--accent6);
+            }
+            .tag-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
             .tag-add-btn {
                 display: inline-flex;
                 align-items: center;
@@ -182,8 +242,8 @@ Legal permission has been sought for the use of the name Suno
                 margin-bottom: 6px;
             }
             .info-box {
-                background: rgba(46,118,201,.08);
-                border: 1px solid rgba(46,118,201,.2);
+                background: rgba(46, 118, 201, 0.08);
+                border: 1px solid rgba(46, 118, 201, 0.2);
                 border-radius: 7px;
                 padding: 9px 11px;
                 font-size: 11px;
@@ -192,18 +252,27 @@ Legal permission has been sought for the use of the name Suno
                 line-height: 1.6;
             }
             .error-box {
-                background: rgba(192,80,80,.08);
-                border: 1px solid rgba(192,80,80,.25);
+                background: rgba(192, 80, 80, 0.08);
+                border: 1px solid rgba(192, 80, 80, 0.25);
                 border-radius: 7px;
                 padding: 9px 11px;
                 font-size: 12px;
                 color: var(--error);
                 font-family: "Space Mono", monospace;
             }
-            .api-status { font-size: 11px; font-family: "Space Mono", monospace; }
-            .api-status.ok    { color: var(--success); }
-            .api-status.missing { color: var(--error); }
-            .api-status.warn  { color: var(--accent); }
+            .api-status {
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+            }
+            .api-status.ok {
+                color: var(--success);
+            }
+            .api-status.missing {
+                color: var(--error);
+            }
+            .api-status.warn {
+                color: var(--accent);
+            }
 
             /* ── HEADER ──────────────────────────────────────────────── */
             .header {
@@ -217,18 +286,40 @@ Legal permission has been sought for the use of the name Suno
                 flex-shrink: 0;
                 position: relative;
             }
-            .logo { display: flex; align-items: center; gap: 8px; }
-            .logo-icon img { height: 30px; }
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .logo-icon img {
+                height: 30px;
+            }
             .logo-text {
                 font-size: 14px;
                 font-weight: 800;
                 letter-spacing: -0.3px;
                 white-space: nowrap;
             }
-            .header-tagline { display: none !important; }
-            .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-            .lang-select-wrap { display: flex; align-items: center; gap: 5px; }
-            #lang-select { font-size: 11px; padding: 4px 24px 4px 7px; width: auto; min-width: 0; }
+            .header-tagline {
+                display: none !important;
+            }
+            .header-right {
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .lang-select-wrap {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            #lang-select {
+                font-size: 11px;
+                padding: 4px 24px 4px 7px;
+                width: auto;
+                min-width: 0;
+            }
 
             /* version badge compact */
             .version-badge {
@@ -264,7 +355,9 @@ Legal permission has been sought for the use of the name Suno
                 flex: 1;
                 min-width: 100px;
             }
-            .api-bar-row .btn-sm { flex-shrink: 0; }
+            .api-bar-row .btn-sm {
+                flex-shrink: 0;
+            }
             .api-bar-toggle {
                 width: 100%;
                 background: none;
@@ -295,25 +388,38 @@ Legal permission has been sought for the use of the name Suno
                 white-space: nowrap;
             }
             /* model dropdown */
-            .model-select-wrap { position: relative; flex: 1; min-width: 0; }
-            .model-select-label { display: block; }
+            .model-select-wrap {
+                position: relative;
+                flex: 1;
+                min-width: 0;
+            }
+            .model-select-label {
+                display: block;
+            }
             .model-select-dropdown {
                 display: none;
                 position: fixed;
-                left: 10px; right: 10px;
+                left: 10px;
+                right: 10px;
                 z-index: 200;
                 background: var(--surface2);
                 border: 1px solid var(--border);
                 border-radius: 8px;
                 overflow: hidden;
-                box-shadow: 0 8px 32px rgba(0,0,0,.5);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             }
             .model-select-filter {
                 padding: 8px 10px;
                 border-bottom: 1px solid var(--border);
             }
-            .model-select-filter input { font-size: 12px; padding: 6px 8px; }
-            .model-select-list { max-height: 50dvh; overflow-y: auto; }
+            .model-select-filter input {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+            .model-select-list {
+                max-height: 50dvh;
+                overflow-y: auto;
+            }
             .model-option {
                 padding: 10px 12px;
                 font-size: 12px;
@@ -322,74 +428,115 @@ Legal permission has been sought for the use of the name Suno
                 cursor: pointer;
                 border-bottom: 1px solid var(--border);
             }
-            .model-option:last-child { border-bottom: none; }
-            .model-option.active { color: var(--accent); background: rgba(201,124,46,.06); }
-            .model-option:hover { background: var(--surface3); }
-            .model-option-provider { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+            .model-option:last-child {
+                border-bottom: none;
+            }
+            .model-option.active {
+                color: var(--accent);
+                background: rgba(201, 124, 46, 0.06);
+            }
+            .model-option:hover {
+                background: var(--surface3);
+            }
+            .model-option-provider {
+                font-size: 9px;
+                color: var(--text-dim);
+                margin-top: 2px;
+            }
 
             /* drive UI */
-            .drive-storage-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-            .drive-storage-row img { height: 16px; }
+            .drive-storage-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .drive-storage-row img {
+                height: 16px;
+            }
 
             /* ── MAIN + PANELS ───────────────────────────────────────── */
             .main {
                 display: flex;
                 flex-direction: column;
-                height: calc(100dvh - var(--header-h) - var(--action-h) - var(--nav-h));
+                flex: 1;
+                min-height: 0;
                 overflow: hidden;
+                padding-bottom: calc(var(--action-h) + var(--nav-h));
             }
 
             /* Left panel: full-width scrollable, hidden by default */
-            .left-panel {
+            .panel-left {
                 display: none;
                 flex-direction: column;
                 width: 100%;
-                height: 100%;
+                flex: 1;
+                min-height: 0;
+                border-right: none;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            /* Desktop left tab buttons: hidden, replaced by mobile bottom nav */
-            .ltabs { display: none !important; }
+            /* Desktop left tab bar: hidden, replaced by mobile bottom nav */
+            .left-tabs {
+                display: none !important;
+            }
 
             /* Show left panel for left-view states */
-            body.m-view-settings .left-panel,
-            body.m-view-vocal    .left-panel,
-            body.m-view-structure .left-panel,
-            body.m-view-sound    .left-panel,
-            body.m-view-lyrics   .left-panel { display: flex; }
+            body.m-view-settings .panel-left,
+            body.m-view-vocal .panel-left,
+            body.m-view-structure .panel-left,
+            body.m-view-sound .panel-left,
+            body.m-view-lyrics .panel-left {
+                display: flex;
+            }
 
-            /* Left panel content */
-            .lpanel { display: none; flex-direction: column; gap: 14px; padding: 12px; }
-            .lpanel.active { display: flex; }
+            /* Left panel content: app.js sets display via inline style; enforce column layout */
+            .left-panel-content {
+                flex-direction: column;
+                gap: 14px;
+                padding: 12px;
+                overflow-y: auto;
+            }
 
-            /* Right panel: always in DOM (action-panel is inside it and needs to be fixed) */
-            .right-panel {
+            /* Right panel: always in DOM (action-panel is position:fixed above nav) */
+            .panel-right {
                 width: 100%;
-                height: 100%;
+                flex: 1;
+                min-height: 0;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
             }
-            body.m-view-settings .right-panel,
-            body.m-view-vocal    .right-panel,
-            body.m-view-structure .right-panel,
-            body.m-view-sound    .right-panel,
-            body.m-view-lyrics   .right-panel { height: 0; overflow: hidden; }
+            body.m-view-settings .panel-right,
+            body.m-view-vocal .panel-right,
+            body.m-view-structure .panel-right,
+            body.m-view-sound .panel-right,
+            body.m-view-lyrics .panel-right {
+                flex: 0;
+                height: 0;
+                overflow: hidden;
+            }
 
-            /* Desktop right tab buttons: hidden, replaced by mobile sub-nav in output area */
-            .rtabs { display: none !important; }
+            /* Desktop right tab bar: hidden, replaced by mobile sub-nav */
+            .right-tabs {
+                display: none !important;
+            }
 
-            /* Tab content */
-            .rtab-content { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding: 10px; gap: 10px; }
-            body.m-view-output  #tab-output  { display: flex; }
-            body.m-view-chords  #tab-chords  { display: flex; }
-            body.m-view-history #tab-history { display: flex; }
+            /* Right content panels: app.js controls display; enforce column + scroll */
+            .right-content {
+                flex-direction: column;
+                flex: 1;
+                overflow-y: auto;
+                padding: 10px;
+                gap: 10px;
+            }
 
             /* ── ACTION PANEL (fixed bottom, above nav) ──────────────── */
             .action-panel {
                 position: fixed !important;
                 bottom: var(--nav-h) !important;
-                left: 0 !important; right: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
                 background: var(--bg) !important;
                 border-top: 1px solid var(--border) !important;
                 padding: 7px 10px !important;
@@ -427,9 +574,20 @@ Legal permission has been sought for the use of the name Suno
                 cursor: pointer;
                 white-space: nowrap;
             }
-            #copy-to-suno-btn { flex: 0 0 auto; padding: 9px 10px; font-size: 11px; white-space: nowrap; }
-            #help-btn { display: none !important; }
-            #reset-btn { flex: 0 0 auto; padding: 9px 8px; font-size: 10px; }
+            #copy-to-suno-btn {
+                flex: 0 0 auto;
+                padding: 9px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            #help-btn {
+                display: none !important;
+            }
+            #reset-btn {
+                flex: 0 0 auto;
+                padding: 9px 8px;
+                font-size: 10px;
+            }
 
             /* ── OUTPUT CARD ─────────────────────────────────────────── */
             .output-card {
@@ -439,11 +597,36 @@ Legal permission has been sought for the use of the name Suno
                 overflow: hidden;
                 margin-bottom: 10px;
             }
-            .card-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
-            .card-title { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.4px; line-height: 1.2; }
-            .card-subtitle { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-style: italic; line-height: 1.4; }
-            .card-meta { font-family: "Space Mono", monospace; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-            .card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+            .card-header {
+                padding: 12px 14px 10px;
+                border-bottom: 1px solid var(--border);
+            }
+            .card-title {
+                font-size: 19px;
+                font-weight: 800;
+                color: var(--accent);
+                letter-spacing: -0.4px;
+                line-height: 1.2;
+            }
+            .card-subtitle {
+                font-size: 11px;
+                color: var(--text-dim);
+                margin-top: 3px;
+                font-style: italic;
+                line-height: 1.4;
+            }
+            .card-meta {
+                font-family: "Space Mono", monospace;
+                font-size: 11px;
+                color: var(--text-muted);
+                margin-top: 4px;
+            }
+            .card-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+            }
             .genre-badge {
                 display: inline-block;
                 padding: 2px 7px;
@@ -454,10 +637,24 @@ Legal permission has been sought for the use of the name Suno
                 letter-spacing: 0.5px;
                 margin-top: 4px;
             }
-            .block { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-            .block:last-child { border-bottom: none; }
-            .block-header { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-            .lyric-section { margin-bottom: 12px; }
+            .block {
+                padding: 10px 14px;
+                border-bottom: 1px solid var(--border);
+            }
+            .block:last-child {
+                border-bottom: none;
+            }
+            .block-header {
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 8px;
+            }
+            .lyric-section {
+                margin-bottom: 12px;
+            }
             .lyric-label {
                 font-size: 11px;
                 font-weight: 700;
@@ -468,94 +665,409 @@ Legal permission has been sought for the use of the name Suno
                 align-items: center;
                 justify-content: space-between;
             }
-            .lyric-label.verse   { color: var(--text-dim); }
-            .lyric-label.chorus  { color: var(--accent); }
-            .lyric-label.bridge  { color: var(--accent2); }
-            .lyric-label.prechorus { color: var(--accent4); }
-            .lyric-label.outro   { color: var(--text-muted); }
-            .lyric-line { font-size: 12px; color: var(--text); font-family: "Space Mono", monospace; line-height: 1.85; white-space: pre-line; }
-            .lyric-direction { font-size: 11px; color: var(--text-muted); font-style: italic; font-family: "Space Mono", monospace; margin-bottom: 2px; }
-            .section-edit-ta { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: "Space Mono", monospace; font-size: 12px; padding: 8px; resize: none; outline: none; }
-            .btn-regen, .btn-copy-section { padding: 3px 8px; background: var(--surface3); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 9px; font-family: "Space Mono", monospace; cursor: pointer; }
+            .lyric-label.verse {
+                color: var(--text-dim);
+            }
+            .lyric-label.chorus {
+                color: var(--accent);
+            }
+            .lyric-label.bridge {
+                color: var(--accent2);
+            }
+            .lyric-label.prechorus {
+                color: var(--accent4);
+            }
+            .lyric-label.outro {
+                color: var(--text-muted);
+            }
+            .lyric-line {
+                font-size: 12px;
+                color: var(--text);
+                font-family: "Space Mono", monospace;
+                line-height: 1.85;
+                white-space: pre-line;
+            }
+            .lyric-direction {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-style: italic;
+                font-family: "Space Mono", monospace;
+                margin-bottom: 2px;
+            }
+            .section-edit-ta {
+                width: 100%;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                color: var(--text);
+                font-family: "Space Mono", monospace;
+                font-size: 12px;
+                padding: 8px;
+                resize: none;
+                outline: none;
+            }
+            .btn-regen,
+            .btn-copy-section {
+                padding: 3px 8px;
+                background: var(--surface3);
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                color: var(--text-muted);
+                font-size: 9px;
+                font-family: "Space Mono", monospace;
+                cursor: pointer;
+            }
 
             /* History */
-            .hist-item { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 11px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-            .hist-title { font-size: 13px; font-weight: 700; color: var(--text); }
-            .hist-meta { font-size: 10px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 3px; }
-            .hist-actions { display: flex; gap: 5px; flex-shrink: 0; }
+            .hist-item {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 9px;
+                padding: 11px 12px;
+                margin-bottom: 7px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .hist-title {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text);
+            }
+            .hist-meta {
+                font-size: 10px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+                margin-top: 3px;
+            }
+            .hist-actions {
+                display: flex;
+                gap: 5px;
+                flex-shrink: 0;
+            }
 
             /* Chord grid */
-            .chord-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
-            .chord-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 7px 10px; min-width: 64px; }
-            .chord-name { font-size: 16px; font-weight: 800; color: var(--accent); font-family: "Space Mono", monospace; }
-            .chord-role { font-size: 9px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 2px; text-transform: uppercase; }
+            .chord-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 7px;
+                margin-bottom: 10px;
+            }
+            .chord-card {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                padding: 7px 10px;
+                min-width: 64px;
+            }
+            .chord-name {
+                font-size: 16px;
+                font-weight: 800;
+                color: var(--accent);
+                font-family: "Space Mono", monospace;
+            }
+            .chord-role {
+                font-size: 9px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+                margin-top: 2px;
+                text-transform: uppercase;
+            }
 
             /* Sound pills */
-            .sound-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-            .sound-pill { padding: 3px 9px; border-radius: 12px; font-size: 11px; font-family: "Space Mono", monospace; font-weight: 700; }
-            .sp-era   { background: rgba(201,124,46,.1);  color: var(--accent);  border: 1px solid rgba(201,124,46,.25); }
-            .sp-style { background: rgba(46,118,201,.1);  color: var(--accent3); border: 1px solid rgba(46,118,201,.25); }
-            .sp-inst  { background: rgba(122,158,110,.1); color: var(--accent2); border: 1px solid rgba(122,158,110,.25); }
-            .sp-mix   { background: rgba(160,96,144,.1);  color: var(--accent4); border: 1px solid rgba(160,96,144,.25); }
-            .sp-inf   { background: rgba(136,112,192,.1); color: var(--accent6); border: 1px solid rgba(136,112,192,.25); }
+            .sound-pills {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 6px;
+            }
+            .sound-pill {
+                padding: 3px 9px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+                font-weight: 700;
+            }
+            .sp-era {
+                background: rgba(201, 124, 46, 0.1);
+                color: var(--accent);
+                border: 1px solid rgba(201, 124, 46, 0.25);
+            }
+            .sp-style {
+                background: rgba(46, 118, 201, 0.1);
+                color: var(--accent3);
+                border: 1px solid rgba(46, 118, 201, 0.25);
+            }
+            .sp-inst {
+                background: rgba(122, 158, 110, 0.1);
+                color: var(--accent2);
+                border: 1px solid rgba(122, 158, 110, 0.25);
+            }
+            .sp-mix {
+                background: rgba(160, 96, 144, 0.1);
+                color: var(--accent4);
+                border: 1px solid rgba(160, 96, 144, 0.25);
+            }
+            .sp-inf {
+                background: rgba(136, 112, 192, 0.1);
+                color: var(--accent6);
+                border: 1px solid rgba(136, 112, 192, 0.25);
+            }
 
             /* Prod grid (3-col on mobile becomes 2-col) */
-            .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+            .prod-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
 
             /* Selected genres row */
-            .selected-genres-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); min-height: 38px; }
+            .selected-genres-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px;
+                background: var(--surface2);
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                min-height: 38px;
+            }
 
             /* Custom structure builder */
-            .custom-structure-builder { display: flex; flex-direction: column; gap: 8px; }
-            .csb-palette { display: flex; flex-wrap: wrap; gap: 5px; }
-            .csb-sequence { display: flex; flex-wrap: wrap; gap: 5px; min-height: 36px; background: rgba(255,255,255,.02); border: 1px dashed var(--border); border-radius: 7px; padding: 7px; }
-            .csb-step { padding: 4px 9px; border-radius: 5px; font-size: 11px; font-family: "Space Mono", monospace; background: var(--surface3); border: 1px solid var(--border); cursor: pointer; color: var(--text); }
+            .custom-structure-builder {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .csb-palette {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .csb-sequence {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                min-height: 36px;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px dashed var(--border);
+                border-radius: 7px;
+                padding: 7px;
+            }
+            .csb-step {
+                padding: 4px 9px;
+                border-radius: 5px;
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+                background: var(--surface3);
+                border: 1px solid var(--border);
+                cursor: pointer;
+                color: var(--text);
+            }
 
             /* Modals */
-            .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
-            .modal-overlay[style*="flex"] { display: flex; }
-            .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; max-width: 480px; width: 100%; max-height: 85dvh; overflow-y: auto; }
-            .modal h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; }
-            .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; flex-wrap: wrap; }
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 300;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+            }
+            .modal-overlay[style*="flex"] {
+                display: flex;
+            }
+            .modal {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 24px 20px;
+                max-width: 480px;
+                width: 100%;
+                max-height: 85dvh;
+                overflow-y: auto;
+            }
+            .modal h3 {
+                font-size: 16px;
+                font-weight: 800;
+                margin-bottom: 14px;
+            }
+            .modal-actions {
+                display: flex;
+                gap: 8px;
+                margin-top: 16px;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+            }
 
             /* Presets */
-            .preset-row { display: flex; gap: 6px; align-items: center; }
-            .preset-row input, .preset-row select { flex: 1; min-width: 0; }
+            .preset-row {
+                display: flex;
+                gap: 6px;
+                align-items: center;
+            }
+            .preset-row input,
+            .preset-row select {
+                flex: 1;
+                min-width: 0;
+            }
 
             /* Lyrics mode toggle */
-            .lyrics-mode-toggle { display: flex; gap: 3px; background: var(--surface2); border-radius: 7px; padding: 3px; }
-            .lmode-btn { flex: 1; padding: 7px 4px; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-muted); border: none; background: none; font-family: "Syne", sans-serif; text-align: center; }
-            .lmode-btn.active { background: var(--surface3); color: var(--text); }
-            #section-lyrics-row { display: none; flex-direction: column; gap: 10px; }
+            .lyrics-mode-toggle {
+                display: flex;
+                gap: 3px;
+                background: var(--surface2);
+                border-radius: 7px;
+                padding: 3px;
+            }
+            .lmode-btn {
+                flex: 1;
+                padding: 7px 4px;
+                border-radius: 5px;
+                font-size: 11px;
+                font-weight: 700;
+                cursor: pointer;
+                color: var(--text-muted);
+                border: none;
+                background: none;
+                font-family: "Syne", sans-serif;
+                text-align: center;
+            }
+            .lmode-btn.active {
+                background: var(--surface3);
+                color: var(--text);
+            }
+            #section-lyrics-row {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+            }
 
             /* Structure list */
-            .struct-opt { padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; margin-bottom: 6px; }
-            .struct-opt.active { border-color: var(--accent); background: rgba(201,124,46,.06); }
-            .struct-name { font-size: 13px; font-weight: 700; color: var(--text); }
-            .struct-flow { font-size: 11px; color: var(--accent); font-family: "Space Mono", monospace; margin-top: 3px; }
-            .struct-desc { font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; margin-top: 2px; line-height: 1.4; }
-            .genre-structure-header { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; padding: 10px 0 5px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+            .struct-opt {
+                padding: 10px 12px;
+                border-radius: 9px;
+                border: 1px solid var(--border);
+                background: var(--surface2);
+                cursor: pointer;
+                margin-bottom: 6px;
+            }
+            .struct-opt.active {
+                border-color: var(--accent);
+                background: rgba(201, 124, 46, 0.06);
+            }
+            .struct-name {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text);
+            }
+            .struct-flow {
+                font-size: 11px;
+                color: var(--accent);
+                font-family: "Space Mono", monospace;
+                margin-top: 3px;
+            }
+            .struct-desc {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+                margin-top: 2px;
+                line-height: 1.4;
+            }
+            .genre-structure-header {
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--accent);
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                padding: 10px 0 5px;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 6px;
+            }
 
             /* vocal profile rows */
-            .vocal-profile-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
-            .vocal-profile-header { font-size: 12px; font-weight: 700; color: var(--accent4); }
+            .vocal-profile-row {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 9px;
+                padding: 10px 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            .vocal-profile-header {
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--accent4);
+            }
 
             /* Range slider */
-            .range-slider-wrap { display: flex; align-items: center; gap: 8px; }
-            .range-slider-wrap input[type="range"] { flex: 1; accent-color: var(--accent3); }
-            .range-val { font-size: 11px; font-family: "Space Mono", monospace; color: var(--text-muted); min-width: 28px; text-align: right; }
+            .range-slider-wrap {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .range-slider-wrap input[type="range"] {
+                flex: 1;
+                accent-color: var(--accent3);
+            }
+            .range-val {
+                font-size: 11px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-muted);
+                min-width: 28px;
+                text-align: right;
+            }
 
             /* Output empty state */
-            .output-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-muted); text-align: center; padding: 50px 20px; }
-            .empty-icon { font-size: 36px; opacity: .2; }
-            .empty-label { font-size: 14px; font-weight: 700; }
-            .empty-sub { font-size: 12px; font-family: "Space Mono", monospace; color: var(--text-dim); line-height: 1.6; max-width: 240px; }
+            .output-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                color: var(--text-muted);
+                text-align: center;
+                padding: 50px 20px;
+            }
+            .empty-icon {
+                font-size: 36px;
+                opacity: 0.2;
+            }
+            .empty-label {
+                font-size: 14px;
+                font-weight: 700;
+            }
+            .empty-sub {
+                font-size: 12px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-dim);
+                line-height: 1.6;
+                max-width: 240px;
+            }
 
             /* Export modal */
-            .export-text { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-family: "Space Mono", monospace; font-size: 11px; padding: 10px; height: 200px; resize: none; }
+            .export-text {
+                width: 100%;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                color: var(--text);
+                font-family: "Space Mono", monospace;
+                font-size: 11px;
+                padding: 10px;
+                height: 200px;
+                resize: none;
+            }
 
             /* app-footer hidden on mobile */
-            .app-footer { display: none !important; }
+            .app-footer {
+                display: none !important;
+            }
 
             /* ── CUSTOM OUTPUT SUB-TABS (replaces desktop .rtabs on mobile) ─── */
             .mobile-output-tabs {
@@ -569,7 +1081,9 @@ Legal permission has been sought for the use of the name Suno
             }
             body.m-view-output .mobile-output-tabs,
             body.m-view-chords .mobile-output-tabs,
-            body.m-view-history .mobile-output-tabs { display: flex; }
+            body.m-view-history .mobile-output-tabs {
+                display: flex;
+            }
             .mobile-otab {
                 flex: 1;
                 padding: 7px 4px;
@@ -583,7 +1097,10 @@ Legal permission has been sought for the use of the name Suno
                 border: none;
                 font-family: "Syne", sans-serif;
             }
-            .mobile-otab.active { background: var(--surface3); color: var(--text); }
+            .mobile-otab.active {
+                background: var(--surface3);
+                color: var(--text);
+            }
 
             /* ── MOBILE BOTTOM NAV ───────────────────────────────────── */
             .mobile-nav {
@@ -593,7 +1110,9 @@ Legal permission has been sought for the use of the name Suno
                 display: flex;
                 align-items: stretch;
                 position: fixed;
-                bottom: 0; left: 0; right: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 z-index: 100;
             }
             .m-nav-btn {
@@ -611,58 +1130,143 @@ Legal permission has been sought for the use of the name Suno
                 font-size: 7.5px;
                 font-weight: 700;
                 text-transform: uppercase;
-                letter-spacing: .04em;
+                letter-spacing: 0.04em;
                 padding: 4px 2px 2px;
                 position: relative;
                 -webkit-tap-highlight-color: transparent;
-                transition: color .12s;
+                transition: color 0.12s;
             }
-            .m-nav-icon { font-size: 17px; line-height: 1; }
-            .m-nav-btn.active { color: var(--accent); }
+            .m-nav-icon {
+                font-size: 17px;
+                line-height: 1;
+            }
+            .m-nav-btn.active {
+                color: var(--accent);
+            }
             .m-nav-btn.active::after {
                 content: "";
                 position: absolute;
-                top: 0; left: 6px; right: 6px;
+                top: 0;
+                left: 6px;
+                right: 6px;
                 height: 2px;
                 background: var(--accent);
                 border-radius: 0 0 2px 2px;
             }
-            .m-nav-btn[data-view="vocal"].active   { color: var(--accent4); }
-            .m-nav-btn[data-view="vocal"].active::after { background: var(--accent4); }
-            .m-nav-btn[data-view="structure"].active { color: var(--accent2); }
-            .m-nav-btn[data-view="structure"].active::after { background: var(--accent2); }
-            .m-nav-btn[data-view="sound"].active   { color: var(--accent6); }
-            .m-nav-btn[data-view="sound"].active::after { background: var(--accent6); }
-            .m-nav-btn[data-view="lyrics"].active  { color: var(--accent3); }
-            .m-nav-btn[data-view="lyrics"].active::after { background: var(--accent3); }
-            .m-nav-btn[data-view="output"].active  { color: var(--accent5); }
-            .m-nav-btn[data-view="output"].active::after { background: var(--accent5); }
+            .m-nav-btn[data-view="vocal"].active {
+                color: var(--accent4);
+            }
+            .m-nav-btn[data-view="vocal"].active::after {
+                background: var(--accent4);
+            }
+            .m-nav-btn[data-view="structure"].active {
+                color: var(--accent2);
+            }
+            .m-nav-btn[data-view="structure"].active::after {
+                background: var(--accent2);
+            }
+            .m-nav-btn[data-view="sound"].active {
+                color: var(--accent6);
+            }
+            .m-nav-btn[data-view="sound"].active::after {
+                background: var(--accent6);
+            }
+            .m-nav-btn[data-view="lyrics"].active {
+                color: var(--accent3);
+            }
+            .m-nav-btn[data-view="lyrics"].active::after {
+                background: var(--accent3);
+            }
+            .m-nav-btn[data-view="output"].active {
+                color: var(--accent5);
+            }
+            .m-nav-btn[data-view="output"].active::after {
+                background: var(--accent5);
+            }
 
             /* ── MISC OVERRIDES ──────────────────────────────────────── */
             /* Influence chips row */
-            .influence-chips-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
-            .influence-chip { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(136,112,192,.12); border: 1px solid rgba(136,112,192,.3); border-radius: 14px; font-size: 11px; color: var(--accent6); font-family: "Space Mono", monospace; }
-            .influence-chip-remove { cursor: pointer; opacity: .6; font-size: 13px; line-height: 1; }
+            .influence-chips-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 4px;
+            }
+            .influence-chip {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                padding: 4px 8px;
+                background: rgba(136, 112, 192, 0.12);
+                border: 1px solid rgba(136, 112, 192, 0.3);
+                border-radius: 14px;
+                font-size: 11px;
+                color: var(--accent6);
+                font-family: "Space Mono", monospace;
+            }
+            .influence-chip-remove {
+                cursor: pointer;
+                opacity: 0.6;
+                font-size: 13px;
+                line-height: 1;
+            }
 
             /* api-no-key-hint */
-            #api-no-key-hint { padding: 8px 12px; font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
+            #api-no-key-hint {
+                padding: 8px 12px;
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+            }
 
             /* Hide desktop-only API inline notes */
-            .api-inline-note { display: none; }
+            .api-inline-note {
+                display: none;
+            }
 
             /* Key info box */
-            .key-info-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; }
-            .key-info-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-            .key-info-row:last-child { margin-bottom: 0; }
-            .key-info-k { font-size: 11px; color: var(--text-muted); font-family: "Space Mono", monospace; }
-            .key-info-v { font-size: 11px; color: var(--text); font-family: "Space Mono", monospace; font-weight: 700; }
+            .key-info-box {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                padding: 10px 12px;
+            }
+            .key-info-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+            .key-info-row:last-child {
+                margin-bottom: 0;
+            }
+            .key-info-k {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+            }
+            .key-info-v {
+                font-size: 11px;
+                color: var(--text);
+                font-family: "Space Mono", monospace;
+                font-weight: 700;
+            }
 
             /* about modal */
-            .about-modal-content { font-size: 12px; color: var(--text-muted); font-family: "Space Mono", monospace; line-height: 1.7; }
+            .about-modal-content {
+                font-size: 12px;
+                color: var(--text-muted);
+                font-family: "Space Mono", monospace;
+                line-height: 1.7;
+            }
 
             /* custom input row */
-            .custom-input-row { display: flex; gap: 6px; }
-            .custom-input-row input { flex: 1; }
+            .custom-input-row {
+                display: flex;
+                gap: 6px;
+            }
+            .custom-input-row input {
+                flex: 1;
+            }
         </style>
     </head>
     <body class="m-view-settings">
@@ -1704,42 +2308,42 @@ Legal permission has been sought for the use of the name Suno
             // Also wires into the existing desktop tab functions exposed
             // by app.js so the underlying data model stays consistent.
 
-            const M_LEFT_VIEWS  = ['settings','vocal','structure','sound','lyrics'];
-            const M_RIGHT_VIEWS = ['output','chords','history'];
-            const M_ALL_VIEWS   = [...M_LEFT_VIEWS, ...M_RIGHT_VIEWS];
+            const M_LEFT_VIEWS = ["settings", "vocal", "structure", "sound", "lyrics"];
+            const M_RIGHT_VIEWS = ["output", "chords", "history"];
+            const M_ALL_VIEWS = [...M_LEFT_VIEWS, ...M_RIGHT_VIEWS];
 
             function mobileNav(view) {
                 // Update body class
-                M_ALL_VIEWS.forEach(v => document.body.classList.remove('m-view-' + v));
-                document.body.classList.add('m-view-' + view);
+                M_ALL_VIEWS.forEach((v) => document.body.classList.remove("m-view-" + v));
+                document.body.classList.add("m-view-" + view);
 
                 // Update bottom nav active state
-                document.querySelectorAll('.m-nav-btn').forEach(b => {
-                    b.classList.toggle('active', b.dataset.view === view || (b.dataset.view === 'output' && M_RIGHT_VIEWS.includes(view)));
+                document.querySelectorAll(".m-nav-btn").forEach((b) => {
+                    b.classList.toggle("active", b.dataset.view === view || (b.dataset.view === "output" && M_RIGHT_VIEWS.includes(view)));
                 });
 
                 // Wire into the app's own tab switchers
                 if (M_LEFT_VIEWS.includes(view)) {
-                    const btn = document.getElementById('ltab-' + view);
+                    const btn = document.getElementById("ltab-" + view);
                     if (btn) btn.click();
                 }
-                if (view === 'output' || view === 'chords' || view === 'history') {
-                    const btn = document.getElementById('rtab-' + (view === 'output' ? 'output' : view === 'chords' ? 'chords' : 'history'));
+                if (view === "output" || view === "chords" || view === "history") {
+                    const btn = document.getElementById("rtab-" + (view === "output" ? "output" : view === "chords" ? "chords" : "history"));
                     if (btn) btn.click();
                 }
 
                 // Update mobile output sub-tabs active state
-                document.querySelectorAll('.mobile-otab').forEach(b => {
-                    b.classList.toggle('active', b.dataset.view === view);
+                document.querySelectorAll(".mobile-otab").forEach((b) => {
+                    b.classList.toggle("active", b.dataset.view === view);
                 });
             }
 
             // Inject mobile output sub-tabs bar above the tab content area
-            document.addEventListener('DOMContentLoaded', () => {
-                const outputTab = document.getElementById('tab-output');
+            document.addEventListener("DOMContentLoaded", () => {
+                const outputTab = document.getElementById("tab-output");
                 if (outputTab && outputTab.parentElement) {
-                    const subNav = document.createElement('div');
-                    subNav.className = 'mobile-output-tabs';
+                    const subNav = document.createElement("div");
+                    subNav.className = "mobile-output-tabs";
                     subNav.innerHTML =
                         '<button class="mobile-otab active" data-view="output" onclick="mobileNav(\'output\')">Output</button>' +
                         '<button class="mobile-otab" data-view="chords" onclick="mobileNav(\'chords\')">Chords</button>' +
@@ -1748,12 +2352,12 @@ Legal permission has been sought for the use of the name Suno
                 }
 
                 // Set correct .m-nav-icon content since data-i18n only handles text
-                const icons = {settings:'⚙',vocal:'🎤',structure:'🎵',sound:'🎛',lyrics:'📝',output:'✦'};
-                document.querySelectorAll('.m-nav-btn').forEach(btn => {
+                const icons = { settings: "⚙", vocal: "🎤", structure: "🎵", sound: "🎛", lyrics: "📝", output: "✦" };
+                document.querySelectorAll(".m-nav-btn").forEach((btn) => {
                     const view = btn.dataset.view;
                     if (view && icons[view]) {
-                        const span = document.createElement('span');
-                        span.className = 'm-nav-icon';
+                        const span = document.createElement("span");
+                        span.className = "m-nav-icon";
                         span.textContent = icons[view];
                         btn.prepend(span);
                     }
@@ -1761,9 +2365,9 @@ Legal permission has been sought for the use of the name Suno
             });
 
             // After app.js initializes, trigger the default settings view
-            window.addEventListener('load', () => {
+            window.addEventListener("load", () => {
                 // Small delay so app.js initializeApp() has run
-                setTimeout(() => mobileNav('settings'), 80);
+                setTimeout(() => mobileNav("settings"), 80);
             });
         </script>
 
