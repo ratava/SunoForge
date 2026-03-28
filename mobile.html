@@ -225,6 +225,7 @@ Legal permission has been sought for the use of the name Suno
 
             /* ── MAIN LAYOUT ─────────────────────────────────────────── */
             .main {
+                position: relative; /* containing block for abs panels */
                 height: auto;
                 flex: 1;
                 min-height: 0;
@@ -232,16 +233,18 @@ Legal permission has been sought for the use of the name Suno
             }
 
             /* ── PANELS ──────────────────────────────────────────────── */
+            /* Both panels fill .main exactly via absolute positioning,
+               giving .right-content a definite height so overflow-y works */
             .panel-left {
                 display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 flex-direction: column;
-                width: 100%;
-                flex: 0 0 auto;
-                flex: 1;
-                min-height: 0;
                 border-right: none;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
+                overflow: hidden;
             }
             .left-tabs {
                 display: none !important;
@@ -259,15 +262,20 @@ Legal permission has been sought for the use of the name Suno
                 flex-direction: column;
                 gap: 14px;
                 padding: 12px 12px calc(var(--action-h) + var(--nav-h) + 12px);
+                flex: 1;
                 min-height: 0;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
 
             .panel-right {
-                width: 100%;
-                flex: 1;
-                min-height: 0;
+                display: flex;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                flex-direction: column;
                 overflow: hidden;
             }
             body.m-view-settings .panel-right,
@@ -275,9 +283,7 @@ Legal permission has been sought for the use of the name Suno
             body.m-view-structure .panel-right,
             body.m-view-sound .panel-right,
             body.m-view-lyrics .panel-right {
-                flex: 0;
-                height: 0;
-                overflow: hidden;
+                display: none;
             }
 
             .right-tabs {
@@ -285,12 +291,13 @@ Legal permission has been sought for the use of the name Suno
             }
 
             .right-content {
+                display: flex;
                 flex-direction: column;
                 flex: 1;
-                min-height: 0; /* required for overflow-y to kick in */
+                min-height: 0;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                padding: 10px 10px calc(var(--action-h) + var(--nav-h) + 10px); /* clear fixed bars */
+                padding: 10px 10px calc(var(--action-h) + var(--nav-h) + 10px);
                 gap: 10px;
             }
 
