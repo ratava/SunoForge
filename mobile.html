@@ -35,11 +35,17 @@ Legal permission has been sought for the use of the name Suno
             }
 
             /* 2. Constrain entire page to viewport — no scroll on body */
-            html,
+            html {
+                height: 100%;
+                overflow: hidden;
+                overscroll-behavior: none;
+            }
             body {
                 height: 100dvh;
                 max-height: 100dvh;
+                min-height: 0; /* override shared.css min-height: 100vh */
                 overflow: hidden;
+                overscroll-behavior: none;
                 -webkit-text-size-adjust: 100%;
                 display: flex;
                 flex-direction: column;
@@ -162,11 +168,24 @@ Legal permission has been sought for the use of the name Suno
                 justify-content: center;
                 gap: 0;
             }
+            .api-bar-toggle-label {
+                font-size: 10px;
+                font-family: "Space Mono", monospace;
+                color: var(--text-dim);
+                letter-spacing: 0.04em;
+            }
             .api-bar-toggle-info {
                 display: none;
             }
             #api-bar-chevron {
                 display: none;
+            }
+
+            /* API bar body — scrollable cap so it never eats the full viewport */
+            #api-bar-body {
+                max-height: 48dvh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             /* ── MODEL SELECT — full-width fixed sheet on mobile ─────── */
@@ -731,6 +750,7 @@ Legal permission has been sought for the use of the name Suno
 
         <div class="api-bar">
             <div class="api-bar-toggle" id="api-bar-toggle" onclick="toggleApiBar()">
+                <span class="api-bar-toggle-label" data-i18n="api.toggle_label">⚙ API &amp; Model</span>
                 <div class="api-bar-toggle-info">
                     <span class="api-bar-label" style="white-space: nowrap">API &amp; Model</span>
                     <span class="api-bar-summary-model" id="api-bar-summary-model"></span>

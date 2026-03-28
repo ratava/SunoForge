@@ -11,6 +11,7 @@
   "nav.export": "Export",
   "api.no_key_hint": "Please provide either a <strong>Google AI Studio</strong> (cheaper) API key, an <strong>OpenRouter</strong> API key (more models / more expensive), or an <strong>Local OpenAI Compatible LLM Server</strong> address to use SunoForge.",
   "api.get_key": "How do I get one?",
+  "api.toggle_label": "⚙ API & Model",
   "api.google_label": "Google AI Studio Key:",
   "api.openrouter_label": "OpenRouter Key:",
   "api.model_label": "Model:",
