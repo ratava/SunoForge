@@ -228,7 +228,6 @@ Legal permission has been sought for the use of the name Suno
                 height: auto;
                 flex: 1;
                 min-height: 0;
-                padding-bottom: calc(var(--action-h) + var(--nav-h));
                 overflow: hidden;
             }
 
@@ -259,8 +258,10 @@ Legal permission has been sought for the use of the name Suno
             .left-panel-content {
                 flex-direction: column;
                 gap: 14px;
-                padding: 12px;
+                padding: 12px 12px calc(var(--action-h) + var(--nav-h) + 12px);
+                min-height: 0;
                 overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .panel-right {
@@ -286,8 +287,10 @@ Legal permission has been sought for the use of the name Suno
             .right-content {
                 flex-direction: column;
                 flex: 1;
+                min-height: 0; /* required for overflow-y to kick in */
                 overflow-y: auto;
-                padding: 10px;
+                -webkit-overflow-scrolling: touch;
+                padding: 10px 10px calc(var(--action-h) + var(--nav-h) + 10px); /* clear fixed bars */
                 gap: 10px;
             }
 
@@ -811,6 +814,8 @@ Legal permission has been sought for the use of the name Suno
                             <div class="model-select-list" id="model-select-list"></div>
                         </div>
                     </div>
+                </div>
+                <div class="api-bar-row">
                     <span class="api-model-warning" data-i18n="api.cost_warning">SunoForge is not liable for any costs incurred using your selected model. Ensure you are using a free model or have a valid billing account.</span>
                 </div>
                 <div class="api-bar-row">
