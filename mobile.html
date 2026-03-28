@@ -546,6 +546,30 @@ Legal permission has been sought for the use of the name Suno
                 background: var(--accent5);
             }
 
+            /* ── ACTION PANEL button sizing — beat shared.css specificity ─ */
+            .action-panel .btn-gen {
+                flex: 1;
+                max-width: none;
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            /* Reset is still styled differently but shares space equally */
+            .action-panel #reset-btn {
+                flex: 0 0 auto;
+            }
+
+            /* ── CUSTOM TAGS — tap whole chip to remove on mobile ───── */
+            .tag-custom {
+                padding: 6px 11px;
+                font-size: 13px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .tag-custom-x {
+                font-size: 14px;
+                opacity: 0.7;
+            }
+
             /* ── MODAL overrides for mobile ──────────────────────────── */
             .modal.export-modal {
                 max-width: 92vw;
@@ -1778,7 +1802,21 @@ Legal permission has been sought for the use of the name Suno
             // After app.js initializes, trigger the default settings view
             window.addEventListener("load", () => {
                 // Small delay so app.js initializeApp() has run
-                setTimeout(() => mobileNav("settings"), 80);
+                setTimeout(() => {
+                    mobileNav("settings");
+                    // Wrap switchRTab so app.js calls (e.g. after song generation)
+                    // also update the mobile body class, making the output visible.
+                    let _navBusy = false;
+                    const _baseSwitch = window.switchRTab;
+                    window.switchRTab = function (tab) {
+                        _baseSwitch(tab);
+                        if (!_navBusy && ["output", "chords", "history"].includes(tab)) {
+                            _navBusy = true;
+                            mobileNav(tab);
+                            _navBusy = false;
+                        }
+                    };
+                }, 80);
             });
         </script>
 

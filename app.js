@@ -1069,9 +1069,9 @@
                 if (!row) return;
                 row.querySelectorAll(".tag-custom").forEach((el) => el.remove());
             }
-            // Remove custom tag when user clicks the X button
-            function removeCustomTag(xEl) {
-                const chip = xEl.parentElement;
+            // Remove custom tag — accepts the chip itself or the X span inside it
+            function removeCustomTag(el) {
+                const chip = el.classList.contains("tag-custom") ? el : el.parentElement;
                 const row = chip?.parentElement;
                 chip?.remove();
                 if (row?.id === "vocalgender-tags") {
@@ -3446,7 +3446,8 @@
                 chip.dataset.val = trimmed;
                 chip.dataset.custom = "true";
                 if (options.analyzerCustom) chip.dataset.analyzerCustom = "true";
-                chip.innerHTML = escapeHtml(trimmed) + '<span class="tag-custom-x" onclick="removeCustomTag(this)">x</span>';
+                chip.innerHTML = escapeHtml(trimmed) + '<span class="tag-custom-x" aria-hidden="true">✕</span>';
+                chip.onclick = function () { removeCustomTag(this); };
                 const addBtn = tagRow.querySelector(".tag-add-btn");
                 if (addBtn) tagRow.insertBefore(chip, addBtn);
                 else tagRow.appendChild(chip);

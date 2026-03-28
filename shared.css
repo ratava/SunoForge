@@ -335,15 +335,17 @@ select {
     align-items: center;
     gap: 5px;
     user-select: none;
-}
-.tag-custom-x {
     cursor: pointer;
-    opacity: 0.6;
-    font-size: 12px;
+}
+.tag-custom:hover { background: rgba(110, 143, 170, 0.22); }
+.tag-custom-x {
+    opacity: 0.55;
+    font-size: 11px;
     line-height: 1;
     margin-left: 1px;
+    pointer-events: none;
 }
-.tag-custom-x:hover {
+.tag-custom:hover .tag-custom-x {
     opacity: 1;
 }
 .custom-input-row {
