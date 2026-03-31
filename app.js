@@ -7086,12 +7086,14 @@ ${cleanedLyrics}
 
                 prompt += "\nGenerate the image prompt now:";
 
-                console.log("[CoverImagePrompt] Sending prompt to AI:\n", prompt);
+                console.log("[CoverImage] REQUEST prompt:\n", prompt);
+                debugLog("COVER_IMAGE_REQUEST", "Sending cover image prompt request to AI", { prompt });
 
                 try {
                     const result = await callAI(prompt);
                     const raw = result?.text ?? "";
-                    console.log("[CoverImagePrompt] Raw AI response:", raw);
+                    console.log("[CoverImage] RESPONSE raw:\n", raw);
+                    debugLog("COVER_IMAGE_RESPONSE", "Received cover image prompt from AI", { raw });
                     const cleaned = raw.trim().replace(/^"|"$/g, "").replace(/^'|'$/g, "");
 
                     document.getElementById("cover-result-text").value = cleaned;
