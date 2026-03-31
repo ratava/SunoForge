@@ -8179,6 +8179,16 @@ ${cleanedLyrics}
             window.loadPreset = loadPreset;
             window.deletePreset = deletePreset;
             window.onPresetSelectChange = onPresetSelectChange;
+            // Cover Image Prompt
+            window.openCoverImageModal = openCoverImageModal;
+            window.closeCoverImageModal = closeCoverImageModal;
+            window.onCoverTitlePositionChange = onCoverTitlePositionChange;
+            window.onCoverArtistPositionChange = onCoverArtistPositionChange;
+            window.onCoverTitleFontChange = onCoverTitleFontChange;
+            window.onCoverArtistFontChange = onCoverArtistFontChange;
+            window.onCoverUseLyricsChange = onCoverUseLyricsChange;
+            window.generateCoverImagePrompt = generateCoverImagePrompt;
+            window.copyCoverImagePrompt = copyCoverImagePrompt;
 
             // ========================================================================
             // Initialization
