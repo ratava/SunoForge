@@ -866,6 +866,7 @@ Legal permission has been sought for the use of the name Suno
                     <button class="btn-gen" id="analyze-btn" onclick="openAnalyzerModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-i18n="btn.analyze">Analyze</button>
                     <button class="btn-gen" id="gen-btn" onclick="generateSong()" data-i18n="btn.write_song">Write My Song</button>
                     <button class="btn-gen" id="export-btn" onclick="exportSong(null)" style="display: none" data-i18n="btn.export">Copy to Suno</button>
+                    <button class="btn-gen" id="cover-image-btn" onclick="openCoverImageModal()" style="display: none" data-i18n="btn.cover_image">Cover Image Prompt</button>
                     <button class="btn-gen btn-reset" id="reset-btn" onclick="openResetConfirm()" data-i18n="btn.reset">Reset</button>
                     <button class="btn-gen" id="help-btn" onclick="window.open('https://github.com/ratava/SunoForge/wiki', '_blank')" style="margin-left: auto; flex: none; padding: 0 16px" data-i18n="btn.help">Help</button>
                 </div>
@@ -1047,6 +1048,131 @@ Legal permission has been sought for the use of the name Suno
                 <div class="modal-actions">
                     <button class="btn-secondary" onclick="closeBackupModal()" data-i18n="btn.cancel">Cancel</button>
                     <button class="btn-primary" onclick="confirmHistoryBackup()" data-i18n="btn.download_backup">Download Backup</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cover Image Prompt Modal -->
+        <div class="modal-overlay" id="cover-image-modal" style="display: none" onclick="closeCoverImageModal(event)">
+            <div class="modal" style="width: 700px; max-width: 92vw; max-height: 90vh; display: flex; flex-direction: column">
+                <div class="modal-title" data-i18n="modal.cover.title">Cover Image Prompt</div>
+                <div style="padding: 0 24px 0 24px; flex: 1; overflow-y: auto; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding-bottom: 16px">
+                    <!-- Shape + Resolution -->
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap">
+                        <div class="field-group" style="flex: 1; min-width: 180px">
+                            <div class="field-label" data-i18n="lbl.cover.shape">Image Shape</div>
+                            <select id="cover-shape">
+                                <option value="" data-i18n-opt="opt.cover.unspecified">Unspecified</option>
+                                <option value="Square (1:1)">Square (1:1)</option>
+                                <option value="Landscape (16:9)">Landscape (16:9)</option>
+                                <option value="Portrait (9:16)">Portrait (9:16)</option>
+                            </select>
+                        </div>
+                        <div class="field-group" style="flex: 1; min-width: 180px">
+                            <div class="field-label" data-i18n="lbl.cover.resolution">Image Resolution</div>
+                            <select id="cover-resolution">
+                                <option value="" data-i18n-opt="opt.cover.unspecified">Unspecified</option>
+                                <option value="1K">1K</option>
+                                <option value="2K">2K</option>
+                                <option value="4K">4K</option>
+                                <option value="8K">8K</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Song Title -->
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.cover.title_pos">Include Song Title</div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+                            <select id="cover-title-pos" onchange="onCoverTitlePositionChange()" style="width: auto">
+                                <option value="No" data-i18n-opt="opt.cover.no">No</option>
+                                <option value="Top">Top</option>
+                                <option value="Middle">Middle</option>
+                                <option value="Bottom">Bottom</option>
+                            </select>
+                            <div id="cover-title-options" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap">
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <span data-i18n="lbl.cover.color">Color:</span>
+                                    <input type="color" id="cover-title-color" value="#ffffff" style="width: 36px; height: 28px; border: 1px solid var(--border); background: none; cursor: pointer; padding: 0; border-radius: 4px" />
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <span data-i18n="lbl.cover.font">Font:</span>
+                                    <select id="cover-title-font" onchange="onCoverTitleFontChange()" style="width: auto">
+                                        <option value="Sans-Serif">Sans-Serif</option>
+                                        <option value="Serif">Serif</option>
+                                        <option value="Custom" data-i18n-opt="opt.cover.font_custom">Specify...</option>
+                                    </select>
+                                </label>
+                                <input type="text" id="cover-title-font-custom" placeholder="Font name..." data-i18n-ph="ph.cover.font_name" style="display: none; width: 120px; font-size: 12px" />
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <input type="checkbox" id="cover-title-caps" style="width: auto" />
+                                    <span data-i18n="lbl.cover.capitalise">Capitalise</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artist Name -->
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.cover.artist_pos">Include Artist Name</div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+                            <select id="cover-artist-pos" onchange="onCoverArtistPositionChange()" style="width: auto">
+                                <option value="No" data-i18n-opt="opt.cover.no">No</option>
+                                <option value="Top">Top</option>
+                                <option value="Middle">Middle</option>
+                                <option value="Bottom">Bottom</option>
+                            </select>
+                            <div id="cover-artist-options" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap">
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <span data-i18n="lbl.cover.color">Color:</span>
+                                    <input type="color" id="cover-artist-color" value="#ffffff" style="width: 36px; height: 28px; border: 1px solid var(--border); background: none; cursor: pointer; padding: 0; border-radius: 4px" />
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <span data-i18n="lbl.cover.font">Font:</span>
+                                    <select id="cover-artist-font" onchange="onCoverArtistFontChange()" style="width: auto">
+                                        <option value="Sans-Serif">Sans-Serif</option>
+                                        <option value="Serif">Serif</option>
+                                        <option value="Custom" data-i18n-opt="opt.cover.font_custom">Specify...</option>
+                                    </select>
+                                </label>
+                                <input type="text" id="cover-artist-font-custom" placeholder="Font name..." data-i18n-ph="ph.cover.font_name" style="display: none; width: 120px; font-size: 12px" />
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted)">
+                                    <input type="checkbox" id="cover-artist-caps" style="width: auto" />
+                                    <span data-i18n="lbl.cover.capitalise">Capitalise</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="cover-artist-name-row" style="display: none; margin-top: 8px">
+                            <input type="text" id="cover-artist-name" data-i18n-ph="ph.cover.artist_name" placeholder="Artist name..." />
+                        </div>
+                    </div>
+
+                    <!-- Use Lyrics / Concept -->
+                    <div class="field-group">
+                        <div class="field-label" data-i18n="lbl.cover.use_lyrics">Base Image on Song Lyrics &amp; Concept</div>
+                        <select id="cover-use-lyrics" onchange="onCoverUseLyricsChange()" style="width: auto; margin-bottom: 10px">
+                            <option value="yes" data-i18n-opt="opt.cover.yes">Yes</option>
+                            <option value="no" data-i18n-opt="opt.cover.no">No</option>
+                        </select>
+                        <textarea id="cover-special-instructions" rows="3" data-i18n-ph="ph.cover.special_inst" placeholder="Additional instructions for the image prompt... (optional)" style="display: block"></textarea>
+                        <textarea id="cover-image-description" rows="3" data-i18n-ph="ph.cover.image_desc" placeholder="Describe what you want in the image..." style="display: none; margin-top: 8px"></textarea>
+                    </div>
+
+                    <!-- Generated Result -->
+                    <div id="cover-result-area" style="display: none; flex-direction: column; gap: 8px">
+                        <div class="field-label" data-i18n="lbl.cover.result">Generated Image Prompt</div>
+                        <textarea
+                            id="cover-result-text"
+                            rows="6"
+                            readonly
+                            style="background: var(--bg-surface); border: 1px solid var(--border); color: var(--text); font-family: &quot;Space Mono&quot;, monospace; font-size: 11px; padding: 10px; border-radius: 6px; resize: vertical; width: 100%; box-sizing: border-box"
+                        ></textarea>
+                        <button class="btn-secondary" onclick="copyCoverImagePrompt()" data-i18n="btn.cover.copy">Copy Prompt to Clipboard</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeCoverImageModal()" data-i18n="btn.close">Close</button>
+                    <button class="btn-primary" id="cover-generate-btn" onclick="generateCoverImagePrompt()" data-i18n="btn.cover.generate">Generate Image Prompt</button>
                 </div>
             </div>
         </div>

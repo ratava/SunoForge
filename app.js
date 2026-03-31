@@ -6941,6 +6941,177 @@ ${cleanedLyrics}
             function closeModal() {
                 document.getElementById("export-modal").style.display = "none";
             }
+            // ========================================================================
+            // Cover Image Prompt
+            // ========================================================================
+            function openCoverImageModal() {
+                if (!currentSong) return;
+                const prefs = currentSong.coverImagePrefs || {};
+
+                document.getElementById("cover-shape").value = prefs.shape || "";
+                document.getElementById("cover-resolution").value = prefs.resolution || "";
+
+                document.getElementById("cover-title-pos").value = prefs.titlePosition || "No";
+                document.getElementById("cover-title-color").value = prefs.titleColor || "#ffffff";
+                document.getElementById("cover-title-font").value = prefs.titleFont || "Sans-Serif";
+                document.getElementById("cover-title-font-custom").value = prefs.titleFontCustom || "";
+                document.getElementById("cover-title-caps").checked = prefs.titleCapitalize !== false;
+                onCoverTitlePositionChange();
+                onCoverTitleFontChange();
+
+                document.getElementById("cover-artist-pos").value = prefs.artistPosition || "No";
+                document.getElementById("cover-artist-color").value = prefs.artistColor || "#ffffff";
+                document.getElementById("cover-artist-font").value = prefs.artistFont || "Sans-Serif";
+                document.getElementById("cover-artist-font-custom").value = prefs.artistFontCustom || "";
+                document.getElementById("cover-artist-caps").checked = prefs.artistCapitalize !== false;
+                document.getElementById("cover-artist-name").value = prefs.artistName || "";
+                onCoverArtistPositionChange();
+                onCoverArtistFontChange();
+
+                document.getElementById("cover-use-lyrics").value = prefs.useLyrics === false ? "no" : "yes";
+                document.getElementById("cover-special-instructions").value = prefs.specialInstructions || "";
+                document.getElementById("cover-image-description").value = prefs.imageDescription || "";
+                onCoverUseLyricsChange();
+
+                const resultArea = document.getElementById("cover-result-area");
+                if (prefs.lastPrompt) {
+                    document.getElementById("cover-result-text").value = prefs.lastPrompt;
+                    resultArea.style.display = "flex";
+                } else {
+                    resultArea.style.display = "none";
+                }
+
+                document.getElementById("cover-image-modal").style.display = "flex";
+            }
+
+            function closeCoverImageModal(evt) {
+                if (evt && evt.target.id !== "cover-image-modal") return;
+                document.getElementById("cover-image-modal").style.display = "none";
+            }
+
+            function onCoverTitlePositionChange() {
+                const pos = document.getElementById("cover-title-pos").value;
+                document.getElementById("cover-title-options").style.display = pos !== "No" ? "flex" : "none";
+            }
+
+            function onCoverArtistPositionChange() {
+                const pos = document.getElementById("cover-artist-pos").value;
+                document.getElementById("cover-artist-options").style.display = pos !== "No" ? "flex" : "none";
+                document.getElementById("cover-artist-name-row").style.display = pos !== "No" ? "block" : "none";
+            }
+
+            function onCoverTitleFontChange() {
+                const val = document.getElementById("cover-title-font").value;
+                document.getElementById("cover-title-font-custom").style.display = val === "Custom" ? "inline-block" : "none";
+            }
+
+            function onCoverArtistFontChange() {
+                const val = document.getElementById("cover-artist-font").value;
+                document.getElementById("cover-artist-font-custom").style.display = val === "Custom" ? "inline-block" : "none";
+            }
+
+            function onCoverUseLyricsChange() {
+                const val = document.getElementById("cover-use-lyrics").value;
+                document.getElementById("cover-special-instructions").style.display = val === "yes" ? "block" : "none";
+                document.getElementById("cover-image-description").style.display = val === "no" ? "block" : "none";
+            }
+
+            function getCoverImagePrefs() {
+                return {
+                    shape: document.getElementById("cover-shape").value,
+                    resolution: document.getElementById("cover-resolution").value,
+                    titlePosition: document.getElementById("cover-title-pos").value,
+                    titleColor: document.getElementById("cover-title-color").value,
+                    titleFont: document.getElementById("cover-title-font").value,
+                    titleFontCustom: document.getElementById("cover-title-font-custom").value.trim(),
+                    titleCapitalize: document.getElementById("cover-title-caps").checked,
+                    artistPosition: document.getElementById("cover-artist-pos").value,
+                    artistColor: document.getElementById("cover-artist-color").value,
+                    artistFont: document.getElementById("cover-artist-font").value,
+                    artistFontCustom: document.getElementById("cover-artist-font-custom").value.trim(),
+                    artistCapitalize: document.getElementById("cover-artist-caps").checked,
+                    artistName: document.getElementById("cover-artist-name").value.trim(),
+                    useLyrics: document.getElementById("cover-use-lyrics").value === "yes",
+                    specialInstructions: document.getElementById("cover-special-instructions").value.trim(),
+                    imageDescription: document.getElementById("cover-image-description").value.trim(),
+                };
+            }
+
+            async function generateCoverImagePrompt() {
+                if (!currentSong) {
+                    alert(_t("alert.cover.no_song", "Please generate a song first."));
+                    return;
+                }
+                const prefs = getCoverImagePrefs();
+                const generateBtn = document.getElementById("cover-generate-btn");
+                if (generateBtn) { generateBtn.disabled = true; generateBtn.textContent = _t("status.generating", "Generating..."); }
+
+                let prompt = "You are an expert image prompt engineer for music cover art.\n";
+                prompt += "Generate a detailed, vivid image generation prompt suitable for AI image generators such as Midjourney, DALL-E, or Stable Diffusion.\n";
+                prompt += "Output ONLY the raw image prompt text. No preamble, no explanation, no quotation marks around the output.\n\n";
+
+                if (prefs.shape) prompt += `Image aspect ratio / shape: ${prefs.shape}\n`;
+                if (prefs.resolution) prompt += `Target resolution: ${prefs.resolution}\n`;
+
+                if (prefs.titlePosition !== "No") {
+                    const rawTitle = currentSong.title || document.getElementById("title")?.value?.trim() || "";
+                    const titleText = prefs.titleCapitalize ? rawTitle.toUpperCase() : rawTitle;
+                    const titleFont = prefs.titleFont === "Custom" ? (prefs.titleFontCustom || "Sans-Serif") : prefs.titleFont;
+                    prompt += `\nInclude the song title "${titleText}" as a text overlay positioned at the ${prefs.titlePosition.toLowerCase()} of the image. Font style: ${titleFont}. Text colour: ${prefs.titleColor}.\n`;
+                }
+
+                if (prefs.artistPosition !== "No" && prefs.artistName) {
+                    const rawArtist = prefs.artistName;
+                    const artistText = prefs.artistCapitalize ? rawArtist.toUpperCase() : rawArtist;
+                    const artistFont = prefs.artistFont === "Custom" ? (prefs.artistFontCustom || "Sans-Serif") : prefs.artistFont;
+                    prompt += `Include the artist name "${artistText}" as a text overlay positioned at the ${prefs.artistPosition.toLowerCase()} of the image. Font style: ${artistFont}. Text colour: ${prefs.artistColor}.\n`;
+                }
+
+                if (prefs.useLyrics) {
+                    const lyricsText = buildAssembledLyricsPrompt(currentSong);
+                    const concept = currentSong.concept || currentSong.settings?.concept || "";
+                    const stylePrompt = currentSong.suno_style_prompt || "";
+                    prompt += "\nBase the visual imagery on the following song content:\n";
+                    if (concept) prompt += `\n--- Concept / Story ---\n${concept}\n`;
+                    if (stylePrompt) prompt += `\n--- Suno Style Prompt ---\n${stylePrompt}\n`;
+                    if (lyricsText) prompt += `\n--- Full Lyrics ---\n${lyricsText}\n`;
+                    if (prefs.specialInstructions) prompt += `\n--- Additional Instructions ---\n${prefs.specialInstructions}\n`;
+                } else {
+                    if (prefs.imageDescription) prompt += `\nImage description provided by user:\n${prefs.imageDescription}\n`;
+                }
+
+                prompt += "\nGenerate the image prompt now:";
+
+                try {
+                    const raw = await callAI(prompt);
+                    const cleaned = (raw || "").trim().replace(/^"|"$/g, "").replace(/^'|'$/g, "");
+
+                    document.getElementById("cover-result-text").value = cleaned;
+                    document.getElementById("cover-result-area").style.display = "flex";
+
+                    prefs.lastPrompt = cleaned;
+                    currentSong.coverImagePrefs = prefs;
+                    saveToHistory(currentSong);
+                } catch (err) {
+                    alert(_fmt("alert.cover.failed", "Failed to generate image prompt: {0}", err.message || String(err)));
+                } finally {
+                    if (generateBtn) { generateBtn.disabled = false; generateBtn.textContent = _t("btn.cover.generate", "Generate Image Prompt"); }
+                }
+            }
+
+            function copyCoverImagePrompt() {
+                const text = document.getElementById("cover-result-text")?.value;
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.querySelector("#cover-image-modal button[onclick='copyCoverImagePrompt()']");
+                    if (btn) {
+                        const orig = btn.textContent;
+                        btn.textContent = _t("btn.copied", "Copied!");
+                        setTimeout(() => { btn.textContent = orig; }, 1500);
+                    }
+                });
+            }
+
             function openAnalyzerModal() {
                 document.getElementById("analyzer-modal").style.display = "flex";
             }
@@ -7322,9 +7493,11 @@ ${cleanedLyrics}
                     initSectionTextareas(song);
                 });
 
-                // Show export button when song is rendered
+                // Show export and cover image buttons when song is rendered
                 const exportBtn = document.getElementById("export-btn");
                 if (exportBtn) exportBtn.style.display = "block";
+                const coverBtn = document.getElementById("cover-image-btn");
+                if (coverBtn) coverBtn.style.display = "block";
             }
 
             function initSectionTextareas(song) {
