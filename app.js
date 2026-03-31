@@ -141,6 +141,8 @@
             function setDriveSyncStatus(state) {
                 // state: 'syncing' | 'ok' | 'failed'
                 const driveStatus = document.getElementById("drive-storage-status");
+                const syncIndicator = document.getElementById("drive-sync-indicator");
+                if (syncIndicator) syncIndicator.style.display = state === "syncing" ? "flex" : "none";
                 if (!driveStatus) return;
                 if (state === "syncing") {
                     driveStatus.textContent = _t("status.drive_syncing", "syncing\u2026");
@@ -7047,8 +7049,10 @@ ${cleanedLyrics}
                 if (generateBtn) { generateBtn.disabled = true; generateBtn.textContent = _t("status.generating", "Generating..."); }
 
                 let prompt = "You are an expert image prompt engineer for music cover art.\n";
-                prompt += "Generate a detailed, vivid image generation prompt suitable for AI image generators such as Midjourney, DALL-E, or Stable Diffusion.\n";
-                prompt += "Output ONLY the raw image prompt text. No preamble, no explanation, no quotation marks around the output.\n\n";
+                prompt += "Your task is to write a TEXT PROMPT ONLY — do NOT generate, create, or return any image.\n";
+                prompt += "Do NOT attempt to create an image. Do NOT embed or attach any image. Do NOT use any image generation capability.\n";
+                prompt += "Return ONLY a plain text string that could be pasted into an AI image generator such as Midjourney, DALL-E, or Stable Diffusion by the user.\n";
+                prompt += "Output ONLY the raw prompt text. No preamble, no explanation, no labels, no quotation marks around the output.\n\n";
 
                 if (prefs.shape) prompt += `Image aspect ratio / shape: ${prefs.shape}\n`;
                 if (prefs.resolution) prompt += `Target resolution: ${prefs.resolution}\n`;
@@ -7082,9 +7086,13 @@ ${cleanedLyrics}
 
                 prompt += "\nGenerate the image prompt now:";
 
+                console.log("[CoverImagePrompt] Sending prompt to AI:\n", prompt);
+
                 try {
-                    const raw = await callAI(prompt);
-                    const cleaned = (raw || "").trim().replace(/^"|"$/g, "").replace(/^'|'$/g, "");
+                    const result = await callAI(prompt);
+                    const raw = result?.text ?? "";
+                    console.log("[CoverImagePrompt] Raw AI response:", raw);
+                    const cleaned = raw.trim().replace(/^"|"$/g, "").replace(/^'|'$/g, "");
 
                     document.getElementById("cover-result-text").value = cleaned;
                     document.getElementById("cover-result-area").style.display = "flex";

@@ -81,6 +81,27 @@ body {
     gap: 4px;
     max-width: 350px;
 }
+@keyframes sf-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+#drive-sync-indicator {
+    display: none;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-family: "Space Mono", monospace;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+.drive-sync-icon {
+    width: 20px;
+    height: 20px;
+    animation: sf-spin 1s linear infinite;
+    flex-shrink: 0;
+}
 footer.app-footer {
     display: flex;
     align-items: center;
