@@ -70,6 +70,7 @@
                     sf_locale: getStoredSetting("sf_locale", "en"),
                     sf_song_lang: getStoredSetting("sf_song_lang", "English"),
                     sf_song_lang_custom: getStoredSetting("sf_song_lang_custom", ""),
+                    sf_cover_artist_name: getStoredSetting("sf_cover_artist_name", ""),
                 };
             }
 
@@ -94,6 +95,9 @@
                 }
                 if (payload.sf_song_lang_custom !== undefined) {
                     setStoredSetting("sf_song_lang_custom", payload.sf_song_lang_custom);
+                }
+                if (payload.sf_cover_artist_name !== undefined) {
+                    setStoredSetting("sf_cover_artist_name", payload.sf_cover_artist_name);
                 }
 
                 if (options.applyUi) {
@@ -371,6 +375,7 @@
                     modelChangedLocally = false; // local model is now safely in Drive; allow future syncs to apply remote changes
                     await writeDriveJsonFile(DRIVE_PRESETS_FILE, { version: 1, savedAt: new Date().toISOString(), presets: songPresets }, interactive);
                     lastDriveSyncAt = new Date();
+                    setDriveSyncStatus("ok");
                     updateStorageControls();
                     if (showAlert) {
                         alert(_t("alert.drive_sync_success", "Google Drive sync completed."));
@@ -6966,7 +6971,7 @@ ${cleanedLyrics}
                 document.getElementById("cover-artist-font").value = prefs.artistFont || "Sans-Serif";
                 document.getElementById("cover-artist-font-custom").value = prefs.artistFontCustom || "";
                 document.getElementById("cover-artist-caps").checked = prefs.artistCapitalize !== false;
-                document.getElementById("cover-artist-name").value = prefs.artistName || "";
+                document.getElementById("cover-artist-name").value = prefs.artistName || getStoredSetting("sf_cover_artist_name", "");
                 onCoverArtistPositionChange();
                 onCoverArtistFontChange();
 
@@ -7100,6 +7105,7 @@ ${cleanedLyrics}
                     document.getElementById("cover-result-area").style.display = "flex";
 
                     prefs.lastPrompt = cleaned;
+                    if (prefs.artistName) setStoredSetting("sf_cover_artist_name", prefs.artistName);
                     currentSong.coverImagePrefs = prefs;
                     saveToHistory(currentSong);
                 } catch (err) {
