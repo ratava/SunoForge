@@ -122,18 +122,18 @@
 
             function mergeHistoryCollections(base, incoming) {
                 const combined = [...(Array.isArray(base) ? base : []), ...(Array.isArray(incoming) ? incoming : [])].filter(Boolean);
-                const uniqueMap = new Map();
+                const seenIds = new Set();
+                const unique = [];
 
                 combined.forEach((song, idx) => {
-                    const key = `${song?.title || ""}|${song?.genre || ""}`;
-                    const existing = uniqueMap.get(key);
-                    const existingDate = new Date(existing?.savedAt || 0).getTime();
-                    const candidateDate = new Date(song?.savedAt || 0).getTime();
                     const normalized = { ...song, id: song?.id || Date.now() + idx, savedAt: song?.savedAt || new Date().toISOString() };
-                    if (!existing || candidateDate >= existingDate) uniqueMap.set(key, normalized);
+                    if (!seenIds.has(normalized.id)) {
+                        seenIds.add(normalized.id);
+                        unique.push(normalized);
+                    }
                 });
 
-                return Array.from(uniqueMap.values()).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                return unique.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
             }
 
             function getDriveStatusLabel() {
@@ -6359,24 +6359,21 @@ ${cleanedLyrics}
                     // Import songs - always merge, never replace existing
                     const importedSongs = backupData.songs.map((song, idx) => ({
                         ...song,
-                        id: Date.now() + idx, // Ensure unique IDs
+                        id: song.id || Date.now() + idx, // Preserve original ID; assign new one only if missing
                         savedAt: song.savedAt || new Date().toISOString(),
                     }));
 
-                    // Merge: add imported songs, remove duplicates by title+genre, keep most recent
+                    // Merge: combine all entries, deduplicate by ID only — never collapse by title/genre
                     const combined = [...history, ...importedSongs];
-                    const uniqueMap = new Map();
-
+                    const seenIds = new Set();
+                    history = [];
                     combined.forEach((song) => {
-                        const key = `${song.title}|${song.genre}`;
-                        const existing = uniqueMap.get(key);
-
-                        if (!existing || new Date(song.savedAt) > new Date(existing.savedAt)) {
-                            uniqueMap.set(key, song);
+                        if (!seenIds.has(song.id)) {
+                            seenIds.add(song.id);
+                            history.push(song);
                         }
                     });
-
-                    history = Array.from(uniqueMap.values()).sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                    history.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
 
                     // Import API key if present
                     let apiKeyRestored = false;
