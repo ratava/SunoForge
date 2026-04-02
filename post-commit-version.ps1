@@ -37,13 +37,13 @@ else {
 $content = Get-Content $indexFile -Raw
 
 # Check current version in file
-if ($content -match 'id="version">([^<]*)</div>') {
+if ($content -match 'id="version">([^<]*)</span>') {
     $currentVersion = $matches[1]
     
     # Only update if version doesn't match the current commit
     if ($currentVersion -ne $version) {
         # Replace the version
-        $newContent = $content -replace 'id="version">[^<]*</div>', "id=`"version`">$version</div>"
+        $newContent = $content -replace 'id="version">[^<]*</span>', "id=`"version`">$version</span>"
         
         # Write the updated file
         $newContent | Set-Content $indexFile -NoNewline

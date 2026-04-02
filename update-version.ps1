@@ -11,7 +11,7 @@ $content = Get-Content $indexFile -Raw
 
 # Extract current version
 $currentVersion = "dev"
-if ($content -match 'id="version">Version:\s*<br\s*/?>([^<]*)</span>') {
+if ($content -match 'id="version">([^<]*)</span>') {
     $currentVersion = $matches[1]
 }
 
@@ -31,8 +31,8 @@ if ($currentVersion -match '^(\d{8})-(\d{3})$') {
 # Format the new version
 $version = "{0}-{1:D3}" -f $dateString, $versionNumber
 
-# Replace the entire version span content
-$newContent = $content -replace 'id="version">Version:\s*<br\s*/?>([^<]*)</span>', "id=`"version`">Version: <br />$version</span>"
+# Replace the version span content
+$newContent = $content -replace 'id="version">[^<]*</span>', "id=`"version`">$version</span>"
 
 # Write back only if changed
 if ($content -ne $newContent) {
