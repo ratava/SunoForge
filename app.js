@@ -8105,46 +8105,6 @@ ${cleanedLyrics}
                                         const shortened = await shortenLyricsPromptWithAI(song);
                                         debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow completed", shortened);
                                         console.log("[SHORTEN ACTION] Shorten result:", shortened);
-                                        if (shortened.updated && shortened.length > 5000) {
-                                            debugLog("LYRICS_SHORTEN_ACTION", "Shortened result still exceeds limit; progressive strip fallback starting", {
-                                                shortenedLength: shortened.length,
-                                                limit: 5000,
-                                            });
-                                            console.log("[SHORTEN ACTION] Shortened lyrics still exceed limit:", shortened.length, "Starting progressive strip fallback.");
-
-                                            let fallbackLen = shortened.length;
-
-                                            // Step 1: strip Era
-                                            if (fallbackLen > 5000 && song.soundProfile?.eras?.length) {
-                                                song.soundProfile.eras = [];
-                                                fallbackLen = calcAssembledLyricsLength(song);
-                                                console.log("[SHORTEN ACTION] Stripped Era. New length:", fallbackLen);
-                                            }
-
-                                            // Step 2: strip Spatial/Effects
-                                            if (fallbackLen > 5000 && song.soundProfile?.spatial?.length) {
-                                                song.soundProfile.spatial = [];
-                                                fallbackLen = calcAssembledLyricsLength(song);
-                                                console.log("[SHORTEN ACTION] Stripped Spatial/Effects. New length:", fallbackLen);
-                                            }
-
-                                            // Step 3: strip Groove Feel
-                                            if (fallbackLen > 5000 && song.grooveFeel && song.grooveFeel !== "AI Choose") {
-                                                song.grooveFeel = "AI Choose";
-                                                fallbackLen = calcAssembledLyricsLength(song);
-                                                console.log("[SHORTEN ACTION] Stripped Groove Feel. New length:", fallbackLen);
-                                            }
-
-                                            currentSong = song;
-                                            renderSongCard(song);
-                                            renderChordsCard(song);
-                                            saveToHistory(song);
-
-                                            if (fallbackLen > 5000) {
-                                                console.log("[SHORTEN ACTION] Still over limit after all strip steps:", fallbackLen, "Showing warning.");
-                                                showLyricsStillTooLongWarning(fallbackLen);
-                                            }
-                                        }
                                     } catch (shortenErr) {
                                         debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow failed", {
                                             error: shortenErr?.message || String(shortenErr),
@@ -8156,6 +8116,44 @@ ${cleanedLyrics}
                                         shortenCard.remove();
                                         debugLog("LYRICS_SHORTEN_ACTION", "Removed shortening status card", {});
                                         console.log("[SHORTEN ACTION] Removed shortening status card.");
+                                    }
+
+                                    // Progressive strip fallback — always runs after AI attempt (success or failure)
+                                    // Each step only executes if still over the limit after the previous step
+                                    let fallbackLen = calcAssembledLyricsLength(song);
+                                    console.log("[SHORTEN ACTION] Post-AI assembled length:", fallbackLen);
+
+                                    if (fallbackLen > 5000) {
+                                        // Step 1: strip Era
+                                        if (fallbackLen > 5000 && song.soundProfile?.eras?.length) {
+                                            song.soundProfile.eras = [];
+                                            fallbackLen = calcAssembledLyricsLength(song);
+                                            console.log("[SHORTEN ACTION] Stripped Era. New length:", fallbackLen);
+                                        }
+
+                                        // Step 2: strip Spatial/Effects
+                                        if (fallbackLen > 5000 && song.soundProfile?.spatial?.length) {
+                                            song.soundProfile.spatial = [];
+                                            fallbackLen = calcAssembledLyricsLength(song);
+                                            console.log("[SHORTEN ACTION] Stripped Spatial/Effects. New length:", fallbackLen);
+                                        }
+
+                                        // Step 3: strip Groove Feel
+                                        if (fallbackLen > 5000 && song.grooveFeel && song.grooveFeel !== "AI Choose") {
+                                            song.grooveFeel = "AI Choose";
+                                            fallbackLen = calcAssembledLyricsLength(song);
+                                            console.log("[SHORTEN ACTION] Stripped Groove Feel. New length:", fallbackLen);
+                                        }
+
+                                        currentSong = song;
+                                        renderSongCard(song);
+                                        renderChordsCard(song);
+                                        saveToHistory(song);
+
+                                        if (fallbackLen > 5000) {
+                                            console.log("[SHORTEN ACTION] Still over limit after all strip steps:", fallbackLen, "Showing warning.");
+                                            showLyricsStillTooLongWarning(fallbackLen);
+                                        }
                                     }
                                 }
                             }
