@@ -5351,10 +5351,9 @@ ${cleanedLyrics}
             }
             function openLyricsTooLongModal(len) {
                 const excess = len - 5000;
-                const newMax = Math.max(1000, 4500 - excess);
                 const detail = document.getElementById("lyrics-too-long-detail");
                 if (detail) {
-                    detail.textContent = `The assembled lyrics are ${len.toLocaleString()} characters — ${excess.toLocaleString()} over Suno's 5,000-character limit.\n\nIf the AI shortens them, the new character limit will be set to ${newMax.toLocaleString()}.\n\nChoose how to proceed:`;
+                    detail.textContent = `The assembled lyrics are ${len.toLocaleString()} characters — ${excess.toLocaleString()} over Suno's 5,000-character limit.\n\nThe AI has already attempted to shorten the lyrics prompt during generation. Would you like to request another shortening attempt?`;
                 }
                 document.getElementById("lyrics-too-long-modal").style.display = "flex";
                 return new Promise((resolve) => {
