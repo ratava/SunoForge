@@ -153,7 +153,7 @@
   "empty.no_steps": "Nog geen aangepaste stappen.",
   "status.ready": "klaar",
   "status.not_set": "niet ingesteld",
-  "status.generating": "Uw nummer schrijven...",
+  "status.generating": "Uw nummer schrijven... (dit kan tot 90 seconden duren)",
   "status.analysis_applied": "Analyse toegepast",
   "status.style_applied": "Stijl toegepast op alle instellingen",
   "alert.no_google_key": "Voer een Google AI Studio API-sleutel in.",

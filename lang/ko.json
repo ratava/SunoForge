@@ -151,7 +151,7 @@
   "empty.no_steps": "아직 커스텀 단계가 없습니다.",
   "status.ready": "준비됨",
   "status.not_set": "설정되지 않음",
-  "status.generating": "노래를 작성 중...",
+  "status.generating": "노래를 작성 중... (최대 90초 소요될 수 있습니다)",
   "status.analysis_applied": "분석 적용됨",
   "status.style_applied": "모든 설정에 스타일 적용됨",
   "alert.no_google_key": "Google AI Studio API 키를 입력해 주세요.",

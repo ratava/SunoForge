@@ -149,7 +149,7 @@
   "empty.no_steps": "Aucune étape personnalisée.",
   "status.ready": "prêt",
   "status.not_set": "non défini",
-  "status.generating": "Écriture de votre chanson...",
+  "status.generating": "Écriture de votre chanson... (cela peut prendre jusqu'à 90 secondes)",
   "status.analysis_applied": "Analyse appliquée",
   "status.style_applied": "Style appliqué à tous les paramètres",
   "alert.no_google_key": "Veuillez entrer une clé API Google AI Studio.",

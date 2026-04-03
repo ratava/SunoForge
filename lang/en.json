@@ -154,7 +154,7 @@
   "empty.no_steps": "No custom steps yet.",
   "status.ready": "ready",
   "status.not_set": "not set",
-  "status.generating": "Writing your song...",
+  "status.generating": "Writing your song... (this may take up to 90 seconds)",
   "status.analysis_applied": "Analysis Applied",
   "status.style_applied": "Style Applied to All Settings",
   "alert.no_google_key": "Please enter a Google AI Studio API key.",

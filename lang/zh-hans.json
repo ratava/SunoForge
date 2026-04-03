@@ -151,7 +151,7 @@
   "empty.no_steps": "暂无自定义步骤。",
   "status.ready": "就绪",
   "status.not_set": "未设置",
-  "status.generating": "正在创作您的歌曲...",
+  "status.generating": "正在创作您的歌曲...（最多可能需要90秒）",
   "status.analysis_applied": "分析已应用",
   "status.style_applied": "风格已应用到所有设置",
   "alert.no_google_key": "请输入 Google AI Studio API 密钥。",

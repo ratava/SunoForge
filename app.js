@@ -5097,20 +5097,38 @@
                 const cleanedLyrics = removeDoubleBrackets(buildAssembledLyricsPrompt(song));
                 if (!cleanedLyrics) return { updated: false, length: 0 };
 
-                const prompt = `You are a professional songwriter and producer with deep expertise in all genres. Also you are master in Suno prompts. Here is a Suno lyric prompt which is longer than the allowed 5000 characters. Without altering the Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Production style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects: or Mix: lines, shorten the lyric prompt to no greater than 5000 characters by doing the following in order of preference.
-1. Shorten lyrical repetition or repeated filler while preserving section labels, structure, and the core meaning.
-2. Tighten section direction and instruction tags.
-3. Shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, Production notes, and Chord progression only as much as necessary.
-Do not add, remove, rename, merge, split, or reorder any lyric sections. The returned prompt must preserve the exact same section headers and section order as the supplied prompt.
-Return the result in the same format as the supplied Suno Lyric Prompt.
+                const currentStylePrompt = String(song.suno_style_prompt || "").trim();
+
+                const prompt = `You are a professional songwriter and producer with deep expertise in all genres. You are also a master in Suno prompts. You are given a Suno Style Prompt (max 1000 characters) and a Suno Lyric Prompt (must be reduced to 5000 characters or fewer). Apply the following rules in order until both limits are met.
+
+RULES (apply in order):
+1. Remove duplicate instructions that appear in both the Suno Style Prompt and the [Style:] section at the top of the Lyric Prompt. If the Suno Style Prompt has room (under 1000 chars), move useful instructions from the Lyric [Style:] section into it instead of discarding them.
+2. Remove duplication between individual section meta tags (e.g. [Soulful, raw]) and the Lyric [Style:] section or the Suno Style Prompt. For example, chord progressions declared in the Style do not need repeating in every section tag.
+3. If individual lyric sections contain multiple meta tags, consolidate them into a single meta tag per section and remove any redundant instructions within that tag.
+4. Remove from section meta tags any instructions that are already fully covered by the Suno Style Prompt or Lyric [Style:] section.
+5. If the Lyric Prompt is still over 5000 characters, simplify production notes.
+6. If the Lyric Prompt is still over 5000 characters, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression only as much as necessary.
+
+HARD CONSTRAINTS:
+- Do NOT add, remove, rename, merge, split, or reorder any lyric sections. The section headers and order must be identical to the supplied prompt.
+- Do NOT alter protected lines: Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects:, Mix:
+- The updated Suno Style Prompt must be 1000 characters or fewer.
+- The shortened Lyric Prompt must be 5000 characters or fewer.
 
 Return ONLY valid JSON (no markdown, no backticks):
 {
-  "shortened_lyrics_prompt":"Full Suno lyric prompt, 5000 characters or fewer",
-  "character_count": 4987
+  "updated_style_prompt": "Updated Suno Style Prompt, 1000 characters or fewer",
+  "shortened_lyrics_prompt": "Full Suno Lyric Prompt, 5000 characters or fewer",
+  "style_prompt_char_count": 980,
+  "lyrics_prompt_char_count": 4987
 }
 
-SUNO LYRIC PROMPT:
+SUNO STYLE PROMPT (current, max 1000 chars):
+"""
+${currentStylePrompt}
+"""
+
+SUNO LYRIC PROMPT (must be shortened to 5000 chars or fewer):
 """
 ${cleanedLyrics}
 """`;
@@ -5118,16 +5136,15 @@ ${cleanedLyrics}
                 debugLog("LYRICS_SHORTEN_REQUEST", "Sending shorten request to AI", {
                     promptLength: prompt.length,
                     sourceLyricsLength: cleanedLyrics.length,
+                    sourceStyleLength: currentStylePrompt.length,
                     sourceSections: (song.sections || []).map((section) => section?.type || ""),
                     prompt,
                 });
                 console.log("=== SENDING SHORTEN REQUEST TO AI ===");
                 console.log("Shorten prompt length:", prompt.length, "characters");
                 console.log("Source lyrics length:", cleanedLyrics.length, "characters");
-                console.log(
-                    "Source sections:",
-                    (song.sections || []).map((section) => section?.type || ""),
-                );
+                console.log("Source style prompt length:", currentStylePrompt.length, "characters");
+                console.log("Source sections:", (song.sections || []).map((section) => section?.type || ""));
                 console.log("Full shorten prompt:", prompt);
                 console.log("=====================================");
 
@@ -5152,7 +5169,8 @@ ${cleanedLyrics}
 
                 debugLog("LYRICS_SHORTEN_PARSED", "Parsed shorten response", {
                     parsed,
-                    reportedCharacterCount: parsed?.character_count,
+                    reportedStyleCharCount: parsed?.style_prompt_char_count,
+                    reportedLyricsCharCount: parsed?.lyrics_prompt_char_count,
                 });
                 console.log("=== PARSED SHORTEN RESPONSE ===");
                 console.log("Parsed shorten payload:", parsed);
@@ -5174,11 +5192,20 @@ ${cleanedLyrics}
                     throw new Error(`AI shortening changed the section structure. ${validation.reason} No new, removed, renamed, merged, or reordered sections are allowed.`);
                 }
 
+                // Apply updated style prompt if the AI returned one
+                const updatedStylePrompt = String(parsed.updated_style_prompt || "").trim();
+                if (updatedStylePrompt) {
+                    song.suno_style_prompt = updatedStylePrompt.substring(0, 1000);
+                }
+
                 applyStyleMetaTagToSong(song, styleMetaTag);
                 song.sections = parsedSections;
                 song.settings = song.settings || {};
                 song.settings.userLyrics = { mode: "bulk", content: body };
                 song.settings.aiMode = "keep";
+
+                // Re-enforce style prompt char limit after all changes
+                applySunoStylePromptData(song);
 
                 const lyricsInput = document.getElementById("lyrics-input");
                 if (lyricsInput) lyricsInput.value = body;
@@ -5190,14 +5217,13 @@ ${cleanedLyrics}
 
                 debugLog("LYRICS_SHORTEN_APPLIED", "Applied shortened lyrics to current song", {
                     shortenedLength: shortenedPrompt.length,
+                    updatedStyleLength: song.suno_style_prompt?.length || 0,
                     finalSections: (song.sections || []).map((section) => section?.type || ""),
                 });
                 console.log("=== APPLIED SHORTENED LYRICS ===");
                 console.log("Shortened prompt length:", shortenedPrompt.length, "characters");
-                console.log(
-                    "Final sections:",
-                    (song.sections || []).map((section) => section?.type || ""),
-                );
+                console.log("Updated style prompt length:", song.suno_style_prompt?.length || 0, "characters");
+                console.log("Final sections:", (song.sections || []).map((section) => section?.type || ""));
                 console.log("================================");
 
                 return { updated: true, length: shortenedPrompt.length };
@@ -7795,7 +7821,29 @@ ${cleanedLyrics}
 
                 ${titleInstruction}
                 Also return a Suno-compatible style prompt in "suno_style_prompt". That field must be 1000 characters or less total. If it would exceed 1000 characters, keep "suno_style_prompt" concise and put the overflow or extra style detail in "style_meta_tag", which should be a one-line style meta tag intended for insertion at the start of the returned lyrics.
-                LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer. Count carefully before responding — if the lyrics are too long, shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.
+                LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer as a starting target.
+                MANDATORY SELF-REVIEW BEFORE RETURNING JSON: Before finalising your response, mentally assemble the full Suno Lyric Prompt exactly as Suno will receive it. The assembled format is:
+
+                  [Style: line1 / line2 / ...]
+
+                  [Section Type]
+                  [direction]
+                  [instruction]
+                  lyrics line 1
+                  lyrics line 2
+
+                  [Next Section]
+                  ...
+
+                Measure the total character length of that assembled text. The assembled Suno Lyric Prompt MUST be 5000 characters or fewer, and suno_style_prompt MUST be 1000 characters or fewer.
+                If either limit is exceeded, apply these rules IN ORDER until both are met:
+                1. Remove duplicate instructions found in both suno_style_prompt and the [Style:] block in the lyric prompt. If suno_style_prompt has capacity (under 1000 chars), move useful items from the lyric [Style:] block into it.
+                2. Remove duplication between section meta tags (direction / instructions) and the [Style:] block or suno_style_prompt — e.g. chord progressions declared in the Style need not repeat in every section tag.
+                3. If a section has multiple direction/instruction lines, consolidate them into a single concise meta tag per section.
+                4. Remove from section meta tags any instructions already fully covered by suno_style_prompt or the [Style:] block.
+                5. If the assembled Lyric Prompt is still over 5000 chars, shorten the production field.
+                6. If still over 5000 chars, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression notes — only as much as necessary.
+                SELF-REVIEW HARD CONSTRAINTS: Do NOT add, remove, rename, merge, split, or reorder any sections. Do NOT alter: Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects:, Mix: lines. Do NOT modify any section where userProvided is true. Only return the final, self-reviewed JSON.
                 The returned Suno style prompt must incorporate every currently selected setting: Genre, Structure, Key, the full Sound Profile, and it must also reflect the Production Notes and Chord Progression that you return in the same JSON response.
                 Respond ONLY with JSON (no markdown, no backticks):
                 {
@@ -7812,7 +7860,7 @@ ${cleanedLyrics}
                     "instrument_exclusions":"optional comma-separated list of instruments to exclude from instrumentation",
                     "suggested_influences":"optional array of 3 artist names if influences were requested, e.g. [\"Artist 1\", \"Artist 2\", \"Artist 3\"]",
                     "key_info":{"key":"${keyForPrompt !== "Auto" ? keyForPrompt : "e.g. E minor"}","time_sig":"${timeSignatureForPrompt !== "Auto" ? timeSignatureForPrompt : "e.g. 4/4"}","tempo":"${tempoForPrompt !== "AI Choose" ? tempoForPrompt : "e.g. 90-110 BPM or 102 BPM"}","feel":"e.g. Straight 8ths"},
-                  "production":"400-500 char production description referencing sound profile choices.",
+                  "production":"200-300 char production description referencing sound profile choices.",
                   "chords":{"chords":[{"name":"Em","role":"Tonic"}],"progression":"Verse: Em-C-G-D | Chorus: C-G-D-Em","notes":"2-3 sentences on harmonic approach."},
                   "sections":[{"type":"Section name","direction":"Performance direction","instructions":"Section-specific instruction","lines":"Lyrics\nLine 2","userProvided":false}]
                 }`;
@@ -7820,7 +7868,7 @@ ${cleanedLyrics}
                 async function runGeneration(maxLyricsChars, overageChars) {
                     const loadCard = document.createElement("div");
                     loadCard.className = "output-card";
-                    loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating", "Writing your song...")}</div>`;
+                    loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating", "Writing your song... (this may take up to 90 seconds)")}</div>`;
                     panel.insertBefore(loadCard, panel.firstChild);
 
                     let effectivePrompt = prompt;
@@ -7829,13 +7877,13 @@ ${cleanedLyrics}
                         if (isKeepMode) {
                             // Can't shorten user-provided lyrics — shorten production notes/directions instead
                             effectivePrompt = prompt.replace(
-                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer. Count carefully before responding — if the lyrics are too long, shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.',
-                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The user's lyrics are locked and MUST NOT be changed. To reduce the total length, shorten the \"production\" field and reduce the length of section \"direction\" and \"instructions\" fields. The combined total character count of all \"lines\" fields across all sections must be ${maxLyricsChars} characters or fewer, but since lyrics are locked focus on cutting production notes and directions to compensate.`,
+                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer as a starting target.',
+                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The user's lyrics are locked and MUST NOT be changed. To reduce the total assembled length, further shorten the \"production\" field and the section \"direction\" and \"instructions\" fields. The combined total character count of all \"lines\" fields must be ${maxLyricsChars} characters or fewer, but since lyrics are locked prioritise cutting production notes and directions to compensate.`,
                             );
                         } else {
                             effectivePrompt = prompt.replace(
-                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer. Count carefully before responding — if the lyrics are too long, shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.',
-                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The combined total character count of all \"lines\" fields across all sections must be ${maxLyricsChars} characters or fewer. Count carefully before responding — shorten lines, reduce repetition, or cut a section. Do not exceed this limit under any circumstances.`,
+                                'LYRICS LENGTH LIMIT: The combined total character count of all "lines" fields across all sections must be 4500 characters or fewer as a starting target.',
+                                `LYRICS LENGTH LIMIT: The previous response was ${overageChars.toLocaleString()} characters over Suno's 5,000-character limit. The combined total character count of all \"lines\" fields across all sections must be ${maxLyricsChars} characters or fewer. Apply the self-review rules below more aggressively — shorten lyrics, reduce repetition, or cut a section.`,
                             );
                         }
                     }
@@ -8038,7 +8086,7 @@ ${cleanedLyrics}
                                 if (choice === "ai") {
                                     const shortenCard = document.createElement("div");
                                     shortenCard.className = "output-card";
-                                    shortenCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">Shortening your song...</div>`;
+                                    shortenCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">Shortening your song... (this may take up to 90 seconds)</div>`;
                                     panel.insertBefore(shortenCard, panel.firstChild);
                                     debugLog("LYRICS_SHORTEN_ACTION", "Inserted shortening status card", {});
                                     console.log("[SHORTEN ACTION] Inserted 'Shortening your song...' status card.");
