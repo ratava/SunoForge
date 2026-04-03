@@ -7843,6 +7843,7 @@ ${cleanedLyrics}
                 5. If the assembled Lyric Prompt is still over 5000 chars, shorten the production field.
                 6. If still over 5000 chars, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression notes — only as much as necessary.
                 SELF-REVIEW HARD CONSTRAINTS: Do NOT add, remove, rename, merge, split, or reorder any sections. Do NOT alter: Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects:, Mix: lines. Do NOT modify any section where userProvided is true. Only return the final, self-reviewed JSON.
+                Set "self_review_applied" to true if you made any changes during self-review, and set "chars_reduced" to the number of characters removed from the assembled Lyric Prompt. If no changes were needed, set both to false and 0 respectively.
                 The returned Suno style prompt must incorporate every currently selected setting: Genre, Structure, Key, the full Sound Profile, and it must also reflect the Production Notes and Chord Progression that you return in the same JSON response.
                 Respond ONLY with JSON (no markdown, no backticks):
                 {
@@ -7861,6 +7862,8 @@ ${cleanedLyrics}
                     "key_info":{"key":"${keyForPrompt !== "Auto" ? keyForPrompt : "e.g. E minor"}","time_sig":"${timeSignatureForPrompt !== "Auto" ? timeSignatureForPrompt : "e.g. 4/4"}","tempo":"${tempoForPrompt !== "AI Choose" ? tempoForPrompt : "e.g. 90-110 BPM or 102 BPM"}","feel":"e.g. Straight 8ths"},
                   "production":"200-300 char production description referencing sound profile choices.",
                   "chords":{"chords":[{"name":"Em","role":"Tonic"}],"progression":"Verse: Em-C-G-D | Chorus: C-G-D-Em","notes":"2-3 sentences on harmonic approach."},
+                  "self_review_applied": false,
+                  "chars_reduced": 0,
                   "sections":[{"type":"Section name","direction":"Performance direction","instructions":"Section-specific instruction","lines":"Lyrics\nLine 2","userProvided":false}]
                 }`;
 
@@ -7922,6 +7925,8 @@ ${cleanedLyrics}
                         debugLog("SONG_GENERATION_PARSED", "Parsed song response", {
                             song: song,
                             sectionsCount: song.sections?.length || 0,
+                            selfReviewApplied: song.self_review_applied,
+                            charsReduced: song.chars_reduced,
                             sections: song.sections?.map((s) => ({
                                 type: s.type,
                                 direction: s.direction,
@@ -7934,6 +7939,11 @@ ${cleanedLyrics}
                         console.log("=== PARSED AI RESPONSE ===");
                         console.log("Parsed song object:", JSON.stringify(song, null, 2));
                         console.log("Sections count:", song.sections?.length || 0);
+                        if (song.self_review_applied) {
+                            console.log(`[SELF-REVIEW] AI applied lyrics shortening during generation. Characters reduced: ${song.chars_reduced ?? "unknown"}`);
+                        } else {
+                            console.log("[SELF-REVIEW] AI did not need to shorten lyrics during generation.");
+                        }
                         if (song.sections) {
                             song.sections.forEach((section, idx) => {
                                 console.log(`Section ${idx}:`, {
