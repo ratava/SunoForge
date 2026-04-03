@@ -744,18 +744,24 @@
                         continue;
                     }
                     if (inString) {
-                        if (ch === "\n") {
-                            out += "\\n";
+                        const cp = ch.charCodeAt(0);
+                        // Escape literal newline/carriage-return/tab (most common from AI responses)
+                        if (ch === "\n") { out += "\\n"; continue; }
+                        if (ch === "\r") { out += "\\r"; continue; }
+                        if (ch === "\t") { out += "\\t"; continue; }
+                        // Escape all other ASCII control characters (U+0000–U+001F) that are
+                        // invalid unescaped inside JSON strings per spec
+                        if (cp < 0x20) {
+                            out += "\\u" + cp.toString(16).padStart(4, "0");
                             continue;
                         }
-                        if (ch === "\r") {
-                            out += "\\r";
-                            continue;
-                        }
-                        if (ch === "\t") {
-                            out += "\\t";
-                            continue;
-                        }
+                        // U+2028 LINE SEPARATOR and U+2029 PARAGRAPH SEPARATOR — technically
+                        // allowed in JS strings but some JSON parsers reject them unescaped.
+                        // Also encountered in CJK and Arabic AI output.
+                        if (cp === 0x2028) { out += "\\u2028"; continue; }
+                        if (cp === 0x2029) { out += "\\u2029"; continue; }
+                        // U+0085 NEXT LINE — used in some Arabic/Hebrew text encodings
+                        if (cp === 0x0085) { out += "\\u0085"; continue; }
                     }
                     out += ch;
                 }
@@ -5066,7 +5072,7 @@
                     else if (line.startsWith("Rhythm: ")) song.rhythm = line.substring(8).trim();
                     else if (line.startsWith("Groove Feel: ")) song.grooveFeel = line.substring(13).trim();
                     else if (line.startsWith("Perspective: ")) song.pov = line.substring(13).trim();
-                    else if (line.startsWith("Tempo Preference: ")) song.tempoPreference = line.substring(18).trim();
+                    else if (line.startsWith("Tempo: ")) song.tempoPreference = line.substring(18).trim();
                     else if (line.startsWith("Duration: ")) song.durationPreference = line.substring(10).trim();
                     else if (line.startsWith("Verse Length: ")) song.verseLength = line.substring(14).trim();
                     else if (line.startsWith("Chorus Length: ")) song.chorusLength = line.substring(15).trim();
@@ -6613,7 +6619,7 @@ ${cleanedLyrics}
                     } else if (line.startsWith("Vocal Configuration: ")) {
                         const vocalText = line.substring(21).trim();
                         song.vocalProfiles = parseVocalConfiguration(vocalText);
-                    } else if (line.startsWith("Tempo Preference: ")) {
+                    } else if (line.startsWith("Tempo: ")) {
                         song.tempoPreference = line.substring(18).trim();
                     } else if (line.startsWith("Verse Length: ")) {
                         song.verseLength = line.substring(14).trim();
@@ -6867,7 +6873,7 @@ ${cleanedLyrics}
                 if (song.rhythm && song.rhythm !== "AI Choose") styleDetailsLines.push(`Rhythm: ${song.rhythm}`);
                 if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleDetailsLines.push(`Groove Feel: ${song.grooveFeel}`);
                 if (song.pov) styleDetailsLines.push(`Perspective: ${song.pov}`);
-                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleDetailsLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleDetailsLines.push(`Tempo: ${tempoPreference}`);
                 // Only include verse/chorus length if not "Follow Structure"
                 if (verseLength && verseLength !== "Follow Structure") styleDetailsLines.push(`Verse Length: ${verseLength}`);
                 if (chorusLength && chorusLength !== "Follow Structure") styleDetailsLines.push(`Chorus Length: ${chorusLength}`);
@@ -6952,7 +6958,7 @@ ${cleanedLyrics}
                 if (song.concept) exportLines.push(`Concept: ${song.concept}`);
 
                 if (vocalConfig && vocalConfig !== "Not specified") exportLines.push(`Vocal Configuration: ${vocalConfig}`);
-                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") exportLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") exportLines.push(`Tempo: ${tempoPreference}`);
 
                 const verseLengthExp = formatLengthPreference(song.verseLength);
                 const chorusLengthExp = formatLengthPreference(song.chorusLength);
@@ -7258,7 +7264,7 @@ ${cleanedLyrics}
                 const regenLang = currentSong.settings?.songLanguage || getSongLanguage();
 
                 const prompt = `You are a professional songwriter. Rewrite ONLY this section with fresh, original lyrics.
-                Song: ${currentSong.title} | Genre: ${currentSong.genre} | Rhyme: ${currentSong.rhyme || "AABB"}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${currentTempoPreference !== "AI Choose" ? `\nTempo Preference: ${currentTempoPreference}` : ""}\nLyrics Language: ${regenLang}
+                Song: ${currentSong.title} | Genre: ${currentSong.genre} | Rhyme: ${currentSong.rhyme || "AABB"}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${currentTempoPreference !== "AI Choose" ? `\nTempo: ${currentTempoPreference}` : ""}\nLyrics Language: ${regenLang}
                 Verse Length Preference: ${currentVerseLength}
                 Chorus Length Preference: ${currentChorusLength}${instrumentExclusions ? `\nInstrument Exclusions: ${instrumentExclusions}` : ""}
                 Section: ${sec.type}
@@ -7828,10 +7834,10 @@ ${cleanedLyrics}
                 Title: ${title || "[Not provided — generate a strong title based on the lyrics, hook, and central idea.]"}
                 Concept: ${concept}
                 Lyrics Language: ${songLanguage}
-                Genre: ${genre}${mood ? `\nMood: ${mood}` : ""}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}${grooveFeel && grooveFeel !== "AI Choose" ? `\nGroove Feel: ${grooveFeel}` : ""}${rhyme ? `\nRhyme Scheme: ${rhyme}` : ""}${tempoForPrompt !== "AI Choose" && tempoForPrompt !== "Auto" ? `\nTempo Preference: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}${pov ? `\nPerspective: ${pov}` : ""}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${formatLengthPreference(verseLength) !== "Follow Structure" ? `\nVerse Length Preference: ${formatLengthPreference(verseLength)}` : ""}${formatLengthPreference(chorusLength) !== "Follow Structure" ? `\nChorus Length Preference: ${formatLengthPreference(chorusLength)}` : ""}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
+                Genre: ${genre}${mood ? `\nMood: ${mood}` : ""}${goal && goal !== "Not specified" ? `\nGoal/Purpose: ${goal}` : ""}${rhythm && rhythm !== "AI Choose" ? `\nRhythm: ${rhythm}` : ""}${grooveFeel && grooveFeel !== "AI Choose" ? `\nGroove Feel: ${grooveFeel}` : ""}${rhyme ? `\nRhyme Scheme: ${rhyme}` : ""}${tempoForPrompt !== "AI Choose" && tempoForPrompt !== "Auto" ? `\nTempo: ${tempoForPrompt}` : ""}${duration ? `\nTarget Duration: ${duration}` : ""}${keyForPrompt !== "Auto" ? `\nRequested Musical Key: ${keyForPrompt}` : ""}${timeSignatureForPrompt !== "Auto" ? `\nRequested Time Signature: ${timeSignatureForPrompt}` : ""}${pov ? `\nPerspective: ${pov}` : ""}${vocalConfig !== "Not specified" ? `\nVocal Configuration: ${vocalConfig}` : ""}${formatLengthPreference(verseLength) !== "Follow Structure" ? `\nVerse Length Preference: ${formatLengthPreference(verseLength)}` : ""}${formatLengthPreference(chorusLength) !== "Follow Structure" ? `\nChorus Length Preference: ${formatLengthPreference(chorusLength)}` : ""}${getInstrumentExclusions() ? `\nInstrument Exclusions: ${getInstrumentExclusions()}` : ""}
                 Structure: ${struct.name} -- ${struct.flow}
                 Structure description: ${struct.desc}${sectionChordsInstruction}${sectionInstructionsData}${soundInstruction}${influenceInstruction}${lyricsInstruction}
-                Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested tempo preference: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
+                Follow the structure flow EXACTLY.${structureInstruction}${tempoForPrompt !== "AI Choose" ? ` Use the requested Tempo: ${tempoForPrompt}.` : ""}${duration ? ` Target song duration should be ${duration}.` : ""}${keyForPrompt !== "Auto" ? ` Keep the song in ${keyForPrompt}.` : ""}${timeSignatureForPrompt !== "Auto" ? ` Write in ${timeSignatureForPrompt} time signature.` : ""}
                 Take in to account these special instructions: ${specialInstructions ? `\nSpecial Instructions: ${specialInstructions}` : "Not specified"}
                 LYRICS LANGUAGE: All lyrics must be written exclusively in ${songLanguage}.${songLanguage !== "English" ? ` Do not write any lyrics in English or any other language.` : ""}
                 LYRICAL PHRASING TECHNIQUES:
