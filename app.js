@@ -4860,7 +4860,7 @@
                 if (song.rhythm && song.rhythm !== "AI Choose") styleLines.push(`Rhythm: ${song.rhythm}`);
                 if (song.grooveFeel && song.grooveFeel !== "AI Choose") styleLines.push(`Groove Feel: ${song.grooveFeel}`);
                 if (song.pov) styleLines.push(`Perspective: ${song.pov}`);
-                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleLines.push(`Tempo Preference: ${tempoPreference}`);
+                if (tempoPreference && tempoPreference !== "AI Choose" && tempoPreference !== "Auto") styleLines.push(`Tempo: ${tempoPreference}`);
                 if (verseLength && verseLength !== "Follow Structure") styleLines.push(`Verse Length: ${verseLength}`);
                 if (chorusLength && chorusLength !== "Follow Structure") styleLines.push(`Chorus Length: ${chorusLength}`);
                 if (sp?.eras?.length) styleLines.push(`Era: ${sp.eras.join(", ")}`);
@@ -5102,16 +5102,17 @@
                 const prompt = `You are a professional songwriter and producer with deep expertise in all genres. You are also a master in Suno prompts. You are given a Suno Style Prompt (max 1000 characters) and a Suno Lyric Prompt (must be reduced to 5000 characters or fewer). Apply the following rules in order until both limits are met.
 
 RULES (apply in order):
-1. Remove duplicate instructions that appear in both the Suno Style Prompt and the [Style:] section at the top of the Lyric Prompt. If the Suno Style Prompt has room (under 1000 chars), move useful instructions from the Lyric [Style:] section into it instead of discarding them.
-2. Remove duplication between individual section meta tags (e.g. [Soulful, raw]) and the Lyric [Style:] section or the Suno Style Prompt. For example, chord progressions declared in the Style do not need repeating in every section tag.
-3. If individual lyric sections contain multiple meta tags, consolidate them into a single meta tag per section and remove any redundant instructions within that tag.
-4. Remove from section meta tags any instructions that are already fully covered by the Suno Style Prompt or Lyric [Style:] section.
-5. If the Lyric Prompt is still over 5000 characters, simplify production notes.
-6. If the Lyric Prompt is still over 5000 characters, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression only as much as necessary.
+1. Remove clear duplicate instructions from within the [Style:] block itself — pay close attention to Mix:, Production notes:, and Production style: lines and consolidate any repeated instructions. Prefer keeping instructions in Mix: first, then Production notes:.
+2. Remove duplicate instructions that appear in both the Suno Style Prompt and the [Style:] section at the top of the Lyric Prompt. If the Suno Style Prompt has room (under 1000 chars), move useful instructions from the Lyric [Style:] section into it instead of discarding them.
+3. Remove duplication between individual section meta tags (e.g. [Soulful, raw]) and the Lyric [Style:] section or the Suno Style Prompt. For example, chord progressions declared in the Style do not need repeating in every section tag.
+4. If individual lyric sections contain multiple meta tags, consolidate them into a single meta tag per section and remove any redundant instructions within that tag.
+5. Remove from section meta tags any instructions that are already fully covered by the Suno Style Prompt or Lyric [Style:] section.
+6. If the Lyric Prompt is still over 5000 characters, simplify production notes.
+7. If the Lyric Prompt is still over 5000 characters, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression only as much as necessary.
 
 HARD CONSTRAINTS:
 - Do NOT add, remove, rename, merge, split, or reorder any lyric sections. The section headers and order must be identical to the supplied prompt.
-- Do NOT alter protected lines: Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects:, Mix:
+- Do NOT alter protected lines: Vocal:, Mood:, Rhythm:, Groove Feel:, Era:, Spatial/Effects:, Tempo:, Production Style:, Instruments:, Instrumentation:, Bass:, Mix:
 - The updated Suno Style Prompt must be 1000 characters or fewer.
 - The shortened Lyric Prompt must be 5000 characters or fewer.
 
@@ -7836,13 +7837,14 @@ ${cleanedLyrics}
 
                 Measure the total character length of that assembled text. The assembled Suno Lyric Prompt MUST be 5000 characters or fewer, and suno_style_prompt MUST be 1000 characters or fewer.
                 If either limit is exceeded, apply these rules IN ORDER until both are met:
-                1. Remove duplicate instructions found in both suno_style_prompt and the [Style:] block in the lyric prompt. If suno_style_prompt has capacity (under 1000 chars), move useful items from the lyric [Style:] block into it.
-                2. Remove duplication between section meta tags (direction / instructions) and the [Style:] block or suno_style_prompt — e.g. chord progressions declared in the Style need not repeat in every section tag.
-                3. If a section has multiple direction/instruction lines, consolidate them into a single concise meta tag per section.
-                4. Remove from section meta tags any instructions already fully covered by suno_style_prompt or the [Style:] block.
-                5. If the assembled Lyric Prompt is still over 5000 chars, shorten the production field.
-                6. If still over 5000 chars, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression notes — only as much as necessary.
-                SELF-REVIEW HARD CONSTRAINTS: Do NOT add, remove, rename, merge, split, or reorder any sections. Do NOT alter: Vocal:, Mood:, Rhythm:, Groove Feel:, Tempo Preference:, Era:, Production Style:, Instruments:, Instrumentation:, Bass:, Spatial/Effects:, Mix: lines. Do NOT modify any section where userProvided is true. Only return the final, self-reviewed JSON.
+                1. Remove clear duplicate instructions from within the [Style:] block itself — pay close attention to Mix:, Production notes:, and Production style: lines and consolidate any repeated instructions. Prefer keeping instructions in Mix: first, then Production notes:.
+                2. Remove duplicate instructions found in both suno_style_prompt and the [Style:] block in the lyric prompt. If suno_style_prompt has capacity (under 1000 chars), move useful items from the lyric [Style:] block into it.
+                3. Remove duplication between section meta tags (direction / instructions) and the [Style:] block or suno_style_prompt — e.g. chord progressions declared in the Style need not repeat in every section tag.
+                4. If a section has multiple direction/instruction lines, consolidate them into a single concise meta tag per section.
+                5. Remove from section meta tags any instructions already fully covered by suno_style_prompt or the [Style:] block.
+                6. If the assembled Lyric Prompt is still over 5000 chars, shorten the production field.
+                7. If still over 5000 chars, shorten non-protected descriptive lines such as Goal, Perspective, Verse Length, Chorus Length, and Chord progression notes — only as much as necessary.
+                SELF-REVIEW HARD CONSTRAINTS: Do NOT add, remove, rename, merge, split, or reorder any sections. Do NOT alter: Vocal:, Mood:, Rhythm:, Groove Feel:, Era:, Spatial/Effects:, Tempo:, Production Style:, Instruments:, Instrumentation:, Bass:, Mix: lines. Do NOT modify any section where userProvided is true. Only return the final, self-reviewed JSON.
                 Set "self_review_applied" to true if you made any changes during self-review, and set "chars_reduced" to the number of characters removed from the assembled Lyric Prompt. If no changes were needed, set both to false and 0 respectively.
                 The returned Suno style prompt must incorporate every currently selected setting: Genre, Structure, Key, the full Sound Profile, and it must also reflect the Production Notes and Chord Progression that you return in the same JSON response.
                 Respond ONLY with JSON (no markdown, no backticks):
@@ -8104,12 +8106,44 @@ ${cleanedLyrics}
                                         debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow completed", shortened);
                                         console.log("[SHORTEN ACTION] Shorten result:", shortened);
                                         if (shortened.updated && shortened.length > 5000) {
-                                            debugLog("LYRICS_SHORTEN_ACTION", "Shortened result still exceeds limit; showing warning", {
+                                            debugLog("LYRICS_SHORTEN_ACTION", "Shortened result still exceeds limit; progressive strip fallback starting", {
                                                 shortenedLength: shortened.length,
                                                 limit: 5000,
                                             });
-                                            console.log("[SHORTEN ACTION] Shortened lyrics still exceed limit:", shortened.length, "Showing warning modal.");
-                                            showLyricsStillTooLongWarning(shortened.length);
+                                            console.log("[SHORTEN ACTION] Shortened lyrics still exceed limit:", shortened.length, "Starting progressive strip fallback.");
+
+                                            let fallbackLen = shortened.length;
+
+                                            // Step 1: strip Era
+                                            if (fallbackLen > 5000 && song.soundProfile?.eras?.length) {
+                                                song.soundProfile.eras = [];
+                                                fallbackLen = calcAssembledLyricsLength(song);
+                                                console.log("[SHORTEN ACTION] Stripped Era. New length:", fallbackLen);
+                                            }
+
+                                            // Step 2: strip Spatial/Effects
+                                            if (fallbackLen > 5000 && song.soundProfile?.spatial?.length) {
+                                                song.soundProfile.spatial = [];
+                                                fallbackLen = calcAssembledLyricsLength(song);
+                                                console.log("[SHORTEN ACTION] Stripped Spatial/Effects. New length:", fallbackLen);
+                                            }
+
+                                            // Step 3: strip Groove Feel
+                                            if (fallbackLen > 5000 && song.grooveFeel && song.grooveFeel !== "AI Choose") {
+                                                song.grooveFeel = "AI Choose";
+                                                fallbackLen = calcAssembledLyricsLength(song);
+                                                console.log("[SHORTEN ACTION] Stripped Groove Feel. New length:", fallbackLen);
+                                            }
+
+                                            currentSong = song;
+                                            renderSongCard(song);
+                                            renderChordsCard(song);
+                                            saveToHistory(song);
+
+                                            if (fallbackLen > 5000) {
+                                                console.log("[SHORTEN ACTION] Still over limit after all strip steps:", fallbackLen, "Showing warning.");
+                                                showLyricsStillTooLongWarning(fallbackLen);
+                                            }
                                         }
                                     } catch (shortenErr) {
                                         debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow failed", {
