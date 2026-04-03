@@ -5350,7 +5350,8 @@ ${cleanedLyrics}
             let keepModeWarningResolver = null;
             let _lyricsTooLongResolver = null;
             function calcAssembledLyricsLength(song) {
-                return buildAssembledLyricsPrompt(song).length;
+                // Suno ignores blank lines (counts \n\n as \n), so collapse them before measuring
+                return buildAssembledLyricsPrompt(song).replace(/\n\n+/g, "\n").length;
             }
             function openLyricsTooLongModal(len) {
                 const excess = len - 5000;
