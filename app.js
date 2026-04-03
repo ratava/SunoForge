@@ -721,8 +721,26 @@
                         continue;
                     }
                     if (ch === '"') {
-                        inString = !inString;
-                        out += ch;
+                        if (inString) {
+                            // Look ahead: if the next non-space character is a valid JSON structural
+                            // character (: , } ]) this is a legitimate string-closing quote.
+                            // Otherwise it's an unescaped " inside the value (e.g. a German „..." quote
+                            // whose closing " was not escaped), so escape it instead.
+                            let j = i + 1;
+                            while (j < text.length && (text[j] === " " || text[j] === "\t" || text[j] === "\r" || text[j] === "\n")) j++;
+                            const next = text[j] ?? "";
+                            if (next === ":" || next === "," || next === "}" || next === "]") {
+                                // Legitimate closing quote
+                                inString = false;
+                                out += ch;
+                            } else {
+                                // Mid-string unescaped quote — escape it
+                                out += '\\"';
+                            }
+                        } else {
+                            inString = true;
+                            out += ch;
+                        }
                         continue;
                     }
                     if (inString) {
