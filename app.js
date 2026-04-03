@@ -479,7 +479,9 @@
 
             function saveSongLanguageCustom(value) {
                 setStoredSetting("sf_song_lang_custom", value.trim());
-                persistSyncedSettings();
+                // Do NOT call persistSyncedSettings() here — Drive sync reads back remote state
+                // and overwrites the input before the new value is pushed, clearing what the user typed.
+                // The value is in localStorage and will be included in the next Drive sync naturally.
             }
 
             // Unified AI call — routes to Google GenAI or OpenRouter REST based on selected model's provider
