@@ -2982,6 +2982,7 @@
                                             <div class="vocal-profile-field">
                                                 <label for="choir-size">Size</label>
                                                 <select id="choir-size">
+                                                    <option value="4 Part Ensemble">4 Part Ensemble</option>
                                                     <option value="Small (Vocal Ensemble)">Small (Vocal Ensemble)</option>
                                                     <option value="Medium (Chamber)" selected>Medium (Chamber)</option>
                                                     <option value="Large (Chorus)">Large (Chorus)</option>
@@ -2992,6 +2993,7 @@
                                         <div class="vocal-profile-field">
                                             <div class="field-label">Vocal Range (optional)</div>
                                             <div class="vocal-style-tags" id="choir-range-tags">
+                                                <div class="tag multi" data-val="STAB Soprano/Tenor/Alto/Bass">STAB Soprano/Tenor/Alto/Bass</div>
                                                 <div class="tag multi" data-val="Bass">Bass</div>
                                                 <div class="tag multi" data-val="Baritone">Baritone</div>
                                                 <div class="tag multi" data-val="Tenor">Tenor</div>
@@ -4525,7 +4527,7 @@
                         "choir": {
                             "enabled": false,
                             "gender": "Male, Female, or Both",
-                            "size": "Small (Vocal Ensemble), Medium (Chamber), Large (Chorus), or Extra Large (Massed)",
+                            "size": "4 Part Ensemble, Small (Vocal Ensemble), Medium (Chamber), Large (Chorus), or Extra Large (Massed)",
                             "ranges": ["Optional array of ranges"],
                             "accents": ["Optional array of accents"],
                             "styles": ["Optional array of vocal styles. Preset options: Clean, Gritty, Breathy, Airy, Restrained, Dynamic, Wide Vocal Range. Or use custom style descriptions"]
@@ -5406,7 +5408,6 @@ ${cleanedLyrics}
             // Handles user-provided lyrics and section parsing
             // ========================================================================
             function getUserLyrics() {
-                if (activeLeftTab !== "lyrics") return null;
                 const lyricsInput = document.getElementById("lyrics-input").value.trim();
                 return lyricsInput ? { mode: "bulk", content: lyricsInput } : null;
             }
@@ -7640,7 +7641,7 @@ ${cleanedLyrics}
                 const struct = selectedStructure || (GENRE_STRUCTURES[currentGenreKey] || DEFAULT_STRUCTURES)[0];
                 const soundProfile = buildSoundProfile();
                 const userLyrics = getUserLyrics();
-                const aiMode = activeLeftTab === "lyrics" ? getActive("aimode-tags") : null;
+                const aiMode = getActive("aimode-tags") || null;
                 const isKeepMode = (aiMode === "keep" || aiMode === "redir") && userLyrics?.mode === "bulk";
                 const keepModeSections = isKeepMode ? parseKeepModeSectionsFromBulkLyrics(userLyrics.content) : [];
                 const keepModeHasClearSections = !isKeepMode || keepModeSections.length > 0;
