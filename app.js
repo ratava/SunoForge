@@ -8084,75 +8084,70 @@ ${cleanedLyrics}
                         saveToHistory(song);
 
                         if (enablePostGenerationLengthChecks) {
-                            const assembledLen = calcAssembledLyricsLength(song);
+                            let assembledLen = calcAssembledLyricsLength(song);
                             if (assembledLen > 5000) {
-                                debugLog("LYRICS_SHORTEN_ACTION", "Assembled lyrics exceeded limit; opening shorten choice modal", {
-                                    assembledLength: assembledLen,
-                                    limit: 5000,
-                                });
-                                console.log("[SHORTEN ACTION] Lyrics exceed limit:", assembledLen, "Opening shorten-choice modal.");
-                                const choice = await openLyricsTooLongModal(assembledLen);
-                                debugLog("LYRICS_SHORTEN_ACTION", "User selected shorten flow option", { choice });
-                                console.log("[SHORTEN ACTION] User choice:", choice);
-                                if (choice === "ai") {
-                                    const shortenCard = document.createElement("div");
-                                    shortenCard.className = "output-card";
-                                    shortenCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">Shortening your song... (this may take up to 90 seconds)</div>`;
-                                    panel.insertBefore(shortenCard, panel.firstChild);
-                                    debugLog("LYRICS_SHORTEN_ACTION", "Inserted shortening status card", {});
-                                    console.log("[SHORTEN ACTION] Inserted 'Shortening your song...' status card.");
-                                    try {
-                                        const shortened = await shortenLyricsPromptWithAI(song);
-                                        debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow completed", shortened);
-                                        console.log("[SHORTEN ACTION] Shorten result:", shortened);
-                                    } catch (shortenErr) {
-                                        debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow failed", {
-                                            error: shortenErr?.message || String(shortenErr),
-                                        });
-                                        console.log("[SHORTEN ACTION] Shorten flow failed:", shortenErr);
-                                        document.getElementById("validation-modal-msg").textContent = shortenErr.message;
-                                        document.getElementById("validation-modal").style.display = "flex";
-                                    } finally {
-                                        shortenCard.remove();
-                                        debugLog("LYRICS_SHORTEN_ACTION", "Removed shortening status card", {});
-                                        console.log("[SHORTEN ACTION] Removed shortening status card.");
-                                    }
+                                // Progressive strip — silently remove low-value fields before asking the user anything
+                                // Step 1: strip Era
+                                if (assembledLen > 5000 && song.soundProfile?.eras?.length) {
+                                    song.soundProfile.eras = [];
+                                    assembledLen = calcAssembledLyricsLength(song);
+                                    console.log("[SHORTEN ACTION] Auto-stripped Era. New length:", assembledLen);
+                                }
 
-                                    // Progressive strip fallback — always runs after AI attempt (success or failure)
-                                    // Each step only executes if still over the limit after the previous step
-                                    let fallbackLen = calcAssembledLyricsLength(song);
-                                    console.log("[SHORTEN ACTION] Post-AI assembled length:", fallbackLen);
+                                // Step 2: strip Spatial/Effects
+                                if (assembledLen > 5000 && song.soundProfile?.spatial?.length) {
+                                    song.soundProfile.spatial = [];
+                                    assembledLen = calcAssembledLyricsLength(song);
+                                    console.log("[SHORTEN ACTION] Auto-stripped Spatial/Effects. New length:", assembledLen);
+                                }
 
-                                    if (fallbackLen > 5000) {
-                                        // Step 1: strip Era
-                                        if (fallbackLen > 5000 && song.soundProfile?.eras?.length) {
-                                            song.soundProfile.eras = [];
-                                            fallbackLen = calcAssembledLyricsLength(song);
-                                            console.log("[SHORTEN ACTION] Stripped Era. New length:", fallbackLen);
-                                        }
+                                // Step 3: strip Groove Feel
+                                if (assembledLen > 5000 && song.grooveFeel && song.grooveFeel !== "AI Choose") {
+                                    song.grooveFeel = "AI Choose";
+                                    assembledLen = calcAssembledLyricsLength(song);
+                                    console.log("[SHORTEN ACTION] Auto-stripped Groove Feel. New length:", assembledLen);
+                                }
 
-                                        // Step 2: strip Spatial/Effects
-                                        if (fallbackLen > 5000 && song.soundProfile?.spatial?.length) {
-                                            song.soundProfile.spatial = [];
-                                            fallbackLen = calcAssembledLyricsLength(song);
-                                            console.log("[SHORTEN ACTION] Stripped Spatial/Effects. New length:", fallbackLen);
-                                        }
+                                if (assembledLen > 5000) {
+                                    // Still over after auto-strip — re-render with stripped fields and ask user
+                                    currentSong = song;
+                                    renderSongCard(song);
+                                    renderChordsCard(song);
+                                    saveToHistory(song);
 
-                                        // Step 3: strip Groove Feel
-                                        if (fallbackLen > 5000 && song.grooveFeel && song.grooveFeel !== "AI Choose") {
-                                            song.grooveFeel = "AI Choose";
-                                            fallbackLen = calcAssembledLyricsLength(song);
-                                            console.log("[SHORTEN ACTION] Stripped Groove Feel. New length:", fallbackLen);
-                                        }
-
-                                        currentSong = song;
-                                        renderSongCard(song);
-                                        renderChordsCard(song);
-                                        saveToHistory(song);
-
-                                        if (fallbackLen > 5000) {
-                                            console.log("[SHORTEN ACTION] Still over limit after all strip steps:", fallbackLen, "Showing warning.");
-                                            showLyricsStillTooLongWarning(fallbackLen);
+                                    debugLog("LYRICS_SHORTEN_ACTION", "Assembled lyrics still exceeded limit after auto-strip; opening shorten choice modal", {
+                                        assembledLength: assembledLen,
+                                        limit: 5000,
+                                    });
+                                    console.log("[SHORTEN ACTION] Still over limit after auto-strip:", assembledLen, "Opening shorten-choice modal.");
+                                    const choice = await openLyricsTooLongModal(assembledLen);
+                                    debugLog("LYRICS_SHORTEN_ACTION", "User selected shorten flow option", { choice });
+                                    console.log("[SHORTEN ACTION] User choice:", choice);
+                                    if (choice === "ai") {
+                                        const shortenCard = document.createElement("div");
+                                        shortenCard.className = "output-card";
+                                        shortenCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">Shortening your song... (this may take up to 90 seconds)</div>`;
+                                        panel.insertBefore(shortenCard, panel.firstChild);
+                                        debugLog("LYRICS_SHORTEN_ACTION", "Inserted shortening status card", {});
+                                        console.log("[SHORTEN ACTION] Inserted 'Shortening your song...' status card.");
+                                        try {
+                                            const shortened = await shortenLyricsPromptWithAI(song);
+                                            debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow completed", shortened);
+                                            console.log("[SHORTEN ACTION] Shorten result:", shortened);
+                                            if (shortened.updated && shortened.length > 5000) {
+                                                showLyricsStillTooLongWarning(shortened.length);
+                                            }
+                                        } catch (shortenErr) {
+                                            debugLog("LYRICS_SHORTEN_ACTION", "Shorten flow failed", {
+                                                error: shortenErr?.message || String(shortenErr),
+                                            });
+                                            console.log("[SHORTEN ACTION] Shorten flow failed:", shortenErr);
+                                            document.getElementById("validation-modal-msg").textContent = shortenErr.message;
+                                            document.getElementById("validation-modal").style.display = "flex";
+                                        } finally {
+                                            shortenCard.remove();
+                                            debugLog("LYRICS_SHORTEN_ACTION", "Removed shortening status card", {});
+                                            console.log("[SHORTEN ACTION] Removed shortening status card.");
                                         }
                                     }
                                 }
