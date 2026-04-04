@@ -800,6 +800,7 @@
                     st.textContent = "not set";
                     st.className = "api-status missing";
                     document.getElementById("api-key-get-link").style.display = "";
+                    document.getElementById("api-key-help-video").style.display = "";
                     if (activeApiProvider === "google") {
                         activeApiProvider = localStorage.getItem("openrouter_api_key") ? "openrouter" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
@@ -817,6 +818,7 @@
                 st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
                 document.getElementById("api-key-get-link").style.display = "none";
+                document.getElementById("api-key-help-video").style.display = "none";
                 fetchGoogleModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
@@ -832,6 +834,7 @@
                     st.textContent = "not set";
                     st.className = "api-status missing";
                     document.getElementById("openrouter-get-link").style.display = "";
+                    document.getElementById("openrouter-help-video").style.display = "";
                     if (activeApiProvider === "openrouter") {
                         activeApiProvider = localStorage.getItem("gemini_api_key") ? "google" : localStorage.getItem("custom_server_address") ? "custom" : "google";
                     }
@@ -847,6 +850,7 @@
                 st.textContent = _t("status.ready", "ready");
                 st.className = "api-status ok";
                 document.getElementById("openrouter-get-link").style.display = "none";
+                document.getElementById("openrouter-help-video").style.display = "none";
                 fetchOpenRouterModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
@@ -1003,6 +1007,7 @@
                     st.textContent = _t("status.ready", "ready");
                     st.className = "api-status ok";
                     document.getElementById("api-key-get-link").style.display = "none";
+                    document.getElementById("api-key-help-video").style.display = "none";
                     // Fetch models asynchronously after DOM is ready
                     fetchGoogleModels(saved);
                 }
@@ -1014,6 +1019,7 @@
                     ost.textContent = _t("status.ready", "ready");
                     ost.className = "api-status ok";
                     document.getElementById("openrouter-get-link").style.display = "none";
+                    document.getElementById("openrouter-help-video").style.display = "none";
                     if (!saved) activeApiProvider = "openrouter";
                     fetchOpenRouterModels(orKey);
                 }
