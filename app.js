@@ -962,10 +962,37 @@
                 return JSON.parse(out);
             }
 
-            // Security: Sanitize for attribute values
+            // Security: Sanitize for attribute values (HTML attribute context only)
             function escapeAttr(unsafe) {
                 if (unsafe === null || unsafe === undefined) return "";
                 return String(unsafe).replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            // Security: Escape a value for embedding in a JS single-quoted string that is
+            // itself inside a double-quoted HTML attribute (e.g. onclick="fn('VALUE')").
+            // Escapes backslash first, then the JS string delimiter, then HTML attribute chars.
+            function escapeJsSingleQuoted(str) {
+                if (str === null || str === undefined) return "";
+                return String(str)
+                    .replace(/\\/g, "\\\\")   // backslash — must come before all other replacements
+                    .replace(/'/g, "\\'")       // JS single-quote string delimiter
+                    .replace(/&/g, "&amp;")     // HTML — must come before quote entities
+                    .replace(/"/g, "&quot;")    // HTML double-quote (outer attribute delimiter)
+                    .replace(/</g, "&lt;");     // HTML tag start
+            }
+
+            // Security: Escape a value for embedding in a JS template literal that is
+            // itself inside a double-quoted HTML attribute (e.g. onclick="fn(`VALUE`)").
+            // Escapes backslash first, then template delimiters, then HTML attribute chars.
+            function escapeJsTemplateLiteral(str) {
+                if (str === null || str === undefined) return "";
+                return String(str)
+                    .replace(/\\/g, "\\\\")    // backslash — must come before all other replacements
+                    .replace(/`/g, "\\`")        // template literal delimiter
+                    .replace(/\$\{/g, "\\${")   // template expression start
+                    .replace(/&/g, "&amp;")      // HTML — must come before quote entities
+                    .replace(/"/g, "&quot;")     // HTML double-quote (outer attribute delimiter)
+                    .replace(/</g, "&lt;");      // HTML tag start
             }
 
             // Security: Validate and limit input length
@@ -3080,7 +3107,7 @@
                 if (tagId === "pov-custom-tag") groupId = "pov-tags";
                 if (tagId === "vocalgender-custom-tag") groupId = "vocalgender-tags";
                 if (tagId === "rhyme-custom-tag") groupId = "rhyme-tags";
-                tag.innerHTML = `${escapeHtml(prefix)}: ${escapeHtml(value)}<span class="tag-custom-x" onclick="removeCustomSingleValue('${escapeAttr(rowId)}','${escapeAttr(tagId)}','${escapeAttr(groupId)}')">x</span>`;
+                tag.innerHTML = `${escapeHtml(prefix)}: ${escapeHtml(value)}<span class="tag-custom-x" onclick="removeCustomSingleValue('${escapeJsSingleQuoted(rowId)}','${escapeJsSingleQuoted(tagId)}','${escapeJsSingleQuoted(groupId)}')">x</span>`;
                 row.style.display = "flex";
             }
             function applySingleTagOrCustom(id, value, rowId, tagId, prefix) {
@@ -4009,7 +4036,7 @@
                 renderInfluenceChips();
             }
             function renderInfluenceChips() {
-                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${escapeHtml(v)}</span><span class="inf-chip-x" onclick="removeInfluence('${escapeAttr(v).replace(/'/g, "\\'")}')">x</span></div>`).join("");
+                document.getElementById("influence-chips").innerHTML = influences.map((v) => `<div class="inf-chip"><span>${escapeHtml(v)}</span><span class="inf-chip-x" onclick="removeInfluence('${escapeJsSingleQuoted(v)}')">x</span></div>`).join("");
             }
 
             // ========================================================================
@@ -4088,7 +4115,7 @@
                 const palette = document.getElementById("structure-builder-palette");
                 if (!palette) return;
                 const allPoints = [...CUSTOM_STRUCTURE_POINTS, ...customStructurePoints];
-                palette.innerHTML = allPoints.map((step) => `<button class="struct-builder-tag" type="button" onclick="addStructurePoint('${escapeAttr(step).replace(/'/g, "\\'")}')">+ ${escapeHtml(step)}</button>`).join("");
+                palette.innerHTML = allPoints.map((step) => `<button class="struct-builder-tag" type="button" onclick="addStructurePoint('${escapeJsSingleQuoted(step)}')">+ ${escapeHtml(step)}</button>`).join("");
             }
             function addCustomStructureBlock() {
                 const input = document.getElementById("custom-structure-point-input");
@@ -4245,7 +4272,7 @@
                         html += `<div class="struct-genre-header">${escapeHtml(name)}</div>`;
                     }
                     structs.forEach((s, i) => {
-                        html += `<div class="struct-opt${isFirst ? " active" : ""}" data-genre-key="${escapeAttr(key)}" data-idx="${i}" onclick="selectStructure(this,${i},'${escapeAttr(key)}')">
+                        html += `<div class="struct-opt${isFirst ? " active" : ""}" data-genre-key="${escapeAttr(key)}" data-idx="${i}" onclick="selectStructure(this,${i},'${escapeJsSingleQuoted(key)}')">
                       <div class="struct-tag">${escapeHtml(s.tag)}</div>
                       <div class="struct-name">${escapeHtml(s.name)}</div>
                       <div class="struct-flow">${escapeHtml(s.flow)}</div>
@@ -7746,15 +7773,15 @@ ${cleanedLyrics}
                       <div class="card-meta" style="margin-top:4px;">${ts}</div>
                     </div></div></div>
                         <div class="block">
-                            <div class="block-header"><div class="section-header">${_t("section.suno_style", "Suno Style Prompt")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(sunoStylePrompt).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                            <div class="block-header"><div class="section-header">${_t("section.suno_style", "Suno Style Prompt")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeJsTemplateLiteral(sunoStylePrompt)}\`)">Copy</button></div>
                             <div class="prod-body">${escapeHtml(sunoStylePrompt)}</div><div class="char-count">${sunoStylePrompt === "--" ? 0 : sunoStylePrompt.length} / 1000 chars</div>
                         </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t("section.prod_notes", "Production Notes")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(song.production).replace(/`/g, "\\`")}\`)">Copy</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.prod_notes", "Production Notes")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeJsTemplateLiteral(song.production)}\`)">Copy</button></div>
                       <div class="prod-grid"><div><div class="prod-body">${escapeHtml(song.production)}</div><div class="char-count">${song.production.length} chars</div></div><div><div class="key-box">${kiRows}</div></div></div>
                     </div>
                     <div class="block">
-                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "Copy to Lyrics Tab")}</button><span id="lyrics-char-count" class="char-count" style="margin-top:0;margin-left:4px;">${allLyrics.length} characters</span><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(allLyrics).replace(/`/g, "\\`")}\`)">Copy All</button></div>
+                      <div class="block-header"><div class="section-header">${_t("section.lyrics", "Lyrics")}</div><button class="btn-copy" onclick="copyLyricsToTab()">${_t("btn.copy_to_lyrics", "Copy to Lyrics Tab")}</button><span id="lyrics-char-count" class="char-count" style="margin-top:0;margin-left:4px;">${allLyrics.length} characters</span><button class="btn-copy" onclick="copyText(this,\`${escapeJsTemplateLiteral(allLyrics)}\`)">Copy All</button></div>
                       <div class="lyrics-content">${lyricsHtml}</div>
                     </div>`;
                 panel.insertBefore(card, panel.firstChild);
@@ -7838,7 +7865,7 @@ ${cleanedLyrics}
                 card.innerHTML = `
                     <div class="card-header"><div class="card-title" style="font-size:16px;">${escapeHtml(song.title)} &#8212; Chord Chart</div><div class="card-meta" style="margin-top:5px;">Key of ${escapeHtml(song.key_info?.key || "?")} · ${escapeHtml(song.key_info?.feel || "")}</div></div>
                     <div class="block"><div class="section-header" style="margin-bottom:8px;">${_t("section.core_chords", "Core Chords")}</div><div class="chord-grid">${chordCardsHtml}</div></div>
-                    <div class="block"><div class="block-header"><div class="section-header">${_t("section.progression", "Progression")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeAttr(c.progression || "").replace(/`/g, "\\`")}\`)">Copy</button></div><div class="chord-prog">${escapeHtml(c.progression || "")}</div></div>
+                    <div class="block"><div class="block-header"><div class="section-header">${_t("section.progression", "Progression")}</div><button class="btn-copy" onclick="copyText(this,\`${escapeJsTemplateLiteral(c.progression || "")}\`)">Copy</button></div><div class="chord-prog">${escapeHtml(c.progression || "")}</div></div>
                     ${c.notes ? `<div class="block"><div class="section-header" style="margin-bottom:6px;">${_t("section.harmonic_notes", "Harmonic Notes")}</div><div class="prod-body">${escapeHtml(c.notes)}</div></div>` : ""}`;
                 panel.insertBefore(card, panel.firstChild);
             }
