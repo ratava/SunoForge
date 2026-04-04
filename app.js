@@ -11,6 +11,17 @@
             let customModels = JSON.parse(localStorage.getItem("custom_models") || "[]"); // manually-added model IDs
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
             const STORAGE_PROVIDER_KEY = "sf_storage_provider";
+
+            // Simple HTML-escaping helper to safely render text inside innerHTML templates.
+            function escapeHtml(str) {
+                if (str === null || str === undefined) return "";
+                return String(str)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
             const STORAGE_PROVIDER_LOCAL = "local";
             const STORAGE_PROVIDER_DRIVE = "drive";
             // Google OAuth client ID (public — security relies on authorized origins, not this value)
@@ -4624,16 +4635,16 @@
                     const resultEl = document.getElementById("style-result");
                     resultEl.style.display = "block";
 
-                    const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${s.vocal_config.type}</span></div>` : "";
+                    const vocalConfigDisplay = s.vocal_config && s.vocal_config.type ? `<div class="style-applied-row"><span class="style-applied-key">Vocal Config:</span><span class="style-applied-val">${escapeHtml(s.vocal_config.type)}</span></div>` : "";
 
                     resultEl.innerHTML = `<div class="style-result-box">
-                      <span class="style-result-title">${_t("status.style_applied", "Style Applied to All Settings")}</span>
-                            <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${getSelectedGenreLabel() || s.genre_label || s.genre_key || "—"}</span></div>
-                            <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${getSelectedMood() || s.mood || "—"}</span></div>
-                    <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${formatTempoPreference(s.tempo) || "—"}</span></div>
-                    <div class="style-applied-row"><span class="style-applied-key">Key:</span><span class="style-applied-val">${normalizeMusicalKey(s.musical_key) || "—"}</span></div>
-                    <div class="style-applied-row"><span class="style-applied-key">Time Sig:</span><span class="style-applied-val">${s.time_signature || "—"}</span></div>
-                      <div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${(s.era_keys || []).join(", ") || "—"}</span></div>
+                      <span class="style-result-title">${escapeHtml(_t("status.style_applied", "Style Applied to All Settings"))}</span>
+                            <div class="style-applied-row"><span class="style-applied-key">Genre:</span><span class="style-applied-val">${escapeHtml(getSelectedGenreLabel() || s.genre_label || s.genre_key || "—")}</span></div>
+                            <div class="style-applied-row"><span class="style-applied-key">Mood:</span><span class="style-applied-val">${escapeHtml(getSelectedMood() || s.mood || "—")}</span></div>
+                    <div class="style-applied-row"><span class="style-applied-key">Tempo:</span><span class="style-applied-val">${escapeHtml(formatTempoPreference(s.tempo) || "—")}</span></div>
+                    <div class="style-applied-row"><span class="style-applied-key">Key:</span><span class="style-applied-val">${escapeHtml(normalizeMusicalKey(s.musical_key) || "—")}</span></div>
+                    <div class="style-applied-row"><span class="style-applied-key">Time Sig:</span><span class="style-applied-val">${escapeHtml(s.time_signature || "—")}</span></div>
+                      <div class="style-applied-row"><span class="style-applied-key">Era:</span><span class="style-applied-val">${escapeHtml((s.era_keys || []).join(", ") || "—")}</span></div>
                       <div class="style-applied-row"><span class="style-applied-key">Production:</span><span class="style-applied-val">${(s.prodstyle_keys || []).join(", ") || "—"}</span></div>
                       <div class="style-applied-row"><span class="style-applied-key">Instruments:</span><span class="style-applied-val">${(s.inst_keys || []).join(", ") || "—"}</span></div>
                       <div class="style-applied-row"><span class="style-applied-key">Mix:</span><span class="style-applied-val">${(s.mix_keys || []).join(", ") || "—"}</span></div>
