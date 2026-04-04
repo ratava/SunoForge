@@ -99,7 +99,12 @@
             async function setSecureKey(name, value) {
                 if (!value) { removeSecureKey(name); return; }
                 delete _secureCache[name];
-                if (!_secureKey) { localStorage.setItem(name, value); return; } // fallback before init
+                if (!_secureKey) {
+                    // Crypto not yet initialised — queue the value in memory only;
+                    // _initSecureStorage() will encrypt and persist it when ready.
+                    _secureCache[name] = value;
+                    return;
+                }
                 const blob = await _aesGcmEncrypt(_secureKey, value);
                 localStorage.setItem(name, blob);
                 _secureCache[name] = value;
@@ -109,8 +114,12 @@
                 if (name in _secureCache) return _secureCache[name];
                 const stored = localStorage.getItem(name);
                 if (!stored) return null;
-                if (!stored.startsWith(_ENC_PREFIX)) return stored; // plaintext fallback
-                if (!_secureKey) return null;
+                if (!_secureKey) return null; // crypto not yet ready
+                if (!stored.startsWith(_ENC_PREFIX)) {
+                    // Plaintext value predates encryption — encrypt it now and return
+                    await setSecureKey(name, stored);
+                    return stored;
+                }
                 const val = await _aesGcmDecrypt(_secureKey, stored);
                 if (val) _secureCache[name] = val;
                 return val;
@@ -208,7 +217,7 @@
                     await setSecureKey("gemini_api_key", gemini);
                     const inputEl = document.getElementById("api-key-input");
                     if (inputEl && inputEl.value !== gemini) {
-                        inputEl.value = gemini;
+                        inputEl.value = gemini; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                         aiClient = new GoogleGenAI({ apiKey: gemini });
                         if (activeApiProvider !== "google") activeApiProvider = "google";
                         const st = document.getElementById("api-status");
@@ -225,7 +234,7 @@
                     await setSecureKey("openrouter_api_key", orKey);
                     const orInput = document.getElementById("openrouter-key-input");
                     if (orInput && orInput.value !== orKey) {
-                        orInput.value = orKey;
+                        orInput.value = orKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                         const ost = document.getElementById("openrouter-status");
                         if (ost) { ost.textContent = _t("status.ready", "ready"); ost.className = "api-status ok"; }
                         document.getElementById("openrouter-get-link").style.display = "none";
@@ -240,7 +249,7 @@
                 if (csKey) {
                     await setSecureKey("custom_server_key", csKey);
                     const csInput = document.getElementById("custom-server-key-input");
-                    if (csInput && csInput.value !== csKey) csInput.value = csKey;
+                    if (csInput && csInput.value !== csKey) csInput.value = csKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                 }
                 updateApiBarSummary();
             }
@@ -1213,7 +1222,7 @@
                 const saved = await getSecureKey("gemini_api_key");
                 if (saved) {
                     document.getElementById("api-no-key-hint").style.display = "none";
-                    document.getElementById("api-key-input").value = saved;
+                    document.getElementById("api-key-input").value = saved; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                     aiClient = new GoogleGenAI({ apiKey: saved });
                     activeApiProvider = "google";
                     const st = document.getElementById("api-status");
@@ -1227,7 +1236,7 @@
                 const orKey = await getSecureKey("openrouter_api_key");
                 if (orKey) {
                     document.getElementById("api-no-key-hint").style.display = "none";
-                    document.getElementById("openrouter-key-input").value = orKey;
+                    document.getElementById("openrouter-key-input").value = orKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                     const ost = document.getElementById("openrouter-status");
                     ost.textContent = _t("status.ready", "ready");
                     ost.className = "api-status ok";
@@ -1250,7 +1259,7 @@
                     fetchCustomServerModels(csAddr);
                 }
                 const csKey = await getSecureKey("custom_server_key");
-                if (csKey) document.getElementById("custom-server-key-input").value = csKey;
+                if (csKey) document.getElementById("custom-server-key-input").value = csKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                 updateApiBarSummary();
                 toggleApiBar(!(saved || orKey || csAddr));
             })();
@@ -6672,7 +6681,7 @@ ${cleanedLyrics}
                     }
                     if (backupData.apiKey) {
                         await setSecureKey("gemini_api_key", backupData.apiKey);
-                        document.getElementById("api-key-input").value = backupData.apiKey;
+                        document.getElementById("api-key-input").value = backupData.apiKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                         aiClient = new GoogleGenAI({ apiKey: backupData.apiKey });
                         const st = document.getElementById("api-status");
                         st.textContent = _t("status.ready", "ready");
@@ -6683,7 +6692,7 @@ ${cleanedLyrics}
                     }
                     if (backupData.openrouterKey) {
                         await setSecureKey("openrouter_api_key", backupData.openrouterKey);
-                        document.getElementById("openrouter-key-input").value = backupData.openrouterKey;
+                        document.getElementById("openrouter-key-input").value = backupData.openrouterKey; // lgtm[js/clear-text-storage] — intentional: user-facing key field
                         const ost = document.getElementById("openrouter-status");
                         ost.textContent = _t("status.ready", "ready");
                         ost.className = "api-status ok";
