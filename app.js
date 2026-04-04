@@ -11,7 +11,7 @@
             let customModels = JSON.parse(localStorage.getItem("custom_models") || "[]"); // manually-added model IDs
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
             const STORAGE_PROVIDER_KEY = "sf_storage_provider";
-            const STATS_ENDPOINT = "https://sunoforge-server.vercel.app/api/event";
+            const STATS_ENDPOINT = "https://suno-forge-server.vercel.app/api/event";
             const STATS_ENABLED_KEY = "sf_stats_enabled";
             const STATS_COUNTRY_KEY = "sf_stats_country";
 
