@@ -2468,9 +2468,9 @@
                     const chip = document.createElement("div");
                     chip.className = "selected-genre-chip";
                     chip.innerHTML = `
-                        <span class=\"genre-main\">${genre.mainGenre}</span>
+                        <span class=\"genre-main\">${escapeHtml(genre.mainGenre)}</span>
                         <span style=\"opacity: 0.5;\">•</span>
-                        <span class=\"genre-sub\">${genre.subGenre}</span>
+                        <span class=\"genre-sub\">${escapeHtml(genre.subGenre)}</span>
                         <span class=\"remove-chip\" onclick=\"removeSelectedGenre(${index})\">×</span>
                     `;
                     displayContainer.appendChild(chip);
