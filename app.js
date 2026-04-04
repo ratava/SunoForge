@@ -26,13 +26,43 @@
             // API keys are encrypted before being written to localStorage so that an
             // attacker with read-only access to the storage database (e.g. browser profile
             // scraping, certain browser extensions) cannot recover them in plaintext.
-            // The AES key is derived in-memory per page load via PBKDF2 from a random
-            // per-browser salt; it is never persisted.  This does NOT protect against
-            // active JS execution in the same page (XSS), which is addressed separately.
+            //
+            // TWO-TIER encryption:
+            //   _secureKey   — per-browser PBKDF2-derived key; encrypts localStorage blobs
+            //   _driveKey    — random 256-bit key stored in Google Drive appData;
+            //                  encrypts the api_keys_enc block in the synced settings file,
+            //                  allowing the same keys to be shared across browsers that
+            //                  have access to the same Google account.
+            //
+            // Neither key is persisted in plaintext. XSS is addressed separately via CSP
+            // and the existing escapeHtml() / escapeAttr() sanitisation.
             const _SECURE_KEY_NAMES = ["gemini_api_key", "openrouter_api_key", "custom_server_key"];
             const _ENC_PREFIX = "enc1:";
             let _secureKey = null;          // CryptoKey — derived once per page load
+            let _driveKey  = null;          // CryptoKey — loaded from Drive on first sync
             const _secureCache = {};        // in-memory plaintext cache
+            const _keysChangedLocally = new Set(); // prevents hydrateDriveState overwriting fresh saves
+
+            // ── Low-level AES-GCM helpers (accept an explicit CryptoKey) ─────────────────
+            async function _aesGcmEncrypt(key, value) {
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const enc = new TextEncoder();
+                const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, enc.encode(value));
+                return _ENC_PREFIX + btoa(String.fromCharCode(...iv)) + ":" + btoa(String.fromCharCode(...new Uint8Array(ct)));
+            }
+
+            async function _aesGcmDecrypt(key, blob) {
+                if (!blob || !blob.startsWith(_ENC_PREFIX)) return blob; // plaintext passthrough
+                const parts = blob.split(":");
+                if (parts.length < 3) return null;
+                try {
+                    const iv = Uint8Array.from(atob(parts[1]), (c) => c.charCodeAt(0));
+                    const ct = Uint8Array.from(atob(parts[2]), (c) => c.charCodeAt(0));
+                    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ct);
+                    return new TextDecoder().decode(pt);
+                } catch { return null; }
+            }
+            // ─────────────────────────────────────────────────────────────────────────────
 
             async function _initSecureStorage() {
                 let saltB64 = localStorage.getItem("sf_crypto_salt");
@@ -70,10 +100,7 @@
                 if (!value) { removeSecureKey(name); return; }
                 delete _secureCache[name];
                 if (!_secureKey) { localStorage.setItem(name, value); return; } // fallback before init
-                const iv = crypto.getRandomValues(new Uint8Array(12));
-                const enc = new TextEncoder();
-                const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, _secureKey, enc.encode(value));
-                const blob = _ENC_PREFIX + btoa(String.fromCharCode(...iv)) + ":" + btoa(String.fromCharCode(...new Uint8Array(ct)));
+                const blob = await _aesGcmEncrypt(_secureKey, value);
                 localStorage.setItem(name, blob);
                 _secureCache[name] = value;
             }
@@ -84,20 +111,14 @@
                 if (!stored) return null;
                 if (!stored.startsWith(_ENC_PREFIX)) return stored; // plaintext fallback
                 if (!_secureKey) return null;
-                const parts = stored.split(":");
-                if (parts.length < 3) return null;
-                try {
-                    const iv = Uint8Array.from(atob(parts[1]), (c) => c.charCodeAt(0));
-                    const ct = Uint8Array.from(atob(parts[2]), (c) => c.charCodeAt(0));
-                    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, _secureKey, ct);
-                    const val = new TextDecoder().decode(pt);
-                    _secureCache[name] = val;
-                    return val;
-                } catch { return null; }
+                const val = await _aesGcmDecrypt(_secureKey, stored);
+                if (val) _secureCache[name] = val;
+                return val;
             }
 
             function removeSecureKey(name) {
                 delete _secureCache[name];
+                _keysChangedLocally.delete(name);
                 localStorage.removeItem(name);
             }
             // ─────────────────────────────────────────────────────────────────────────────
@@ -110,6 +131,7 @@
             const DRIVE_HISTORY_FILE = "sunoforge-history.json";
             const DRIVE_SETTINGS_FILE = "sunoforge-settings.json";
             const DRIVE_PRESETS_FILE = "sunoforge-presets.json";
+            const DRIVE_CRYPTO_KEY_FILE = "sunoforge-crypto-key.json";
             const PRESETS_STORAGE_KEY = "sf_presets";
             const DRIVE_SESSION_TOKEN_KEY = "sf_drive_session";
             const SONG_HISTORY_STORAGE_KEY = "sunoforge_history";
@@ -152,8 +174,80 @@
                 localStorage.setItem(key, String(value));
             }
 
-            function buildSyncedSettingsPayload() {
-                return {
+            // ── Drive-level key management ─────────────────────────────────────────────
+            // Fetches (or creates) the per-Google-account AES-256 master key from Drive
+            // appData.  Because it lives in Drive appData (accessible only via OAuth to this
+            // app + this account) the key is safe to store without further wrapping.
+            async function getOrCreateDriveCryptoKey() {
+                if (_driveKey) return _driveKey;
+                let keyData = await readDriveJsonFile(DRIVE_CRYPTO_KEY_FILE);
+                let rawBytes;
+                if (keyData?.key) {
+                    rawBytes = Uint8Array.from(atob(keyData.key), (c) => c.charCodeAt(0));
+                } else {
+                    rawBytes = crypto.getRandomValues(new Uint8Array(32));
+                    await writeDriveJsonFile(DRIVE_CRYPTO_KEY_FILE, {
+                        version: 1,
+                        key: btoa(String.fromCharCode(...rawBytes)),
+                    });
+                }
+                _driveKey = await crypto.subtle.importKey(
+                    "raw", rawBytes, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]
+                );
+                return _driveKey;
+            }
+
+            // Apply API keys received from the Drive settings payload.
+            // Skips any key that was saved locally since the last Drive write (prevents
+            // the hydrate-overwrite race condition, mirroring modelChangedLocally).
+            async function _applyDriveApiKeys(keysEnc) {
+                if (!_driveKey || !keysEnc) return;
+                const gemini = !_keysChangedLocally.has("gemini_api_key") && keysEnc.gemini_api_key
+                    ? await _aesGcmDecrypt(_driveKey, keysEnc.gemini_api_key) : null;
+                if (gemini) {
+                    await setSecureKey("gemini_api_key", gemini);
+                    const inputEl = document.getElementById("api-key-input");
+                    if (inputEl && inputEl.value !== gemini) {
+                        inputEl.value = gemini;
+                        aiClient = new GoogleGenAI({ apiKey: gemini });
+                        if (activeApiProvider !== "google") activeApiProvider = "google";
+                        const st = document.getElementById("api-status");
+                        if (st) { st.textContent = _t("status.ready", "ready"); st.className = "api-status ok"; }
+                        document.getElementById("api-key-get-link").style.display = "none";
+                        document.getElementById("api-key-help-video").style.display = "none";
+                        document.getElementById("api-no-key-hint").style.display = "none";
+                        fetchGoogleModels(gemini);
+                    }
+                }
+                const orKey = !_keysChangedLocally.has("openrouter_api_key") && keysEnc.openrouter_api_key
+                    ? await _aesGcmDecrypt(_driveKey, keysEnc.openrouter_api_key) : null;
+                if (orKey) {
+                    await setSecureKey("openrouter_api_key", orKey);
+                    const orInput = document.getElementById("openrouter-key-input");
+                    if (orInput && orInput.value !== orKey) {
+                        orInput.value = orKey;
+                        const ost = document.getElementById("openrouter-status");
+                        if (ost) { ost.textContent = _t("status.ready", "ready"); ost.className = "api-status ok"; }
+                        document.getElementById("openrouter-get-link").style.display = "none";
+                        document.getElementById("openrouter-help-video").style.display = "none";
+                        document.getElementById("api-no-key-hint").style.display = "none";
+                        if (!gemini) activeApiProvider = "openrouter";
+                        fetchOpenRouterModels(orKey);
+                    }
+                }
+                const csKey = !_keysChangedLocally.has("custom_server_key") && keysEnc.custom_server_key
+                    ? await _aesGcmDecrypt(_driveKey, keysEnc.custom_server_key) : null;
+                if (csKey) {
+                    await setSecureKey("custom_server_key", csKey);
+                    const csInput = document.getElementById("custom-server-key-input");
+                    if (csInput && csInput.value !== csKey) csInput.value = csKey;
+                }
+                updateApiBarSummary();
+            }
+            // ─────────────────────────────────────────────────────────────────────────────
+
+            async function buildSyncedSettingsPayload() {
+                const payload = {
                     version: 1,
                     savedAt: new Date().toISOString(),
                     selected_model: selectedModel || getStoredSetting("selected_model", "gemini-3.1-flash-lite-preview"),
@@ -163,6 +257,15 @@
                     sf_song_lang_custom: getStoredSetting("sf_song_lang_custom", ""),
                     sf_cover_artist_name: getStoredSetting("sf_cover_artist_name", ""),
                 };
+                if (_driveKey) {
+                    const api_keys_enc = {};
+                    for (const name of _SECURE_KEY_NAMES) {
+                        const plain = await getSecureKey(name);
+                        if (plain) api_keys_enc[name] = await _aesGcmEncrypt(_driveKey, plain);
+                    }
+                    if (Object.keys(api_keys_enc).length) payload.api_keys_enc = api_keys_enc;
+                }
+                return payload;
             }
 
             function applySyncedSettingsPayload(payload, options = {}) {
@@ -431,6 +534,10 @@
                 if (remoteSettings) {
                     // Drive settings take precedence — apply to both memory/localStorage and UI
                     applySyncedSettingsPayload(remoteSettings, { applyUi: true });
+                    // Decrypt and restore API keys from Drive (cross-browser sharing)
+                    if (remoteSettings.api_keys_enc) {
+                        await _applyDriveApiKeys(remoteSettings.api_keys_enc);
+                    }
                 }
 
                 if (remoteHistory?.songs && Array.isArray(remoteHistory.songs)) {
@@ -460,10 +567,13 @@
                 driveSyncInFlight = (async () => {
                     setDriveSyncStatus("syncing");
                     await ensureDriveAccessToken(interactive);
+                    // Ensure the per-account Drive encryption key is loaded before read/write
+                    try { await getOrCreateDriveCryptoKey(); } catch (e) { console.warn("Drive crypto key unavailable:", e); }
                     await hydrateDriveState(interactive);
                     await writeDriveJsonFile(DRIVE_HISTORY_FILE, { version: 1, savedAt: new Date().toISOString(), songs: history }, interactive);
-                    await writeDriveJsonFile(DRIVE_SETTINGS_FILE, buildSyncedSettingsPayload(), interactive);
+                    await writeDriveJsonFile(DRIVE_SETTINGS_FILE, await buildSyncedSettingsPayload(), interactive);
                     modelChangedLocally = false; // local model is now safely in Drive; allow future syncs to apply remote changes
+                    _keysChangedLocally.clear();  // local keys are now safely in Drive
                     await writeDriveJsonFile(DRIVE_PRESETS_FILE, { version: 1, savedAt: new Date().toISOString(), presets: songPresets }, interactive);
                     lastDriveSyncAt = new Date();
                     setDriveSyncStatus("ok");
@@ -890,6 +1000,7 @@
                     return;
                 }
                 await setSecureKey("gemini_api_key", key);
+                _keysChangedLocally.add("gemini_api_key");
                 aiClient = new GoogleGenAI({ apiKey: key });
                 activeApiProvider = "google";
                 document.getElementById("api-no-key-hint").style.display = "none";
@@ -900,6 +1011,7 @@
                 fetchGoogleModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
+                scheduleDriveSync();
             }
 
             async function saveOpenRouterKey() {
@@ -922,6 +1034,7 @@
                     return;
                 }
                 await setSecureKey("openrouter_api_key", key);
+                _keysChangedLocally.add("openrouter_api_key");
                 activeApiProvider = "openrouter";
                 document.getElementById("api-no-key-hint").style.display = "none";
                 st.textContent = _t("status.ready", "ready");
@@ -931,6 +1044,7 @@
                 fetchOpenRouterModels(key);
                 updateApiBarSummary();
                 toggleApiBar(false);
+                scheduleDriveSync();
             }
 
             async function saveCustomServer() {
@@ -967,6 +1081,7 @@
                 const key = document.getElementById("custom-server-key-input").value.trim();
                 if (key) {
                     await setSecureKey("custom_server_key", key);
+                    _keysChangedLocally.add("custom_server_key");
                 } else {
                     removeSecureKey("custom_server_key");
                 }
@@ -981,6 +1096,7 @@
                 fetchCustomServerModels(addr);
                 updateApiBarSummary();
                 toggleApiBar(false);
+                scheduleDriveSync();
             }
 
             async function fetchCustomServerModels(addr) {
