@@ -1,0 +1,13 @@
+name: "SunoForge CodeQL Config"
+
+# Scope analysis to source files only
+paths:
+  - app.js
+  - i18n.js
+  - index.html
+  - mobile.html
+  - javascript
+
+paths-ignore:
+  - lang
+  - images
