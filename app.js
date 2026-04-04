@@ -11,6 +11,9 @@
             let customModels = JSON.parse(localStorage.getItem("custom_models") || "[]"); // manually-added model IDs
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
             const STORAGE_PROVIDER_KEY = "sf_storage_provider";
+            const STATS_ENDPOINT = "https://sunoforge-server.vercel.app/api/event";
+            const STATS_ENABLED_KEY = "sf_stats_enabled";
+            const STATS_COUNTRY_KEY = "sf_stats_country";
 
             // Simple HTML-escaping helper to safely render text inside innerHTML templates.
             function escapeHtml(str) {
@@ -1008,6 +1011,34 @@
             function validateInput(input, maxLength = 10000) {
                 if (typeof input !== "string") return "";
                 return input.slice(0, maxLength);
+            }
+
+            // ========================================================================
+            // Anonymous Usage Statistics
+            // ========================================================================
+            function trackEvent(eventType) {
+                try {
+                    if (localStorage.getItem(STATS_ENABLED_KEY) === "false") return;
+                    const sendCountry = localStorage.getItem(STATS_COUNTRY_KEY) !== "false";
+                    // Fire-and-forget — never blocks or throws to caller
+                    fetch(STATS_ENDPOINT, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ event: eventType, sendCountry }),
+                    }).catch(() => {});
+                } catch (_) {}
+            }
+
+            function toggleStatsEnabled(checked) {
+                localStorage.setItem(STATS_ENABLED_KEY, checked ? "true" : "false");
+                const countryLabel = document.getElementById("stats-country-label");
+                if (countryLabel) countryLabel.style.opacity = checked ? "" : "0.4";
+                const countryToggle = document.getElementById("stats-country-toggle");
+                if (countryToggle) countryToggle.disabled = !checked;
+            }
+
+            function toggleStatsCountry(checked) {
+                localStorage.setItem(STATS_COUNTRY_KEY, checked ? "true" : "false");
             }
 
             async function saveApiKey() {
@@ -4735,6 +4766,7 @@
                     aimodeContainer.querySelectorAll(".tag").forEach((t) => t.classList.remove("active"));
                     const keepTag = aimodeContainer.querySelector('.tag[data-val="keep"]');
                     if (keepTag) keepTag.classList.add("active");
+                    trackEvent("analysis");
                 } catch (err) {
                     resultEl.style.display = "block";
                     resultEl.innerHTML = `<div class="error-box">Analysis failed: ${escapeHtml(err.message)}</div>`;
@@ -8349,6 +8381,7 @@ ${cleanedLyrics}
                         renderSongCard(song);
                         renderChordsCard(song);
                         saveToHistory(song);
+                        trackEvent("song_generation");
 
                         if (enablePostGenerationLengthChecks) {
                             let assembledLen = calcAssembledLyricsLength(song);
@@ -8553,6 +8586,9 @@ ${cleanedLyrics}
             window.onCoverUseLyricsChange = onCoverUseLyricsChange;
             window.generateCoverImagePrompt = generateCoverImagePrompt;
             window.copyCoverImagePrompt = copyCoverImagePrompt;
+            // Usage stats
+            window.toggleStatsEnabled = toggleStatsEnabled;
+            window.toggleStatsCountry = toggleStatsCountry;
 
             // ========================================================================
             // Initialization
@@ -8605,6 +8641,16 @@ ${cleanedLyrics}
                         else if (txt === "+ Add Block") btn.dataset.i18n = "btn.add_block";
                     });
                 })();
+
+                // Init usage stats toggles from localStorage
+                const statsEnabled = localStorage.getItem(STATS_ENABLED_KEY) !== "false";
+                const statsCountry = localStorage.getItem(STATS_COUNTRY_KEY) !== "false";
+                const statsEnabledEl = document.getElementById("stats-enabled-toggle");
+                const statsCountryEl = document.getElementById("stats-country-toggle");
+                const statsCountryLabel = document.getElementById("stats-country-label");
+                if (statsEnabledEl) statsEnabledEl.checked = statsEnabled;
+                if (statsCountryEl) { statsCountryEl.checked = statsCountry; statsCountryEl.disabled = !statsEnabled; }
+                if (statsCountryLabel) statsCountryLabel.style.opacity = statsEnabled ? "" : "0.4";
 
                 await window.I18N.init();
                 updateStorageControls();

@@ -240,5 +240,9 @@
   "btn.cover.generate": "Generate Image Prompt",
   "btn.cover.copy": "Copy Prompt to Clipboard",
   "alert.cover.no_song": "Please generate a song first.",
-  "alert.cover.failed": "Failed to generate image prompt: {0}"
+  "alert.cover.failed": "Failed to generate image prompt: {0}",
+  "api.stats_label": "Usage Stats:",
+  "api.stats_send": "Send anonymous usage statistics",
+  "api.stats_country": "Include country",
+  "api.stats_hint": "When enabled, SunoForge reports only anonymous event counts (song generations and analyses) to help us understand how the app is used. No personally identifiable information is ever collected or stored. Country data (if enabled) is resolved server-side from your connection — your IP address is never logged or stored by us. This data is never shared with any third party under any circumstances."
 }

@@ -155,6 +155,23 @@ Legal permission has been sought for the use of the name Suno
                 <div class="api-bar-row" id="drive-storage-hint-row" style="display: none">
                     <span class="api-inline-note" data-i18n="api.drive_hint">Google Drive storage saves your song history and settings to a private app data folder in your Google account. Only SunoForge can access this data. API keys remain local to this browser.</span>
                 </div>
+                <div class="api-bar-row" id="stats-row">
+                    <span class="api-bar-label" data-i18n="api.stats_label">Usage Stats:</span>
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer">
+                        <input type="checkbox" id="stats-enabled-toggle" checked onchange="toggleStatsEnabled(this.checked)" />
+                        <span data-i18n="api.stats_send">Send anonymous usage statistics</span>
+                    </label>
+                    <label id="stats-country-label" style="display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer">
+                        <input type="checkbox" id="stats-country-toggle" checked onchange="toggleStatsCountry(this.checked)" />
+                        <span data-i18n="api.stats_country">Include country</span>
+                    </label>
+                </div>
+                <div class="api-bar-row" id="stats-hint-row">
+                    <span class="api-inline-note" data-i18n="api.stats_hint"
+                        >When enabled, SunoForge reports only anonymous event counts (song generations and analyses) to help us understand how the app is used. No personally identifiable information is ever collected or stored. Country data (if enabled) is resolved server-side from your connection —
+                        your IP address is never logged or stored by us. This data is never shared with any third party under any circumstances.</span
+                    >
+                </div>
             </div>
         </div>
 
@@ -1196,7 +1213,7 @@ Legal permission has been sought for the use of the name Suno
             <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the &ldquo;Suno Trademarks&rdquo;)</span>
             <div class="footer-right">
                 <a href="Privacy_Policy.html" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a>
-                <span class="footer-version" id="version">20260405-002</span>
+                <span class="footer-version" id="version">20260405-003</span>
             </div>
         </footer>
     </body>
