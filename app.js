@@ -895,13 +895,6 @@
                 persistSyncedSettings();
             }
 
-            // Security: HTML escape utility to prevent XSS attacks
-            // Converts dangerous characters to HTML entities
-            function escapeHtml(unsafe) {
-                if (unsafe === null || unsafe === undefined) return "";
-                return String(unsafe).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-            }
-
             // Parses AI-returned JSON that may contain literal newlines/tabs inside string values.
             // Walks character-by-character so it only escapes control characters that appear
             // inside a JSON string literal, leaving the structural punctuation untouched.
