@@ -22,6 +22,86 @@
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#39;");
             }
+            // ── Secure key storage (AES-256-GCM via Web Crypto API) ──────────────────────
+            // API keys are encrypted before being written to localStorage so that an
+            // attacker with read-only access to the storage database (e.g. browser profile
+            // scraping, certain browser extensions) cannot recover them in plaintext.
+            // The AES key is derived in-memory per page load via PBKDF2 from a random
+            // per-browser salt; it is never persisted.  This does NOT protect against
+            // active JS execution in the same page (XSS), which is addressed separately.
+            const _SECURE_KEY_NAMES = ["gemini_api_key", "openrouter_api_key", "custom_server_key"];
+            const _ENC_PREFIX = "enc1:";
+            let _secureKey = null;          // CryptoKey — derived once per page load
+            const _secureCache = {};        // in-memory plaintext cache
+
+            async function _initSecureStorage() {
+                let saltB64 = localStorage.getItem("sf_crypto_salt");
+                if (!saltB64) {
+                    const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+                    saltB64 = btoa(String.fromCharCode(...saltBytes));
+                    localStorage.setItem("sf_crypto_salt", saltB64);
+                }
+                const enc = new TextEncoder();
+                const saltBytes = Uint8Array.from(atob(saltB64), (c) => c.charCodeAt(0));
+                const rawMaterial = await crypto.subtle.importKey(
+                    "raw",
+                    enc.encode("sunoforge-v1-" + location.origin + "-" + saltB64),
+                    "PBKDF2",
+                    false,
+                    ["deriveKey"]
+                );
+                _secureKey = await crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: saltBytes, iterations: 200000, hash: "SHA-256" },
+                    rawMaterial,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["encrypt", "decrypt"]
+                );
+                // Migrate any plaintext values to encrypted form
+                for (const name of _SECURE_KEY_NAMES) {
+                    const stored = localStorage.getItem(name);
+                    if (stored && !stored.startsWith(_ENC_PREFIX)) {
+                        await setSecureKey(name, stored);
+                    }
+                }
+            }
+
+            async function setSecureKey(name, value) {
+                if (!value) { removeSecureKey(name); return; }
+                delete _secureCache[name];
+                if (!_secureKey) { localStorage.setItem(name, value); return; } // fallback before init
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const enc = new TextEncoder();
+                const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, _secureKey, enc.encode(value));
+                const blob = _ENC_PREFIX + btoa(String.fromCharCode(...iv)) + ":" + btoa(String.fromCharCode(...new Uint8Array(ct)));
+                localStorage.setItem(name, blob);
+                _secureCache[name] = value;
+            }
+
+            async function getSecureKey(name) {
+                if (name in _secureCache) return _secureCache[name];
+                const stored = localStorage.getItem(name);
+                if (!stored) return null;
+                if (!stored.startsWith(_ENC_PREFIX)) return stored; // plaintext fallback
+                if (!_secureKey) return null;
+                const parts = stored.split(":");
+                if (parts.length < 3) return null;
+                try {
+                    const iv = Uint8Array.from(atob(parts[1]), (c) => c.charCodeAt(0));
+                    const ct = Uint8Array.from(atob(parts[2]), (c) => c.charCodeAt(0));
+                    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, _secureKey, ct);
+                    const val = new TextDecoder().decode(pt);
+                    _secureCache[name] = val;
+                    return val;
+                } catch { return null; }
+            }
+
+            function removeSecureKey(name) {
+                delete _secureCache[name];
+                localStorage.removeItem(name);
+            }
+            // ─────────────────────────────────────────────────────────────────────────────
+
             const STORAGE_PROVIDER_LOCAL = "local";
             const STORAGE_PROVIDER_DRIVE = "drive";
             // Google OAuth client ID (public — security relies on authorized origins, not this value)
@@ -503,7 +583,7 @@
                 if (provider === "custom") {
                     const addr = localStorage.getItem("custom_server_address");
                     if (!addr) throw new Error("Local OpenAI compatible LLM server address not set — enter it in the API bar.");
-                    const key = localStorage.getItem("custom_server_key");
+                    const key = await getSecureKey("custom_server_key");
                     const headers = { "Content-Type": "application/json" };
                     if (key) headers["Authorization"] = "Bearer " + key;
                     const resp = await fetch(addr.replace(/\/$/, "") + "/v1/chat/completions", {
@@ -521,7 +601,7 @@
                     const data = await resp.json();
                     return { text: data.choices?.[0]?.message?.content || "" };
                 } else if (provider === "openrouter") {
-                    const key = localStorage.getItem("openrouter_api_key");
+                    const key = await getSecureKey("openrouter_api_key");
                     if (!key) throw new Error("OpenRouter key not set — enter your key in the API Key bar.");
                     const resp = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                         method: "POST",
@@ -791,11 +871,11 @@
                 return input.slice(0, maxLength);
             }
 
-            function saveApiKey() {
+            async function saveApiKey() {
                 const key = document.getElementById("api-key-input").value.trim();
                 const st = document.getElementById("api-status");
                 if (!key) {
-                    localStorage.removeItem("gemini_api_key");
+                    removeSecureKey("gemini_api_key");
                     aiClient = null;
                     st.textContent = "not set";
                     st.className = "api-status missing";
@@ -809,9 +889,7 @@
                     updateApiBarSummary();
                     return;
                 }
-                // Security: Warn about localStorage
-                console.warn("WARNING: API key is stored in browser localStorage (not encrypted). Only use this application on trusted devices.");
-                localStorage.setItem("gemini_api_key", key);
+                await setSecureKey("gemini_api_key", key);
                 aiClient = new GoogleGenAI({ apiKey: key });
                 activeApiProvider = "google";
                 document.getElementById("api-no-key-hint").style.display = "none";
@@ -824,11 +902,11 @@
                 toggleApiBar(false);
             }
 
-            function saveOpenRouterKey() {
+            async function saveOpenRouterKey() {
                 const key = document.getElementById("openrouter-key-input").value.trim();
                 const st = document.getElementById("openrouter-status");
                 if (!key) {
-                    localStorage.removeItem("openrouter_api_key");
+                    removeSecureKey("openrouter_api_key");
                     openrouterModels = [];
                     refreshCombinedModelList();
                     st.textContent = "not set";
@@ -843,8 +921,7 @@
                     updateApiBarSummary();
                     return;
                 }
-                console.warn("WARNING: API key is stored in browser localStorage (not encrypted). Only use this application on trusted devices.");
-                localStorage.setItem("openrouter_api_key", key);
+                await setSecureKey("openrouter_api_key", key);
                 activeApiProvider = "openrouter";
                 document.getElementById("api-no-key-hint").style.display = "none";
                 st.textContent = _t("status.ready", "ready");
@@ -856,12 +933,12 @@
                 toggleApiBar(false);
             }
 
-            function saveCustomServer() {
+            async function saveCustomServer() {
                 const addr = document.getElementById("custom-server-input").value.trim().replace(/\/$/, "");
                 const st = document.getElementById("custom-server-status");
                 if (!addr) {
                     localStorage.removeItem("custom_server_address");
-                    localStorage.removeItem("custom_server_key");
+                    removeSecureKey("custom_server_key");
                     document.getElementById("custom-server-key-input").value = "";
                     customServerAddress = "";
                     customServerModels = [];
@@ -889,9 +966,9 @@
                 customServerAddress = addr;
                 const key = document.getElementById("custom-server-key-input").value.trim();
                 if (key) {
-                    localStorage.setItem("custom_server_key", key);
+                    await setSecureKey("custom_server_key", key);
                 } else {
-                    localStorage.removeItem("custom_server_key");
+                    removeSecureKey("custom_server_key");
                 }
                 activeApiProvider = "custom";
                 localStorage.setItem("active_api_provider", "custom");
@@ -916,7 +993,7 @@
                 st.textContent = "fetching...";
                 st.className = "api-status";
                 try {
-                    const fetchKey = localStorage.getItem("custom_server_key");
+                    const fetchKey = await getSecureKey("custom_server_key");
                     const fetchHeaders = fetchKey ? { Authorization: "Bearer " + fetchKey } : undefined;
                     const resp = await fetch(url + "/v1/models", fetchHeaders ? { headers: fetchHeaders } : undefined);
                     if (!resp.ok) throw new Error("HTTP " + resp.status);
@@ -994,10 +1071,10 @@
                 }
             }
 
-            // Auto-load saved API key on startup
-            // Security warning: API keys in localStorage are not encrypted
-            (function () {
-                const saved = localStorage.getItem("gemini_api_key");
+            // Auto-load saved API keys on startup — initialises crypto then decrypts stored values
+            (async function () {
+                await _initSecureStorage();
+                const saved = await getSecureKey("gemini_api_key");
                 if (saved) {
                     document.getElementById("api-no-key-hint").style.display = "none";
                     document.getElementById("api-key-input").value = saved;
@@ -1011,7 +1088,7 @@
                     // Fetch models asynchronously after DOM is ready
                     fetchGoogleModels(saved);
                 }
-                const orKey = localStorage.getItem("openrouter_api_key");
+                const orKey = await getSecureKey("openrouter_api_key");
                 if (orKey) {
                     document.getElementById("api-no-key-hint").style.display = "none";
                     document.getElementById("openrouter-key-input").value = orKey;
@@ -1036,7 +1113,7 @@
                     if (customModels.length) refreshCombinedModelList();
                     fetchCustomServerModels(csAddr);
                 }
-                const csKey = localStorage.getItem("custom_server_key");
+                const csKey = await getSecureKey("custom_server_key");
                 if (csKey) document.getElementById("custom-server-key-input").value = csKey;
                 updateApiBarSummary();
                 toggleApiBar(!(saved || orKey || csAddr));
@@ -6312,7 +6389,7 @@ ${cleanedLyrics}
                 }
             }
 
-            function confirmHistoryBackup() {
+            async function confirmHistoryBackup() {
                 const includeAPI = document.getElementById("backup-include-api").checked;
 
                 const backupData = {
@@ -6328,11 +6405,11 @@ ${cleanedLyrics}
 
                 // Optionally include API key
                 if (includeAPI) {
-                    const apiKey = localStorage.getItem("gemini_api_key");
+                    const apiKey = await getSecureKey("gemini_api_key");
                     if (apiKey) {
                         backupData.apiKey = apiKey;
                     }
-                    const orKey = localStorage.getItem("openrouter_api_key");
+                    const orKey = await getSecureKey("openrouter_api_key");
                     if (orKey) {
                         backupData.openrouterKey = orKey;
                     }
@@ -6381,7 +6458,7 @@ ${cleanedLyrics}
                 alert(`Backup exported successfully!\n\nFile: ${filename}\nSongs: ${backupData.songCount}${includeAPI ? "\n\nAPI Key included - Please secure this file!" : ""}`);
             }
 
-            function importHistoryBackup(content) {
+            async function importHistoryBackup(content) {
                 try {
                     // Extract JSON data
                     const jsonMarker = "--- SUNOFORGE HISTORY BACKUP ---";
@@ -6458,7 +6535,7 @@ ${cleanedLyrics}
                         localStorage.setItem("active_api_provider", backupData.activeApiProvider);
                     }
                     if (backupData.apiKey) {
-                        localStorage.setItem("gemini_api_key", backupData.apiKey);
+                        await setSecureKey("gemini_api_key", backupData.apiKey);
                         document.getElementById("api-key-input").value = backupData.apiKey;
                         aiClient = new GoogleGenAI({ apiKey: backupData.apiKey });
                         const st = document.getElementById("api-status");
@@ -6469,7 +6546,7 @@ ${cleanedLyrics}
                         apiKeyRestored = true;
                     }
                     if (backupData.openrouterKey) {
-                        localStorage.setItem("openrouter_api_key", backupData.openrouterKey);
+                        await setSecureKey("openrouter_api_key", backupData.openrouterKey);
                         document.getElementById("openrouter-key-input").value = backupData.openrouterKey;
                         const ost = document.getElementById("openrouter-status");
                         ost.textContent = _t("status.ready", "ready");
