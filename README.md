@@ -30,16 +30,19 @@ Supports **Google AI Studio** (Gemini models), **OpenRouter** (hundreds of third
 
 ## Documentation
 
-Full documentation is available in the **[SunoForge Wiki](https://github.com/ratava/SunoForge/wiki)**.
+Full documentation is available at **[docs.sunoforge.app](https://docs.sunoforge.app)**.
 
 | Page | Description |
 | --- | --- |
-| [Getting Started](https://github.com/ratava/SunoForge/wiki/Getting-Started) | API setup, model selection, quick start |
-| [Left Panel Tabs](https://github.com/ratava/SunoForge/wiki/Left-Panel-Tabs) | Settings, Vocal, Structure, Sound, Lyrics — full field reference |
-| [Right Panel Tabs](https://github.com/ratava/SunoForge/wiki/Right-Panel-Tabs) | Output, Chords, History |
-| [Key Features](https://github.com/ratava/SunoForge/wiki/Key-Features) | Analyze, Export, Debug Mode |
-| [Tips & Best Practices](https://github.com/ratava/SunoForge/wiki/Tips-and-Best-Practices) | Workflow guides and tips |
-| [Interface Language](https://github.com/ratava/SunoForge/wiki/Interface-Language) | Supported UI languages |
-| [Privacy & Security](https://github.com/ratava/SunoForge/wiki/Privacy-and-Security) | Key storage, data handling |
-| [Suno Integration](https://github.com/ratava/SunoForge/wiki/Suno-Integration) | Export and paste workflow |
-| [FAQ](https://github.com/ratava/SunoForge/wiki/FAQ) | Frequently asked questions |
+| [Getting Started](https://docs.sunoforge.app/getting-started/) | API setup, model selection, quick start |
+| [Left Panel Tabs](https://docs.sunoforge.app/left-panel-tabs/) | Settings, Vocal, Structure, Sound, Lyrics — full field reference |
+| [Right Panel Tabs](https://docs.sunoforge.app/right-panel-tabs/) | Output, Chords, History |
+| [Key Features](https://docs.sunoforge.app/key-features/) | Analyze, Export, Debug Mode |
+| [Cover Image Prompt](https://docs.sunoforge.app/cover-image-prompt/) | Generating cover art prompts |
+| [Tips & Best Practices](https://docs.sunoforge.app/tips-and-best-practices/) | Workflow guides and tips |
+| [Suno Integration](https://docs.sunoforge.app/suno-integration/) | Export and paste workflow |
+| [Google Drive Sync](https://docs.sunoforge.app/google-drive-sync/) | Syncing history and settings to Google Drive |
+| [Mobile Version](https://docs.sunoforge.app/mobile-version/) | Using SunoForge on mobile devices |
+| [Interface Language](https://docs.sunoforge.app/interface-language/) | Supported UI languages |
+| [Privacy & Security](https://docs.sunoforge.app/privacy-and-security/) | Key storage, data handling |
+| [FAQ](https://docs.sunoforge.app/faq/) | Frequently asked questions |
