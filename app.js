@@ -12,6 +12,7 @@
             let customServerModels = []; // fetched from /v1/models on the custom server (ephemeral)
             const STORAGE_PROVIDER_KEY = "sf_storage_provider";
             const STATS_ENDPOINT = "https://suno-forge-server.vercel.app/api/event";
+            const STATS_TOKEN = "7cc9ba33-754f-40dd-a387-61cc0f4a767b-2f772d39";
             const STATS_ENABLED_KEY = "sf_stats_enabled";
             const STATS_COUNTRY_KEY = "sf_stats_country";
 
@@ -1023,7 +1024,10 @@
                     // Fire-and-forget — never blocks or throws to caller
                     fetch(STATS_ENDPOINT, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-SF-Token": STATS_TOKEN,
+                        },
                         body: JSON.stringify({ event: eventType, sendCountry }),
                     }).catch(() => {});
                 } catch (_) {}
@@ -1039,6 +1043,33 @@
 
             function toggleStatsCountry(checked) {
                 localStorage.setItem(STATS_COUNTRY_KEY, checked ? "true" : "false");
+            }
+
+            const STATS_CONSENT_KEY = "sf_stats_consent";
+
+            function showStatsConsentIfNeeded() {
+                // Only show if the user has never seen the notice
+                if (localStorage.getItem(STATS_CONSENT_KEY)) return;
+                // Only show to returning users (they have existing history or API key)
+                const hasHistory = localStorage.getItem("sunoforge_history");
+                const hasKey = localStorage.getItem("gemini_api_key") || localStorage.getItem("openrouter_api_key") || localStorage.getItem("custom_server_address");
+                if (!hasHistory && !hasKey) {
+                    // Brand new user — just mark as seen, stats are on by default
+                    localStorage.setItem(STATS_CONSENT_KEY, "seen");
+                    return;
+                }
+                document.getElementById("stats-consent-modal").style.display = "flex";
+            }
+
+            function dismissStatsConsent(accept) {
+                if (!accept) {
+                    localStorage.setItem(STATS_ENABLED_KEY, "false");
+                    const el = document.getElementById("stats-enabled-toggle");
+                    if (el) el.checked = false;
+                    toggleStatsEnabled(false);
+                }
+                localStorage.setItem(STATS_CONSENT_KEY, "seen");
+                document.getElementById("stats-consent-modal").style.display = "none";
             }
 
             async function saveApiKey() {
@@ -8589,6 +8620,7 @@ ${cleanedLyrics}
             // Usage stats
             window.toggleStatsEnabled = toggleStatsEnabled;
             window.toggleStatsCountry = toggleStatsCountry;
+            window.dismissStatsConsent = dismissStatsConsent;
 
             // ========================================================================
             // Initialization
@@ -8654,6 +8686,7 @@ ${cleanedLyrics}
 
                 await window.I18N.init();
                 updateStorageControls();
+                showStatsConsentIfNeeded();
             }
 
             initializeApp();

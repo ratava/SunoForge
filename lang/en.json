@@ -244,5 +244,12 @@
   "api.stats_label": "Usage Stats:",
   "api.stats_send": "Send anonymous usage statistics",
   "api.stats_country": "Include country",
-  "api.stats_hint": "When enabled, SunoForge reports only anonymous event counts (song generations and analyses) to help us understand how the app is used. No personally identifiable information is ever collected or stored. Country data (if enabled) is resolved server-side from your connection — your IP address is never logged or stored by us. This data is never shared with any third party under any circumstances."
+  "api.stats_hint": "When enabled, SunoForge reports only anonymous event counts (song generations and analyses) to help us understand how the app is used. No personally identifiable information is ever collected or stored. Country data (if enabled) is resolved server-side from your connection \u2014 your IP address is never logged or stored by us. This data is never shared with any third party under any circumstances.",
+  "modal.stats.title": "Anonymous Usage Statistics",
+  "modal.stats.body": "SunoForge now collects anonymous usage statistics to help us understand how the app is being used. The only information sent is:",
+  "modal.stats.item1": "A song generation or analysis event count (no song content)",
+  "modal.stats.item2": "Optionally, your country (derived server-side \u2014 your IP is never stored)",
+  "modal.stats.privacy": "No personally identifiable information is ever collected or shared with any third party. You can change these preferences at any time in the API & Model bar.",
+  "btn.stats_decline": "Disable Statistics",
+  "btn.stats_accept": "OK, Got It"
 }

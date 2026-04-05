@@ -1209,11 +1209,30 @@ Legal permission has been sought for the use of the name Suno
 
         <script type="module" src="app.js"></script>
 
+        <!-- Stats Consent Notice (shown once to existing users) -->
+        <div class="modal-overlay" id="stats-consent-modal" style="display: none">
+            <div class="modal" style="max-width: 480px">
+                <div class="modal-title" data-i18n="modal.stats.title">Anonymous Usage Statistics</div>
+                <p style="color: var(--text); font-size: 13px; margin: 0 0 12px 0; line-height: 1.6" data-i18n="modal.stats.body">SunoForge now collects anonymous usage statistics to help us understand how the app is being used. The only information sent is:</p>
+                <ul style="color: var(--text); font-size: 13px; margin: 0 0 12px 0; line-height: 1.8; padding-left: 20px">
+                    <li data-i18n="modal.stats.item1">A song generation or analysis event count (no song content)</li>
+                    <li data-i18n="modal.stats.item2">Optionally, your country (derived server-side — your IP is never stored)</li>
+                </ul>
+                <p style="color: var(--text-dim); font-size: 12px; margin: 0 0 20px 0; line-height: 1.6" data-i18n="modal.stats.privacy">
+                    No personally identifiable information is ever collected or shared with any third party. You can change these preferences at any time in the API &amp; Model bar.
+                </p>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="dismissStatsConsent(false)" data-i18n="btn.stats_decline">Disable Statistics</button>
+                    <button class="btn-primary" onclick="dismissStatsConsent(true)" data-i18n="btn.stats_accept">OK, Got It</button>
+                </div>
+            </div>
+        </div>
+
         <footer class="app-footer">
             <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the &ldquo;Suno Trademarks&rdquo;)</span>
             <div class="footer-right">
                 <a href="Privacy_Policy.html" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a>
-                <span class="footer-version" id="version">20260405-004</span>
+                <span class="footer-version" id="version">20260405-005</span>
             </div>
         </footer>
     </body>

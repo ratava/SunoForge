@@ -244,5 +244,12 @@
   "api.stats_label": "Nutzungsstatistik:",
   "api.stats_send": "Anonyme Nutzungsstatistiken senden",
   "api.stats_country": "Land einschließen",
-  "api.stats_hint": "Wenn aktiviert, sendet SunoForge ausschließlich anonyme Ereigniszähler (Song-Generierungen und Analysen), um die Nutzung der App besser zu verstehen. Es werden keinerlei personenbezogene Daten erfasst oder gespeichert. Länderdaten (sofern aktiviert) werden serverseitig aus deiner Verbindung abgeleitet – deine IP-Adresse wird von uns weder protokolliert noch gespeichert. Diese Daten werden unter keinen Umständen an Dritte weitergegeben."
+  "api.stats_hint": "Wenn aktiviert, sendet SunoForge ausschlie\u00dflich anonyme Ereignisz\u00e4hler (Song-Generierungen und Analysen), um die Nutzung der App besser zu verstehen. Es werden keinerlei personenbezogene Daten erfasst oder gespeichert. L\u00e4nderdaten (sofern aktiviert) werden serverseitig aus deiner Verbindung abgeleitet \u2013 deine IP-Adresse wird von uns weder protokolliert noch gespeichert. Diese Daten werden unter keinen Umst\u00e4nden an Dritte weitergegeben.",
+  "modal.stats.title": "Anonyme Nutzungsstatistiken",
+  "modal.stats.body": "SunoForge erfasst ab sofort anonyme Nutzungsstatistiken, um besser zu verstehen, wie die App verwendet wird. Die einzigen gesendeten Informationen sind:",
+  "modal.stats.item1": "Eine Ereignisz\u00e4hlung f\u00fcr Song-Generierungen oder Analysen (kein Song-Inhalt)",
+  "modal.stats.item2": "Optional dein Land (serverseitig ermittelt \u2013 deine IP wird nicht gespeichert)",
+  "modal.stats.privacy": "Es werden keinerlei personenbezogene Daten erfasst oder an Dritte weitergegeben. Du kannst diese Einstellungen jederzeit in der API- und Modell-Leiste \u00e4ndern.",
+  "btn.stats_decline": "Statistiken deaktivieren",
+  "btn.stats_accept": "OK, verstanden"
 }
