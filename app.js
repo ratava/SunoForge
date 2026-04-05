@@ -1022,15 +1022,23 @@
                     if (localStorage.getItem(STATS_ENABLED_KEY) === "false") return;
                     const sendCountry = localStorage.getItem(STATS_COUNTRY_KEY) !== "false";
                     // Fire-and-forget — never blocks or throws to caller
+                    const payload = { event: eventType, sendCountry };
+                    console.log("[SunoForge stats] Sending:", payload);
                     fetch(STATS_ENDPOINT, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "X-SF-Token": STATS_TOKEN,
                         },
-                        body: JSON.stringify({ event: eventType, sendCountry }),
-                    }).catch(() => {});
-                } catch (_) {}
+                        body: JSON.stringify(payload),
+                    }).then(r => {
+                        console.log(`[SunoForge stats] ${eventType} sent (HTTP ${r.status})`);
+                    }).catch(err => {
+                        console.warn(`[SunoForge stats] ${eventType} failed:`, err);
+                    });
+                } catch (err) {
+                    console.warn("[SunoForge stats] trackEvent error:", err);
+                }
             }
 
             function toggleStatsEnabled(checked) {
