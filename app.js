@@ -269,6 +269,8 @@
                     sf_song_lang: getStoredSetting("sf_song_lang", "English"),
                     sf_song_lang_custom: getStoredSetting("sf_song_lang_custom", ""),
                     sf_cover_artist_name: getStoredSetting("sf_cover_artist_name", ""),
+                    sf_stats_enabled: getStoredSetting(STATS_ENABLED_KEY, "true"),
+                    sf_stats_country: getStoredSetting(STATS_COUNTRY_KEY, "true"),
                 };
                 if (_driveKey) {
                     const api_keys_enc = {};
@@ -306,9 +308,23 @@
                 if (payload.sf_cover_artist_name !== undefined) {
                     setStoredSetting("sf_cover_artist_name", payload.sf_cover_artist_name);
                 }
+                if (payload.sf_stats_enabled !== undefined) {
+                    setStoredSetting(STATS_ENABLED_KEY, payload.sf_stats_enabled);
+                }
+                if (payload.sf_stats_country !== undefined) {
+                    setStoredSetting(STATS_COUNTRY_KEY, payload.sf_stats_country);
+                }
 
                 if (options.applyUi) {
                     applyStoredSongLanguagePreference();
+                    // Refresh stats toggles if synced from Drive
+                    const statsEnabled = getStoredSetting(STATS_ENABLED_KEY, "true") !== "false";
+                    const statsEnabledEl = document.getElementById("stats-enabled-toggle");
+                    const statsCountryEl = document.getElementById("stats-country-toggle");
+                    const statsCountryLabel = document.getElementById("stats-country-label");
+                    if (statsEnabledEl) statsEnabledEl.checked = statsEnabled;
+                    if (statsCountryEl) { statsCountryEl.checked = getStoredSetting(STATS_COUNTRY_KEY, "true") !== "false"; statsCountryEl.disabled = !statsEnabled; }
+                    if (statsCountryLabel) statsCountryLabel.style.opacity = statsEnabled ? "" : "0.4";
                     // Apply locale if it was synced from Drive
                     const locale = getStoredSetting("sf_locale", "");
                     if (locale) {
@@ -1048,10 +1064,12 @@
                 if (countryLabel) countryLabel.style.opacity = checked ? "" : "0.4";
                 const countryToggle = document.getElementById("stats-country-toggle");
                 if (countryToggle) countryToggle.disabled = !checked;
+                scheduleDriveSync();
             }
 
             function toggleStatsCountry(checked) {
                 localStorage.setItem(STATS_COUNTRY_KEY, checked ? "true" : "false");
+                scheduleDriveSync();
             }
 
             const STATS_CONSENT_KEY = "sf_stats_consent";
