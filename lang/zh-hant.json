@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Chinese Traditional / Cantonese (繁體中文) translation file.",
   "nav.settings": "設定",
   "nav.vocal": "人聲",
@@ -249,6 +249,7 @@
   "modal.stats.item1": "生成或分析事件計數（不含歌曲內容）",
   "modal.stats.item2": "可選：您的國家（伺服器端判斷 — IP 不會被儲存）",
   "modal.stats.privacy": "不會收集或共享任何個人資訊。可隨時在 API 欄更改偏好。",
+  "modal.stats.policy_link": "查看我們的隱私權政策",
   "btn.stats_decline": "關閉統計",
   "btn.stats_accept": "確認"
 }

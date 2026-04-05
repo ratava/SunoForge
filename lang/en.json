@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n English master token file. Keep in sync with index.html data-i18n attributes.",
   "nav.settings": "Settings",
   "nav.vocal": "Vocal",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "A song generation or analysis event count (no song content)",
   "modal.stats.item2": "Optionally, your country (derived server-side \u2014 your IP is never stored)",
   "modal.stats.privacy": "No personally identifiable information is ever collected or shared with any third party. You can change these preferences at any time in the API & Model bar.",
+  "modal.stats.policy_link": "View our Privacy Policy",
   "btn.stats_decline": "Disable Statistics",
   "btn.stats_accept": "OK, Got It"
 }

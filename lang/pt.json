@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Portuguese (Português) translation file.",
   "nav.settings": "Configurações",
   "nav.vocal": "Vocal",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "Uma contagem de eventos de gera\u00e7\u00e3o ou an\u00e1lise (sem conte\u00fado da m\u00fasica)",
   "modal.stats.item2": "Opcionalmente, o teu pa\u00eds (determinado do lado do servidor \u2014 o teu IP nunca \u00e9 armazenado)",
   "modal.stats.privacy": "Nenhuma informa\u00e7\u00e3o pessoal \u00e9 recolhida ou partilhada com terceiros. Podes alterar estas prefer\u00eancias a qualquer momento na barra de API e modelo.",
+  "modal.stats.policy_link": "Ver a nossa Política de privacidade",
   "btn.stats_decline": "Desativar estat\u00edsticas",
   "btn.stats_accept": "OK, percebido"
 }

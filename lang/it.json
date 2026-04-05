@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Italian (Italiano) translation file.",
   "nav.settings": "Impostazioni",
   "nav.vocal": "Voce",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "Un conteggio di eventi di generazione o analisi (senza contenuto della canzone)",
   "modal.stats.item2": "Opzionalmente, il tuo paese (determinato lato server \u2014 il tuo IP non viene mai memorizzato)",
   "modal.stats.privacy": "Nessuna informazione personale viene raccolta o condivisa con terze parti. Puoi modificare queste preferenze in qualsiasi momento nella barra API e modello.",
+  "modal.stats.policy_link": "Visualizza la nostra Informativa sulla privacy",
   "btn.stats_decline": "Disattiva statistiche",
   "btn.stats_accept": "OK, capito"
 }

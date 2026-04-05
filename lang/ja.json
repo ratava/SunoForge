@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Japanese (日本語) translation file.",
   "nav.settings": "設定",
   "nav.vocal": "ボーカル",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "生成または分析イベントのカウント（曲の内容は含まず）",
   "modal.stats.item2": "任意で国（サーバー側で判定 — IPは保存されません）",
   "modal.stats.privacy": "個人情報は一切収集・共有されません。APIバーから設定を変更できます。",
+  "modal.stats.policy_link": "プライバシーポリシーを見る",
   "btn.stats_decline": "統計を無効にする",
   "btn.stats_accept": "OK、了解しました"
 }

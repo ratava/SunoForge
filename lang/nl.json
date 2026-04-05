@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Dutch (Nederlands) translation file.",
   "nav.settings": "Instellingen",
   "nav.vocal": "Zang",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "Een telling van generatie- of analysegebeurtenissen (zonder liedinhoud)",
   "modal.stats.item2": "Optioneel uw land (server-side bepaald \u2014 uw IP wordt nooit opgeslagen)",
   "modal.stats.privacy": "Er worden nooit persoonsgegevens verzameld of gedeeld met derden. U kunt deze voorkeuren op elk moment wijzigen in de API- en modelbalk.",
+  "modal.stats.policy_link": "Bekijk ons privacybeleid",
   "btn.stats_decline": "Statistieken uitschakelen",
   "btn.stats_accept": "OK, begrepen"
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n German (Deutsch) translation file.",
   "nav.settings": "Einstellungen",
   "nav.vocal": "Gesang",
@@ -251,6 +251,7 @@
   "modal.stats.item1": "Eine Ereignisz\u00e4hlung f\u00fcr Song-Generierungen oder Analysen (kein Song-Inhalt)",
   "modal.stats.item2": "Optional dein Land (serverseitig ermittelt \u2013 deine IP wird nicht gespeichert)",
   "modal.stats.privacy": "Es werden keinerlei personenbezogene Daten erfasst oder an Dritte weitergegeben. Du kannst diese Einstellungen jederzeit in der API- und Modell-Leiste \u00e4ndern.",
+  "modal.stats.policy_link": "Unsere Datenschutzerklärung ansehen",
   "btn.stats_decline": "Statistiken deaktivieren",
   "btn.stats_accept": "OK, verstanden"
 }

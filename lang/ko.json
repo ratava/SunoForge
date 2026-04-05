@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "SunoForge i18n Korean (한국어) translation file.",
   "nav.settings": "설정",
   "nav.vocal": "보컬",
@@ -249,6 +249,7 @@
   "modal.stats.item1": "생성 또는 분석 이벤트 카운트 (노래 내용 제외)",
   "modal.stats.item2": "선택적으로 국가 (서버 측 판단 — IP 저장 안 함)",
   "modal.stats.privacy": "개인 정보는 절대 수집되거나 제3자와 공유되지 않습니다. API 바에서 언제든지 변경할 수 있습니다.",
+  "modal.stats.policy_link": "개인정보 처리방침 보기",
   "btn.stats_decline": "통계 비활성화",
   "btn.stats_accept": "확인"
 }
