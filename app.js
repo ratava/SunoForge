@@ -46,6 +46,7 @@
             let _driveKey  = null;          // CryptoKey — loaded from Drive on first sync
             const _secureCache = {};        // in-memory plaintext cache
             const _keysChangedLocally = new Set(); // prevents hydrateDriveState overwriting fresh saves
+            const _settingsChangedLocally = new Set(); // mirrors _keysChangedLocally for non-key settings
 
             // ── Low-level AES-GCM helpers (accept an explicit CryptoKey) ─────────────────
             async function _aesGcmEncrypt(key, value) {
@@ -296,22 +297,22 @@
                     activeApiProvider = payload.active_api_provider;
                     setStoredSetting("active_api_provider", payload.active_api_provider);
                 }
-                if (payload.sf_locale) {
+                if (payload.sf_locale && !_settingsChangedLocally.has("sf_locale")) {
                     setStoredSetting("sf_locale", payload.sf_locale);
                 }
-                if (payload.sf_song_lang) {
+                if (payload.sf_song_lang && !_settingsChangedLocally.has("sf_song_lang")) {
                     setStoredSetting("sf_song_lang", payload.sf_song_lang);
                 }
-                if (payload.sf_song_lang_custom !== undefined) {
+                if (payload.sf_song_lang_custom !== undefined && !_settingsChangedLocally.has("sf_song_lang_custom")) {
                     setStoredSetting("sf_song_lang_custom", payload.sf_song_lang_custom);
                 }
-                if (payload.sf_cover_artist_name !== undefined) {
+                if (payload.sf_cover_artist_name !== undefined && !_settingsChangedLocally.has("sf_cover_artist_name")) {
                     setStoredSetting("sf_cover_artist_name", payload.sf_cover_artist_name);
                 }
-                if (payload.sf_stats_enabled !== undefined) {
+                if (payload.sf_stats_enabled !== undefined && !_settingsChangedLocally.has(STATS_ENABLED_KEY)) {
                     setStoredSetting(STATS_ENABLED_KEY, payload.sf_stats_enabled);
                 }
-                if (payload.sf_stats_country !== undefined) {
+                if (payload.sf_stats_country !== undefined && !_settingsChangedLocally.has(STATS_COUNTRY_KEY)) {
                     setStoredSetting(STATS_COUNTRY_KEY, payload.sf_stats_country);
                 }
 
@@ -603,6 +604,7 @@
                     await writeDriveJsonFile(DRIVE_SETTINGS_FILE, await buildSyncedSettingsPayload(), interactive);
                     modelChangedLocally = false; // local model is now safely in Drive; allow future syncs to apply remote changes
                     _keysChangedLocally.clear();  // local keys are now safely in Drive
+                    _settingsChangedLocally.clear(); // local settings are now safely in Drive
                     await writeDriveJsonFile(DRIVE_PRESETS_FILE, { version: 1, savedAt: new Date().toISOString(), presets: songPresets }, interactive);
                     lastDriveSyncAt = new Date();
                     setDriveSyncStatus("ok");
@@ -710,9 +712,8 @@
 
             function saveSongLanguageCustom(value) {
                 setStoredSetting("sf_song_lang_custom", value.trim());
-                // Do NOT call persistSyncedSettings() here — Drive sync reads back remote state
-                // and overwrites the input before the new value is pushed, clearing what the user typed.
-                // The value is in localStorage and will be included in the next Drive sync naturally.
+                _settingsChangedLocally.add("sf_song_lang_custom");
+                persistSyncedSettings();
             }
 
             // Unified AI call — routes to Google GenAI or OpenRouter REST based on selected model's provider
@@ -1060,6 +1061,7 @@
 
             function toggleStatsEnabled(checked) {
                 localStorage.setItem(STATS_ENABLED_KEY, checked ? "true" : "false");
+                _settingsChangedLocally.add(STATS_ENABLED_KEY);
                 const countryLabel = document.getElementById("stats-country-label");
                 if (countryLabel) countryLabel.style.opacity = checked ? "" : "0.4";
                 const countryToggle = document.getElementById("stats-country-toggle");
@@ -1069,6 +1071,7 @@
 
             function toggleStatsCountry(checked) {
                 localStorage.setItem(STATS_COUNTRY_KEY, checked ? "true" : "false");
+                _settingsChangedLocally.add(STATS_COUNTRY_KEY);
                 scheduleDriveSync();
             }
 
@@ -3244,8 +3247,10 @@
                 const customWrap = document.getElementById("song-language-custom-wrap");
                 if (customWrap) customWrap.style.display = sel.value === "custom" ? "flex" : "none";
                 localStorage.setItem("sf_song_lang", sel.value);
+                _settingsChangedLocally.add("sf_song_lang");
                 if (sel.value !== "custom") {
                     localStorage.removeItem("sf_song_lang_custom");
+                    _settingsChangedLocally.add("sf_song_lang_custom");
                     if (custom) custom.value = "";
                 }
                 persistSyncedSettings();
@@ -8691,7 +8696,9 @@ ${cleanedLyrics}
                     if (mapped) {
                         applySongLanguageSetting(mapped);
                         localStorage.setItem("sf_song_lang", mapped);
+                        _settingsChangedLocally.add("sf_song_lang");
                     }
+                    _settingsChangedLocally.add("sf_locale");
                     persistSyncedSettings();
                 });
 
