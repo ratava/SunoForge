@@ -27,6 +27,7 @@
   "hint.lyrics_tab": "AI에 사용할 자신의 가사를 제공합니다.",
   "lbl.song_language": "노래 언어",
   "ph.song_language_custom": "언어를 지정하세요...",
+  "btn.lang_custom_set": "설정",
   "lbl.song_title": "노래 제목",
   "lbl.concept": "개념 / 이야기",
   "lbl.special_inst": "AI에 대한 특별 지시",

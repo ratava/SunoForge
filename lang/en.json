@@ -30,6 +30,7 @@
   "hint.lyrics_tab": "Provide your own lyrics for the AI to work with.",
   "lbl.song_language": "Song Language",
   "ph.song_language_custom": "Specify language...",
+  "btn.lang_custom_set": "Set",
   "lbl.song_title": "Song Title",
   "lbl.concept": "Concept / Story",
   "lbl.special_inst": "Special AI Instructions",

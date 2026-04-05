@@ -29,6 +29,7 @@
   "hint.lyrics_tab": "Fornisci i tuoi testi all'IA su cui lavorare.",
   "lbl.song_language": "Lingua del brano",
   "ph.song_language_custom": "Specifica la lingua...",
+  "btn.lang_custom_set": "Imposta",
   "lbl.song_title": "Titolo del brano",
   "lbl.concept": "Concetto / Storia",
   "lbl.special_inst": "Istruzioni speciali all'IA",

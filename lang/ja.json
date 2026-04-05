@@ -29,6 +29,7 @@
   "hint.lyrics_tab": "AIに使用する独自の歌詞を提供します。",
   "lbl.song_language": "楽曲の言語",
   "ph.song_language_custom": "言語を指定...",
+  "btn.lang_custom_set": "設定",
   "lbl.song_title": "楽曲タイトル",
   "lbl.concept": "コンセプト / ストーリー",
   "lbl.special_inst": "AIへの特別指示",

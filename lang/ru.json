@@ -29,6 +29,7 @@
   "hint.lyrics_tab": "Предоставьте ИИ собственные тексты.",
   "lbl.song_language": "Язык песни",
   "ph.song_language_custom": "Укажите язык...",
+  "btn.lang_custom_set": "Установить",
   "lbl.song_title": "Название песни",
   "lbl.concept": "Концепция / История",
   "lbl.special_inst": "Особые инструкции для ИИ",

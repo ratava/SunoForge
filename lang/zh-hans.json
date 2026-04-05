@@ -27,6 +27,7 @@
   "hint.lyrics_tab": "为 AI 提供您自己的歌词。",
   "lbl.song_language": "歌曲语言",
   "ph.song_language_custom": "指定语言...",
+  "btn.lang_custom_set": "确定",
   "lbl.song_title": "歌曲标题",
   "lbl.concept": "概念 / 故事",
   "lbl.special_inst": "AI 特别指令",

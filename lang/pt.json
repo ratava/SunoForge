@@ -29,6 +29,7 @@
   "hint.lyrics_tab": "Forneça a sua própria letra à IA.",
   "lbl.song_language": "Idioma da canção",
   "ph.song_language_custom": "Especifique o idioma...",
+  "btn.lang_custom_set": "Definir",
   "lbl.song_title": "Título da canção",
   "lbl.concept": "Conceito / História",
   "lbl.special_inst": "Instruções especiais para a IA",

@@ -38,7 +38,6 @@ Legal permission has been sought for the use of the name Suno
             <div class="logo" ondblclick="toggleDebugMode()" title="Double-click to toggle debug mode">
                 <div class="logo-icon"><img src="images/logo.webp" alt="SunoForge Logo" /></div>
             </div>
-            <div id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-left: 12px">DEBUG MODE</div>
             <div class="header-tagline" data-i18n="hint.tagline">SUNOFORGE IS DESIGNED TO IMPROVE YOUR SUNO STYLE AND/OR LYRICS<br />TO OBTAIN A MORE STRUCTURED AND HIGHER QUALITY<br />SUNO SONG GENERATION</div>
             <div class="header-right">
                 <select id="lang-select" onchange="window.I18N.switchLocale(this.value)" title="Language / Sprache">
@@ -76,6 +75,7 @@ Legal permission has been sought for the use of the name Suno
                     <span class="api-status missing" id="api-bar-sum-or">OR</span>
                     <span class="api-status missing" id="api-bar-sum-custom">LLM</span>
                     <span class="api-status missing" id="api-bar-sum-drive" style="display: none">Drive</span>
+                    <span id="debug-indicator" style="display: none; background: #ff4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 4px">DEBUG</span>
                 </div>
                 <span id="api-bar-chevron">▼</span>
             </div>
@@ -204,7 +204,21 @@ Legal permission has been sought for the use of the name Suno
                             <option value="Chinese (Cantonese)">Chinese (Cantonese)</option>
                             <option value="custom" data-i18n-opt="btn.lang_custom">Custom...</option>
                         </select>
-                        <input type="text" id="song-language-custom" placeholder="Specify language..." data-i18n-ph="ph.song_language_custom" style="display: none; margin-top: 6px" onchange="saveSongLanguageCustom(this.value)" />
+                        <div id="song-language-custom-wrap" style="display: none; margin-top: 6px; gap: 4px; align-items: center">
+                            <input
+                                type="text"
+                                id="song-language-custom"
+                                placeholder="Specify language..."
+                                data-i18n-ph="ph.song_language_custom"
+                                style="flex: 1"
+                                onkeydown="
+                                    if (event.key === 'Enter') {
+                                        saveSongLanguageCustom(this.value);
+                                    }
+                                "
+                            />
+                            <button class="api-bar-save" onclick="saveSongLanguageCustom(document.getElementById('song-language-custom').value)" data-i18n="btn.lang_custom_set">Set</button>
+                        </div>
                     </div>
                     <div class="field-group">
                         <div class="field-label" data-i18n="lbl.song_title">Song Title</div>
@@ -1232,7 +1246,7 @@ Legal permission has been sought for the use of the name Suno
             <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the &ldquo;Suno Trademarks&rdquo;)</span>
             <div class="footer-right">
                 <a href="Privacy_Policy.html" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a>
-                <span class="footer-version" id="version">20260405-007</span>
+                <span class="footer-version" id="version">20260405-008</span>
             </div>
         </footer>
     </body>

@@ -684,8 +684,9 @@
                 if (savedLang) {
                     applySongLanguageSetting(savedLang);
                     const customInput = document.getElementById("song-language-custom");
+                    const customWrap = document.getElementById("song-language-custom-wrap");
                     if (customInput && savedLang === "custom") {
-                        customInput.style.display = "";
+                        if (customWrap) customWrap.style.display = "flex";
                         customInput.value = customLang;
                     }
                 }
@@ -1017,12 +1018,12 @@
             // ========================================================================
             // Anonymous Usage Statistics
             // ========================================================================
-            function trackEvent(eventType) {
+            function trackEvent(eventType, extra = {}) {
                 try {
                     if (localStorage.getItem(STATS_ENABLED_KEY) === "false") return;
                     const sendCountry = localStorage.getItem(STATS_COUNTRY_KEY) !== "false";
                     // Fire-and-forget — never blocks or throws to caller
-                    const payload = { event: eventType, sendCountry };
+                    const payload = { event: eventType, sendCountry, ...extra };
                     console.log("[SunoForge stats] Sending:", payload);
                     fetch(STATS_ENDPOINT, {
                         method: "POST",
@@ -3222,7 +3223,8 @@
             }
             function onSongLanguageChange(sel) {
                 const custom = document.getElementById("song-language-custom");
-                custom.style.display = sel.value === "custom" ? "" : "none";
+                const customWrap = document.getElementById("song-language-custom-wrap");
+                if (customWrap) customWrap.style.display = sel.value === "custom" ? "flex" : "none";
                 localStorage.setItem("sf_song_lang", sel.value);
                 if (sel.value !== "custom") {
                     localStorage.removeItem("sf_song_lang_custom");
@@ -3238,11 +3240,16 @@
                 const opt = Array.from(sel.options).find((o) => o.value === lang);
                 if (opt) {
                     sel.value = lang;
-                    custom.style.display = "none";
+                    if (custom) custom.style.display = "none";
+                    const customWrap = document.getElementById("song-language-custom-wrap");
+                    if (customWrap) customWrap.style.display = "none";
                 } else {
                     sel.value = "custom";
                     custom.value = lang;
+                    const customWrap = document.getElementById("song-language-custom-wrap");
+                    if (customWrap) customWrap.style.display = "flex";
                     custom.style.display = "";
+                }
                 }
             }
             function getSelectedMood() {
@@ -8420,7 +8427,13 @@ ${cleanedLyrics}
                         renderSongCard(song);
                         renderChordsCard(song);
                         saveToHistory(song);
-                        trackEvent("song_generation");
+                        {
+                            const lyricsLangRaw = localStorage.getItem("sf_song_lang") || "English";
+                            const customLang = localStorage.getItem("sf_song_lang_custom") || "";
+                            const lyrics_lang = lyricsLangRaw.toLowerCase() === "custom" ? (customLang.trim() || "custom") : lyricsLangRaw;
+                            const locale = localStorage.getItem("sf_locale") || "en";
+                            trackEvent("song_generation", { locale, lyrics_lang });
+                        }
 
                         if (enablePostGenerationLengthChecks) {
                             let assembledLen = calcAssembledLyricsLength(song);
@@ -8695,6 +8708,7 @@ ${cleanedLyrics}
                 await window.I18N.init();
                 updateStorageControls();
                 showStatsConsentIfNeeded();
+                trackEvent("page_load", { locale: localStorage.getItem("sf_locale") || "en" });
             }
 
             initializeApp();

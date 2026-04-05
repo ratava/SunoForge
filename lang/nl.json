@@ -29,6 +29,7 @@
   "hint.lyrics_tab": "Geef de AI uw eigen teksten.",
   "lbl.song_language": "Songtaal",
   "ph.song_language_custom": "Geef taal op...",
+  "btn.lang_custom_set": "Instellen",
   "lbl.song_title": "Songtitel",
   "lbl.concept": "Concept / Verhaal",
   "lbl.special_inst": "Speciale AI-instructies",

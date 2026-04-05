@@ -25,6 +25,7 @@
   "hint.lyrics_tab": "Fournissez vos propres paroles à l'IA.",
   "lbl.song_language": "Langue de la chanson",
   "ph.song_language_custom": "Précisez la langue...",
+  "btn.lang_custom_set": "Définir",
   "lbl.song_title": "Titre de la chanson",
   "lbl.concept": "Concept / Histoire",
   "lbl.special_inst": "Instructions IA spéciales",

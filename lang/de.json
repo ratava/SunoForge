@@ -30,6 +30,7 @@
   "hint.lyrics_tab": "Stellen Sie der KI Ihre eigenen Texte zur Verfügung.",
   "lbl.song_language": "Songsprache",
   "ph.song_language_custom": "Sprache angeben...",
+  "btn.lang_custom_set": "Setzen",
   "lbl.song_title": "Songtitel",
   "lbl.concept": "Konzept / Geschichte",
   "lbl.special_inst": "Besondere KI-Anweisungen",
