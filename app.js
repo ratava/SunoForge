@@ -3250,7 +3250,6 @@
                     if (customWrap) customWrap.style.display = "flex";
                     custom.style.display = "";
                 }
-                }
             }
             function getSelectedMood() {
                 return getCustomTagValue("mood-custom-tag") || getActive("mood-tags");
