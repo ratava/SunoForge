@@ -1,0 +1,8 @@
+{
+  "name": "sunoforge",
+  "private": true,
+  "description": "Frontend dependency manifest — used for Dependabot version tracking only. No build step.",
+  "dependencies": {
+    "jsonrepair": "^3.13.3"
+  }
+}
