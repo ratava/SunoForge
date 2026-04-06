@@ -993,7 +993,23 @@
                 return JSON.parse(out);
             }
 
-            // Security: Sanitize for attribute values (HTML attribute context only)
+            // Strip markdown fences and any preamble text before the JSON object/array.
+            // AI models sometimes return "I'll carefully construct this..." before the JSON.
+            function extractJSON(text) {
+                let cleaned = text.replace(/```json|```/g, "").trim();
+                const firstBrace = cleaned.indexOf("{");
+                const firstBracket = cleaned.indexOf("[");
+                let start = -1;
+                if (firstBrace === -1 && firstBracket === -1) return cleaned;
+                if (firstBrace === -1) start = firstBracket;
+                else if (firstBracket === -1) start = firstBrace;
+                else start = Math.min(firstBrace, firstBracket);
+                const lastBrace = cleaned.lastIndexOf("}");
+                const lastBracket = cleaned.lastIndexOf("]");
+                const end = Math.max(lastBrace, lastBracket);
+                if (start === -1 || end === -1 || end < start) return cleaned;
+                return cleaned.slice(start, end + 1);
+            }
             function escapeAttr(unsafe) {
                 if (unsafe === null || unsafe === undefined) return "";
                 return String(unsafe).replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -4692,7 +4708,7 @@
                         prompt: prompt,
                     });
                     const response = await callAI(prompt);
-                    const raw = response.text.replace(/```json|```/g, "").trim();
+                    const raw = extractJSON(response.text);
                     debugLog("ANALYZER_RESPONSE", "Received analysis from AI", {
                         responseLength: raw.length,
                         rawResponse: raw,
@@ -4917,7 +4933,7 @@
                     if (!aiClient && activeApiProvider === "google") throw new Error("Google AI key not set — enter your key in the API Key bar.");
                     console.log("Prompt sent to AI:", prompt);
                     const response = await callAI(prompt);
-                    const raw = response.text.replace(/```json|```/g, "").trim();
+                    const raw = extractJSON(response.text);
                     const s = safeParseJSON(raw);
                     console.log("AI response parsed as JSON:", s);
 
@@ -5517,7 +5533,7 @@ ${cleanedLyrics}
                 console.log("=====================================");
 
                 const response = await callAI(prompt);
-                const raw = response.text.replace(/```json|```/g, "").trim();
+                const raw = extractJSON(response.text);
 
                 debugLog("LYRICS_SHORTEN_RESPONSE", "Received shorten response from AI", {
                     responseLength: raw.length,
@@ -7624,7 +7640,7 @@ ${cleanedLyrics}
                         currentLines: sec.lines,
                     });
                     const response = await callAI(prompt);
-                    const raw = response.text.replace(/```json|```/g, "").trim();
+                    const raw = extractJSON(response.text);
                     debugLog("SECTION_REGEN_RESPONSE", `Received regenerated section: ${sec.type}`, {
                         responseLength: raw.length,
                         rawResponse: raw,
@@ -8276,7 +8292,7 @@ ${cleanedLyrics}
                         console.log("====================");
 
                         const response = await callAI(effectivePrompt);
-                        const raw = response.text.replace(/```json|```/g, "").trim();
+                        const raw = extractJSON(response.text);
 
                         // Log what we received from the AI
                         debugLog("SONG_GENERATION_RESPONSE", "Received song from AI", {
