@@ -1012,6 +1012,78 @@ select {
     overflow: hidden;
     animation: fadeIn 0.35s ease;
 }
+
+/* ── Lyria Music Player ─────────────────────────────────── */
+.music-player {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+}
+.lyria-play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #0e0c0a;
+    font-size: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.15s, transform 0.15s;
+    line-height: 1;
+}
+.lyria-play-btn:hover { filter: brightness(1.15); transform: scale(1.06); }
+.lyria-play-btn:active { transform: scale(0.97); }
+.lyria-progress-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.lyria-progress-bg {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border);
+    overflow: hidden;
+    cursor: pointer;
+}
+.lyria-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.08s linear;
+}
+.lyria-progress-time {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+}
+.music-lyrics-section {
+    padding: 14px 18px 18px;
+}
+.section-subheader {
+    font-family: "Syne", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.music-lyrics-text {
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    color: var(--text);
+    white-space: pre-wrap;
+    line-height: 1.7;
+    margin: 0;
+}
 @keyframes fadeIn {
     from {
         opacity: 0;

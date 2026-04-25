@@ -1,5 +1,6 @@
             import { GoogleGenAI } from "@google/genai";
             import { jsonrepair } from "jsonrepair";
+            import { Howl } from "howler";
 
             let aiClient = null;
             let activeApiProvider = localStorage.getItem("active_api_provider") || "google"; // "google" | "openrouter" | "custom"
@@ -924,6 +925,13 @@
                 document.querySelectorAll("#model-select-list .model-option").forEach((el) => {
                     el.classList.toggle("active", el.dataset.value === id);
                 });
+                // Update generate button label for Lyria vs normal models
+                const genBtn = document.getElementById("gen-btn");
+                if (genBtn && !genBtn.disabled) {
+                    genBtn.innerHTML = isLyriaModel(id)
+                        ? _t("btn.generate_music", "Generate Music")
+                        : _t("btn.write_song_label", "Write My Song");
+                }
                 updateApiBarSummary();
                 persistSyncedSettings();
             }
@@ -2846,7 +2854,8 @@
             let history = [],
                 currentSong = null,
                 lyricsMode = "single",
-                activeLeftTab = "settings";
+                activeLeftTab = "settings",
+                lyriaSounds = {};
             let selectedStructure = null,
                 currentGenreKey = "rock",
                 influences = [],
@@ -7989,7 +7998,332 @@ ${cleanedLyrics}
             // ========================================================================
             // Generate Song - Main AI generation function
             // ========================================================================
+            // ========================================================================
+            // Lyria Music Generation
+            // Handles Google Lyria 3 Clip / Pro music generation models
+            // ========================================================================
+
+            function isLyriaModel(model) {
+                return model === "lyria-3-clip-preview" || model === "lyria-3-pro-preview";
+            }
+
+            // Strip section directions/instructions — keep only [SectionType] + lyrics lines
+            function buildSimplifiedLyricsFromSections(sections) {
+                if (!sections || !sections.length) return "";
+                return sections
+                    .filter((s) => s.lines && s.lines.trim())
+                    .map((s) => `[${s.type}]\n${s.lines.trim()}`)
+                    .join("\n\n");
+            }
+
+            // Build a Lyria-optimised text prompt from current settings
+            function buildLyriaMusicPrompt({ genre, concept, mood, tempo, key, timeSignature, songLanguage, soundProfile, vocalConfig, lyrics, modelId }) {
+                const isClip = modelId === "lyria-3-clip-preview";
+                const isInstrumental = vocalConfig === "Instrumental (no vocals)";
+
+                const descParts = [];
+                if (genre) descParts.push(genre);
+                if (mood) descParts.push(mood + " mood");
+                if (tempo && !/^ai choose$/i.test(tempo) && !/^auto$/i.test(tempo)) descParts.push(tempo);
+                if (key && key !== "Auto") descParts.push("in " + key);
+                if (timeSignature && timeSignature !== "Auto") descParts.push(timeSignature + " time signature");
+
+                let prompt = descParts.join(", ");
+                if (concept) prompt += ". " + concept;
+                if (isClip) prompt += " 30-second preview.";
+
+                const spParts = [];
+                if (soundProfile) {
+                    if (soundProfile.instruments && soundProfile.instruments.length) spParts.push(soundProfile.instruments.join(", "));
+                    if (soundProfile.insts && soundProfile.insts.length) spParts.push(soundProfile.insts.join(", "));
+                    if (soundProfile.eras && soundProfile.eras.length) spParts.push(soundProfile.eras.join(", "));
+                    if (soundProfile.styles && soundProfile.styles.length) spParts.push(soundProfile.styles.join(", "));
+                    if (soundProfile.mixes && soundProfile.mixes.length) spParts.push(soundProfile.mixes.join(", "));
+                    if (soundProfile.bass && soundProfile.bass !== "AI Choose") spParts.push("bass: " + soundProfile.bass);
+                    if (soundProfile.spatial && soundProfile.spatial.length) spParts.push(soundProfile.spatial.join(", "));
+                }
+                if (spParts.length) prompt += " " + spParts.join(". ") + ".";
+
+                if (isInstrumental) {
+                    prompt += " Instrumental only, no vocals.";
+                } else if (songLanguage && songLanguage !== "English") {
+                    prompt += " Lyrics in " + songLanguage + ".";
+                }
+
+                if (lyrics && !isInstrumental) {
+                    prompt += "\n\n" + lyrics;
+                }
+
+                return prompt.trim();
+            }
+
+            // Generate simplified lyrics via a text model when Lyria is selected but no lyrics exist
+            async function generateLyricsForLyria({ genre, concept, struct, songLanguage, vocalConfig, mood }) {
+                if (vocalConfig === "Instrumental (no vocals)") return "";
+                if (!aiClient) throw new Error(_t("alert.lyria_google_only", "Music generation requires a Google AI Studio key."));
+
+                const lyricsPrompt = `You are a professional songwriter. Write song lyrics.
+Genre: ${genre || "Pop"}
+Concept: ${concept || ""}
+Structure flow: ${struct ? struct.flow : "Intro -> Verse -> Chorus -> Verse -> Chorus -> Outro"}
+${mood ? "Mood: " + mood : ""}
+Language: ${songLanguage || "English"}
+
+Rules:
+- Use ONLY simple section labels in brackets: [Intro] [Verse 1] [Chorus] [Pre-Chorus] [Bridge] [Outro] etc.
+- Do NOT include any performance directions, production notes, sound descriptions, or meta-tags.
+- Output ONLY the section labels and lyric lines. No other text.`;
+
+                const response = await aiClient.models.generateContent({ model: "gemini-2.0-flash", contents: lyricsPrompt });
+                return response.text?.trim() || "";
+            }
+
+            // Animate Howl progress bar
+            function animateLyriaProgress(id) {
+                const entry = lyriaSounds[id];
+                if (!entry) return;
+                const { sound } = entry;
+                const fill = document.getElementById(id + "-fill");
+                const timeEl = document.getElementById(id + "-time");
+                function step() {
+                    if (!sound.playing()) return;
+                    const seek = sound.seek() || 0;
+                    const dur = sound.duration() || 1;
+                    if (fill) fill.style.width = (seek / dur) * 100 + "%";
+                    if (timeEl) {
+                        const s = Math.floor(seek);
+                        timeEl.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+                    }
+                    requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+            }
+
+            // Toggle play/pause for a Lyria audio card
+            function toggleLyriaPlayer(id) {
+                const entry = lyriaSounds[id];
+                if (!entry) return;
+                const { sound } = entry;
+                const btn = document.getElementById(id + "-play");
+                if (sound.playing()) {
+                    sound.pause();
+                    if (btn) btn.textContent = "\u25B6";
+                } else {
+                    // Pause any other playing Lyria sounds
+                    Object.keys(lyriaSounds).forEach((k) => {
+                        if (k !== id && lyriaSounds[k].sound.playing()) {
+                            lyriaSounds[k].sound.pause();
+                            const ob = document.getElementById(k + "-play");
+                            if (ob) ob.textContent = "\u25B6";
+                        }
+                    });
+                    sound.play();
+                    if (btn) btn.textContent = "\u23F8";
+                }
+            }
+
+            // Render a music player output card from Lyria response data
+            function renderMusicCard({ audioBase64, mimeType, textParts, title, modelId }) {
+                const id = "lyria-" + Date.now();
+
+                // Decode base64 → Blob URL
+                const binary = atob(audioBase64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                const blob = new Blob([bytes], { type: mimeType });
+                const blobUrl = URL.createObjectURL(blob);
+
+                const isClip = modelId === "lyria-3-clip-preview";
+                const modelLabel = isClip ? "Lyria 3 Clip Preview" : "Lyria 3 Pro Preview";
+                const typeLabel = isClip ? "30-second preview" : "Full-length song";
+                const safeName = (title || "music").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+
+                const lyricsHtml =
+                    textParts.length
+                        ? `<div class="music-lyrics-section">
+                            <div class="section-subheader">${_t("section.generated_lyrics", "Generated Lyrics")}</div>
+                            <pre class="music-lyrics-text">${escapeHtml(textParts.join("\n\n").trim())}</pre>
+                           </div>`
+                        : "";
+
+                const card = document.createElement("div");
+                card.className = "output-card music-card";
+                card.id = id + "-card";
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-header-row">
+                            <div>
+                                <div class="card-title">${escapeHtml(title)}</div>
+                                <div class="card-subtitle">${escapeHtml(modelLabel)} &middot; ${escapeHtml(typeLabel)}</div>
+                            </div>
+                            <a href="${blobUrl}" download="${escapeAttr(safeName)}.mp3" class="btn-sm">${_t("btn.download_audio", "\u2193 MP3")}</a>
+                        </div>
+                    </div>
+                    <div class="music-player" id="${id}-player">
+                        <button class="lyria-play-btn" id="${id}-play" onclick="toggleLyriaPlayer('${id}')" aria-label="Play">&#x25B6;</button>
+                        <div class="lyria-progress-wrap">
+                            <div class="lyria-progress-bg" id="${id}-progbg">
+                                <div class="lyria-progress-fill" id="${id}-fill"></div>
+                            </div>
+                            <span class="lyria-progress-time" id="${id}-time">0:00</span>
+                        </div>
+                    </div>
+                    ${lyricsHtml}
+                `;
+
+                const panel = document.getElementById("tab-output");
+                panel.insertBefore(card, panel.firstChild);
+
+                // Create Howl instance
+                const sound = new Howl({
+                    src: [blobUrl],
+                    format: ["mp3"],
+                    html5: true,
+                    onend: () => {
+                        const btn = document.getElementById(id + "-play");
+                        const fill = document.getElementById(id + "-fill");
+                        const timeEl = document.getElementById(id + "-time");
+                        if (btn) btn.textContent = "\u25B6";
+                        if (fill) fill.style.width = "0%";
+                        if (timeEl) timeEl.textContent = "0:00";
+                    },
+                    onplay: () => animateLyriaProgress(id),
+                });
+
+                // Wire click on progress bar to seek
+                const progBg = document.getElementById(id + "-progbg");
+                if (progBg) {
+                    progBg.addEventListener("click", (e) => {
+                        const rect = progBg.getBoundingClientRect();
+                        const ratio = (e.clientX - rect.left) / rect.width;
+                        sound.seek(ratio * (sound.duration() || 0));
+                    });
+                }
+
+                lyriaSounds[id] = { sound, blobUrl };
+            }
+
+            // Main Lyria music generation orchestration
+            async function generateMusic() {
+                const model = document.getElementById("model-select")?.value || selectedModel;
+
+                if (!aiClient) {
+                    alert(_t("alert.lyria_google_only", "Music generation requires a Google AI Studio API key. Please enter your key in the API bar."));
+                    return;
+                }
+
+                const genre = getSelectedGenreLabel();
+                const conceptRaw = document.getElementById("concept").value.trim();
+                const mood = getSelectedMood();
+                const tempo = getSelectedTempoPreference();
+                const tempoFormatted = formatTempoPreference(tempo);
+                const selectedMusicalKey = getSelectedMusicalKey();
+                const selectedTimeSignature = getSelectedTimeSignature();
+                const songLanguage = getSongLanguage();
+                const soundProfile = buildSoundProfile();
+                const vocalConfig = getSelectedVocalGender();
+                const struct = selectedStructure || (GENRE_STRUCTURES[currentGenreKey] || DEFAULT_STRUCTURES)[0];
+
+                if (!genre && !conceptRaw) {
+                    document.getElementById("validation-modal-msg").textContent = _t("alert.validation_song", "Please select at least one Genre or enter a Concept / Story before writing your song.");
+                    document.getElementById("validation-modal").style.display = "flex";
+                    return;
+                }
+
+                const genBtn = document.getElementById("gen-btn");
+                if (genBtn) {
+                    genBtn.disabled = true;
+                    genBtn.innerHTML = `<span class="spin">...</span> ${_t("status.generating_music", "Composing...")}`;                }
+
+                const panel = document.getElementById("tab-output");
+                document.getElementById("empty-state").style.display = "none";
+                switchRTab("output");
+
+                const loadCard = document.createElement("div");
+                loadCard.className = "output-card";
+                loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating_music", "Composing your music\u2026 (this may take up to 2 minutes)")}</div>`;
+                panel.insertBefore(loadCard, panel.firstChild);
+
+                try {
+                    const isInstrumental = vocalConfig === "Instrumental (no vocals)";
+                    const isClip = model === "lyria-3-clip-preview";
+                    const lyricsInput = document.getElementById("lyrics-input").value.trim();
+                    let lyricsText = "";
+
+                    if (!isInstrumental) {
+                        if (lyricsInput) {
+                            // User has provided lyrics — use as-is (they can already have [Verse] etc.)
+                            lyricsText = lyricsInput;
+                        } else if (currentSong && currentSong.sections && currentSong.sections.length) {
+                            // Existing generated song — strip directions, keep only section label + lines
+                            lyricsText = buildSimplifiedLyricsFromSections(currentSong.sections);
+                        } else if (!isClip) {
+                            // Pro model, no lyrics yet — generate them with a text model first
+                            loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating_lyrics_for_music", "Generating lyrics for music\u2026")}</div>`;
+                            lyricsText = await generateLyricsForLyria({ genre, concept: conceptRaw, struct, songLanguage, vocalConfig, mood });
+                            loadCard.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:11px;">${_t("status.generating_music", "Composing your music\u2026 (this may take up to 2 minutes)")}</div>`;
+                        }
+                        // Clip model with no lyrics — just use the description, Lyria will create its own
+                    }
+
+                    const lyriaPrompt = buildLyriaMusicPrompt({
+                        genre,
+                        concept: conceptRaw,
+                        mood,
+                        tempo: tempoFormatted,
+                        key: selectedMusicalKey,
+                        timeSignature: selectedTimeSignature,
+                        songLanguage,
+                        soundProfile,
+                        vocalConfig,
+                        lyrics: lyricsText,
+                        modelId: model,
+                    });
+
+                    const response = await aiClient.models.generateContent({ model: model, contents: lyriaPrompt });
+
+                    // Parse parts — always iterate all parts (never assume order)
+                    let audioBase64 = null;
+                    let audioMimeType = "audio/mpeg";
+                    const textParts = [];
+                    const parts = response.candidates?.[0]?.content?.parts || [];
+                    for (const part of parts) {
+                        if (part.text != null) {
+                            textParts.push(part.text);
+                        } else if (part.inlineData?.data) {
+                            audioBase64 = part.inlineData.data;
+                            audioMimeType = part.inlineData.mimeType || "audio/mpeg";
+                        }
+                    }
+
+                    if (!audioBase64) throw new Error("No audio data returned from the Lyria model. The response may have been blocked or the model returned only text.");
+
+                    loadCard.remove();
+
+                    const titleInput = document.getElementById("title").value.trim();
+                    const cardTitle = titleInput || (genre ? genre + (isClip ? " Clip" : " Song") : "Generated Music");
+
+                    renderMusicCard({ audioBase64, mimeType: audioMimeType, textParts, title: cardTitle, modelId: model });
+
+                } catch (err) {
+                    loadCard.remove();
+                    const errCard = document.createElement("div");
+                    errCard.className = "output-card";
+                    errCard.innerHTML = `<div style="padding:18px;"><div class="section-header" style="margin-bottom:6px;">Error</div><div class="error-box">${escapeHtml(err.message)}</div></div>`;
+                    panel.insertBefore(errCard, panel.firstChild);
+                }
+
+                if (genBtn) {
+                    genBtn.disabled = false;
+                    genBtn.innerHTML = _t("btn.generate_music", "Generate Music");
+                }
+            }
+
             async function generateSong() {
+                // Redirect to Lyria music generation if a Lyria model is selected
+                const _activeModel = document.getElementById("model-select")?.value || selectedModel;
+                if (isLyriaModel(_activeModel)) return generateMusic();
+
                 const enablePostGenerationLengthChecks = true;
                 const titleInput = document.getElementById("title").value.trim();
                 const title = titleInput || "";
@@ -8652,6 +8986,7 @@ ${cleanedLyrics}
             window.filterModelOptions = filterModelOptions;
             window.modelFilterKeydown = modelFilterKeydown;
             window.onSongLanguageChange = onSongLanguageChange;
+            window.toggleLyriaPlayer = toggleLyriaPlayer;
             // Presets
             window.savePreset = savePreset;
             window.loadPreset = loadPreset;

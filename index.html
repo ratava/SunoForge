@@ -12,7 +12,7 @@ Legal permission has been sought for the use of the name Suno
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://accounts.google.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com https://suno-forge-server.vercel.app; img-src 'self' data:; frame-src 'self' https://accounts.google.com; base-uri 'self'; form-action 'self';"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh https://accounts.google.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com https://esm.sh https://openrouter.ai https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com https://suno-forge-server.vercel.app; img-src 'self' data:; media-src 'self' blob:; frame-src 'self' https://accounts.google.com; base-uri 'self'; form-action 'self';"
         />
         <title>SunoForge</title>
         <script>
@@ -28,7 +28,7 @@ Legal permission has been sought for the use of the name Suno
         </script>
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
         <script type="importmap">
-            { "imports": { "@google/genai": "https://esm.sh/@google/genai", "jsonrepair": "https://esm.sh/jsonrepair@3.13.3" } }
+            { "imports": { "@google/genai": "https://esm.sh/@google/genai", "jsonrepair": "https://esm.sh/jsonrepair@3.13.3", "howler": "https://esm.sh/howler@2.2.4" } }
         </script>
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <link rel="stylesheet" href="shared.css" />
@@ -200,7 +200,6 @@ Legal permission has been sought for the use of the name Suno
                             <option value="Russian">Russian</option>
                             <option value="Japanese">Japanese</option>
                             <option value="Korean">Korean</option>
-                            <option value="Chichewa">Chichewa</option>
                             <option value="Chinese (Mandarin)">Chinese (Mandarin)</option>
                             <option value="Chinese (Cantonese)">Chinese (Cantonese)</option>
                             <option value="custom" data-i18n-opt="btn.lang_custom">Custom...</option>
@@ -1251,7 +1250,7 @@ Legal permission has been sought for the use of the name Suno
             <span class="footer-disclaimer" data-i18n="hint.disclaimer">SunoForge is in no way affiliated with Suno or with the ownership collective of Suno.ai. The Suno name and logos are trademarks and service marks of Suno (collectively the &ldquo;Suno Trademarks&rdquo;)</span>
             <div class="footer-right">
                 <a href="Privacy_Policy.html" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a>
-                <span class="footer-version" id="version">20260425-003</span>
+                <span class="footer-version" id="version">20260426-001</span>
             </div>
         </footer>
     </body>
