@@ -3246,6 +3246,7 @@
                 const custom = document.getElementById("song-language-custom");
                 const customWrap = document.getElementById("song-language-custom-wrap");
                 if (customWrap) customWrap.style.display = sel.value === "custom" ? "flex" : "none";
+                if (custom && sel.value === "custom") custom.style.display = "";
                 localStorage.setItem("sf_song_lang", sel.value);
                 _settingsChangedLocally.add("sf_song_lang");
                 if (sel.value !== "custom") {
