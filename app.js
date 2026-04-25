@@ -8062,6 +8062,12 @@ ${cleanedLyrics}
                 if (vocalConfig === "Instrumental (no vocals)") return "";
                 if (!aiClient) throw new Error(_t("alert.lyria_google_only", "Music generation requires a Google AI Studio key."));
 
+                // Pick best available non-Lyria Google text model dynamically
+                const textModel =
+                    googleModels.find((m) => !isLyriaModel(m.id) && /flash/i.test(m.id))?.id ||
+                    googleModels.find((m) => !isLyriaModel(m.id))?.id ||
+                    "gemini-2.5-flash-preview-04-17";
+
                 const lyricsPrompt = `You are a professional songwriter. Write song lyrics.
 Genre: ${genre || "Pop"}
 Concept: ${concept || ""}
@@ -8074,7 +8080,8 @@ Rules:
 - Do NOT include any performance directions, production notes, sound descriptions, or meta-tags.
 - Output ONLY the section labels and lyric lines. No other text.`;
 
-                const response = await aiClient.models.generateContent({ model: "gemini-2.0-flash", contents: lyricsPrompt });
+                debugLog("LYRIA_LYRICS", "Generating lyrics for Lyria via text model", { model: textModel });
+                const response = await aiClient.models.generateContent({ model: textModel, contents: lyricsPrompt });
                 return response.text?.trim() || "";
             }
 
@@ -8280,6 +8287,8 @@ Rules:
                         modelId: model,
                     });
 
+                    debugLog("LYRIA_REQUEST", "Sending music generation request", { model, promptLength: lyriaPrompt.length, hasLyrics: !!lyricsText });
+                    console.log("[LYRIA] Requesting model:", model, "\nPrompt:\n", lyriaPrompt);
                     const response = await aiClient.models.generateContent({ model: model, contents: lyriaPrompt });
 
                     // Parse parts — always iterate all parts (never assume order)
