@@ -706,7 +706,8 @@
                     const customWrap = document.getElementById("song-language-custom-wrap");
                     if (customInput && savedLang === "custom") {
                         if (customWrap) customWrap.style.display = "flex";
-                        customInput.value = customLang;
+                        // Only restore stored value if one exists — avoid wiping mid-typing content
+                        if (customLang) customInput.value = customLang;
                     }
                 }
             }
@@ -3260,17 +3261,22 @@
                 if (!lang) return;
                 const sel = document.getElementById("song-language");
                 const custom = document.getElementById("song-language-custom");
+                const customWrap = document.getElementById("song-language-custom-wrap");
                 if (!sel) return;
+                if (lang === "custom") {
+                    sel.value = "custom";
+                    if (custom) custom.style.display = "";
+                    if (customWrap) customWrap.style.display = "flex";
+                    return;
+                }
                 const opt = Array.from(sel.options).find((o) => o.value === lang);
                 if (opt) {
                     sel.value = lang;
                     if (custom) custom.style.display = "none";
-                    const customWrap = document.getElementById("song-language-custom-wrap");
                     if (customWrap) customWrap.style.display = "none";
                 } else {
                     sel.value = "custom";
                     custom.value = lang;
-                    const customWrap = document.getElementById("song-language-custom-wrap");
                     if (customWrap) customWrap.style.display = "flex";
                     custom.style.display = "";
                 }
